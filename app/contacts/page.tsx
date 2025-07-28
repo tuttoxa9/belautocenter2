@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin, Phone, Mail, Clock, Instagram, ExternalLink, Check } from "lucide-react"
 import YandexMap from "@/components/yandex-map"
-import ContactsPageSkeleton from "@/components/contacts-page-skeleton"
+
 
 export default function ContactsPage() {
   const [loading, setLoading] = useState(true)
@@ -131,7 +131,7 @@ export default function ContactsPage() {
   }
 
   if (loading) {
-    return <ContactsPageSkeleton />
+    return <div>Загрузка...</div>
   }
 
   return (

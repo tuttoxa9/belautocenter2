@@ -6,7 +6,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
 import { Shield, Users, Award, Clock, Car, Phone, MapPin, CheckCircle, Star, Wrench, CreditCard, DollarSign, FileText, Building, TrendingUp, Calculator, Handshake, Check } from "lucide-react"
-import AboutPageSkeleton from "@/components/about-page-skeleton"
+
 
 export default function AboutPage() {
   const [loading, setLoading] = useState(true)
@@ -68,7 +68,7 @@ export default function AboutPage() {
   }, [])
 
   if (loading) {
-    return <AboutPageSkeleton />
+    return <div>Загрузка...</div>
   }
 
   return (
