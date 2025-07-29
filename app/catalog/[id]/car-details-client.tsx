@@ -1080,18 +1080,18 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
         {/* Диалоги */}
         <Dialog open={isCreditOpen} onOpenChange={setIsCreditOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-2xl">Калькулятор финансирования</DialogTitle>
+          <DialogContent className="max-w-lg sm:max-w-4xl max-h-[95vh] overflow-y-auto p-3 sm:p-6">
+            <DialogHeader className="pb-2 sm:pb-4">
+              <DialogTitle className="text-lg sm:text-2xl">Калькулятор финансирования</DialogTitle>
             </DialogHeader>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Калькулятор */}
-              <div className="space-y-6">
+              <div className="space-y-3 sm:space-y-6">
                 {/* Переключатель типа финансирования */}
                 <div className="flex items-center justify-center space-x-1 bg-slate-100 rounded-lg p-1">
                   <button
                     onClick={() => setFinanceType('credit')}
-                    className={`flex-1 text-sm font-medium py-2 px-4 rounded-md transition-all ${
+                    className={`flex-1 text-xs sm:text-sm font-medium py-1.5 sm:py-2 px-2 sm:px-4 rounded-md transition-all ${
                       financeType === 'credit'
                         ? 'bg-white text-slate-900 shadow-sm'
                         : 'text-slate-600 hover:text-slate-800'
@@ -1101,7 +1101,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </button>
                   <button
                     onClick={() => setFinanceType('leasing')}
-                    className={`flex-1 text-sm font-medium py-2 px-4 rounded-md transition-all ${
+                    className={`flex-1 text-xs sm:text-sm font-medium py-1.5 sm:py-2 px-2 sm:px-4 rounded-md transition-all ${
                       financeType === 'leasing'
                         ? 'bg-white text-slate-900 shadow-sm'
                         : 'text-slate-600 hover:text-slate-800'
@@ -1112,63 +1112,70 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </div>
 
                 {/* Переключатель валюты */}
-                <div className="flex items-center space-x-2 p-3 bg-slate-50 rounded-lg">
+                <div className="flex items-center space-x-2 p-2 sm:p-3 bg-slate-50 rounded-lg">
                   <Checkbox
                     id="currency-switch"
                     checked={isBelarusianRubles}
                     onCheckedChange={handleCurrencyChange}
                   />
-                  <Label htmlFor="currency-switch" className="text-sm font-medium">
+                  <Label htmlFor="currency-switch" className="text-xs sm:text-sm font-medium">
                     В белорусских рублях
                   </Label>
                 </div>
 
                 {financeType === 'credit' ? (
                   <>
-                    <div className="space-y-3">
-                      <Label>Стоимость автомобиля</Label>
-                      <Input
-                        type="number"
-                        value={isBelarusianRubles && usdBynRate ? Math.round(car.price * usdBynRate) : car.price}
-                        readOnly
-                        className="bg-slate-50"
-                      />
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Стоимость авто</Label>
+                        <Input
+                          type="number"
+                          value={isBelarusianRubles && usdBynRate ? Math.round(car.price * usdBynRate) : car.price}
+                          readOnly
+                          className="bg-slate-50 text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Сумма кредита</Label>
+                        <Input
+                          type="number"
+                          value={creditAmount[0]}
+                          onChange={(e) => setCreditAmount([Number(e.target.value)])}
+                          min={getCreditMinValue()}
+                          max={getCreditMaxValue()}
+                          step={isBelarusianRubles ? 100 : 1000}
+                          className="text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-3">
-                      <Label>Сумма кредита</Label>
-                      <Input
-                        type="number"
-                        value={creditAmount[0]}
-                        onChange={(e) => setCreditAmount([Number(e.target.value)])}
-                        min={getCreditMinValue()}
-                        max={getCreditMaxValue()}
-                        step={isBelarusianRubles ? 100 : 1000}
-                      />
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Первый взнос</Label>
+                        <Input
+                          type="number"
+                          value={downPayment[0]}
+                          onChange={(e) => setDownPayment([Number(e.target.value)])}
+                          min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
+                          max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
+                          step={isBelarusianRubles ? 100 : 1000}
+                          className="text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Срок (мес.)</Label>
+                        <Input
+                          type="number"
+                          value={loanTerm[0]}
+                          onChange={(e) => setLoanTerm([Number(e.target.value)])}
+                          min={12}
+                          max={96}
+                          step={6}
+                          className="text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-3">
-                      <Label>Первоначальный взнос</Label>
-                      <Input
-                        type="number"
-                        value={downPayment[0]}
-                        onChange={(e) => setDownPayment([Number(e.target.value)])}
-                        min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
-                        max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
-                        step={isBelarusianRubles ? 100 : 1000}
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <Label>Срок кредита (месяцев)</Label>
-                      <Input
-                        type="number"
-                        value={loanTerm[0]}
-                        onChange={(e) => setLoanTerm([Number(e.target.value)])}
-                        min={12}
-                        max={96}
-                        step={6}
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <Label>Банк</Label>
+                    <div className="space-y-2">
+                      <Label className="text-xs sm:text-sm">Банк</Label>
                       {partnerBanks.length > 0 ? (
                         <Select
                           value={selectedBank?.id?.toString()}
@@ -1176,7 +1183,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             setSelectedBank(partnerBanks.find(b => b.id === parseInt(value)) || partnerBanks[0])
                           }
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="h-8 sm:h-10">
                             <SelectValue placeholder="Выберите банк">
                               {selectedBank && (
                                 <div className="flex items-center justify-between w-full">
@@ -1185,99 +1192,106 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                                       <Image
                                         src={getCachedImageUrl(selectedBank.logo)}
                                         alt={`${selectedBank.name} логотип`}
-                                        width={20}
-                                        height={20}
+                                        width={16}
+                                        height={16}
                                         className="object-contain rounded"
                                       />
                                     )}
-                                    <span>{selectedBank.name}</span>
+                                    <span className="text-xs sm:text-sm truncate">{selectedBank.name}</span>
                                   </div>
-                                  <span className="text-sm font-semibold text-slate-600">{selectedBank.rate}%</span>
+                                  <span className="text-xs font-semibold text-slate-600">{selectedBank.rate}%</span>
                                 </div>
                               )}
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             {partnerBanks.map((bank) => (
-                              <SelectItem key={bank.id} value={bank.id.toString()} className="relative pr-16">
+                              <SelectItem key={bank.id} value={bank.id.toString()} className="relative pr-12">
                                 <div className="flex items-center gap-2 w-full">
                                   {bank.logo && (
                                     <Image
                                       src={getCachedImageUrl(bank.logo)}
                                       alt={`${bank.name} логотип`}
-                                      width={20}
-                                      height={20}
+                                      width={16}
+                                      height={16}
                                       className="object-contain rounded flex-shrink-0"
                                     />
                                   )}
-                                  <span className="truncate pr-8">{bank.name}</span>
+                                  <span className="truncate pr-6 text-xs sm:text-sm">{bank.name}</span>
                                 </div>
-                                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm font-semibold text-slate-600">{bank.rate}%</span>
+                                <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-slate-600">{bank.rate}%</span>
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       ) : loadingBanks ? (
                         <div className="text-center py-2">
-                          <div className="w-full h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
-                          <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                          <div className="w-full h-6 sm:h-8 bg-slate-200 rounded animate-pulse mb-1 sm:mb-2"></div>
                         </div>
                       ) : (
-                        <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg">
-                          <AlertCircle className="h-5 w-5" />
-                          <p className="text-sm">Банки-партнеры не найдены</p>
+                        <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 p-2 rounded-lg">
+                          <AlertCircle className="h-4 w-4" />
+                          <p className="text-xs">Банки не найдены</p>
                         </div>
                       )}
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="space-y-3">
-                      <Label>Стоимость автомобиля</Label>
-                      <Input
-                        type="number"
-                        value={leasingAmount[0]}
-                        onChange={(e) => setLeasingAmount([Number(e.target.value)])}
-                        min={getCreditMinValue()}
-                        max={getCreditMaxValue()}
-                        step={isBelarusianRubles ? 100 : 1000}
-                      />
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Стоимость авто</Label>
+                        <Input
+                          type="number"
+                          value={leasingAmount[0]}
+                          onChange={(e) => setLeasingAmount([Number(e.target.value)])}
+                          min={getCreditMinValue()}
+                          max={getCreditMaxValue()}
+                          step={isBelarusianRubles ? 100 : 1000}
+                          className="text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Аванс</Label>
+                        <Input
+                          type="number"
+                          value={leasingAdvance[0]}
+                          onChange={(e) => setLeasingAdvance([Number(e.target.value)])}
+                          min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
+                          max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
+                          step={isBelarusianRubles ? 100 : 1000}
+                          className="text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-3">
-                      <Label>Авансовый платеж</Label>
-                      <Input
-                        type="number"
-                        value={leasingAdvance[0]}
-                        onChange={(e) => setLeasingAdvance([Number(e.target.value)])}
-                        min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
-                        max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
-                        step={isBelarusianRubles ? 100 : 1000}
-                      />
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Срок (мес.)</Label>
+                        <Input
+                          type="number"
+                          value={leasingTerm[0]}
+                          onChange={(e) => setLeasingTerm([Number(e.target.value)])}
+                          min={12}
+                          max={84}
+                          step={3}
+                          className="text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
+                      <div className="space-y-1 sm:space-y-2">
+                        <Label className="text-xs sm:text-sm">Остаток (%)</Label>
+                        <Input
+                          type="number"
+                          value={residualValue[0]}
+                          onChange={(e) => setResidualValue([Number(e.target.value)])}
+                          min={10}
+                          max={50}
+                          step={5}
+                          className="text-xs sm:text-sm h-8 sm:h-10"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-3">
-                      <Label>Срок лизинга (месяцев)</Label>
-                      <Input
-                        type="number"
-                        value={leasingTerm[0]}
-                        onChange={(e) => setLeasingTerm([Number(e.target.value)])}
-                        min={12}
-                        max={84}
-                        step={3}
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <Label>Остаточная стоимость (%)</Label>
-                      <Input
-                        type="number"
-                        value={residualValue[0]}
-                        onChange={(e) => setResidualValue([Number(e.target.value)])}
-                        min={10}
-                        max={50}
-                        step={5}
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <Label>Лизинговая компания</Label>
+                    <div className="space-y-2">
+                      <Label className="text-xs sm:text-sm">Лизинговая компания</Label>
                       {leasingCompanies.length > 0 ? (
                         <Select
                           value={selectedLeasingCompany?.name?.toLowerCase().replace(/[\s-]/g, '')}
@@ -1285,8 +1299,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             setSelectedLeasingCompany(leasingCompanies.find(c => c.name.toLowerCase().replace(/[\s-]/g, '') === value) || leasingCompanies[0])
                           }
                         >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Выберите лизинговую компанию">
+                          <SelectTrigger className="h-8 sm:h-10">
+                            <SelectValue placeholder="Выберите компанию">
                               {selectedLeasingCompany && (
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-2">
@@ -1294,14 +1308,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                                       <Image
                                         src={getCachedImageUrl(selectedLeasingCompany.logoUrl)}
                                         alt={`${selectedLeasingCompany.name} логотип`}
-                                        width={20}
-                                        height={20}
+                                        width={16}
+                                        height={16}
                                         className="object-contain rounded"
                                       />
                                     )}
-                                    <span>{selectedLeasingCompany.name}</span>
+                                    <span className="text-xs sm:text-sm truncate">{selectedLeasingCompany.name}</span>
                                   </div>
-                                  <span className="text-sm font-semibold text-slate-600">{selectedLeasingCompany.minAdvance}%</span>
+                                  <span className="text-xs font-semibold text-slate-600">{selectedLeasingCompany.minAdvance}%</span>
                                 </div>
                               )}
                             </SelectValue>
@@ -1311,34 +1325,33 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                               <SelectItem
                                 key={company.name}
                                 value={company.name.toLowerCase().replace(/[\s-]/g, '')}
-                                className="relative pr-16"
+                                className="relative pr-12"
                               >
                                 <div className="flex items-center gap-2 w-full">
                                   {company.logoUrl && (
                                     <Image
                                       src={getCachedImageUrl(company.logoUrl)}
                                       alt={`${company.name} логотип`}
-                                      width={20}
-                                      height={20}
+                                      width={16}
+                                      height={16}
                                       className="object-contain rounded flex-shrink-0"
                                     />
                                   )}
-                                  <span className="truncate pr-8">{company.name}</span>
+                                  <span className="truncate pr-6 text-xs sm:text-sm">{company.name}</span>
                                 </div>
-                                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm font-semibold text-slate-600">{company.minAdvance}%</span>
+                                <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-slate-600">{company.minAdvance}%</span>
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       ) : loadingLeasing ? (
                         <div className="text-center py-2">
-                          <div className="w-full h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
-                          <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                          <div className="w-full h-6 sm:h-8 bg-slate-200 rounded animate-pulse mb-1 sm:mb-2"></div>
                         </div>
                       ) : (
-                        <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg">
-                          <AlertCircle className="h-5 w-5" />
-                          <p className="text-sm">Лизинговые компании не найдены</p>
+                        <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 p-2 rounded-lg">
+                          <AlertCircle className="h-4 w-4" />
+                          <p className="text-xs">Компании не найдены</p>
                         </div>
                       )}
                     </div>
@@ -1347,26 +1360,26 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </div>
 
               {/* Результат */}
-              <div className="bg-slate-50 rounded-lg p-6">
-                <h4 className="text-xl font-bold mb-4">Результат расчета</h4>
+              <div className="bg-slate-50 rounded-lg p-3 sm:p-6">
+                <h4 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">Результат</h4>
                 {financeType === 'credit' ? (
                   selectedBank ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       <div>
-                        <div className="text-sm text-slate-500">Ежемесячный платеж</div>
-                        <div className="text-3xl font-bold text-slate-900">
+                        <div className="text-xs sm:text-sm text-slate-500">Ежемесячный платеж</div>
+                        <div className="text-xl sm:text-3xl font-bold text-slate-900">
                           {isBelarusianRubles
                             ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment())
                             : formatPrice(calculateMonthlyPayment())
                           }
                         </div>
                         {!isBelarusianRubles && usdBynRate && (
-                          <div className="text-xl font-semibold text-slate-700">
+                          <div className="text-sm sm:text-xl font-semibold text-slate-700">
                             ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
                           </div>
                         )}
                       </div>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm">
                         <div>
                           <div className="text-slate-500">Переплата</div>
                           <div className="font-semibold">
@@ -1386,19 +1399,19 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           </div>
                         </div>
                       </div>
-                      <div className="pt-4">
-                        <div className="text-sm font-semibold text-slate-700 mb-2">Банк {selectedBank.name}</div>
-                        <div className="flex items-center space-x-2 text-sm text-slate-600">
-                          <Building2 className="h-4 w-4 text-slate-400" />
+                      <div className="pt-2 sm:pt-4">
+                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedBank.name}</div>
+                        <div className="flex items-center space-x-2 text-xs text-slate-600">
+                          <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
                           <span>Ставка: {selectedBank.rate}%</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-slate-600 mt-1">
-                          <Calendar className="h-4 w-4 text-slate-400" />
-                          <span>Максимальный срок: {selectedBank.maxTerm} мес.</span>
+                        <div className="flex items-center space-x-2 text-xs text-slate-600 mt-1">
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
+                          <span>Макс. срок: {selectedBank.maxTerm} мес.</span>
                         </div>
                       </div>
                       <Button
-                        className="w-full mt-6"
+                        className="w-full mt-3 sm:mt-6 h-8 sm:h-10 text-xs sm:text-sm"
                         onClick={() => {
                           setIsCreditOpen(false)
                           setTimeout(() => setIsCreditFormOpen(true), 150)
@@ -1408,45 +1421,44 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </Button>
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center h-64 text-center">
+                    <div className="flex flex-col items-center justify-center h-32 sm:h-64 text-center">
                       {loadingBanks ? (
-                        <div className="w-full space-y-4">
-                          <div className="w-full h-12 bg-slate-200 rounded animate-pulse"></div>
-                          <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
-                          <div className="w-1/2 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                        <div className="w-full space-y-2 sm:space-y-4">
+                          <div className="w-full h-8 sm:h-12 bg-slate-200 rounded animate-pulse"></div>
+                          <div className="w-3/4 h-3 sm:h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
                         </div>
                       ) : partnerBanks.length === 0 ? (
                         <>
-                          <AlertCircle className="h-10 w-10 text-amber-500 mb-4" />
-                          <p className="text-slate-700 font-medium">Банки-партнеры не найдены</p>
-                          <p className="text-slate-500 text-sm mt-2">Пожалуйста, обратитесь к менеджеру для получения информации о кредитовании</p>
+                          <AlertCircle className="h-6 w-6 sm:h-10 sm:w-10 text-amber-500 mb-2 sm:mb-4" />
+                          <p className="text-sm sm:text-base text-slate-700 font-medium">Банки не найдены</p>
+                          <p className="text-xs sm:text-sm text-slate-500 mt-1 sm:mt-2">Обратитесь к менеджеру</p>
                         </>
                       ) : (
                         <>
-                          <Building2 className="h-10 w-10 text-slate-400 mb-4" />
-                          <p className="text-slate-700 font-medium">Выберите банк</p>
-                          <p className="text-slate-500 text-sm mt-2">Для расчета кредита выберите банк из списка</p>
+                          <Building2 className="h-6 w-6 sm:h-10 sm:w-10 text-slate-400 mb-2 sm:mb-4" />
+                          <p className="text-sm sm:text-base text-slate-700 font-medium">Выберите банк</p>
+                          <p className="text-xs sm:text-sm text-slate-500 mt-1 sm:mt-2">Для расчета кредита</p>
                         </>
                       )}
                     </div>
                   )
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
-                      <div className="text-sm text-slate-500">Ежемесячный платеж</div>
-                      <div className="text-3xl font-bold text-slate-900">
+                      <div className="text-xs sm:text-sm text-slate-500">Ежемесячный платеж</div>
+                      <div className="text-xl sm:text-3xl font-bold text-slate-900">
                         {isBelarusianRubles
                           ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateLeasingPayment())
                           : formatPrice(calculateLeasingPayment())
                         }
                       </div>
                       {!isBelarusianRubles && usdBynRate && (
-                        <div className="text-xl font-semibold text-slate-700">
+                        <div className="text-sm sm:text-xl font-semibold text-slate-700">
                           ≈ {convertUsdToByn(calculateLeasingPayment(), usdBynRate)} BYN
                         </div>
                       )}
                     </div>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm">
                       <div>
                         <div className="text-slate-500">Общие выплаты</div>
                         <div className="font-semibold">
@@ -1467,20 +1479,20 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     </div>
                     {selectedLeasingCompany && (
-                      <div className="pt-4">
-                        <div className="text-sm font-semibold text-slate-700 mb-2">Лизинговая компания {selectedLeasingCompany.name}</div>
-                        <div className="flex items-center space-x-2 text-sm text-slate-600">
-                          <Building2 className="h-4 w-4 text-slate-400" />
-                          <span>Минимальный аванс: {selectedLeasingCompany.minAdvance}%</span>
+                      <div className="pt-2 sm:pt-4">
+                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedLeasingCompany.name}</div>
+                        <div className="flex items-center space-x-2 text-xs text-slate-600">
+                          <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
+                          <span>Мин. аванс: {selectedLeasingCompany.minAdvance}%</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-slate-600 mt-1">
-                          <Calendar className="h-4 w-4 text-slate-400" />
-                          <span>Максимальный срок: {selectedLeasingCompany.maxTerm} мес.</span>
+                        <div className="flex items-center space-x-2 text-xs text-slate-600 mt-1">
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
+                          <span>Макс. срок: {selectedLeasingCompany.maxTerm} мес.</span>
                         </div>
                       </div>
                     )}
                     <Button
-                      className="w-full mt-6"
+                      className="w-full mt-3 sm:mt-6 h-8 sm:h-10 text-xs sm:text-sm"
                       onClick={() => {
                         setIsCreditOpen(false)
                         setTimeout(() => setIsCreditFormOpen(true), 150)
