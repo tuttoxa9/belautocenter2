@@ -28,9 +28,8 @@ import {
 } from "lucide-react"
 import YandexMap from "@/components/yandex-map"
 
-// Настройки кэширования для App Router
-export const dynamic = 'force-static'
-export const revalidate = 300
+// Используем динамический рендеринг для клиентского компонента
+export const dynamic = 'force-dynamic'
 
 export default function ContactsPage() {
   const [loading, setLoading] = useState(true)
