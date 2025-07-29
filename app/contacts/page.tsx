@@ -57,27 +57,6 @@ interface ContactsData {
   }
 }
 
-// Функция для извлечения значений из Firestore документа
-const extractFirestoreValue = (field: any): any => {
-  if (!field) return null
-
-  if (field.stringValue !== undefined) return field.stringValue
-  if (field.integerValue !== undefined) return parseInt(field.integerValue)
-  if (field.doubleValue !== undefined) return parseFloat(field.doubleValue)
-  if (field.booleanValue !== undefined) return field.booleanValue
-  if (field.mapValue?.fields) {
-    const result: any = {}
-    Object.keys(field.mapValue.fields).forEach(key => {
-      result[key] = extractFirestoreValue(field.mapValue.fields[key])
-    })
-    return result
-  }
-  if (field.arrayValue?.values) {
-    return field.arrayValue.values.map((item: any) => extractFirestoreValue(item))
-  }
-
-  return field
-}
 
 const formatPhoneNumber = (value: string) => {
   return value.replace(/[^\d+]/g, '')
@@ -101,26 +80,35 @@ export default function ContactsPage() {
   useEffect(() => {
     const fetchContactsData = async () => {
       try {
-        const response = await fetch('/api/firestore?collection=pages&document=contacts')
+        // Используем прямой импорт Firebase как в админке
+        const { doc, getDoc } = await import('firebase/firestore')
+        const { db } = await import('@/lib/firebase')
 
-        if (!response.ok) {
-          throw new Error('Не удалось загрузить данные контактов')
-        }
+        const contactsDoc = await getDoc(doc(db, "pages", "contacts"))
 
-        const data = await response.json()
-
-        if (data.fields) {
-          const extractedData: ContactsData = {}
-          Object.keys(data.fields).forEach(key => {
-            extractedData[key as keyof ContactsData] = extractFirestoreValue(data.fields[key]) as any
+        if (contactsDoc.exists()) {
+          const data = contactsDoc.data() as ContactsData
+          setContactsData(data)
+        } else {
+          // Если документ не существует, используем fallback данные
+          setContactsData({
+            title: "Контакты",
+            subtitle: "Свяжитесь с нами любым удобным способом",
+            address: "г. Минск",
+            phone: "+375 29 000 00 00",
+            email: "info@belautocenter.by",
+            workingHours: {
+              weekdays: "Пн-Пт: 9:00 - 18:00",
+              weekends: "Сб-Вс: 10:00 - 16:00"
+            },
+            socialMedia: {}
           })
-          setContactsData(extractedData)
         }
       } catch (err) {
         console.error('Ошибка загрузки данных контактов:', err)
         setError('Не удалось загрузить данные контактов')
 
-        // Fallback данные
+        // Fallback данные при ошибке
         setContactsData({
           title: "Контакты",
           subtitle: "Свяжитесь с нами любым удобным способом",
