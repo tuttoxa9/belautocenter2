@@ -28,8 +28,9 @@ import {
 } from "lucide-react"
 import YandexMap from "@/components/yandex-map"
 
-// Добавляем ISR для кэширования
-export const revalidate = 300 // 5 минут
+// Настройки кэширования для App Router
+export const dynamic = 'force-static'
+export const revalidate = 300
 
 export default function ContactsPage() {
   const [loading, setLoading] = useState(true)
