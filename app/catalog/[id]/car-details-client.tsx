@@ -1598,81 +1598,103 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
         {/* Диалог кредитной заявки */}
         <Dialog open={isCreditFormOpen} onOpenChange={setIsCreditFormOpen}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Подать заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}</DialogTitle>
+          <DialogContent className="max-w-md sm:max-w-lg p-3 sm:p-6">
+            <DialogHeader className="pb-2 sm:pb-4">
+              <DialogTitle className="text-base sm:text-lg">Подать заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCreditSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="creditName">Ваше имя</Label>
-                <Input
-                  id="creditName"
-                  value={creditForm.name}
-                  onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="creditPhone">Номер телефона</Label>
-                <div className="relative">
+            <form onSubmit={handleCreditSubmit} className="space-y-3 sm:space-y-4">
+              {/* Компактная форма на мобильных - имя и телефон в одной строке */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="creditName" className="text-sm">Ваше имя</Label>
                   <Input
-                    id="creditPhone"
-                    value={creditForm.phone}
-                    onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
-                    placeholder="+375XXXXXXXXX"
+                    id="creditName"
+                    value={creditForm.name}
+                    onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
                     required
-                    className="pr-10"
+                    className="h-9 sm:h-10 text-sm"
                   />
-                  {isPhoneValid(creditForm.phone) && (
-                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-                  )}
+                </div>
+                <div>
+                  <Label htmlFor="creditPhone" className="text-sm">Номер телефона</Label>
+                  <div className="relative">
+                    <Input
+                      id="creditPhone"
+                      value={creditForm.phone}
+                      onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
+                      placeholder="+375XXXXXXXXX"
+                      required
+                      className="pr-8 h-9 sm:h-10 text-sm"
+                    />
+                    {isPhoneValid(creditForm.phone) && (
+                      <Check className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="creditMessage">Комментарий (необязательно)</Label>
+                <Label htmlFor="creditMessage" className="text-sm">Комментарий (необязательно)</Label>
                 <Textarea
                   id="creditMessage"
                   value={creditForm.message}
                   onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
                   placeholder="Дополнительная информация..."
+                  className="min-h-[60px] sm:min-h-[80px] text-sm"
                 />
               </div>
 
-              {/* Показываем данные о выбранном кредите */}
-              {selectedBank && (
-                <div className="bg-slate-50 p-4 rounded-lg space-y-2">
-                  <h4 className="font-semibold text-slate-900">Параметры кредита:</h4>
-                  <div className="text-sm space-y-1">
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Автомобиль:</span>
-                      <span className="font-medium">{car?.make} {car?.model} {car?.year}</span>
+              {/* Компактные данные о выбранном кредите */}
+              {(selectedBank || (financeType === 'leasing' && selectedLeasingCompany)) && (
+                <div className="bg-slate-50 p-3 sm:p-4 rounded-lg">
+                  <h4 className="font-semibold text-slate-900 text-sm mb-2">Параметры {financeType === 'credit' ? 'кредита' : 'лизинга'}:</h4>
+                  <div className="text-xs sm:text-sm space-y-1">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <span className="text-slate-600">Автомобиль:</span>
+                        <div className="font-medium">{car?.make} {car?.model}</div>
+                      </div>
+                      <div>
+                        <span className="text-slate-600">{financeType === 'credit' ? 'Сумма кредита' : 'Сумма лизинга'}:</span>
+                        <div className="font-medium">
+                          {financeType === 'credit'
+                            ? formatPrice(getCurrentCreditAmount())
+                            : formatPrice(leasingAmount[0])
+                          }
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-slate-600">{financeType === 'credit' ? 'Первый взнос' : 'Аванс'}:</span>
+                        <div className="font-medium">
+                          {financeType === 'credit'
+                            ? formatPrice(getCurrentDownPayment())
+                            : formatPrice(leasingAdvance[0])
+                          }
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-slate-600">Ежемесячно:</span>
+                        <div className="font-medium text-blue-600">
+                          {financeType === 'credit'
+                            ? formatPrice(calculateMonthlyPayment())
+                            : formatPrice(calculateLeasingPayment())
+                          }
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Сумма кредита:</span>
-                      <span className="font-medium">{formatPrice(getCurrentCreditAmount())}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Первоначальный взнос:</span>
-                      <span className="font-medium">{formatPrice(getCurrentDownPayment())}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Срок:</span>
-                      <span className="font-medium">{loanTerm[0]} мес.</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Банк:</span>
-                      <span className="font-medium">{selectedBank.name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Ежемесячный платеж:</span>
-                      <span className="font-medium text-blue-600">{formatPrice(calculateMonthlyPayment())}</span>
+                    <div className="pt-1 border-t border-slate-200 mt-2">
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">{financeType === 'credit' ? 'Банк' : 'Компания'}:</span>
+                        <span className="font-medium">
+                          {financeType === 'credit' ? selectedBank?.name : selectedLeasingCompany?.name}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full h-9 sm:h-10 text-sm">
                 Отправить заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}
               </Button>
             </form>
