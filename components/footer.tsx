@@ -211,7 +211,7 @@ export default function Footer() {
 
       {/* Нижняя строка */}
       <div className="border-t border-gray-800">
-        <div className="container px-4 py-4 pb-24 md:pb-4">
+        <div className="container px-4 py-4 pb-32 md:pb-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-gray-400 text-sm">
               © {currentYear} {loading ? (

@@ -301,4 +301,113 @@
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 8px);
   }
+
+  /* Beautiful blur styles for modals */
+  .modal-backdrop {
+    backdrop-filter: blur(20px) saturate(180%) brightness(1.1);
+    background: rgba(255, 255, 255, 0.15);
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(120, 200, 255, 0.15) 0%, transparent 50%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+
+  .modal-content {
+    backdrop-filter: blur(40px) saturate(200%) brightness(1.05);
+    background: rgba(255, 255, 255, 0.95);
+    background-image:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 8px 32px -8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+  }
+
+  .modal-overlay {
+    backdrop-filter: blur(15px) saturate(150%);
+    background: rgba(0, 0, 0, 0.4);
+    background-image:
+      radial-gradient(circle at 30% 40%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+    -webkit-backdrop-filter: blur(15px) saturate(150%);
+  }
+
+  .glass-effect {
+    backdrop-filter: blur(25px) saturate(180%) brightness(1.2);
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+  }
+
+  .glass-dark {
+    backdrop-filter: blur(30px) saturate(150%) brightness(0.8);
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+  }
+
+  /* Animated glass effect */
+  .glass-animated {
+    backdrop-filter: blur(20px) saturate(180%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+
+  .glass-animated::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
+  .glass-animated:hover::before {
+    left: 100%;
+  }
+
+  /* Support for older browsers */
+  @supports not (backdrop-filter: blur(20px)) {
+    .modal-backdrop,
+    .modal-content,
+    .modal-overlay,
+    .glass-effect,
+    .glass-dark,
+    .glass-animated {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .glass-dark {
+      background: rgba(0, 0, 0, 0.8);
+    }
+  }
 }
