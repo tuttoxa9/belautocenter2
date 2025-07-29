@@ -16,7 +16,7 @@ export default function FadeInImage({ src, alt, className, fallback = "/placehol
   const [hasError, setHasError] = useState(false)
 
   // Use cached URL for Firebase Storage images
-  const cachedSrc = getCachedImageUrl(src)
+  const cachedSrc = getCachedImageUrl(src || fallback)
 
   return (
     <div className="relative overflow-hidden">

@@ -39,7 +39,7 @@ export default function HomePage() {
     phone: "+375",
   })
 
-  const [cars, setCars] = useState([])
+  const [cars, setCars] = useState<any[]>([])
   const [loadingCars, setLoadingCars] = useState(true)
   const [settings, setSettings] = useState<HomepageSettings>({
     heroTitle: "Найди свой автомобиль надежным способом",
@@ -79,9 +79,7 @@ export default function HomePage() {
         ...doc.data(),
       }))
 
-      if (carsData.length > 0) {
-        setCars(carsData as any)
-      }
+      setCars(carsData)
     } catch (error) {
       console.error("Ошибка загрузки автомобилей:", error)
     } finally {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ChevronLeft, ChevronRight, Play } from "lucide-react"
 import FadeInImage from "@/components/fade-in-image"
@@ -98,7 +98,7 @@ export default function Stories() {
   }
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: NodeJS.Timeout | undefined
     if (selectedStory !== null && isPlaying) {
       interval = setInterval(() => {
         setProgress((prev) => {
@@ -110,8 +110,12 @@ export default function Stories() {
         })
       }, 100)
     }
-    return () => clearInterval(interval)
-  }, [selectedStory, isPlaying])
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [selectedStory, isPlaying, handleNext])
 
   const handleStoryClick = (index: number) => {
     // Всегда сначала открываем полноэкранный просмотр
@@ -135,7 +139,7 @@ export default function Stories() {
     // если нет ссылки - ничего не делаем
   }
 
-  const handleNext = () => {
+  const handleNext = React.useCallback(() => {
     if (currentIndex < stories.length - 1) {
       const nextIndex = currentIndex + 1
       setCurrentIndex(nextIndex)
@@ -144,7 +148,7 @@ export default function Stories() {
     } else {
       setSelectedStory(null)
     }
-  }
+  }, [currentIndex, stories])
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
@@ -191,7 +195,7 @@ export default function Stories() {
           <h2 className="text-lg md:text-xl font-display font-bold text-gray-900 tracking-tight">{settings.title}</h2>
         </div>
         <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
-          {stories && stories.map((story, index) => (
+          {stories.map((story, index) => (
             <button key={story.id} onClick={() => handleStoryClick(index)} className="flex-shrink-0 relative group">
               <div
                 className={`w-16 h-16 rounded-full p-1 transition-all duration-300 border-2 ${
@@ -236,7 +240,7 @@ export default function Stories() {
             <div className="relative h-[600px] w-full">
               {/* Индикаторы прогресса */}
               <div className="absolute top-4 left-4 right-4 z-10 flex space-x-1">
-                {stories && stories.map((_, index) => (
+                {stories.map((_, index) => (
                   <div key={index} className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-white transition-all duration-100"
