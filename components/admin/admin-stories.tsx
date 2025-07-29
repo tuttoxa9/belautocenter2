@@ -372,11 +372,13 @@ export default function AdminStories() {
 
                 <Button onClick={handleSubmit} disabled={uploading} className="w-full">
                   {uploading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Загрузка...</span>
-                    </div>
-                  ) : "Добавить историю"}
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Загрузка...
+                    </>
+                  ) : (
+                    "Добавить историю"
+                  )}
                 </Button>
               </div>
             </DialogContent>

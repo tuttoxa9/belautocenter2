@@ -94,12 +94,9 @@ export default function Footer() {
               <div className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
                 {loading ? (
-                  <div className="flex items-center">
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-gray-400 text-sm">Загрузка адреса...</span>
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-gray-400 text-sm">Загрузка адреса...</span>
                   </div>
                 ) : (
                   <span className="text-gray-400 text-sm">{settings?.address || "Адрес не указан"}</span>
@@ -108,12 +105,9 @@ export default function Footer() {
               <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-blue-400 flex-shrink-0" />
                 {loading ? (
-                  <div className="flex items-center">
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-gray-400 text-sm">Загрузка телефона...</span>
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-gray-400 text-sm">Загрузка телефона...</span>
                   </div>
                 ) : (
                   <a
@@ -127,12 +121,9 @@ export default function Footer() {
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-blue-400 flex-shrink-0" />
                 {loading ? (
-                  <div className="flex items-center">
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-gray-400 text-sm">Загрузка email...</span>
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-gray-400 text-sm">Загрузка email...</span>
                   </div>
                 ) : (
                   <a
@@ -146,12 +137,9 @@ export default function Footer() {
               <div className="flex items-start space-x-3">
                 <Clock className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
                 {loading ? (
-                  <div className="flex items-center">
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-gray-400 text-sm">Загрузка времени работы...</span>
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-gray-400 text-sm">Загрузка времени работы...</span>
                   </div>
                 ) : (
                   <div className="text-gray-400 text-sm">
@@ -172,12 +160,9 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Мы в соцсетях</h3>
             {loading ? (
-              <div className="flex items-center">
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-gray-400 text-sm">Загрузка соцсетей...</span>
-                </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-gray-400 text-sm">Загрузка соцсетей...</span>
               </div>
             ) : (
               <div className="flex space-x-4">
