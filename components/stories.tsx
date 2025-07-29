@@ -99,6 +99,17 @@ export default function Stories() {
     }
   }
 
+  const handleNext = React.useCallback(() => {
+    if (currentIndex < stories.length - 1) {
+      const nextIndex = currentIndex + 1
+      setCurrentIndex(nextIndex)
+      setProgress(0)
+      setViewedStories((prev) => new Set([...prev, stories[nextIndex].id]))
+    } else {
+      setSelectedStory(null)
+    }
+  }, [currentIndex, stories])
+
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined
     if (selectedStory !== null && isPlaying) {
@@ -140,17 +151,6 @@ export default function Stories() {
     }
     // если нет ссылки - ничего не делаем
   }
-
-  const handleNext = React.useCallback(() => {
-    if (currentIndex < stories.length - 1) {
-      const nextIndex = currentIndex + 1
-      setCurrentIndex(nextIndex)
-      setProgress(0)
-      setViewedStories((prev) => new Set([...prev, stories[nextIndex].id]))
-    } else {
-      setSelectedStory(null)
-    }
-  }, [currentIndex, stories])
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
