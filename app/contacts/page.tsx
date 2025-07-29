@@ -129,11 +129,13 @@ export default function ContactsPage() {
             {/* Карта */}
             <Card className="overflow-hidden shadow-xl border-0 bg-white">
               <CardContent className="p-0">
-                <div className="relative">
-                  <YandexMap
-                    address={contactsData.address}
-                    className="h-64 lg:h-96 w-full"
-                  />
+                <div className="relative overflow-hidden rounded-lg">
+                  <div className="w-full h-64 lg:h-96 overflow-hidden">
+                    <YandexMap
+                      address={contactsData.address}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
                 </div>
                 <div className="p-4 lg:p-6 bg-gradient-to-r from-white to-gray-50">
