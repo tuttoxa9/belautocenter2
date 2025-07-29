@@ -145,7 +145,40 @@ export default function AdminReviews() {
   }
 
   if (loading) {
-    return <div className="text-center py-8 text-white">Загрузка...</div>
+    return (
+      <div className="animate-pulse space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-10 bg-gray-200 rounded w-32"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-white p-4 rounded-lg space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="h-12 w-12 bg-gray-200 rounded-full"></div>
+                <div className="space-y-2 flex-1">
+                  <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                  <div className="flex space-x-1">
+                    {[...Array(5)].map((_, j) => (
+                      <div key={j} className="h-4 w-4 bg-gray-200 rounded"></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              </div>
+              <div className="flex space-x-2">
+                <div className="h-8 bg-gray-200 rounded flex-1"></div>
+                <div className="h-8 bg-gray-200 rounded w-16"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (

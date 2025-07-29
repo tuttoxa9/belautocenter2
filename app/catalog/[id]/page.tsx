@@ -1062,7 +1062,10 @@ export default function CarDetailsPage() {
                     </div>
                     <Button
                       className="w-full mt-6"
-                      onClick={() => setIsCreditFormOpen(true)}
+                      onClick={() => {
+                        setIsCreditOpen(false)
+                        setTimeout(() => setIsCreditFormOpen(true), 150)
+                      }}
                     >
                       Подать заявку на кредит
                     </Button>

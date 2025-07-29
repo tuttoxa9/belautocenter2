@@ -96,7 +96,10 @@ export default function Footer() {
                 {loading ? (
                   <div className="flex items-center">
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <span className="text-gray-400 text-sm">Загрузка адреса...</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-gray-400 text-sm">Загрузка адреса...</span>
+                    </div>
                   </div>
                 ) : (
                   <span className="text-gray-400 text-sm">{settings?.address || "Адрес не указан"}</span>
@@ -107,7 +110,10 @@ export default function Footer() {
                 {loading ? (
                   <div className="flex items-center">
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <span className="text-gray-400 text-sm">Загрузка телефона...</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-gray-400 text-sm">Загрузка телефона...</span>
+                    </div>
                   </div>
                 ) : (
                   <a
@@ -123,7 +129,10 @@ export default function Footer() {
                 {loading ? (
                   <div className="flex items-center">
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <span className="text-gray-400 text-sm">Загрузка email...</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-gray-400 text-sm">Загрузка email...</span>
+                    </div>
                   </div>
                 ) : (
                   <a
@@ -139,7 +148,10 @@ export default function Footer() {
                 {loading ? (
                   <div className="flex items-center">
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <span className="text-gray-400 text-sm">Загрузка времени работы...</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-gray-400 text-sm">Загрузка времени работы...</span>
+                    </div>
                   </div>
                 ) : (
                   <div className="text-gray-400 text-sm">
@@ -162,7 +174,10 @@ export default function Footer() {
             {loading ? (
               <div className="flex items-center">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                <span className="text-gray-400 text-sm">Загрузка соцсетей...</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-gray-400 text-sm">Загрузка соцсетей...</span>
+                </div>
               </div>
             ) : (
               <div className="flex space-x-4">
@@ -189,7 +204,10 @@ export default function Footer() {
             {loading ? (
               <div className="flex items-center">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                <span className="text-gray-400 text-sm">Загрузка...</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-gray-400 text-sm">Загрузка...</span>
+                </div>
               </div>
             ) : (
               <a href={settings?.socialMedia?.avby || "#"} target="_blank" rel="noopener noreferrer" className="inline-block">
@@ -214,7 +232,10 @@ export default function Footer() {
               © {currentYear} {loading ? (
                 <span className="inline-flex items-center">
                   <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                  Загрузка...
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Загрузка...</span>
+                  </div>
                 </span>
               ) : (
                 settings?.companyName || "Компания"

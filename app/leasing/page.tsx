@@ -277,7 +277,78 @@ export default function LeasingPage() {
   const totalPayments = monthlyPayment * calculator.leasingTerm[0] + calculator.advance[0]
 
   if (loading) {
-    return <div>Загрузка...</div>
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container px-4 py-8">
+          <div className="animate-pulse space-y-8">
+            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+            <div className="text-center space-y-4">
+              <div className="h-12 bg-gray-200 rounded w-2/3 mx-auto"></div>
+              <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="bg-white rounded-lg p-6 space-y-6">
+                <div className="flex items-center space-x-2">
+                  <div className="h-6 w-6 bg-gray-200 rounded"></div>
+                  <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                </div>
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                      <div className="h-8 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg space-y-2">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="flex justify-between">
+                      <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                </div>
+                <div className="space-y-6">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="flex items-start space-x-4">
+                      <div className="h-12 w-12 bg-gray-200 rounded-lg"></div>
+                      <div className="space-y-2 flex-1">
+                        <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="bg-white border-l-4 border-l-blue-500 p-4 rounded space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-12 w-12 bg-gray-200 rounded-lg"></div>
+                      <div className="space-y-2 flex-1">
+                        <div className="h-5 bg-gray-200 rounded w-2/3"></div>
+                        <div className="h-4 bg-gray-200 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!settings) {

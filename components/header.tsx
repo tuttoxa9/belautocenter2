@@ -193,7 +193,10 @@ export default function Header() {
               {loading ? (
                 <div className="flex items-center">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  <span className="font-display">Загрузка...</span>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="font-display">Загрузка...</span>
+                  </div>
                 </div>
               ) : (
                 <Image
@@ -226,7 +229,10 @@ export default function Header() {
               {loading ? (
                 <div className="flex items-center mb-4">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  <span className="text-gray-600 font-display">Загрузка телефона...</span>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-gray-600 font-display">Загрузка телефона...</span>
+                  </div>
                 </div>
               ) : (
                 <a
@@ -282,7 +288,10 @@ export default function Header() {
               <div className="flex flex-col items-end">
                 <div className="flex items-center">
                   <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                  <span className="text-xs text-gray-600">Загрузка...</span>
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 border border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-xs text-gray-600">Загрузка...</span>
+                  </div>
                 </div>
                 <div className="text-xs text-gray-900 font-semibold">
                   <div>Пн-Пт: 9:00-21:00</div>
@@ -295,7 +304,10 @@ export default function Header() {
                   {phoneLoading ? (
                     <div className="flex items-center">
                       <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      Загрузка...
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 border border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                        <span>Загрузка...</span>
+                      </div>
                     </div>
                   ) : (
                     settings?.phone || "+375 XX XXX-XX-XX"

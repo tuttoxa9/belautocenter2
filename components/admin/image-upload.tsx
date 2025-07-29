@@ -78,7 +78,10 @@ export default function ImageUpload({ onUpload, path, currentImage, className }:
           {uploading ? (
             <div className="flex flex-col items-center space-y-2">
               <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-              <p className="text-sm text-gray-600">Загрузка...</p>
+              <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+                <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                <p>Загрузка...</p>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col items-center space-y-2">

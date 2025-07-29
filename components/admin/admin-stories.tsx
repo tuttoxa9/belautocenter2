@@ -234,7 +234,30 @@ export default function AdminStories() {
   }
 
   if (loading) {
-    return <div className="p-6">Загрузка...</div>
+    return (
+      <div className="animate-pulse space-y-6 p-6">
+        <div className="flex justify-between items-center">
+          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-10 bg-gray-200 rounded w-32"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-white p-4 rounded-lg space-y-4">
+              <div className="h-48 bg-gray-200 rounded"></div>
+              <div className="space-y-2">
+                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              </div>
+              <div className="flex space-x-2">
+                <div className="h-8 bg-gray-200 rounded flex-1"></div>
+                <div className="h-8 bg-gray-200 rounded w-16"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -348,7 +371,12 @@ export default function AdminStories() {
                 </div>
 
                 <Button onClick={handleSubmit} disabled={uploading} className="w-full">
-                  {uploading ? "Загрузка..." : "Добавить историю"}
+                  {uploading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Загрузка...</span>
+                    </div>
+                  ) : "Добавить историю"}
                 </Button>
               </div>
             </DialogContent>

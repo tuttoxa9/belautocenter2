@@ -110,7 +110,19 @@ export default function AdminLeads() {
   })
 
   if (loading) {
-    return <div className="text-center py-8">Загрузка...</div>
+    return (
+      <div className="animate-pulse space-y-6">
+        <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+        <div className="bg-white rounded-lg overflow-hidden">
+          <div className="h-12 bg-gray-200"></div>
+          <div className="space-y-1">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="h-16 bg-gray-100 border-b border-gray-200"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
