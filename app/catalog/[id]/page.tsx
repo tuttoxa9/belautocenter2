@@ -109,6 +109,14 @@ interface PartnerBank {
   color: string;
 }
 
+interface LeasingCompany {
+  name: string;
+  logoUrl?: string;
+  minAdvance: number;
+  maxTerm: number;
+  interestRate?: number;
+}
+
 export default function CarDetailsPage() {
   const params = useParams()
   const router = useRouter()
@@ -127,6 +135,9 @@ export default function CarDetailsPage() {
   const [isCreditFormOpen, setIsCreditFormOpen] = useState(false)
   const [partnerBanks, setPartnerBanks] = useState<PartnerBank[]>([])
   const [loadingBanks, setLoadingBanks] = useState(true)
+  const [leasingCompanies, setLeasingCompanies] = useState<any[]>([])
+  const [loadingLeasing, setLoadingLeasing] = useState(true)
+  const [financeType, setFinanceType] = useState<'credit' | 'leasing'>('credit')
   // Состояние кредитного калькулятора
   const [creditAmount, setCreditAmount] = useState([75000])
   const [downPayment, setDownPayment] = useState([20000])
@@ -144,6 +155,8 @@ export default function CarDetailsPage() {
     }
     // Load partner banks from Firestore
     loadPartnerBanks()
+    // Load leasing companies from Firestore
+    loadLeasingCompanies()
     // Load contact data for error message
     loadContactData()
   }, [params.id])
@@ -194,6 +207,25 @@ export default function CarDetailsPage() {
       setPartnerBanks([])
     } finally {
       setLoadingBanks(false)
+    }
+  }
+
+  const loadLeasingCompanies = async () => {
+    try {
+      setLoadingLeasing(true)
+      const leasingDoc = await getDoc(doc(db, "pages", "leasing"))
+      if (leasingDoc.exists() && leasingDoc.data()?.leasingCompanies) {
+        const companies = leasingDoc.data()?.leasingCompanies
+        setLeasingCompanies(companies)
+      } else {
+        console.warn("Лизинговые компании не найдены в Firestore")
+        setLeasingCompanies([])
+      }
+    } catch (error) {
+      console.error("Ошибка загрузки лизинговых компаний:", error)
+      setLeasingCompanies([])
+    } finally {
+      setLoadingLeasing(false)
     }
   }
 
@@ -416,7 +448,7 @@ export default function CarDetailsPage() {
         ...creditForm,
         carId: params.id,
         carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-        type: "credit",
+        type: financeType,
         status: "new",
         createdAt: new Date(),
         creditAmount: getCurrentCreditAmount(),
@@ -424,7 +456,8 @@ export default function CarDetailsPage() {
         loanTerm: loanTerm[0],
         selectedBank: selectedBank?.name || "",
         monthlyPayment: calculateMonthlyPayment(),
-        currency: isBelarusianRubles ? "BYN" : "USD"
+        currency: isBelarusianRubles ? "BYN" : "USD",
+        financeType: financeType
       })
 
       // Отправляем уведомление в Telegram
@@ -446,7 +479,8 @@ export default function CarDetailsPage() {
             downPayment: getCurrentDownPayment(),
             loanTerm: loanTerm[0],
             bank: selectedBank?.name || "Не выбран",
-            type: 'credit_request'
+            financeType: financeType,
+            type: financeType === 'credit' ? 'credit_request' : 'leasing_request'
           })
         })
       } catch (telegramError) {
@@ -455,7 +489,7 @@ export default function CarDetailsPage() {
 
       setIsCreditFormOpen(false)
       setCreditForm({ name: "", phone: "+375", message: "" })
-      alert("Заявка на кредит отправлена! Мы свяжемся с вами в ближайшее время.")
+      alert(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} отправлена! Мы свяжемся с вами в ближайшее время.`)
     } catch (error) {
       console.error("Ошибка отправки заявки на кредит:", error)
       alert("Произошла ошибка. Попробуйте еще раз.")
@@ -704,7 +738,7 @@ export default function CarDetailsPage() {
                       Комплектация
                     </TabsTrigger>
                     <TabsTrigger value="credit" className="rounded-lg font-medium text-xs sm:text-sm py-2 px-0.5 sm:px-1 text-center whitespace-nowrap overflow-hidden text-ellipsis">
-                      Кредит
+                      Лизинг / Кредит
                     </TabsTrigger>
                   </TabsList>
 
@@ -749,40 +783,142 @@ export default function CarDetailsPage() {
 
                   <TabsContent value="credit" className="p-4 min-h-[200px]">
                     <div className="space-y-4">
-                      <div className="bg-slate-50 rounded-xl p-4">
-                        <h4 className="text-base font-bold text-slate-900 mb-3">Расчет кредита</h4>
-                        <div className="grid grid-cols-2 gap-3 text-sm">
-                          <div>
-                            <div className="text-xs text-slate-500 mb-1">Ежемесячный платеж</div>
-                            <div className="text-lg font-bold text-slate-900">
-                              {selectedBank ? formatPrice(calculateMonthlyPayment()) : "Выберите банк"}
-                            </div>
-                            {selectedBank && usdBynRate && (
-                              <div className="text-sm font-medium text-slate-600">
-                                ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            <div className="text-xs text-slate-500 mb-1">Общая сумма</div>
-                            <div className="text-base font-semibold text-slate-600">
-                              {selectedBank ? formatPrice(calculateMonthlyPayment() * loanTerm[0] + downPayment[0]) : "Выберите банк"}
-                            </div>
-                            {selectedBank && usdBynRate && (
-                              <div className="text-sm font-medium text-slate-600">
-                                ≈ {convertUsdToByn(calculateMonthlyPayment() * loanTerm[0] + downPayment[0], usdBynRate)} BYN
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <Button
-                          onClick={() => setIsCreditOpen(true)}
-                          className="w-full mt-3 bg-slate-900 hover:bg-slate-800 text-white text-sm"
-                          size="sm"
+                      {/* Переключатель между кредитом и лизингом */}
+                      <div className="flex items-center justify-center space-x-1 bg-slate-100 rounded-lg p-1">
+                        <button
+                          onClick={() => setFinanceType('credit')}
+                          className={`flex-1 text-xs font-medium py-2 px-3 rounded-md transition-all ${
+                            financeType === 'credit'
+                              ? 'bg-white text-slate-900 shadow-sm'
+                              : 'text-slate-600 hover:text-slate-800'
+                          }`}
                         >
-                          <CreditCard className="h-3 w-3 mr-2" />
-                          Подробнее о кредите
-                        </Button>
+                          Кредит
+                        </button>
+                        <button
+                          onClick={() => setFinanceType('leasing')}
+                          className={`flex-1 text-xs font-medium py-2 px-3 rounded-md transition-all ${
+                            financeType === 'leasing'
+                              ? 'bg-white text-slate-900 shadow-sm'
+                              : 'text-slate-600 hover:text-slate-800'
+                          }`}
+                        >
+                          Лизинг
+                        </button>
+                      </div>
+
+                      <div className="bg-slate-50 rounded-xl p-4">
+                        <h4 className="text-base font-bold text-slate-900 mb-3">
+                          {financeType === 'credit' ? 'Расчет кредита' : 'Расчет лизинга'}
+                        </h4>
+
+                        {financeType === 'credit' ? (
+                          <>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <div className="text-xs text-slate-500 mb-1">Ежемесячный платеж</div>
+                                <div className="text-lg font-bold text-slate-900">
+                                  {selectedBank ? formatPrice(calculateMonthlyPayment()) : "Выберите банк"}
+                                </div>
+                                {selectedBank && usdBynRate && (
+                                  <div className="text-sm font-medium text-slate-600">
+                                    ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
+                                  </div>
+                                )}
+                              </div>
+                              <div>
+                                <div className="text-xs text-slate-500 mb-1">Общая сумма</div>
+                                <div className="text-base font-semibold text-slate-600">
+                                  {selectedBank ? formatPrice(calculateMonthlyPayment() * loanTerm[0] + downPayment[0]) : "Выберите банк"}
+                                </div>
+                                {selectedBank && usdBynRate && (
+                                  <div className="text-sm font-medium text-slate-600">
+                                    ≈ {convertUsdToByn(calculateMonthlyPayment() * loanTerm[0] + downPayment[0], usdBynRate)} BYN
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Лучший банк */}
+                            {partnerBanks.length > 0 && (
+                              <div className="mt-3 p-2 bg-white rounded-lg border border-slate-200">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-2">
+                                    <span className="text-xs text-slate-600">Лучшее предложение:</span>
+                                    <span className="font-semibold text-slate-900 text-sm">{partnerBanks[0]?.name}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-1">
+                                    <div className="bg-slate-200 text-slate-700 text-xs px-2 py-1 rounded-md font-medium">
+                                      +{partnerBanks.length - 1}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            <Button
+                              onClick={() => setIsCreditOpen(true)}
+                              className="w-full mt-3 bg-slate-900 hover:bg-slate-800 text-white text-sm"
+                              size="sm"
+                            >
+                              <CreditCard className="h-3 w-3 mr-2" />
+                              Рассчитать кредит
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <div className="text-xs text-slate-500 mb-1">Ежемесячный платеж</div>
+                                <div className="text-lg font-bold text-slate-900">
+                                  {formatPrice(Math.round((car.price * 0.7) / 36))}
+                                </div>
+                                {usdBynRate && (
+                                  <div className="text-sm font-medium text-slate-600">
+                                    ≈ {convertUsdToByn(Math.round((car.price * 0.7) / 36), usdBynRate)} BYN
+                                  </div>
+                                )}
+                              </div>
+                              <div>
+                                <div className="text-xs text-slate-500 mb-1">Авансовый платеж</div>
+                                <div className="text-base font-semibold text-slate-600">
+                                  {formatPrice(Math.round(car.price * 0.2))}
+                                </div>
+                                {usdBynRate && (
+                                  <div className="text-sm font-medium text-slate-600">
+                                    ≈ {convertUsdToByn(Math.round(car.price * 0.2), usdBynRate)} BYN
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Лучшая лизинговая компания */}
+                            {leasingCompanies.length > 0 && (
+                              <div className="mt-3 p-2 bg-white rounded-lg border border-slate-200">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-2">
+                                    <span className="text-xs text-slate-600">Лучшее предложение:</span>
+                                    <span className="font-semibold text-slate-900 text-sm">{leasingCompanies[0]?.name}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-1">
+                                    <div className="bg-slate-200 text-slate-700 text-xs px-2 py-1 rounded-md font-medium">
+                                      +{leasingCompanies.length - 1}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            <Button
+                              onClick={() => router.push('/leasing')}
+                              className="w-full mt-3 bg-slate-900 hover:bg-slate-800 text-white text-sm"
+                              size="sm"
+                            >
+                              <Calculator className="h-3 w-3 mr-2" />
+                              Рассчитать лизинг
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </TabsContent>
@@ -830,7 +966,7 @@ export default function CarDetailsPage() {
                     <DialogTrigger asChild>
                       <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg">
                         <Calculator className="h-4 w-4 mr-2" />
-                        Рассчитать кредит
+                        Лизинг / Кредит
                       </Button>
                     </DialogTrigger>
                   </Dialog>
@@ -887,11 +1023,35 @@ export default function CarDetailsPage() {
         <Dialog open={isCreditOpen} onOpenChange={setIsCreditOpen}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl">Кредитный калькулятор</DialogTitle>
+              <DialogTitle className="text-2xl">Калькулятор финансирования</DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Калькулятор */}
               <div className="space-y-6">
+                {/* Переключатель типа финансирования */}
+                <div className="flex items-center justify-center space-x-1 bg-slate-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setFinanceType('credit')}
+                    className={`flex-1 text-sm font-medium py-2 px-4 rounded-md transition-all ${
+                      financeType === 'credit'
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-800'
+                    }`}
+                  >
+                    Кредит
+                  </button>
+                  <button
+                    onClick={() => setFinanceType('leasing')}
+                    className={`flex-1 text-sm font-medium py-2 px-4 rounded-md transition-all ${
+                      financeType === 'leasing'
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-800'
+                    }`}
+                  >
+                    Лизинг
+                  </button>
+                </div>
+
                 {/* Переключатель валюты */}
                 <div className="flex items-center space-x-2 p-3 bg-slate-50 rounded-lg">
                   <Checkbox
@@ -1067,7 +1227,7 @@ export default function CarDetailsPage() {
                         setTimeout(() => setIsCreditFormOpen(true), 150)
                       }}
                     >
-                      Подать заявку на кредит
+                      Подать заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}
                     </Button>
                   </div>
                 ) : (
@@ -1191,7 +1351,7 @@ export default function CarDetailsPage() {
         <Dialog open={isCreditFormOpen} onOpenChange={setIsCreditFormOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Подать заявку на кредит</DialogTitle>
+              <DialogTitle>Подать заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleCreditSubmit} className="space-y-4">
               <div>
@@ -1264,7 +1424,7 @@ export default function CarDetailsPage() {
               )}
 
               <Button type="submit" className="w-full">
-                Отправить заявку
+                Отправить заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}
               </Button>
             </form>
           </DialogContent>
