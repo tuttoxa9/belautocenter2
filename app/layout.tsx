@@ -7,7 +7,7 @@ import MobileDock from "@/components/mobile-dock"
 import { UsdBynRateProvider } from "@/components/providers/usd-byn-rate-provider"
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://autobelcenter.by'),
+  metadataBase: new URL('https://belautocenter.by'),
   title: {
     default: "Белавто Центр - Продажа автомобилей с пробегом в Беларуси",
     template: "%s | Белавто Центр"
@@ -46,13 +46,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ru_RU',
-    url: 'https://autobelcenter.by',
+    url: 'https://belautocenter.by',
     siteName: 'Белавто Центр',
     title: 'Белавто Центр - Продажа автомобилей с пробегом в Беларуси',
     description: 'Большой выбор качественных автомобилей с пробегом. Гарантия, кредит, лизинг. Более 500 проверенных автомобилей в наличии в Минске.',
     images: [
       {
-        url: 'https://autobelcenter.by/social-preview.jpg',
+        url: 'https://belautocenter.by/social-preview.jpg',
         width: 1200,
         height: 630,
         alt: 'Белавто Центр - автомобили с пробегом в Беларуси',
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Белавто Центр - Продажа автомобилей с пробегом в Беларуси',
     description: 'Большой выбор качественных автомобилей с пробегом. Гарантия, кредит, лизинг.',
-    images: ['https://autobelcenter.by/social-preview.jpg'],
+    images: ['https://belautocenter.by/social-preview.jpg'],
     creator: '@autobelcenter',
   },
   verification: {
@@ -71,9 +71,9 @@ export const metadata: Metadata = {
     yandex: 'yandex-verification',
   },
   alternates: {
-    canonical: 'https://autobelcenter.by',
+    canonical: 'https://belautocenter.by',
     languages: {
-      'ru-RU': 'https://autobelcenter.by',
+      'ru-RU': 'https://belautocenter.by',
     },
   },
   icons: {

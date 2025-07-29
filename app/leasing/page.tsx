@@ -1,3 +1,30 @@
+import type React from "react"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Лизинг автомобилей в Минске - выгодные условия | Белавто Центр",
+  description: "Автолизинг от ведущих лизинговых компаний Беларуси. Минимальный аванс от 10%, срок до 7 лет. Оформление лизинга для физических и юридических лиц.",
+  openGraph: {
+    title: "Лизинг автомобилей в Минске | Белавто Центр",
+    description: "Автолизинг от ведущих компаний. Минимальный аванс от 10%, срок до 7 лет.",
+    url: "https://belautocenter.by/leasing",
+    images: [
+      {
+        url: "https://belautocenter.by/social-preview.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Лизинг автомобилей Белавто Центр",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Лизинг автомобилей в Минске | Белавто Центр",
+    description: "Автолизинг от ведущих компаний. Минимальный аванс от 10%.",
+    images: ["https://belautocenter.by/social-preview.jpg"],
+  },
+}
+
 "use client"
 
 import type React from "react"

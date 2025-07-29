@@ -1,3 +1,29 @@
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Каталог автомобилей с пробегом в Минске | Белавто Центр",
+  description: "Более 500 проверенных автомобилей с пробегом в наличии. Поиск по марке, модели, году, цене. Гарантия качества, кредит, лизинг. Автосалон в Минске.",
+  openGraph: {
+    title: "Каталог автомобилей с пробегом | Белавто Центр",
+    description: "Более 500 проверенных автомобилей с пробегом в наличии. Поиск по марке, модели, году, цене.",
+    url: "https://belautocenter.by/catalog",
+    images: [
+      {
+        url: "https://belautocenter.by/social-preview.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Каталог автомобилей Белавто Центр",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Каталог автомобилей с пробегом | Белавто Центр",
+    description: "Более 500 проверенных автомобилей с пробегом в наличии.",
+    images: ["https://belautocenter.by/social-preview.jpg"],
+  },
+}
+
 "use client"
 
 import { useState, useEffect, useCallback } from "react"

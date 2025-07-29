@@ -1,8 +1,5 @@
-"use client"
-
-export const runtime = 'edge'
-
 import type React from "react"
+import type { Metadata } from "next"
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
@@ -43,6 +40,66 @@ import {
 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import CarDetailsSkeleton from "@/components/car-details-skeleton"
+
+export const runtime = 'edge'
+
+// Функция для генерации метатегов
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  try {
+    const carDoc = await getDoc(doc(db, "cars", params.id))
+
+    if (!carDoc.exists()) {
+      return {
+        title: "Автомобиль не найден | Белавто Центр",
+        description: "Запрашиваемый автомобиль не найден в каталоге Белавто Центр"
+      }
+    }
+
+    const car = { id: carDoc.id, ...carDoc.data() } as any
+    const carTitle = `${car.make} ${car.model} ${car.year}`
+    const carDescription = `${carTitle} - ${car.color}, ${car.mileage?.toLocaleString()} км, ${car.engineVolume}л ${car.fuelType}, ${car.transmission}. Цена: $${car.price?.toLocaleString()}. Кредит и лизинг в Белавто Центр, Минск.`
+    const carImage = car.imageUrls && car.imageUrls.length > 0 ? getCachedImageUrl(car.imageUrls[0]) : 'https://belautocenter.by/social-preview.jpg'
+    const carUrl = `https://belautocenter.by/catalog/${params.id}`
+
+    return {
+      title: `${carTitle} - купить в Минске | Белавто Центр`,
+      description: carDescription,
+      openGraph: {
+        title: `${carTitle} | Белавто Центр`,
+        description: carDescription,
+        url: carUrl,
+        siteName: 'Белавто Центр',
+        images: [
+          {
+            url: carImage,
+            width: 1200,
+            height: 630,
+            alt: `${carTitle} - фото автомобиля`,
+          },
+        ],
+        locale: 'ru_RU',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${carTitle} | Белавто Центр`,
+        description: carDescription,
+        images: [carImage],
+      },
+      alternates: {
+        canonical: carUrl,
+      },
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error)
+    return {
+      title: "Белавто Центр - автомобили с пробегом",
+      description: "Большой выбор качественных автомобилей с пробегом в Минске"
+    }
+  }
+}
+
+"use client"
 
 // Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => (
@@ -762,8 +819,6 @@ export default function CarDetailsPage() {
                     <div className="font-bold text-slate-900 text-xs">{car.driveTrain}</div>
                   </div>
                 </div>
-
-
               </div>
 
               {/* Вкладки (перемещены после характеристик) */}
@@ -804,8 +859,6 @@ export default function CarDetailsPage() {
                       )}
                     </div>
                   </TabsContent>
-
-
 
                   <TabsContent value="equipment" className="p-4 min-h-[200px]">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1018,8 +1071,6 @@ export default function CarDetailsPage() {
                     <div className="font-bold text-slate-900 text-sm">{car.driveTrain}</div>
                   </div>
                 </div>
-
-
               </div>
 
               {/* Кнопки действий */}
