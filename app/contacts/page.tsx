@@ -23,6 +23,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import YandexMap from '@/components/yandex-map'
+import ContactsSkeleton from '@/components/contacts-skeleton'
 
 interface ContactsData {
   title?: string
@@ -164,14 +165,7 @@ export default function ContactsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin h-8 w-8 mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-600">Загрузка контактов...</p>
-        </div>
-      </div>
-    )
+    return <ContactsSkeleton />
   }
 
   return (
