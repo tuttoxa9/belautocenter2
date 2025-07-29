@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 
+import FadeInImage from "@/components/fade-in-image"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
 
