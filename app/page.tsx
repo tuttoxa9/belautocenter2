@@ -3,10 +3,9 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent } from "@/components/ui/card"
 import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
@@ -39,7 +38,20 @@ export default function HomePage() {
     phone: "+375",
   })
 
-  const [cars, setCars] = useState<any[]>([])
+  const [cars, setCars] = useState<Array<{
+    id: string;
+    make: string;
+    model: string;
+    year: number;
+    price: number;
+    currency: string;
+    mileage: number;
+    engineVolume: number;
+    fuelType: string;
+    transmission: string;
+    imageUrls: string[];
+    isAvailable: boolean;
+  }>>([])
   const [loadingCars, setLoadingCars] = useState(true)
   const [settings, setSettings] = useState<HomepageSettings>({
     heroTitle: "Найди свой автомобиль надежным способом",
@@ -198,7 +210,7 @@ export default function HomePage() {
               className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               asChild
             >
-              <a href="/catalog">{settings.heroButtonText}</a>
+              <Link href="/catalog">{settings.heroButtonText}</Link>
             </Button>
           </div>
         </div>
@@ -251,7 +263,7 @@ export default function HomePage() {
               className="rounded-2xl px-8 py-4 text-lg font-semibold border-2 hover:shadow-lg transition-all duration-300"
               asChild
             >
-              <a href="/catalog">Посмотреть весь каталог</a>
+              <Link href="/catalog">Посмотреть весь каталог</Link>
             </Button>
           </div>
         </div>
