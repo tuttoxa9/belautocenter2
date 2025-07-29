@@ -5,6 +5,7 @@ import { collection, query, where, orderBy, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, User } from "lucide-react"
+import Link from "next/link"
 
 interface Review {
   id: string
@@ -103,9 +104,9 @@ export default function ReviewsPage() {
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <a href="/" className="hover:text-blue-600">
+              <Link href="/" className="hover:text-blue-600">
                 Главная
-              </a>
+              </Link>
             </li>
             <li>/</li>
             <li className="text-gray-900">Отзывы</li>

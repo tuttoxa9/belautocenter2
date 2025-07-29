@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
-import FadeInImage from "@/components/fade-in-image"
+
 import { CheckCircle, Check } from "lucide-react"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"

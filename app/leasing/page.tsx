@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
+
+import Link from "next/link"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calculator, Car, CheckCircle, Building, TrendingDown, Shield, DollarSign, Clock, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Calendar, Check } from "lucide-react"
+import { Car, CheckCircle, Building, TrendingDown, Shield, DollarSign, Clock, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Calendar, Check } from "lucide-react"
 import { doc, getDoc, addDoc, collection, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -368,9 +370,9 @@ export default function LeasingPage() {
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <a href="/" className="hover:text-blue-600">
+              <Link href="/" className="hover:text-blue-600">
                 Главная
-              </a>
+              </Link>
             </li>
             <li>/</li>
             <li className="text-gray-900">Лизинг</li>

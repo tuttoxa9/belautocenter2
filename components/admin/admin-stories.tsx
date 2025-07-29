@@ -179,7 +179,7 @@ export default function AdminStories() {
     if (!selectedStory) return
 
     try {
-      let updateData: any = {
+      const updateData: any = {
         caption: formData.caption,
         subtitle: formData.subtitle || null,
         linkUrl: formData.linkUrl || null,

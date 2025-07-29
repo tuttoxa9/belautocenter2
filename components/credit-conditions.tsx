@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { getCachedImageUrl } from "@/lib/image-cache"
-import { Percent, Clock, Building, CreditCard, CheckCircle, DollarSign, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Shield, TrendingDown } from "lucide-react"
+import { Percent, Clock, Building, CreditCard, CheckCircle, DollarSign, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Shield, TrendingDown } from "lucide-react"
 
 interface CreditCondition {
   id: string

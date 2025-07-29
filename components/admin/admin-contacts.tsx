@@ -45,10 +45,6 @@ export default function AdminContacts() {
     },
   })
 
-  useEffect(() => {
-    loadContactsData()
-  }, [])
-
   const loadContactsData = async () => {
     try {
       const contactsDoc = await getDoc(doc(db, "pages", "contacts"))
@@ -61,6 +57,10 @@ export default function AdminContacts() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    loadContactsData()
+  }, [])
 
   const saveContactsData = async () => {
     setSaving(true)

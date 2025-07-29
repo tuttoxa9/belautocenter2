@@ -28,7 +28,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Heart,
-  Share2,
   CheckCircle,
   Calculator,
   Building2,
