@@ -9,13 +9,14 @@ import { Card } from "@/components/ui/card"
 import { Upload, X, Loader2 } from "lucide-react"
 
 interface ImageUploadProps {
-  onUpload: (url: string) => void
-  path: string
+  onImageUploaded?: (url: string) => void
+  onUpload?: (url: string) => void
+  path?: string
   currentImage?: string
   className?: string
 }
 
-export default function ImageUpload({ onUpload, path, currentImage, className }: ImageUploadProps) {
+export default function ImageUpload({ onImageUploaded, onUpload, path = 'general', currentImage, className }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(currentImage || null)
 
@@ -24,19 +25,38 @@ export default function ImageUpload({ onUpload, path, currentImage, className }:
       const file = acceptedFiles[0]
       if (!file) return
 
+      // Проверка размера файла (максимум 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert("Файл слишком большой. Максимальный размер: 10MB")
+        return
+      }
+
+      // Проверка типа файла
+      if (!file.type.startsWith('image/')) {
+        alert("Пожалуйста, выберите файл изображения")
+        return
+      }
+
       setUploading(true)
       try {
+        console.log('Начало загрузки файла:', file.name, 'размер:', file.size, 'путь:', path)
         const url = await uploadImage(file, path)
+        console.log('Файл успешно загружен, URL:', url)
         setPreview(url)
-        onUpload(url)
+        if (onImageUploaded) {
+          onImageUploaded(url)
+        }
+        if (onUpload) {
+          onUpload(url)
+        }
       } catch (error) {
         console.error("Ошибка загрузки:", error)
-        alert("Ошибка загрузки изображения")
+        alert(`Ошибка загрузки изображения: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
       } finally {
         setUploading(false)
       }
     },
-    [onUpload, path],
+    [onImageUploaded, onUpload, path],
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -49,7 +69,12 @@ export default function ImageUpload({ onUpload, path, currentImage, className }:
 
   const removeImage = () => {
     setPreview(null)
-    onUpload("")
+    if (onImageUploaded) {
+      onImageUploaded("")
+    }
+    if (onUpload) {
+      onUpload("")
+    }
   }
 
   return (

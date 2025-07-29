@@ -3,13 +3,21 @@ import { storage } from "@/lib/firebase"
 
 export const uploadImage = async (file: File, path: string): Promise<string> => {
   try {
-    const storageRef = ref(storage, `images/${path}/${Date.now()}_${file.name}`)
+    const imagePath = `images/${path}/${Date.now()}_${file.name}`
+    console.log('Создание reference для Firebase Storage:', imagePath)
+    const storageRef = ref(storage, imagePath)
+    console.log('Начало загрузки в Firebase Storage...')
     const snapshot = await uploadBytes(storageRef, file)
+    console.log('Файл загружен, получение URL...')
     const downloadURL = await getDownloadURL(snapshot.ref)
+    console.log('Получен downloadURL:', downloadURL)
     return downloadURL
   } catch (error) {
     console.error("Ошибка загрузки изображения:", error)
-    throw error
+    if (error instanceof Error) {
+      throw new Error(`Ошибка загрузки изображения: ${error.message}`)
+    }
+    throw new Error("Неизвестная ошибка при загрузке изображения")
   }
 }
 

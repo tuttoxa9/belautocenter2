@@ -480,6 +480,7 @@ export default function AdminLeasing() {
                   <ImageUpload
                     onImageUploaded={(url) => updateLeasingCompany(index, "logoUrl", url)}
                     currentImage={company.logoUrl}
+                    path="leasing/companies"
                   />
                 </div>
                 <div>
