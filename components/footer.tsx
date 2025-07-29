@@ -46,8 +46,8 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-gray-900 text-white mb-20 md:mb-0 rounded-t-[50px] footer-corner-fill">
-      <div className="container px-4 py-12 pb-6 md:pb-12">
+    <footer className="bg-gray-900 text-white rounded-t-[50px] footer-corner-fill">
+      <div className="container px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Колонка 1: Логотип и слоган */}
           <div className="space-y-4">
@@ -211,7 +211,7 @@ export default function Footer() {
 
       {/* Нижняя строка */}
       <div className="border-t border-gray-800">
-        <div className="container px-4 py-4 pb-2 md:pb-4">
+        <div className="container px-4 py-4 pb-24 md:pb-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-gray-400 text-sm">
               © {currentYear} {loading ? (
