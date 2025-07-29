@@ -101,7 +101,7 @@ export default function ContactsPage() {
   useEffect(() => {
     const fetchContactsData = async () => {
       try {
-        const response = await fetch('/api/firestore?collection=contacts&document=main')
+        const response = await fetch('/api/firestore?collection=pages&document=contacts')
 
         if (!response.ok) {
           throw new Error('Не удалось загрузить данные контактов')
