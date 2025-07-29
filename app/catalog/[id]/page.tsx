@@ -461,8 +461,12 @@ export default function CarDetailsPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...callbackForm,
-          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
+          name: callbackForm.name,
+          phone: callbackForm.phone,
+          carMake: car?.make,
+          carModel: car?.model,
+          carYear: car?.year,
+          carId: params.id,
           type: 'callback'
         })
       })
@@ -510,8 +514,8 @@ export default function CarDetailsPage() {
             carModel: car?.model,
             carYear: car?.year,
             carId: params.id,
-            carPrice: isBelarusianRubles ? getCurrentCreditAmount() + getCurrentDownPayment() : car?.price,
-            downPayment: getCurrentDownPayment(),
+            carPrice: formatPrice(isBelarusianRubles ? getCurrentCreditAmount() + getCurrentDownPayment() : car?.price || 0),
+            downPayment: formatPrice(getCurrentDownPayment()),
             loanTerm: loanTerm[0],
             bank: selectedBank?.name || "Не выбран",
             financeType: financeType,
@@ -967,7 +971,10 @@ export default function CarDetailsPage() {
                             )}
 
                             <Button
-                              onClick={() => router.push('/leasing')}
+                              onClick={() => {
+                                setFinanceType('leasing')
+                                setIsCreditOpen(true)
+                              }}
                               className="w-full mt-3 bg-slate-900 hover:bg-slate-800 text-white text-sm"
                               size="sm"
                             >

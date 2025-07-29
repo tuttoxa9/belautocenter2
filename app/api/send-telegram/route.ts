@@ -38,6 +38,15 @@ export async function POST(request: NextRequest) {
     switch (type) {
       case 'callback':
         message = `🔔 <b>Новая заявка на обратный звонок</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}`
+        if (carMake && carModel) {
+          message += `\n🚗 <b>Автомобиль:</b> ${carMake} ${carModel}`
+          if (carYear) {
+            message += ` ${carYear}`
+          }
+        }
+        if (carId) {
+          message += `\n🔗 <b>Ссылка:</b> https://belautocenter.by/catalog/${carId}`
+        }
         break
 
       case 'car_selection':
@@ -45,19 +54,41 @@ export async function POST(request: NextRequest) {
         break
 
       case 'credit_request':
-        message = `💳 <b>Новая заявка на кредит</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}\n💰 <b>Стоимость авто:</b> ${carPrice} BYN\n💵 <b>Первый взнос:</b> ${downPayment} BYN\n📅 <b>Срок кредита:</b> ${loanTerm} мес.\n🏦 <b>Банк:</b> ${bank}`
+        message = `💳 <b>Новая заявка на кредит</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}`
+        if (carMake && carModel) {
+          message += `\n🚗 <b>Автомобиль:</b> ${carMake} ${carModel}`
+          if (carYear) {
+            message += ` ${carYear}`
+          }
+        }
+        if (carId) {
+          message += `\n🔗 <b>Ссылка:</b> https://belautocenter.by/catalog/${carId}`
+        }
+        message += `\n💰 <b>Стоимость авто:</b> ${carPrice}\n💵 <b>Первый взнос:</b> ${downPayment}\n📅 <b>Срок кредита:</b> ${loanTerm} мес.\n🏦 <b>Банк:</b> ${bank}`
         if (userMessage) {
           message += `\n📝 <b>Сообщение:</b> ${userMessage}`
         }
         break
 
       case 'leasing_request':
-        message = `🚙 <b>Новая заявка на лизинг</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}\n📧 <b>Email:</b> ${email}`
+        message = `🚙 <b>Новая заявка на лизинг</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}`
+        if (email) {
+          message += `\n📧 <b>Email:</b> ${email}`
+        }
+        if (carMake && carModel) {
+          message += `\n🚗 <b>Автомобиль:</b> ${carMake} ${carModel}`
+          if (carYear) {
+            message += ` ${carYear}`
+          }
+        }
+        if (carId) {
+          message += `\n🔗 <b>Ссылка:</b> https://belautocenter.by/catalog/${carId}`
+        }
         if (carPrice) {
-          message += `\n💰 <b>Стоимость авто:</b> ${carPrice} BYN`
+          message += `\n💰 <b>Стоимость авто:</b> ${carPrice}`
         }
         if (downPayment) {
-          message += `\n💵 <b>Первый взнос:</b> ${downPayment} BYN`
+          message += `\n💵 <b>Первый взнос:</b> ${downPayment}`
         }
         if (loanTerm) {
           message += `\n📅 <b>Срок лизинга:</b> ${loanTerm} мес.`
@@ -78,6 +109,9 @@ export async function POST(request: NextRequest) {
           if (carYear) {
             message += ` ${carYear}`
           }
+        }
+        if (carId) {
+          message += `\n🔗 <b>Ссылка:</b> https://belautocenter.by/catalog/${carId}`
         }
         if (bookingDate) {
           message += `\n📅 <b>Дата:</b> ${bookingDate}`
