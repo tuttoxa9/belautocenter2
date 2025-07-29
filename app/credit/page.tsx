@@ -1,30 +1,3 @@
-import type React from "react"
-import type { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "Автокредит в Минске - выгодные условия | Белавто Центр",
-  description: "Автокредит на выгодных условиях от банков-партнеров. Ставка от 12%, минимальный первоначальный взнос 15%. Быстрое оформление, гарантированное одобрение.",
-  openGraph: {
-    title: "Автокредит в Минске | Белавто Центр",
-    description: "Автокредит на выгодных условиях от банков-партнеров. Ставка от 12%, минимальный взнос 15%.",
-    url: "https://belautocenter.by/credit",
-    images: [
-      {
-        url: "https://belautocenter.by/social-preview.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Автокредит Белавто Центр",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Автокредит в Минске | Белавто Центр",
-    description: "Автокредит на выгодных условиях от банков-партнеров.",
-    images: ["https://belautocenter.by/social-preview.jpg"],
-  },
-}
-
 "use client"
 
 import type React from "react"
