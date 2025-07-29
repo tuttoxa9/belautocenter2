@@ -46,7 +46,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-gray-900 text-white pb-20 md:pb-0 rounded-t-[50px] footer-corner-fill">
+    <footer className="bg-gray-900 text-white mb-20 md:mb-0 rounded-t-[50px] footer-corner-fill">
       <div className="container px-4 py-12 pb-6 md:pb-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Колонка 1: Логотип и слоган */}
