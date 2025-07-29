@@ -567,7 +567,7 @@ export default function CarDetailsPage() {
             </li>
             <li>/</li>
             <li className="text-slate-900 font-semibold">
-              {car.make} {car.model} {car.year}
+              {car.make} {car.model}
             </li>
           </ol>
         </nav>
