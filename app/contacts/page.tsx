@@ -314,7 +314,7 @@ export default function ContactsPage() {
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                       placeholder="Расскажите, чем мы можем помочь..."
-                      rows={6}
+                      rows={4}
                       className="border-gray-200 focus:border-gray-400 focus:ring-0 shadow-sm resize-none"
                       required
                     />
