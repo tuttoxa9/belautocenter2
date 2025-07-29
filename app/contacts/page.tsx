@@ -1,4 +1,101 @@
-<div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100">
+'use client'
+
+import React, { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import {
+  MapPin,
+  Phone,
+  Mail,
+  MessageCircle,
+  Clock,
+  Star,
+  CheckCircle,
+  Loader2,
+  Send,
+  ArrowRight,
+  Instagram
+} from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import YandexMap from '@/components/yandex-map'
+
+// Пример данных - замените на реальные данные из вашего API/CMS
+const contactsData = {
+  title: "Контакты",
+  subtitle: "Свяжитесь с нами любым удобным способом",
+  address: "г. Минск, ул. Примерная, 123",
+  addressNote: "Рядом с метро",
+  phone: "+375 29 123 45 67",
+  phoneNote: "Звонки принимаем круглосуточно",
+  email: "info@belautocenter.by",
+  emailNote: "Ответим в течение часа",
+  workingHours: {
+    weekdays: "Пн-Пт: 9:00 - 18:00",
+    weekends: "Сб-Вс: 10:00 - 16:00"
+  },
+  socialMedia: {
+    instagram: {
+      name: "@belautocenter",
+      url: "https://instagram.com/belautocenter"
+    },
+    telegram: {
+      name: "@belautocenter",
+      url: "https://t.me/belautocenter"
+    },
+    avby: {
+      name: "Белавтоцентр",
+      url: "https://av.by"
+    },
+    tiktok: {
+      name: "@belautocenter",
+      url: "https://tiktok.com/@belautocenter"
+    }
+  }
+}
+
+const formatPhoneNumber = (value: string) => {
+  return value.replace(/[^\d+]/g, '')
+}
+
+const isPhoneValid = (phone: string) => {
+  return phone.length >= 13 && phone.startsWith('+375')
+}
+
+export default function ContactsPage() {
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    phone: '',
+    message: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      // Здесь будет логика отправки формы
+      await new Promise(resolve => setTimeout(resolve, 2000)) // Имитация отправки
+
+      // Очистка формы после успешной отправки
+      setContactForm({ name: '', phone: '', message: '' })
+
+      // Показать уведомление об успехе
+      console.log('Форма отправлена успешно')
+    } catch (error) {
+      console.error('Ошибка отправки формы:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100">
       <div className="container mx-auto px-4 py-8 lg:py-12 max-w-6xl">
 
         {/* Хлебные крошки */}
@@ -309,3 +406,5 @@
         </Card>
       </div>
     </div>
+  )
+}
