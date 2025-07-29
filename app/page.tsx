@@ -13,7 +13,6 @@ import FadeInImage from "@/components/fade-in-image"
 import { CheckCircle, Check } from "lucide-react"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import { getCachedImageUrl } from "@/lib/image-cache"
 
 interface HomepageSettings {
   heroTitle: string
@@ -62,8 +61,10 @@ export default function HomePage() {
   })
 
   useEffect(() => {
-    loadHomepageSettings()
-    loadFeaturedCars()
+    const loadData = async () => {
+      await Promise.all([loadHomepageSettings(), loadFeaturedCars()])
+    }
+    loadData()
   }, [])
 
   const loadHomepageSettings = async () => {
@@ -174,7 +175,7 @@ export default function HomePage() {
             left: 0,
             right: 0,
             bottom: '150px', // Заканчиваем фон ДО блока историй
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${getCachedImageUrl('/mainTouran.PNG')}')`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/mainTouran.PNG')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center 90%',
             backgroundRepeat: 'no-repeat'
@@ -189,7 +190,7 @@ export default function HomePage() {
             left: 0,
             right: 0,
             bottom: '120px', // Увеличиваем отступ снизу для лучшего перехода
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${getCachedImageUrl('/mainTouran-mobile.jpg')}')`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/mainTouran-mobile.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center top', // Изменяем позицию на center top
             backgroundRepeat: 'no-repeat'
@@ -275,7 +276,7 @@ export default function HomePage() {
         <div
           className="absolute inset-0 opacity-20 bg-no-repeat bg-center mix-blend-overlay bg-[length:90%] md:bg-[length:60%]"
           style={{
-            backgroundImage: `url('${getCachedImageUrl('/car.png')}')`,
+            backgroundImage: `url('/car.png')`,
             backgroundPosition: 'center 70%',
             filter: 'brightness(0) invert(1)'
           }}

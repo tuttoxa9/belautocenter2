@@ -37,8 +37,10 @@ export default function Stories() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadStories()
-    loadSettings()
+    const loadData = async () => {
+      await Promise.all([loadStories(), loadSettings()])
+    }
+    loadData()
   }, [])
 
   const loadSettings = async () => {
