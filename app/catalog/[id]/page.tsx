@@ -143,6 +143,12 @@ export default function CarDetailsPage() {
   const [downPayment, setDownPayment] = useState([20000])
   const [loanTerm, setLoanTerm] = useState([60])
   const [selectedBank, setSelectedBank] = useState<PartnerBank | null>(null)
+  // Состояние лизингового калькулятора
+  const [leasingAmount, setLeasingAmount] = useState([75000])
+  const [leasingAdvance, setLeasingAdvance] = useState([15000])
+  const [leasingTerm, setLeasingTerm] = useState([36])
+  const [residualValue, setResidualValue] = useState([20])
+  const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null)
   // Состояние для валюты
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(false)
   // Touch events для свайпов на мобильных устройствах
@@ -168,11 +174,17 @@ export default function CarDetailsPage() {
       if (isBelarusianRubles && usdBynRate) {
         setCreditAmount([Math.round(price * 0.8 * usdBynRate)])
         setDownPayment([Math.round(price * 0.2 * usdBynRate)])
+        setLeasingAmount([Math.round(price * usdBynRate)])
+        setLeasingAdvance([Math.round(price * 0.2 * usdBynRate)])
       } else {
         setCreditAmount([price * 0.8])
         setDownPayment([price * 0.2])
+        setLeasingAmount([price])
+        setLeasingAdvance([price * 0.2])
       }
       setLoanTerm([60])
+      setLeasingTerm([36])
+      setResidualValue([20])
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
 
@@ -193,10 +205,12 @@ export default function CarDetailsPage() {
           features: ["Выгодные условия", "Быстрое одобрение"],
           color: ["emerald", "blue", "purple", "red"][index % 4] // Cycle through colors
         }))
-        setPartnerBanks(formattedPartners)
-        // Set the first bank as default selected bank if there are any banks
-        if (formattedPartners.length > 0) {
-          setSelectedBank(formattedPartners[0])
+        // Sort banks by rate (ascending - lowest first)
+        const sortedPartners = formattedPartners.sort((a, b) => a.rate - b.rate)
+        setPartnerBanks(sortedPartners)
+        // Set the best bank (lowest rate) as default selected bank
+        if (sortedPartners.length > 0) {
+          setSelectedBank(sortedPartners[0])
         }
       } else {
         console.warn("Банки-партнеры не найдены в Firestore")
@@ -216,7 +230,13 @@ export default function CarDetailsPage() {
       const leasingDoc = await getDoc(doc(db, "pages", "leasing"))
       if (leasingDoc.exists() && leasingDoc.data()?.leasingCompanies) {
         const companies = leasingDoc.data()?.leasingCompanies
-        setLeasingCompanies(companies)
+        // Sort leasing companies by minAdvance (ascending - lowest first)
+        const sortedCompanies = companies.sort((a: any, b: any) => a.minAdvance - b.minAdvance)
+        setLeasingCompanies(sortedCompanies)
+        // Set the best leasing company (lowest advance) as default selected
+        if (sortedCompanies.length > 0) {
+          setSelectedLeasingCompany(sortedCompanies[0])
+        }
       } else {
         console.warn("Лизинговые компании не найдены в Firestore")
         setLeasingCompanies([])
@@ -320,10 +340,14 @@ export default function CarDetailsPage() {
       // Переключение на BYN
       setCreditAmount([Math.round(car.price * 0.8 * usdBynRate)])
       setDownPayment([Math.round(car.price * 0.2 * usdBynRate)])
+      setLeasingAmount([Math.round(car.price * usdBynRate)])
+      setLeasingAdvance([Math.round(car.price * 0.2 * usdBynRate)])
     } else {
       // Переключение на USD
       setCreditAmount([car.price * 0.8])
       setDownPayment([car.price * 0.2])
+      setLeasingAmount([car.price])
+      setLeasingAdvance([car.price * 0.2])
     }
   }
 
@@ -365,6 +389,17 @@ export default function CarDetailsPage() {
     if (rate === 0) return principal / term
     const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
     return monthlyPayment
+  }
+
+  // Расчет ежемесячного лизингового платежа
+  const calculateLeasingPayment = () => {
+    const carPrice = isBelarusianRubles && usdBynRate ? car?.price * usdBynRate || 0 : car?.price || 0
+    const advance = isBelarusianRubles && usdBynRate ? leasingAdvance[0] : leasingAdvance[0]
+    const term = leasingTerm[0]
+    const residualVal = (carPrice * residualValue[0]) / 100
+
+    const leasingSum = carPrice - advance - residualVal
+    return leasingSum / term
   }
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
@@ -845,7 +880,18 @@ export default function CarDetailsPage() {
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center space-x-2">
                                     <span className="text-xs text-slate-600">Лучшее предложение:</span>
-                                    <span className="font-semibold text-slate-900 text-sm">{partnerBanks[0]?.name}</span>
+                                    <div className="flex items-center space-x-2">
+                                      {partnerBanks[0]?.logo && (
+                                        <Image
+                                          src={getCachedImageUrl(partnerBanks[0].logo)}
+                                          alt={`${partnerBanks[0].name} логотип`}
+                                          width={20}
+                                          height={20}
+                                          className="object-contain rounded"
+                                        />
+                                      )}
+                                      <span className="font-semibold text-slate-900 text-sm">{partnerBanks[0]?.rate}%</span>
+                                    </div>
                                   </div>
                                   <div className="flex items-center space-x-1">
                                     <div className="bg-slate-200 text-slate-700 text-xs px-2 py-1 rounded-md font-medium">
@@ -898,7 +944,18 @@ export default function CarDetailsPage() {
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center space-x-2">
                                     <span className="text-xs text-slate-600">Лучшее предложение:</span>
-                                    <span className="font-semibold text-slate-900 text-sm">{leasingCompanies[0]?.name}</span>
+                                    <div className="flex items-center space-x-2">
+                                      {leasingCompanies[0]?.logoUrl && (
+                                        <Image
+                                          src={getCachedImageUrl(leasingCompanies[0].logoUrl)}
+                                          alt={`${leasingCompanies[0].name} логотип`}
+                                          width={20}
+                                          height={20}
+                                          className="object-contain rounded"
+                                        />
+                                      )}
+                                      <span className="font-semibold text-slate-900 text-sm">{leasingCompanies[0]?.minAdvance}%</span>
+                                    </div>
                                   </div>
                                   <div className="flex items-center space-x-1">
                                     <div className="bg-slate-200 text-slate-700 text-xs px-2 py-1 rounded-md font-medium">
@@ -1064,162 +1121,362 @@ export default function CarDetailsPage() {
                   </Label>
                 </div>
 
-                <div className="space-y-3">
-                  <Label>Стоимость автомобиля</Label>
-                  <Input
-                    type="number"
-                    value={isBelarusianRubles && usdBynRate ? Math.round(car.price * usdBynRate) : car.price}
-                    readOnly
-                    className="bg-slate-50"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label>Сумма кредита</Label>
-                  <Input
-                    type="number"
-                    value={creditAmount[0]}
-                    onChange={(e) => setCreditAmount([Number(e.target.value)])}
-                    min={getCreditMinValue()}
-                    max={getCreditMaxValue()}
-                    step={isBelarusianRubles ? 100 : 1000}
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label>Первоначальный взнос</Label>
-                  <Input
-                    type="number"
-                    value={downPayment[0]}
-                    onChange={(e) => setDownPayment([Number(e.target.value)])}
-                    min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
-                    max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
-                    step={isBelarusianRubles ? 100 : 1000}
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label>Срок кредита (месяцев)</Label>
-                  <Input
-                    type="number"
-                    value={loanTerm[0]}
-                    onChange={(e) => setLoanTerm([Number(e.target.value)])}
-                    min={12}
-                    max={96}
-                    step={6}
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label>Банк</Label>
-                  {partnerBanks.length > 0 ? (
-                    <Select
-                      value={selectedBank?.id?.toString()}
-                      onValueChange={(value) =>
-                        setSelectedBank(partnerBanks.find(b => b.id === parseInt(value)) || partnerBanks[0])
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Выберите банк">
-                          {selectedBank && (
-                            <div className="flex items-center justify-between w-full">
-                              <div className="flex items-center gap-2">
-                                {selectedBank.logo && (
-                                  <Image
-                                    src={getCachedImageUrl(selectedBank.logo)}
-                                    alt={`${selectedBank.name} логотип`}
-                                    width={20}
-                                    height={20}
-                                    className="object-contain rounded"
-                                  />
-                                )}
-                                <span>{selectedBank.name}</span>
-                              </div>
-                              <span className="text-sm font-semibold text-slate-600">{selectedBank.rate}%</span>
-                            </div>
-                          )}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {partnerBanks.map((bank) => (
-                          <SelectItem key={bank.id} value={bank.id.toString()} className="relative pr-16">
-                            <div className="flex items-center gap-2 w-full">
-                              {bank.logo && (
-                                <Image
-                                  src={getCachedImageUrl(bank.logo)}
-                                  alt={`${bank.name} логотип`}
-                                  width={20}
-                                  height={20}
-                                  className="object-contain rounded flex-shrink-0"
-                                />
+                {financeType === 'credit' ? (
+                  <>
+                    <div className="space-y-3">
+                      <Label>Стоимость автомобиля</Label>
+                      <Input
+                        type="number"
+                        value={isBelarusianRubles && usdBynRate ? Math.round(car.price * usdBynRate) : car.price}
+                        readOnly
+                        className="bg-slate-50"
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Сумма кредита</Label>
+                      <Input
+                        type="number"
+                        value={creditAmount[0]}
+                        onChange={(e) => setCreditAmount([Number(e.target.value)])}
+                        min={getCreditMinValue()}
+                        max={getCreditMaxValue()}
+                        step={isBelarusianRubles ? 100 : 1000}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Первоначальный взнос</Label>
+                      <Input
+                        type="number"
+                        value={downPayment[0]}
+                        onChange={(e) => setDownPayment([Number(e.target.value)])}
+                        min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
+                        max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
+                        step={isBelarusianRubles ? 100 : 1000}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Срок кредита (месяцев)</Label>
+                      <Input
+                        type="number"
+                        value={loanTerm[0]}
+                        onChange={(e) => setLoanTerm([Number(e.target.value)])}
+                        min={12}
+                        max={96}
+                        step={6}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Банк</Label>
+                      {partnerBanks.length > 0 ? (
+                        <Select
+                          value={selectedBank?.id?.toString()}
+                          onValueChange={(value) =>
+                            setSelectedBank(partnerBanks.find(b => b.id === parseInt(value)) || partnerBanks[0])
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Выберите банк">
+                              {selectedBank && (
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center gap-2">
+                                    {selectedBank.logo && (
+                                      <Image
+                                        src={getCachedImageUrl(selectedBank.logo)}
+                                        alt={`${selectedBank.name} логотип`}
+                                        width={20}
+                                        height={20}
+                                        className="object-contain rounded"
+                                      />
+                                    )}
+                                    <span>{selectedBank.name}</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-slate-600">{selectedBank.rate}%</span>
+                                </div>
                               )}
-                              <span className="truncate pr-8">{bank.name}</span>
-                            </div>
-                            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm font-semibold text-slate-600">{bank.rate}%</span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : loadingBanks ? (
-                    <div className="text-center py-2">
-                      <div className="w-full h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
-                      <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {partnerBanks.map((bank) => (
+                              <SelectItem key={bank.id} value={bank.id.toString()} className="relative pr-16">
+                                <div className="flex items-center gap-2 w-full">
+                                  {bank.logo && (
+                                    <Image
+                                      src={getCachedImageUrl(bank.logo)}
+                                      alt={`${bank.name} логотип`}
+                                      width={20}
+                                      height={20}
+                                      className="object-contain rounded flex-shrink-0"
+                                    />
+                                  )}
+                                  <span className="truncate pr-8">{bank.name}</span>
+                                </div>
+                                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm font-semibold text-slate-600">{bank.rate}%</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : loadingBanks ? (
+                        <div className="text-center py-2">
+                          <div className="w-full h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
+                          <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg">
+                          <AlertCircle className="h-5 w-5" />
+                          <p className="text-sm">Банки-партнеры не найдены</p>
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg">
-                      <AlertCircle className="h-5 w-5" />
-                      <p className="text-sm">Банки-партнеры не найдены</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="space-y-3">
+                      <Label>Стоимость автомобиля</Label>
+                      <Input
+                        type="number"
+                        value={leasingAmount[0]}
+                        onChange={(e) => setLeasingAmount([Number(e.target.value)])}
+                        min={getCreditMinValue()}
+                        max={getCreditMaxValue()}
+                        step={isBelarusianRubles ? 100 : 1000}
+                      />
                     </div>
-                  )}
-                </div>
+                    <div className="space-y-3">
+                      <Label>Авансовый платеж</Label>
+                      <Input
+                        type="number"
+                        value={leasingAdvance[0]}
+                        onChange={(e) => setLeasingAdvance([Number(e.target.value)])}
+                        min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
+                        max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
+                        step={isBelarusianRubles ? 100 : 1000}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Срок лизинга (месяцев)</Label>
+                      <Input
+                        type="number"
+                        value={leasingTerm[0]}
+                        onChange={(e) => setLeasingTerm([Number(e.target.value)])}
+                        min={12}
+                        max={84}
+                        step={3}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Остаточная стоимость (%)</Label>
+                      <Input
+                        type="number"
+                        value={residualValue[0]}
+                        onChange={(e) => setResidualValue([Number(e.target.value)])}
+                        min={10}
+                        max={50}
+                        step={5}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Лизинговая компания</Label>
+                      {leasingCompanies.length > 0 ? (
+                        <Select
+                          value={selectedLeasingCompany?.name?.toLowerCase().replace(/[\s-]/g, '')}
+                          onValueChange={(value) =>
+                            setSelectedLeasingCompany(leasingCompanies.find(c => c.name.toLowerCase().replace(/[\s-]/g, '') === value) || leasingCompanies[0])
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Выберите лизинговую компанию">
+                              {selectedLeasingCompany && (
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center gap-2">
+                                    {selectedLeasingCompany.logoUrl && (
+                                      <Image
+                                        src={getCachedImageUrl(selectedLeasingCompany.logoUrl)}
+                                        alt={`${selectedLeasingCompany.name} логотип`}
+                                        width={20}
+                                        height={20}
+                                        className="object-contain rounded"
+                                      />
+                                    )}
+                                    <span>{selectedLeasingCompany.name}</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-slate-600">{selectedLeasingCompany.minAdvance}%</span>
+                                </div>
+                              )}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {leasingCompanies.map((company) => (
+                              <SelectItem
+                                key={company.name}
+                                value={company.name.toLowerCase().replace(/[\s-]/g, '')}
+                                className="relative pr-16"
+                              >
+                                <div className="flex items-center gap-2 w-full">
+                                  {company.logoUrl && (
+                                    <Image
+                                      src={getCachedImageUrl(company.logoUrl)}
+                                      alt={`${company.name} логотип`}
+                                      width={20}
+                                      height={20}
+                                      className="object-contain rounded flex-shrink-0"
+                                    />
+                                  )}
+                                  <span className="truncate pr-8">{company.name}</span>
+                                </div>
+                                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm font-semibold text-slate-600">{company.minAdvance}%</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : loadingLeasing ? (
+                        <div className="text-center py-2">
+                          <div className="w-full h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
+                          <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg">
+                          <AlertCircle className="h-5 w-5" />
+                          <p className="text-sm">Лизинговые компании не найдены</p>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Результат */}
               <div className="bg-slate-50 rounded-lg p-6">
                 <h4 className="text-xl font-bold mb-4">Результат расчета</h4>
-                {selectedBank ? (
+                {financeType === 'credit' ? (
+                  selectedBank ? (
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-sm text-slate-500">Ежемесячный платеж</div>
+                        <div className="text-3xl font-bold text-slate-900">
+                          {isBelarusianRubles
+                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment())
+                            : formatPrice(calculateMonthlyPayment())
+                          }
+                        </div>
+                        {!isBelarusianRubles && usdBynRate && (
+                          <div className="text-xl font-semibold text-slate-700">
+                            ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
+                          </div>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div className="text-slate-500">Переплата</div>
+                          <div className="font-semibold">
+                            {isBelarusianRubles
+                              ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment() * loanTerm[0] - getCurrentCreditAmount())
+                              : formatPrice(calculateMonthlyPayment() * loanTerm[0] - creditAmount[0])
+                            }
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-slate-500">Общая сумма</div>
+                          <div className="font-semibold">
+                            {isBelarusianRubles
+                              ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment() * loanTerm[0] + getCurrentDownPayment())
+                              : formatPrice(calculateMonthlyPayment() * loanTerm[0] + downPayment[0])
+                            }
+                          </div>
+                        </div>
+                      </div>
+                      <div className="pt-4">
+                        <div className="text-sm font-semibold text-slate-700 mb-2">Банк {selectedBank.name}</div>
+                        <div className="flex items-center space-x-2 text-sm text-slate-600">
+                          <Building2 className="h-4 w-4 text-slate-400" />
+                          <span>Ставка: {selectedBank.rate}%</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-slate-600 mt-1">
+                          <Calendar className="h-4 w-4 text-slate-400" />
+                          <span>Максимальный срок: {selectedBank.maxTerm} мес.</span>
+                        </div>
+                      </div>
+                      <Button
+                        className="w-full mt-6"
+                        onClick={() => {
+                          setIsCreditOpen(false)
+                          setTimeout(() => setIsCreditFormOpen(true), 150)
+                        }}
+                      >
+                        Подать заявку на кредит
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-64 text-center">
+                      {loadingBanks ? (
+                        <div className="w-full space-y-4">
+                          <div className="w-full h-12 bg-slate-200 rounded animate-pulse"></div>
+                          <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                          <div className="w-1/2 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                        </div>
+                      ) : partnerBanks.length === 0 ? (
+                        <>
+                          <AlertCircle className="h-10 w-10 text-amber-500 mb-4" />
+                          <p className="text-slate-700 font-medium">Банки-партнеры не найдены</p>
+                          <p className="text-slate-500 text-sm mt-2">Пожалуйста, обратитесь к менеджеру для получения информации о кредитовании</p>
+                        </>
+                      ) : (
+                        <>
+                          <Building2 className="h-10 w-10 text-slate-400 mb-4" />
+                          <p className="text-slate-700 font-medium">Выберите банк</p>
+                          <p className="text-slate-500 text-sm mt-2">Для расчета кредита выберите банк из списка</p>
+                        </>
+                      )}
+                    </div>
+                  )
+                ) : (
                   <div className="space-y-4">
                     <div>
                       <div className="text-sm text-slate-500">Ежемесячный платеж</div>
                       <div className="text-3xl font-bold text-slate-900">
                         {isBelarusianRubles
-                          ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment())
-                          : formatPrice(calculateMonthlyPayment())
+                          ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateLeasingPayment())
+                          : formatPrice(calculateLeasingPayment())
                         }
                       </div>
                       {!isBelarusianRubles && usdBynRate && (
                         <div className="text-xl font-semibold text-slate-700">
-                          ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
+                          ≈ {convertUsdToByn(calculateLeasingPayment(), usdBynRate)} BYN
                         </div>
                       )}
                     </div>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <div className="text-slate-500">Переплата</div>
+                        <div className="text-slate-500">Общие выплаты</div>
                         <div className="font-semibold">
                           {isBelarusianRubles
-                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment() * loanTerm[0] - getCurrentCreditAmount())
-                            : formatPrice(calculateMonthlyPayment() * loanTerm[0] - creditAmount[0])
+                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateLeasingPayment() * leasingTerm[0] + leasingAdvance[0])
+                            : formatPrice(calculateLeasingPayment() * leasingTerm[0] + leasingAdvance[0])
                           }
                         </div>
                       </div>
                       <div>
-                        <div className="text-slate-500">Общая сумма</div>
+                        <div className="text-slate-500">Остаточная стоимость</div>
                         <div className="font-semibold">
                           {isBelarusianRubles
-                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment() * loanTerm[0] + getCurrentDownPayment())
-                            : formatPrice(calculateMonthlyPayment() * loanTerm[0] + downPayment[0])
+                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format((leasingAmount[0] * residualValue[0]) / 100)
+                            : formatPrice((leasingAmount[0] * residualValue[0]) / 100)
                           }
                         </div>
                       </div>
                     </div>
-                    <div className="pt-4">
-                      <div className="text-sm font-semibold text-slate-700 mb-2">Банк {selectedBank.name}</div>
-                      <div className="flex items-center space-x-2 text-sm text-slate-600">
-                        <Building2 className="h-4 w-4 text-slate-400" />
-                        <span>Ставка: {selectedBank.rate}%</span>
+                    {selectedLeasingCompany && (
+                      <div className="pt-4">
+                        <div className="text-sm font-semibold text-slate-700 mb-2">Лизинговая компания {selectedLeasingCompany.name}</div>
+                        <div className="flex items-center space-x-2 text-sm text-slate-600">
+                          <Building2 className="h-4 w-4 text-slate-400" />
+                          <span>Минимальный аванс: {selectedLeasingCompany.minAdvance}%</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-slate-600 mt-1">
+                          <Calendar className="h-4 w-4 text-slate-400" />
+                          <span>Максимальный срок: {selectedLeasingCompany.maxTerm} мес.</span>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-2 text-sm text-slate-600 mt-1">
-                        <Calendar className="h-4 w-4 text-slate-400" />
-                        <span>Максимальный срок: {selectedBank.maxTerm} мес.</span>
-                      </div>
-                    </div>
+                    )}
                     <Button
                       className="w-full mt-6"
                       onClick={() => {
@@ -1227,30 +1484,8 @@ export default function CarDetailsPage() {
                         setTimeout(() => setIsCreditFormOpen(true), 150)
                       }}
                     >
-                      Подать заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}
+                      Подать заявку на лизинг
                     </Button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-64 text-center">
-                    {loadingBanks ? (
-                      <div className="w-full space-y-4">
-                        <div className="w-full h-12 bg-slate-200 rounded animate-pulse"></div>
-                        <div className="w-3/4 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
-                        <div className="w-1/2 h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
-                      </div>
-                    ) : partnerBanks.length === 0 ? (
-                      <>
-                        <AlertCircle className="h-10 w-10 text-amber-500 mb-4" />
-                        <p className="text-slate-700 font-medium">Банки-партнеры не найдены</p>
-                        <p className="text-slate-500 text-sm mt-2">Пожалуйста, обратитесь к менеджеру для получения информации о кредитовании</p>
-                      </>
-                    ) : (
-                      <>
-                        <Building2 className="h-10 w-10 text-slate-400 mb-4" />
-                        <p className="text-slate-700 font-medium">Выберите банк</p>
-                        <p className="text-slate-500 text-sm mt-2">Для расчета кредита выберите банк из списка</p>
-                      </>
-                    )}
                   </div>
                 )}
               </div>
