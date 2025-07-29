@@ -164,21 +164,7 @@
 }
 
 @layer components {
-  .smooth-divider {
-    position: relative;
-  }
 
-  .homepage .smooth-divider::after {
-    content: '';
-    position: absolute;
-    bottom: -24px;
-    left: 0;
-    right: 0;
-    height: 48px;
-    background: rgb(243 244 246);
-    border-radius: 24px 24px 0 0;
-    z-index: 10;
-  }
 
   .footer-corner-fill {
     position: relative;
@@ -309,5 +295,10 @@
     .hero-content {
       padding-bottom: 12rem !important;
     }
+  }
+
+  /* Safe area for mobile dock */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 8px);
   }
 }

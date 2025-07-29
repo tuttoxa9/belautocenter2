@@ -90,7 +90,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru">
-      <body className="font-sans min-h-screen bg-gray-100 flex flex-col">
+      <body className="font-sans min-h-screen bg-white flex flex-col">
         <UsdBynRateProvider>
           <Header />
           <main className="flex-1 flex flex-col">

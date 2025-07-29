@@ -152,7 +152,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 homepage -mt-14">
+    <div className="min-h-screen bg-white homepage -mt-14">
       {/* Главный баннер */}
       <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14">
 
@@ -217,7 +217,7 @@ export default function HomePage() {
       {/* Блок Stories больше не нужен отдельно */}
 
       {/* Блок "Специальное предложение" */}
-      <section className="pt-8 pb-20 bg-gray-100 relative rounded-t-[30px] -mt-6">
+      <section className="pt-8 pb-20 bg-white relative rounded-t-[30px] -mt-6">
         <div className="container px-4">
 
           {loadingCars ? (
