@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react"
 import type { Metadata } from "next"
 import { useState, useEffect } from "react"
@@ -98,8 +100,6 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     }
   }
 }
-
-"use client"
 
 // Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => (
