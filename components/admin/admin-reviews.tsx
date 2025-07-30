@@ -131,13 +131,13 @@ export default function AdminReviews() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "published":
-        return "bg-emerald-100 text-emerald-700 border-emerald-200"
+        return "bg-emerald-50 text-emerald-700 border-emerald-200"
       case "pending":
-        return "bg-amber-100 text-amber-700 border-amber-200"
+        return "bg-amber-50 text-amber-700 border-amber-200"
       case "rejected":
-        return "bg-red-100 text-red-700 border-red-200"
+        return "bg-red-50 text-red-700 border-red-200"
       default:
-        return "bg-slate-100 text-slate-700 border-slate-200"
+        return "bg-gray-50 text-gray-700 border-gray-200"
     }
   }
 
@@ -157,7 +157,7 @@ export default function AdminReviews() {
   const renderStars = (rating: number, size: "sm" | "md" = "sm") => {
     const sizeClass = size === "sm" ? "h-4 w-4" : "h-5 w-5"
     return Array.from({ length: 5 }, (_, i) => (
-      <Star key={i} className={`${sizeClass} ${i < rating ? "text-amber-400 fill-current" : "text-slate-300"}`} />
+      <Star key={i} className={`${sizeClass} ${i < rating ? "text-amber-400 fill-current" : "text-gray-300"}`} />
     ))
   }
 
@@ -176,10 +176,10 @@ export default function AdminReviews() {
     const withImages = reviews.filter(r => r.imageUrl).length
 
     return [
-      { title: "Всего отзывов", value: total, icon: MessageSquare, color: "text-blue-600" },
-      { title: "Опубликовано", value: published, icon: Star, color: "text-emerald-600" },
-      { title: "На модерации", value: pending, icon: Calendar, color: "text-amber-600" },
-      { title: "С фото", value: withImages, icon: ImageIcon, color: "text-purple-600" },
+      { title: "Всего отзывов", value: total, icon: MessageSquare, color: "text-blue-600", bgColor: "bg-blue-50" },
+      { title: "Опубликовано", value: published, icon: Star, color: "text-emerald-600", bgColor: "bg-emerald-50" },
+      { title: "На модерации", value: pending, icon: Calendar, color: "text-amber-600", bgColor: "bg-amber-50" },
+      { title: "С фото", value: withImages, icon: ImageIcon, color: "text-purple-600", bgColor: "bg-purple-50" },
     ]
   }
 
@@ -188,33 +188,33 @@ export default function AdminReviews() {
       <div className="animate-pulse space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-slate-800/50 rounded-xl p-6 space-y-4">
-              <div className="h-4 bg-slate-700 rounded w-1/2"></div>
-              <div className="h-8 bg-slate-700 rounded w-1/3"></div>
+            <div key={i} className="bg-white rounded-lg border p-6 space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
             </div>
           ))}
         </div>
         <div className="flex justify-between items-center">
-          <div className="h-8 bg-slate-700 rounded w-1/4"></div>
-          <div className="h-10 bg-slate-700 rounded w-32"></div>
+          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-10 bg-gray-200 rounded w-32"></div>
         </div>
         <div className="grid grid-cols-1 gap-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-slate-800/50 rounded-xl p-6 space-y-4">
+            <div key={i} className="bg-white rounded-lg border p-6 space-y-4">
               <div className="flex items-center space-x-3">
-                <div className="h-12 w-12 bg-slate-700 rounded-full"></div>
+                <div className="h-12 w-12 bg-gray-200 rounded-full"></div>
                 <div className="space-y-2 flex-1">
-                  <div className="h-5 bg-slate-700 rounded w-1/2"></div>
+                  <div className="h-5 bg-gray-200 rounded w-1/2"></div>
                   <div className="flex space-x-1">
                     {[...Array(5)].map((_, j) => (
-                      <div key={j} className="h-4 w-4 bg-slate-700 rounded"></div>
+                      <div key={j} className="h-4 w-4 bg-gray-200 rounded"></div>
                     ))}
                   </div>
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="h-4 bg-slate-700 rounded"></div>
-                <div className="h-4 bg-slate-700 rounded w-5/6"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
               </div>
             </div>
           ))}
@@ -230,12 +230,12 @@ export default function AdminReviews() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-slate-700 to-slate-900 rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
             <MessageSquare className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">Управление отзывами</h2>
-            <p className="text-slate-400 text-sm">Модерация и управление отзывами клиентов</p>
+            <h2 className="text-2xl font-bold text-gray-900">Управление отзывами</h2>
+            <p className="text-gray-600 text-sm">Модерация и управление отзывами клиентов</p>
           </div>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -245,15 +245,15 @@ export default function AdminReviews() {
                 resetForm()
                 setEditingReview(null)
               }}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Добавить отзыв
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-white border-gray-200 max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-white flex items-center space-x-2">
+              <DialogTitle className="text-gray-900 flex items-center space-x-2">
                 <MessageSquare className="h-5 w-5" />
                 <span>{editingReview ? "Редактировать" : "Добавить"} отзыв</span>
               </DialogTitle>
@@ -261,21 +261,21 @@ export default function AdminReviews() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-white flex items-center space-x-2">
+                  <Label className="text-gray-700 flex items-center space-x-2">
                     <User className="h-4 w-4" />
                     <span>Имя клиента</span>
                   </Label>
                   <Input
                     value={reviewForm.name}
                     onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
-                    className="bg-slate-700 border-slate-600 text-white focus:border-blue-500"
+                    className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                     placeholder="Введите имя клиента"
                     required
                   />
                 </div>
 
                 <div>
-                  <Label className="text-white flex items-center space-x-2">
+                  <Label className="text-gray-700 flex items-center space-x-2">
                     <Star className="h-4 w-4" />
                     <span>Рейтинг</span>
                   </Label>
@@ -283,10 +283,10 @@ export default function AdminReviews() {
                     value={reviewForm.rating.toString()}
                     onValueChange={(value) => setReviewForm({ ...reviewForm, rating: Number(value) })}
                   >
-                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white focus:border-blue-500">
+                    <SelectTrigger className="bg-white border-gray-300 text-gray-900 focus:border-blue-500">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-700 border-slate-600">
+                    <SelectContent className="bg-white border-gray-200">
                       {[1, 2, 3, 4, 5].map((rating) => (
                         <SelectItem key={rating} value={rating.toString()}>
                           <div className="flex items-center space-x-2">
@@ -301,26 +301,26 @@ export default function AdminReviews() {
               </div>
 
               <div>
-                <Label className="text-white flex items-center space-x-2">
+                <Label className="text-gray-700 flex items-center space-x-2">
                   <span>Модель автомобиля (опционально)</span>
                 </Label>
                 <Input
                   value={reviewForm.carModel}
                   onChange={(e) => setReviewForm({ ...reviewForm, carModel: e.target.value })}
-                  className="bg-slate-700 border-slate-600 text-white focus:border-blue-500"
+                  className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Например: BMW X5, Mercedes-Benz C-Class"
                 />
               </div>
 
               <div>
-                <Label className="text-white flex items-center space-x-2">
+                <Label className="text-gray-700 flex items-center space-x-2">
                   <MessageSquare className="h-4 w-4" />
                   <span>Текст отзыва</span>
                 </Label>
                 <Textarea
                   value={reviewForm.text}
                   onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
-                  className="bg-slate-700 border-slate-600 text-white focus:border-blue-500 min-h-[120px]"
+                  className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 min-h-[120px]"
                   placeholder="Отзыв клиента о покупке..."
                   rows={4}
                   required
@@ -328,7 +328,7 @@ export default function AdminReviews() {
               </div>
 
               <div>
-                <Label className="text-white flex items-center space-x-2 mb-3">
+                <Label className="text-gray-700 flex items-center space-x-2 mb-3">
                   <ImageIcon className="h-4 w-4" />
                   <span>Фото отзыва (опционально)</span>
                 </Label>
@@ -341,17 +341,17 @@ export default function AdminReviews() {
               </div>
 
               <div>
-                <Label className="text-white flex items-center space-x-2">
+                <Label className="text-gray-700 flex items-center space-x-2">
                   <span>Статус публикации</span>
                 </Label>
                 <Select
                   value={reviewForm.status}
                   onValueChange={(value) => setReviewForm({ ...reviewForm, status: value })}
                 >
-                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white focus:border-blue-500">
+                  <SelectTrigger className="bg-white border-gray-300 text-gray-900 focus:border-blue-500">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-700 border-slate-600">
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="published">Опубликован</SelectItem>
                     <SelectItem value="pending">На модерации</SelectItem>
                     <SelectItem value="rejected">Отклонен</SelectItem>
@@ -359,10 +359,10 @@ export default function AdminReviews() {
                 </Select>
               </div>
 
-              <div className="flex space-x-3 pt-4 border-t border-slate-700">
+              <div className="flex space-x-3 pt-4 border-t border-gray-200">
                 <Button
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
                 >
                   {editingReview ? "Сохранить изменения" : "Добавить отзыв"}
                 </Button>
@@ -370,7 +370,7 @@ export default function AdminReviews() {
                   type="button"
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
-                  className="border-slate-600 text-white hover:bg-slate-700"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   Отмена
                 </Button>
@@ -383,15 +383,15 @@ export default function AdminReviews() {
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsCards.map((stat, index) => (
-          <Card key={index} className="bg-slate-800/50 backdrop-blur-lg border-slate-700 hover:bg-slate-800/70 transition-colors">
+          <Card key={index} className="bg-white border border-gray-200 hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-slate-700 rounded-xl flex items-center justify-center">
+                <div className={`w-12 h-12 ${stat.bgColor} rounded-lg flex items-center justify-center`}>
                   <stat.icon className={`h-6 w-6 ${stat.color}`} />
                 </div>
                 <div>
-                  <p className="text-slate-400 text-sm">{stat.title}</p>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-gray-600 text-sm">{stat.title}</p>
+                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                 </div>
               </div>
             </CardContent>
@@ -401,18 +401,18 @@ export default function AdminReviews() {
 
       {/* Overall Rating */}
       {reviews.length > 0 && (
-        <Card className="bg-slate-800/50 backdrop-blur-lg border-slate-700">
+        <Card className="bg-white border border-gray-200">
           <CardContent className="p-6">
             <div className="flex items-center space-x-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center">
                 <Award className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-semibold mb-1">Средний рейтинг</h3>
+                <h3 className="text-gray-900 font-semibold mb-1">Средний рейтинг</h3>
                 <div className="flex items-center space-x-3">
-                  <span className="text-3xl font-bold text-white">{getAverageRating()}</span>
+                  <span className="text-3xl font-bold text-gray-900">{getAverageRating()}</span>
                   <div className="flex">{renderStars(Math.round(Number(getAverageRating())), "md")}</div>
-                  <span className="text-slate-400">из {reviews.filter(r => r.status === "published").length} отзывов</span>
+                  <span className="text-gray-600">из {reviews.filter(r => r.status === "published").length} отзывов</span>
                 </div>
               </div>
             </div>
@@ -423,14 +423,14 @@ export default function AdminReviews() {
       {/* Reviews List */}
       <div className="space-y-4">
         {reviews && reviews.map((review) => (
-          <Card key={review.id} className="bg-slate-800/50 backdrop-blur-lg border-slate-700 hover:bg-slate-800/70 transition-all duration-200">
+          <Card key={review.id} className="bg-white border border-gray-200 hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-start space-x-4">
                     {/* Review Image */}
                     {review.imageUrl && (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
                         <img
                           src={getCachedImageUrl(review.imageUrl)}
                           alt="Фото отзыва"
@@ -442,14 +442,14 @@ export default function AdminReviews() {
                     <div className="flex-1 min-w-0">
                       {/* Header */}
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
-                          <User className="h-5 w-5 text-slate-300" />
+                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <User className="h-5 w-5 text-gray-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-white truncate">{review.name}</h3>
+                          <h3 className="font-semibold text-gray-900 truncate">{review.name}</h3>
                           <div className="flex items-center space-x-2 mt-1">
                             <div className="flex">{renderStars(review.rating)}</div>
-                            <span className="text-xs text-slate-400">{review.rating}/5</span>
+                            <span className="text-xs text-gray-500">{review.rating}/5</span>
                           </div>
                         </div>
                         <Badge className={`${getStatusColor(review.status)} border`}>
@@ -459,18 +459,18 @@ export default function AdminReviews() {
 
                       {/* Car Model */}
                       {review.carModel && (
-                        <div className="bg-slate-700/50 rounded-lg px-3 py-2 mb-3 inline-block">
-                          <p className="text-sm text-slate-300">
-                            <span className="text-slate-400">Автомобиль:</span> {review.carModel}
+                        <div className="bg-gray-50 rounded-lg px-3 py-2 mb-3 inline-block border border-gray-200">
+                          <p className="text-sm text-gray-700">
+                            <span className="text-gray-500">Автомобиль:</span> {review.carModel}
                           </p>
                         </div>
                       )}
 
                       {/* Review Text */}
-                      <p className="text-slate-300 mb-3 leading-relaxed">{review.text}</p>
+                      <p className="text-gray-700 mb-3 leading-relaxed">{review.text}</p>
 
                       {/* Date */}
-                      <div className="flex items-center space-x-2 text-xs text-slate-500">
+                      <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Calendar className="h-3 w-3" />
                         <span>{review.createdAt.toLocaleDateString("ru-RU", {
                           year: "numeric",
@@ -490,7 +490,7 @@ export default function AdminReviews() {
                     size="sm"
                     variant="outline"
                     onClick={() => handleEdit(review)}
-                    className="border-slate-600 text-white hover:bg-slate-700 hover:border-slate-500"
+                    className="border-gray-300 text-gray-700 hover:bg-gray-50"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -498,7 +498,7 @@ export default function AdminReviews() {
                     size="sm"
                     variant="outline"
                     onClick={() => handleDelete(review.id)}
-                    className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                    className="border-red-300 text-red-600 hover:bg-red-50"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -511,18 +511,18 @@ export default function AdminReviews() {
 
       {/* Empty State */}
       {reviews.length === 0 && (
-        <Card className="bg-slate-800/50 backdrop-blur-lg border-slate-700">
+        <Card className="bg-white border border-gray-200">
           <CardContent className="p-12 text-center">
-            <MessageSquare className="h-16 w-16 mx-auto text-slate-400 mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Отзывы не добавлены</h3>
-            <p className="text-slate-400 mb-6">Начните с добавления первого отзыва клиента</p>
+            <MessageSquare className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Отзывы не добавлены</h3>
+            <p className="text-gray-600 mb-6">Начните с добавления первого отзыва клиента</p>
             <Button
               onClick={() => {
                 resetForm()
                 setEditingReview(null)
                 setIsDialogOpen(true)
               }}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+              className="bg-blue-600 hover:bg-blue-700"
             >
               <Plus className="h-4 w-4 mr-2" />
               Добавить первый отзыв
