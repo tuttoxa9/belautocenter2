@@ -432,24 +432,24 @@ export default function PrivacyPage() {
           </div>
         </div>
 
-        {/* Mobile Bottom notice */}
-        <Card className="lg:hidden mt-6 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
-          <CardContent className="p-4">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-white/20 to-white/10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-white/20">
-                <CheckCircle className="h-4 w-4 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-white text-sm mb-2">
+        {/* Mobile Bottom notice - styled like CTA section */}
+        <section className="lg:hidden relative pt-8 pb-32 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-t-[30px] -mb-20 overflow-hidden mt-6">
+          <div className="max-w-4xl mx-auto px-4 relative z-10">
+            <div className="text-center">
+              <div className="flex items-center justify-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-lg flex items-center justify-center shadow-lg border border-white/20">
+                  <CheckCircle className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="font-bold text-white text-lg">
                   Согласие на обработку данных
                 </h3>
-                <p className="text-slate-300 text-xs leading-relaxed">
-                  Используя наш сайт, вы соглашаетесь с обработкой персональных данных согласно данной политике.
-                </p>
               </div>
+              <p className="text-slate-300 text-sm leading-relaxed max-w-lg mx-auto">
+                Используя наш сайт, вы соглашаетесь с обработкой персональных данных согласно данной политике.
+              </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       </div>
     </div>
   )
