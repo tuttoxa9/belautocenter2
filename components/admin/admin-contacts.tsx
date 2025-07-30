@@ -146,9 +146,26 @@ export default function AdminContacts() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Управление контактами</h2>
-        <p className="text-gray-600">Редактирование контактной информации и социальных сетей</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Управление контактами</h2>
+          <p className="text-gray-600">Редактирование контактной информации и социальных сетей</p>
+        </div>
+        <div className="sm:w-64">
+          <StatusButton
+            onClick={handleSave}
+            variant="default"
+            className="w-full bg-blue-600 hover:bg-blue-700"
+            state={saveButtonState.state}
+            size="lg"
+            successText="Сохранено!"
+            errorText="Ошибка"
+            loadingText="Сохраняем..."
+          >
+            <Save className="h-4 w-4 mr-2" />
+            Сохранить изменения
+          </StatusButton>
+        </div>
       </div>
 
       <div className="grid gap-6">
@@ -384,21 +401,7 @@ export default function AdminContacts() {
           </CardContent>
         </Card>
 
-        {/* Кнопка сохранения */}
-        <Card>
-          <CardContent className="pt-6">
-            <StatusButton
-              onClick={handleSave}
-              variant="default"
-              className="w-full bg-blue-600 hover:bg-blue-700"
-              state={saveButtonState.state}
-              size="lg"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Сохранить изменения
-            </StatusButton>
-          </CardContent>
-        </Card>
+
       </div>
     </div>
   )

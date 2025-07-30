@@ -44,10 +44,28 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
     setState('idle')
   }, [])
 
+  const setSuccess = useCallback(() => {
+    setState('success')
+    onSuccess?.()
+    setTimeout(() => {
+      setState('idle')
+    }, successDuration)
+  }, [successDuration, onSuccess])
+
+  const setError = useCallback(() => {
+    setState('error')
+    onError?.()
+    setTimeout(() => {
+      setState('idle')
+    }, errorDuration)
+  }, [errorDuration, onError])
+
   return {
     state,
     execute,
     reset,
+    setSuccess,
+    setError,
     isLoading: state === 'loading',
     isSuccess: state === 'success',
     isError: state === 'error',
