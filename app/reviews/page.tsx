@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, User, MessageSquare, Calendar, Award, ArrowRight } from "lucide-react"
+import { Star, User, MessageSquare, Calendar, Award, ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
 import Link from "next/link"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
@@ -23,6 +23,7 @@ export default function ReviewsPage() {
   const [loading, setLoading] = useState(true)
   const [filteredReviews, setFilteredReviews] = useState<Review[]>([])
   const [filterRating, setFilterRating] = useState<number | null>(null)
+  const [expandedReview, setExpandedReview] = useState<string | null>(null)
 
   console.log("ReviewsPage состояние:", {
     reviewsCount: reviews.length,
@@ -98,9 +99,9 @@ export default function ReviewsPage() {
 
   const renderStars = (rating: number, size: "sm" | "md" | "lg" = "md") => {
     const sizeClasses = {
-      sm: "h-4 w-4",
-      md: "h-5 w-5",
-      lg: "h-6 w-6"
+      sm: "h-3 w-3",
+      md: "h-4 w-4",
+      lg: "h-5 w-5"
     }
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -122,6 +123,10 @@ export default function ReviewsPage() {
       distribution[review.rating as keyof typeof distribution]++
     })
     return distribution
+  }
+
+  const toggleExpandReview = (reviewId: string) => {
+    setExpandedReview(expandedReview === reviewId ? null : reviewId)
   }
 
   if (loading) {
@@ -213,62 +218,66 @@ export default function ReviewsPage() {
       {/* Statistics */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {reviews.length > 0 && (
-          <Card className="border-0 shadow-sm mb-8">
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Overall Rating */}
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-slate-900 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Award className="h-8 w-8 text-white" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            {/* Compact Overall Rating */}
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Award className="h-6 w-6 text-white" />
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-4xl font-bold text-slate-900">{getAverageRating()}</div>
-                    <div className="flex justify-center">{renderStars(Math.round(Number(getAverageRating())), "lg")}</div>
-                    <p className="text-slate-600 text-sm">Средний рейтинг</p>
+                  <div>
+                    <div className="flex items-baseline space-x-2">
+                      <span className="text-2xl font-bold text-slate-900">{getAverageRating()}</span>
+                      <div className="flex">{renderStars(Math.round(Number(getAverageRating())), "sm")}</div>
+                    </div>
+                    <p className="text-slate-600 text-sm">из {reviews.length} отзывов</p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
 
-                {/* Rating Distribution */}
-                <div className="md:col-span-2">
-                  <h3 className="font-semibold text-slate-900 mb-4 flex items-center">
-                    <Star className="h-5 w-5 mr-2 text-amber-400" />
-                    Распределение оценок
-                  </h3>
-                  <div className="space-y-3">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                      <div key={rating} className="flex items-center space-x-3">
-                        <div className="flex items-center space-x-1 w-12">
-                          <span className="text-sm font-medium text-slate-700">{rating}</span>
-                          <Star className="h-3 w-3 text-amber-400 fill-current" />
-                        </div>
-                        <div className="flex-1 bg-slate-200 rounded-full h-2">
-                          <div
-                            className="bg-slate-900 h-2 rounded-full transition-all duration-300"
-                            style={{
-                              width: reviews.length > 0 ? `${(distribution[rating as keyof typeof distribution] / reviews.length) * 100}%` : '0%'
-                            }}
-                          />
-                        </div>
-                        <span className="text-sm text-slate-600 w-8">
-                          {distribution[rating as keyof typeof distribution]}
-                        </span>
-                        <button
-                          onClick={() => setFilterRating(filterRating === rating ? null : rating)}
-                          className={`text-xs px-2 py-1 rounded-md transition-colors ${
-                            filterRating === rating
-                              ? 'bg-slate-900 text-white'
-                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                          }`}
-                        >
-                          {filterRating === rating ? 'Сбросить' : 'Фильтр'}
-                        </button>
+            {/* Rating Distribution */}
+            <Card className="border-0 shadow-sm lg:col-span-2">
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-slate-900 mb-3 flex items-center text-sm">
+                  <Star className="h-4 w-4 mr-2 text-amber-400" />
+                  Распределение оценок
+                </h3>
+                <div className="space-y-2">
+                  {[5, 4, 3, 2, 1].map((rating) => (
+                    <div key={rating} className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-1 w-8">
+                        <span className="text-xs font-medium text-slate-700">{rating}</span>
+                        <Star className="h-2 w-2 text-amber-400 fill-current" />
                       </div>
-                    ))}
-                  </div>
+                      <div className="flex-1 bg-slate-200 rounded-full h-1.5">
+                        <div
+                          className="bg-slate-900 h-1.5 rounded-full transition-all duration-300"
+                          style={{
+                            width: reviews.length > 0 ? `${(distribution[rating as keyof typeof distribution] / reviews.length) * 100}%` : '0%'
+                          }}
+                        />
+                      </div>
+                      <span className="text-xs text-slate-600 w-6">
+                        {distribution[rating as keyof typeof distribution]}
+                      </span>
+                      <button
+                        onClick={() => setFilterRating(filterRating === rating ? null : rating)}
+                        className={`text-xs px-2 py-0.5 rounded transition-colors ${
+                          filterRating === rating
+                            ? 'bg-slate-900 text-white'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        {filterRating === rating ? 'Сбросить' : 'Фильтр'}
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Reviews Grid */}
@@ -277,24 +286,25 @@ export default function ReviewsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredReviews.map((review) => {
               console.log("Рендерим отзыв:", review.id, review.name, review.status)
+              const isExpanded = expandedReview === review.id
               return (
               <Card key={review.id} className="border-0 shadow-sm hover:shadow-md transition-all duration-300 group">
                 <CardContent className="p-6">
-                  {/* Review Image */}
+                  {/* Review Image - Square */}
                   {review.imageUrl && (
                     <div className="mb-4 rounded-lg overflow-hidden">
                       <img
                         src={getCachedImageUrl(review.imageUrl)}
                         alt="Фото отзыва"
-                        className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   )}
 
                   {/* User Info */}
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
-                      <User className="h-6 w-6 text-slate-600" />
+                    <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-slate-600" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-slate-900">{review.name}</h3>
@@ -316,10 +326,31 @@ export default function ReviewsPage() {
                     </div>
                   )}
 
-                  {/* Review Text */}
-                  <p className="text-slate-700 leading-relaxed mb-4 line-clamp-4">
-                    {review.text}
-                  </p>
+                  {/* Review Text with Expand/Collapse */}
+                  <div className="mb-4">
+                    <div
+                      className={`
+                        bg-slate-50 rounded-lg p-3 cursor-pointer transition-all duration-300
+                        ${isExpanded ? 'bg-slate-100' : 'hover:bg-slate-100'}
+                      `}
+                      onClick={() => toggleExpandReview(review.id)}
+                    >
+                      <p className={`text-slate-700 leading-relaxed transition-all duration-300 ${
+                        isExpanded ? 'line-clamp-none' : 'line-clamp-3'
+                      }`}>
+                        {review.text}
+                      </p>
+                      {review.text.length > 150 && (
+                        <div className="flex items-center justify-center mt-2 pt-2 border-t border-slate-200">
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4 text-slate-500" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-slate-500" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
                   {/* Date */}
                   <div className="flex items-center space-x-2 text-xs text-slate-500">
