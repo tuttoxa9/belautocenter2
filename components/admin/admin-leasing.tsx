@@ -310,17 +310,17 @@ export default function AdminLeasing() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center">
-            <Building className="h-6 w-6 mr-2" />
-            Управление страницей лизинга
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-lg md:text-2xl font-bold flex items-center">
+            <Building className="h-5 w-5 md:h-6 md:w-6 mr-2 flex-shrink-0" />
+            <span className="truncate">Управление страницей лизинга</span>
           </h2>
-          <p className="text-gray-600">Настройка контента и партнеров для страницы лизинга</p>
+          <p className="text-gray-600 text-sm md:text-base">Настройка контента и партнеров для страницы лизинга</p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={resetToDefaults} variant="outline">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button onClick={resetToDefaults} variant="outline" size="sm" className="text-xs">
             Сбросить к умолчаниям
           </Button>
           <StatusButton
@@ -328,8 +328,10 @@ export default function AdminLeasing() {
             state={saveButtonState.state}
             successText="Сохранено"
             errorText="Ошибка"
+            size="sm"
+            className="text-xs"
           >
-            <Save className="mr-2 h-4 w-4" />
+            <Save className="mr-2 h-3 w-3 md:h-4 md:w-4" />
             Сохранить
           </StatusButton>
         </div>
@@ -337,36 +339,39 @@ export default function AdminLeasing() {
 
       {/* Основная информация */}
       <Card>
-        <CardHeader>
-          <CardTitle>Основная информация</CardTitle>
+        <CardHeader className="pb-3 md:pb-6">
+          <CardTitle className="text-base md:text-lg">Основная информация</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 md:space-y-4">
           <div>
-            <Label htmlFor="title">Заголовок страницы</Label>
+            <Label htmlFor="title" className="text-sm">Заголовок страницы</Label>
             <Input
               id="title"
               value={leasingData.title}
               onChange={(e) => setLeasingData({ ...leasingData, title: e.target.value })}
               placeholder="Заголовок страницы лизинга"
+              className="text-sm"
             />
           </div>
           <div>
-            <Label htmlFor="subtitle">Подзаголовок</Label>
+            <Label htmlFor="subtitle" className="text-sm">Подзаголовок</Label>
             <Input
               id="subtitle"
               value={leasingData.subtitle}
               onChange={(e) => setLeasingData({ ...leasingData, subtitle: e.target.value })}
               placeholder="Подзаголовок страницы"
+              className="text-sm"
             />
           </div>
           <div>
-            <Label htmlFor="description">Описание</Label>
+            <Label htmlFor="description" className="text-sm">Описание</Label>
             <Textarea
               id="description"
               value={leasingData.description}
               onChange={(e) => setLeasingData({ ...leasingData, description: e.target.value })}
               placeholder="Описание лизинговых услуг"
-              rows={4}
+              rows={3}
+              className="text-sm"
             />
           </div>
         </CardContent>

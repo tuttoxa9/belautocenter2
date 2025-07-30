@@ -226,16 +226,16 @@ export default function AdminReviews() {
   const statsCards = getStatsCards()
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-            <MessageSquare className="h-6 w-6 text-white" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center space-x-3 md:space-x-4 min-w-0">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-white" />
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Управление отзывами</h2>
-            <p className="text-gray-600 text-sm">Модерация и управление отзывами клиентов</p>
+          <div className="min-w-0">
+            <h2 className="text-lg md:text-2xl font-bold text-gray-900 truncate">Управление отзывами</h2>
+            <p className="text-gray-600 text-xs md:text-sm truncate">Модерация и управление отзывами клиентов</p>
           </div>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -245,20 +245,20 @@ export default function AdminReviews() {
                 resetForm()
                 setEditingReview(null)
               }}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
             >
               <Plus className="h-4 w-4 mr-2" />
               Добавить отзыв
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-white border-gray-200 max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-white border-gray-200 max-w-2xl max-h-[90vh] overflow-y-auto mx-4 md:mx-auto">
             <DialogHeader>
-              <DialogTitle className="text-gray-900 flex items-center space-x-2">
-                <MessageSquare className="h-5 w-5" />
+              <DialogTitle className="text-gray-900 flex items-center space-x-2 text-lg md:text-xl">
+                <MessageSquare className="h-4 w-4 md:h-5 md:w-5" />
                 <span>{editingReview ? "Редактировать" : "Добавить"} отзыв</span>
               </DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-gray-700 flex items-center space-x-2">
@@ -381,17 +381,17 @@ export default function AdminReviews() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {statsCards.map((stat, index) => (
           <Card key={index} className="bg-white border border-gray-200 hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className={`w-12 h-12 ${stat.bgColor} rounded-lg flex items-center justify-center`}>
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+            <CardContent className="p-3 md:p-6">
+              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 md:space-x-4">
+                <div className={`w-8 h-8 md:w-12 md:h-12 ${stat.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                  <stat.icon className={`h-4 w-4 md:h-6 md:w-6 ${stat.color}`} />
                 </div>
-                <div>
-                  <p className="text-gray-600 text-sm">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                <div className="text-center sm:text-left min-w-0">
+                  <p className="text-gray-600 text-xs md:text-sm truncate">{stat.title}</p>
+                  <p className="text-lg md:text-2xl font-bold text-gray-900">{stat.value}</p>
                 </div>
               </div>
             </CardContent>
@@ -402,17 +402,17 @@ export default function AdminReviews() {
       {/* Overall Rating */}
       {reviews.length > 0 && (
         <Card className="bg-white border border-gray-200">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center">
-                <Award className="h-8 w-8 text-white" />
+          <CardContent className="p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 md:space-x-6">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Award className="h-6 w-6 md:h-8 md:w-8 text-white" />
               </div>
-              <div>
-                <h3 className="text-gray-900 font-semibold mb-1">Средний рейтинг</h3>
-                <div className="flex items-center space-x-3">
-                  <span className="text-3xl font-bold text-gray-900">{getAverageRating()}</span>
+              <div className="text-center sm:text-left min-w-0">
+                <h3 className="text-gray-900 font-semibold mb-1 text-sm md:text-base">Средний рейтинг</h3>
+                <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                  <span className="text-2xl md:text-3xl font-bold text-gray-900">{getAverageRating()}</span>
                   <div className="flex">{renderStars(Math.round(Number(getAverageRating())), "md")}</div>
-                  <span className="text-gray-600">из {reviews.filter(r => r.status === "published").length} отзывов</span>
+                  <span className="text-gray-600 text-xs md:text-sm">из {reviews.filter(r => r.status === "published").length} отзывов</span>
                 </div>
               </div>
             </div>
@@ -424,13 +424,13 @@ export default function AdminReviews() {
       <div className="space-y-4">
         {reviews && reviews.map((review) => (
           <Card key={review.id} className="bg-white border border-gray-200 hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-start space-x-4">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex flex-col lg:flex-row items-start gap-3 lg:gap-4">
+                <div className="flex-1 w-full">
+                  <div className="flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-3 md:space-x-4">
                     {/* Review Image */}
                     {review.imageUrl && (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                      <div className="w-full sm:w-16 md:w-20 h-16 md:h-20 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
                         <img
                           src={getCachedImageUrl(review.imageUrl)}
                           alt="Фото отзыва"
@@ -439,35 +439,37 @@ export default function AdminReviews() {
                       </div>
                     )}
 
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 w-full">
                       {/* Header */}
-                      <div className="flex items-center space-x-3 mb-3">
-                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <User className="h-5 w-5 text-gray-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 truncate">{review.name}</h3>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <div className="flex">{renderStars(review.rating)}</div>
-                            <span className="text-xs text-gray-500">{review.rating}/5</span>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center space-x-2 md:space-x-3 min-w-0 flex-1">
+                          <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <User className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-gray-900 truncate text-sm md:text-base">{review.name}</h3>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <div className="flex">{renderStars(review.rating)}</div>
+                              <span className="text-xs text-gray-500">{review.rating}/5</span>
+                            </div>
                           </div>
                         </div>
-                        <Badge className={`${getStatusColor(review.status)} border`}>
+                        <Badge className={`${getStatusColor(review.status)} border text-xs flex-shrink-0`}>
                           {getStatusText(review.status)}
                         </Badge>
                       </div>
 
                       {/* Car Model */}
                       {review.carModel && (
-                        <div className="bg-gray-50 rounded-lg px-3 py-2 mb-3 inline-block border border-gray-200">
-                          <p className="text-sm text-gray-700">
+                        <div className="bg-gray-50 rounded-lg px-2 md:px-3 py-1 md:py-2 mb-2 md:mb-3 inline-block border border-gray-200">
+                          <p className="text-xs md:text-sm text-gray-700">
                             <span className="text-gray-500">Автомобиль:</span> {review.carModel}
                           </p>
                         </div>
                       )}
 
                       {/* Review Text */}
-                      <p className="text-gray-700 mb-3 leading-relaxed">{review.text}</p>
+                      <p className="text-gray-700 mb-2 md:mb-3 leading-relaxed text-sm md:text-base">{review.text}</p>
 
                       {/* Date */}
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
@@ -485,22 +487,24 @@ export default function AdminReviews() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex space-x-2 ml-4 flex-shrink-0">
+                <div className="flex flex-row lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 w-full lg:w-auto">
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => handleEdit(review)}
-                    className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                    className="border-gray-300 text-gray-700 hover:bg-gray-50 flex-1 lg:flex-none text-xs"
                   >
-                    <Edit className="h-4 w-4" />
+                    <Edit className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    Редактировать
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => handleDelete(review.id)}
-                    className="border-red-300 text-red-600 hover:bg-red-50"
+                    className="border-red-300 text-red-600 hover:bg-red-50 flex-1 lg:flex-none text-xs"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                    Удалить
                   </Button>
                 </div>
               </div>

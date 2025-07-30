@@ -203,9 +203,9 @@ export default function AdminCars() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Управление автомобилями</h2>
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h2 className="text-xl md:text-2xl font-bold truncate">Управление автомобилями</h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button
@@ -213,66 +213,72 @@ export default function AdminCars() {
                 resetForm()
                 setEditingCar(null)
               }}
+              className="w-full sm:w-auto"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Добавить автомобиль
+              <span className="sm:inline">Добавить автомобиль</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4 md:mx-auto">
             <DialogHeader>
-              <DialogTitle>{editingCar ? "Редактировать" : "Добавить"} автомобиль</DialogTitle>
+              <DialogTitle className="text-lg md:text-xl">{editingCar ? "Редактировать" : "Добавить"} автомобиль</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
-                  <Label>Марка</Label>
+                  <Label className="text-sm">Марка</Label>
                   <Input
                     value={carForm.make}
                     onChange={(e) => setCarForm({ ...carForm, make: e.target.value })}
+                    className="text-sm"
                     required
                   />
                 </div>
                 <div>
-                  <Label>Модель</Label>
+                  <Label className="text-sm">Модель</Label>
                   <Input
                     value={carForm.model}
                     onChange={(e) => setCarForm({ ...carForm, model: e.target.value })}
+                    className="text-sm"
                     required
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 <div>
-                  <Label>Год</Label>
+                  <Label className="text-sm">Год</Label>
                   <Input
                     type="number"
                     value={carForm.year}
                     onChange={(e) => setCarForm({ ...carForm, year: e.target.value })}
+                    className="text-sm"
                     required
                   />
                 </div>
                 <div>
-                  <Label>Цена ($)</Label>
+                  <Label className="text-sm">Цена ($)</Label>
                   <Input
                     type="number"
                     value={carForm.price}
                     onChange={(e) => setCarForm({ ...carForm, price: e.target.value })}
+                    className="text-sm"
                     required
                   />
                 </div>
-                <div>
-                  <Label>Пробег (км)</Label>
+                <div className="sm:col-span-2 md:col-span-1">
+                  <Label className="text-sm">Пробег (км)</Label>
                   <Input
                     type="number"
                     value={carForm.mileage}
                     onChange={(e) => setCarForm({ ...carForm, mileage: e.target.value })}
+                    className="text-sm"
                     required
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <Label>Объем двигателя (л)</Label>
                   <Input
@@ -302,7 +308,7 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <Label>Коробка передач</Label>
                   <Select
@@ -337,7 +343,7 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <Label>Тип кузова</Label>
                   <Input
@@ -357,10 +363,10 @@ export default function AdminCars() {
               </div>
 
               <div>
-                <Label>Описание</Label>
+                <Label className="text-sm">Описание</Label>
                 <textarea
-                  className="w-full p-2 border rounded-md"
-                  rows={3}
+                  className="w-full p-2 border rounded-md text-sm"
+                  rows={2}
                   value={carForm.description}
                   onChange={(e) => setCarForm({ ...carForm, description: e.target.value })}
                   placeholder="Подробное описание автомобиля..."
@@ -368,8 +374,8 @@ export default function AdminCars() {
               </div>
 
               <div>
-                <Label>Фотографии</Label>
-                <div className="grid grid-cols-2 gap-4">
+                <Label className="text-sm">Фотографии</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                   {carForm.imageUrls.map((url, index) => (
                     <ImageUpload
                       key={index}
@@ -380,21 +386,23 @@ export default function AdminCars() {
                     />
                   ))}
                 </div>
-                <div className="flex gap-2 mt-2">
-                  <Button type="button" variant="outline" onClick={addImageUrl}>
-                    <Plus className="h-4 w-4 mr-2" />
+                <div className="flex flex-col sm:flex-row gap-2 mt-2">
+                  <Button type="button" variant="outline" onClick={addImageUrl} size="sm" className="text-xs">
+                    <Plus className="h-3 w-3 mr-2" />
                     Добавить фото
                   </Button>
                   {carForm.imageUrls.length > 1 && (
                     <Button
                       type="button"
                       variant="outline"
+                      size="sm"
+                      className="text-xs"
                       onClick={() => {
                         const newUrls = carForm.imageUrls.slice(0, -1)
                         setCarForm({ ...carForm, imageUrls: newUrls.length > 0 ? newUrls : [""] })
                       }}
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="h-3 w-3 mr-2" />
                       Удалить последнее
                     </Button>
                   )}
@@ -402,13 +410,14 @@ export default function AdminCars() {
               </div>
 
               <div>
-                <Label>Характеристики</Label>
+                <Label className="text-sm">Характеристики</Label>
                 <div className="space-y-2">
                   {Object.entries(carForm.specifications).map(([key, value], index) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className="flex flex-col sm:flex-row gap-2">
                       <Input
                         placeholder="Название"
                         value={key}
+                        className="text-sm"
                         onChange={(e) => {
                           const newSpecs = { ...carForm.specifications }
                           delete newSpecs[key]
@@ -419,6 +428,7 @@ export default function AdminCars() {
                       <Input
                         placeholder="Значение"
                         value={value}
+                        className="text-sm"
                         onChange={(e) => {
                           setCarForm({
                             ...carForm,
@@ -432,19 +442,23 @@ export default function AdminCars() {
                       <Button
                         type="button"
                         variant="outline"
+                        size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => {
                           const newSpecs = { ...carForm.specifications }
                           delete newSpecs[key]
                           setCarForm({ ...carForm, specifications: newSpecs })
                         }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
                   ))}
                   <Button
                     type="button"
                     variant="outline"
+                    size="sm"
+                    className="text-xs w-full sm:w-auto"
                     onClick={() => {
                       setCarForm({
                         ...carForm,
@@ -455,20 +469,21 @@ export default function AdminCars() {
                       })
                     }}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className="h-3 w-3 mr-2" />
                     Добавить характеристику
                   </Button>
                 </div>
               </div>
 
               <div>
-                <Label>Комплектация</Label>
+                <Label className="text-sm">Комплектация</Label>
                 <div className="space-y-2">
                   {carForm.features.map((feature, index) => (
                     <div key={index} className="flex gap-2">
                       <Input
                         placeholder="Особенность"
                         value={feature}
+                        className="text-sm"
                         onChange={(e) => {
                           const newFeatures = [...carForm.features]
                           newFeatures[index] = e.target.value
@@ -478,18 +493,21 @@ export default function AdminCars() {
                       <Button
                         type="button"
                         variant="outline"
+                        size="sm"
                         onClick={() => {
                           const newFeatures = carForm.features.filter((_, i) => i !== index)
                           setCarForm({ ...carForm, features: newFeatures })
                         }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
                   ))}
                   <Button
                     type="button"
                     variant="outline"
+                    size="sm"
+                    className="text-xs w-full sm:w-auto"
                     onClick={() => {
                       setCarForm({
                         ...carForm,
@@ -497,7 +515,7 @@ export default function AdminCars() {
                       })
                     }}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className="h-3 w-3 mr-2" />
                     Добавить особенность
                   </Button>
                 </div>
@@ -513,11 +531,11 @@ export default function AdminCars() {
                 <Label htmlFor="isAvailable">В наличии</Label>
               </div>
 
-              <div className="flex space-x-2">
-                <Button type="submit" className="flex-1">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                <Button type="submit" className="flex-1 text-sm">
                   {editingCar ? "Сохранить" : "Добавить"}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button type="button" variant="outline" className="text-sm" onClick={() => setIsDialogOpen(false)}>
                   Отмена
                 </Button>
               </div>
@@ -526,29 +544,31 @@ export default function AdminCars() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {cars && cars.map((car) => (
           <Card key={car.id}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold">
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-start justify-between mb-2 gap-2">
+                <h3 className="font-semibold text-sm md:text-base truncate flex-1">
                   {car.make} {car.model}
                 </h3>
-                <Badge variant={car.isAvailable ? "default" : "secondary"}>
+                <Badge variant={car.isAvailable ? "default" : "secondary"} className="text-xs flex-shrink-0">
                   {car.isAvailable ? "В наличии" : "Продан"}
                 </Badge>
               </div>
-              <div className="text-sm text-gray-600 space-y-1">
+              <div className="text-xs md:text-sm text-gray-600 space-y-1">
                 <p>Год: {car.year}</p>
                 <p>Цена: ${car.price?.toLocaleString()}</p>
                 <p>Пробег: {car.mileage?.toLocaleString()} км</p>
               </div>
-              <div className="flex space-x-2 mt-4">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(car)}>
-                  <Edit className="h-4 w-4" />
+              <div className="flex space-x-2 mt-3 md:mt-4">
+                <Button size="sm" variant="outline" onClick={() => handleEdit(car)} className="flex-1">
+                  <Edit className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                  <span className="text-xs">Изменить</span>
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => handleDelete(car.id)}>
-                  <Trash2 className="h-4 w-4" />
+                <Button size="sm" variant="outline" onClick={() => handleDelete(car.id)} className="flex-1">
+                  <Trash2 className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                  <span className="text-xs">Удалить</span>
                 </Button>
               </div>
             </CardContent>
