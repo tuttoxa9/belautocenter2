@@ -5,6 +5,7 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase
 import { db } from "@/lib/firebase"
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
 import { Button } from "@/components/ui/button"
+import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
@@ -13,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Car } from "lucide-react"
 import ImageUpload from "@/components/admin/image-upload"
+import { useButtonState } from "@/hooks/use-button-state"
 
 export default function AdminCars() {
   const [cars, setCars] = useState([])
@@ -20,6 +22,8 @@ export default function AdminCars() {
   const [editingCar, setEditingCar] = useState(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const cacheInvalidator = createCacheInvalidator('cars')
+  const saveButtonState = useButtonState()
+  const deleteButtonStates = {}
   const [carForm, setCarForm] = useState({
     make: "",
     model: "",
