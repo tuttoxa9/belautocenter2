@@ -433,7 +433,7 @@ export default function PrivacyPage() {
         </div>
 
         {/* Mobile Bottom notice - styled like CTA section */}
-        <section className="lg:hidden relative pt-8 pb-32 bg-gradient-to-br from-red-950 to-red-800 text-white rounded-t-[30px] -mb-20 overflow-hidden mt-6 -mx-4">
+        <section className="lg:hidden relative pt-8 pb-32 bg-gradient-to-br from-slate-950 to-blue-800 text-white rounded-t-[30px] -mb-20 overflow-hidden mt-6 -mx-4">
           <div className="max-w-4xl mx-auto px-4 relative z-10">
             <div className="text-center">
               <div className="flex items-center justify-center space-x-3 mb-4">
