@@ -219,14 +219,14 @@ export default function ReviewsPage() {
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
         {reviews.length > 0 && (
           <div className="mb-6">
-            {/* Simple Rating Card */}
-            <Card className="border-0 shadow-sm">
+            {/* Compact Rating Summary */}
+            <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
               <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                   {/* Rating Summary */}
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Award className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <Award className="h-5 w-5 text-white flex-shrink-0" />
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
@@ -242,10 +242,10 @@ export default function ReviewsPage() {
                   <div className="flex items-center space-x-2 overflow-x-auto">
                     <button
                       onClick={() => setFilterRating(null)}
-                      className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-md transition-colors ${
+                      className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-md transition-colors shadow-sm ${
                         filterRating === null
-                          ? 'bg-slate-900 text-white'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white'
+                          : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 hover:from-slate-200 hover:to-slate-300'
                       }`}
                     >
                       Все
@@ -254,10 +254,10 @@ export default function ReviewsPage() {
                       <button
                         key={rating}
                         onClick={() => setFilterRating(filterRating === rating ? null : rating)}
-                        className={`flex-shrink-0 flex items-center space-x-1 text-xs px-2 py-1.5 rounded-md transition-colors ${
+                        className={`flex-shrink-0 flex items-center space-x-1 text-xs px-2 py-1.5 rounded-md transition-colors shadow-sm ${
                           filterRating === rating
-                            ? 'bg-slate-900 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white'
+                            : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 hover:from-slate-200 hover:to-slate-300'
                         }`}
                       >
                         <span>{rating}</span>
@@ -279,11 +279,11 @@ export default function ReviewsPage() {
               console.log("Рендерим отзыв:", review.id, review.name, review.status)
               const isExpanded = expandedReview === review.id
               return (
-              <Card key={review.id} className="border border-slate-200 hover:shadow-md transition-shadow duration-300">
+              <Card key={review.id} className="border border-slate-200 hover:shadow-md transition-shadow duration-300 bg-gradient-to-br from-white to-slate-50">
                 <CardContent className="p-5">
                   {/* Review Image - No hover effect */}
                   {review.imageUrl && (
-                    <div className="mb-4 rounded-lg overflow-hidden bg-slate-100">
+                    <div className="mb-4 rounded-lg overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-inner">
                       <img
                         src={getCachedImageUrl(review.imageUrl)}
                         alt="Фото отзыва"
@@ -294,7 +294,7 @@ export default function ReviewsPage() {
 
                   {/* User Info - Compact */}
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className="w-9 h-9 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                       <User className="h-4 w-4 text-slate-600" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -310,7 +310,7 @@ export default function ReviewsPage() {
 
                   {/* Car Model - Compact */}
                   {review.carModel && (
-                    <div className="bg-slate-50 rounded-md px-3 py-2 mb-3">
+                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-md px-3 py-2 mb-3 shadow-inner">
                       <p className="text-xs text-slate-700">
                         <span className="text-slate-500">Автомобиль:</span> <span className="font-medium">{review.carModel}</span>
                       </p>

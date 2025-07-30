@@ -186,8 +186,8 @@ export default function PrivacyPage() {
 
           {/* Title - Different for mobile and desktop */}
           <div className="lg:hidden flex items-center space-x-3">
-            <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Shield className="h-5 w-5 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Shield className="h-5 w-5 text-white flex-shrink-0" />
             </div>
             <div className="flex-1 min-w-0">
               <h1 className="text-xl font-bold text-slate-900 truncate">{privacyData.title}</h1>
@@ -196,7 +196,7 @@ export default function PrivacyPage() {
                 <span>Обновлено: {privacyData.lastUpdated}</span>
               </div>
             </div>
-            <div className="text-xs text-slate-500 bg-slate-100 rounded px-2 py-1">
+            <div className="text-xs text-slate-500 bg-gradient-to-br from-slate-100 to-slate-200 rounded px-2 py-1 shadow-sm">
               {sections.length} разделов
             </div>
           </div>
@@ -204,8 +204,8 @@ export default function PrivacyPage() {
           {/* Desktop Title */}
           <div className="hidden lg:flex items-start justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center">
-                <Shield className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-sm">
+                <Shield className="h-6 w-6 text-white flex-shrink-0" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">{privacyData.title}</h1>
@@ -216,7 +216,7 @@ export default function PrivacyPage() {
               </div>
             </div>
             <div className="hidden sm:block">
-              <div className="bg-slate-100 rounded-lg px-4 py-2 text-sm text-slate-600">
+              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg px-4 py-2 text-sm text-slate-600 shadow-sm">
                 {sections.length} разделов
               </div>
             </div>
@@ -233,14 +233,14 @@ export default function PrivacyPage() {
             const isExpanded = expandedSection === section.id
 
             return (
-              <Card key={section.id} className="border-0 shadow-sm overflow-hidden">
+              <Card key={section.id} className="border-0 shadow-sm overflow-hidden bg-gradient-to-br from-white to-slate-50">
                 <CardContent className="p-0">
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="w-full flex items-center space-x-3 p-4 hover:bg-slate-50 transition-colors"
+                    className="w-full flex items-center space-x-3 p-4 hover:bg-gradient-to-br hover:from-slate-50 hover:to-slate-100 transition-all"
                   >
-                    <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <Icon className="h-5 w-5 text-white flex-shrink-0" />
                     </div>
 
                     <div className="flex-1 text-left min-w-0">
@@ -254,7 +254,7 @@ export default function PrivacyPage() {
                           </p>
                         </div>
                         <div className="flex items-center space-x-2 flex-shrink-0 ml-3">
-                          <span className="text-xs text-slate-500 bg-slate-100 rounded px-2 py-1">
+                          <span className="text-xs text-slate-500 bg-gradient-to-br from-slate-100 to-slate-200 rounded px-2 py-1 shadow-sm">
                             {index + 1}
                           </span>
                           {isExpanded ? (
@@ -268,7 +268,7 @@ export default function PrivacyPage() {
                   </button>
 
                   {isExpanded && (
-                    <div className="border-t border-slate-100">
+                    <div className="border-t border-slate-100 bg-gradient-to-br from-slate-50 to-slate-100">
                       <div className="flex space-x-3 p-4">
                         <div className="w-10 flex-shrink-0"></div>
                         <div className="flex-1 min-w-0">
@@ -312,7 +312,7 @@ export default function PrivacyPage() {
           {/* Sidebar navigation */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <Card className="border-0 shadow-sm">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
                 <CardContent className="p-4">
                   <h3 className="font-semibold text-slate-900 mb-4">Содержание</h3>
                   <nav className="space-y-1">
@@ -320,19 +320,19 @@ export default function PrivacyPage() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`w-full text-left px-3 py-3 rounded-lg transition-all duration-200 group ${
+                        className={`w-full text-left px-3 py-3 rounded-lg transition-all duration-200 group shadow-sm ${
                           activeSection === section.id
-                            ? 'bg-slate-900 text-white shadow-sm'
-                            : 'hover:bg-slate-100 text-slate-700'
+                            ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white shadow-md'
+                            : 'bg-gradient-to-br from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700'
                         }`}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 ${
+                          <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 shadow-sm ${
                             activeSection === section.id
-                              ? 'bg-white/20'
-                              : 'bg-slate-200 group-hover:bg-slate-300'
+                              ? 'bg-gradient-to-br from-white/20 to-white/10'
+                              : 'bg-gradient-to-br from-slate-200 to-slate-300 group-hover:from-slate-300 group-hover:to-slate-400'
                           }`}>
-                            <section.icon className={`h-3 w-3 ${
+                            <section.icon className={`h-3 w-3 flex-shrink-0 ${
                               activeSection === section.id ? 'text-white' : 'text-slate-600'
                             }`} />
                           </div>
@@ -360,11 +360,11 @@ export default function PrivacyPage() {
           {/* Content area */}
           <div className="lg:col-span-3">
             {activeContent && (
-              <Card className="border-0 shadow-sm">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
                 <CardContent className="p-8">
                   <div className="flex items-center space-x-4 mb-6">
-                    <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center">
-                      <activeContent.icon className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-sm">
+                      <activeContent.icon className="h-5 w-5 text-white flex-shrink-0" />
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold text-slate-900">{activeContent.title}</h2>
@@ -402,11 +402,11 @@ export default function PrivacyPage() {
             )}
 
             {/* Bottom notice */}
-            <Card className="mt-8 border-0 shadow-sm bg-slate-900">
+            <Card className="mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <CheckCircle className="h-5 w-5 text-white" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-white/10 to-white/5 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <CheckCircle className="h-5 w-5 text-white flex-shrink-0" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-white mb-2">
@@ -425,11 +425,11 @@ export default function PrivacyPage() {
         </div>
 
         {/* Mobile Bottom notice */}
-        <Card className="lg:hidden mt-6 border-0 shadow-sm bg-slate-900">
+        <Card className="lg:hidden mt-6 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
           <CardContent className="p-4">
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="h-4 w-4 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-white/10 to-white/5 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                <CheckCircle className="h-4 w-4 text-white flex-shrink-0" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-white text-sm mb-2">
