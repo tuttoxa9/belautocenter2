@@ -5,6 +5,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import MobileDock from "@/components/mobile-dock"
 import { UsdBynRateProvider } from "@/components/providers/usd-byn-rate-provider"
+import { NotificationProvider } from "@/components/providers/notification-provider"
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://belautocenter.by'),
@@ -92,12 +93,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru">
       <body className="font-sans min-h-screen bg-white flex flex-col">
         <UsdBynRateProvider>
-          <Header />
-          <main className="flex-1 flex flex-col">
-            {children}
-          </main>
-          <Footer />
-          <MobileDock />
+          <NotificationProvider>
+            <Header />
+            <main className="flex-1 flex flex-col">
+              {children}
+            </main>
+            <Footer />
+            <MobileDock />
+          </NotificationProvider>
         </UsdBynRateProvider>
       </body>
     </html>

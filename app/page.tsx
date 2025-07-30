@@ -11,6 +11,7 @@ import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
+import { useNotification } from "@/components/providers/notification-provider"
 
 import { CheckCircle, Check } from "lucide-react"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
@@ -40,6 +41,7 @@ export default function HomePage() {
   })
 
   const contactButtonState = useButtonState()
+  const { showSuccess } = useNotification()
 
   const [cars, setCars] = useState<Array<{
     id: string;
@@ -140,6 +142,7 @@ export default function HomePage() {
       })
 
       setContactForm({ name: "", phone: "+375" })
+      showSuccess("Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.")
     })
   }
 

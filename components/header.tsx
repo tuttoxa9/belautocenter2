@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Menu, Phone, Loader2, Check } from "lucide-react"
 import { doc, getDoc, collection, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import { useNotification } from "@/components/providers/notification-provider"
 
 const navigation = [
   { name: "Главная", href: "/" },
@@ -39,6 +40,7 @@ export default function Header() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [phoneLoading, setPhoneLoading] = useState(false)
   const [loading, setLoading] = useState(true)
+  const { showSuccess } = useNotification()
 
   useEffect(() => {
     loadSettings()
@@ -83,10 +85,10 @@ export default function Header() {
 
       setIsCallbackOpen(false)
       setFormData({ name: "", phone: "+375" })
-      alert("Заявка отправлена! Мы свяжемся с вами в ближайшее время.")
+      showSuccess("Заявка на обратный звонок отправлена! Мы свяжемся с вами в ближайшее время.")
     } catch (error) {
       console.error("Ошибка отправки заявки:", error)
-      alert("Произошла ошибка. Попробуйте еще раз.")
+      showSuccess("Произошла ошибка. Попробуйте еще раз.")
     }
   }
 

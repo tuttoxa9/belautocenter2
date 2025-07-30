@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useButtonState } from "@/hooks/use-button-state"
+import { useNotification } from "@/components/providers/notification-provider"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calculator, CreditCard, CheckCircle, Building, Percent, Clock, DollarSign, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Shield, TrendingDown, Check } from "lucide-react"
@@ -46,6 +47,7 @@ export default function CreditPage() {
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(false)
   const usdBynRate = useUsdBynRate()
   const submitButtonState = useButtonState()
+  const { showSuccess } = useNotification()
 
   const [calculator, setCalculator] = useState({
     carPrice: [50000],
@@ -286,6 +288,7 @@ export default function CreditPage() {
         bank: "",
         message: "",
       })
+      showSuccess("Заявка на кредит успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.")
     })
   }
 

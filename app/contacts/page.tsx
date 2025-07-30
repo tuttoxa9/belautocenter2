@@ -26,6 +26,7 @@ import { Badge } from '@/components/ui/badge'
 import YandexMap from '@/components/yandex-map'
 import ContactsSkeleton from '@/components/contacts-skeleton'
 import { useButtonState } from '@/hooks/use-button-state'
+import { useNotification } from '@/components/providers/notification-provider'
 
 interface ContactsData {
   title?: string
@@ -80,6 +81,7 @@ export default function ContactsPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const submitButtonState = useButtonState()
+  const { showSuccess } = useNotification()
 
   useEffect(() => {
     const fetchContactsData = async () => {
@@ -157,6 +159,7 @@ export default function ContactsPage() {
 
       // Очистка формы после успешной отправки
       setContactForm({ name: '', phone: '', message: '' })
+      showSuccess("Ваше сообщение успешно отправлено! Мы ответим вам в ближайшее время.")
     })
   }
 

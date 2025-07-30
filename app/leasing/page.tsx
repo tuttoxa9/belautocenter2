@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
 import { useButtonState } from "@/hooks/use-button-state"
+import { useNotification } from "@/components/providers/notification-provider"
 
 import Link from "next/link"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -47,6 +48,7 @@ export default function LeasingPage() {
   const [settings, setSettings] = useState<LeasingPageSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const submitButtonState = useButtonState()
+  const { showSuccess } = useNotification()
 
   const [calculator, setCalculator] = useState({
     carPrice: [80000],
@@ -224,6 +226,7 @@ export default function LeasingPage() {
         company: "",
         message: "",
       })
+      showSuccess("Заявка на лизинг успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.")
     })
   }
 

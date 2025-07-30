@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useButtonState } from "@/hooks/use-button-state"
+import { useNotification } from "@/components/providers/notification-provider"
 import {
   Gauge,
   Fuel,
@@ -161,6 +162,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const bookingButtonState = useButtonState()
   const callbackButtonState = useButtonState()
   const creditButtonState = useButtonState()
+
+  // Notification hook
+  const { showSuccess } = useNotification()
 
   useEffect(() => {
     if (carId) {
@@ -442,6 +446,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
       setIsBookingOpen(false)
       setBookingForm({ name: "", phone: "+375", message: "" })
+      showSuccess("Заявка на бронирование успешно отправлена! Мы свяжемся с вами в ближайшее время.")
     })
   }
 
@@ -477,6 +482,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
       setIsCallbackOpen(false)
       setCallbackForm({ name: "", phone: "+375" })
+      showSuccess("Заявка на обратный звонок успешно отправлена! Мы свяжемся с вами в ближайшее время.")
     })
   }
 
@@ -526,6 +532,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
       setIsCreditFormOpen(false)
       setCreditForm({ name: "", phone: "+375", message: "" })
+      showSuccess(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.`)
     })
   }
 
