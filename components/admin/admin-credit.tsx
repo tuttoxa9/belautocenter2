@@ -10,13 +10,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Save, Loader2, Plus, Trash2 } from "lucide-react"
+import { useButtonState } from "@/hooks/use-button-state"
+import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ImageUpload from "./image-upload"
 import AdminCreditConditions from "./admin-credit-conditions"
 
 export default function AdminCredit() {
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const saveButtonState = useButtonState()
   const [creditData, setCreditData] = useState({
     title: "Автокредит на выгодных условиях",
     subtitle: "Получите кредит на автомобиль мечты уже сегодня",
@@ -79,16 +81,9 @@ export default function AdminCredit() {
   }
 
   const saveCreditData = async () => {
-    setSaving(true)
-    try {
+    await saveButtonState.execute(async () => {
       await setDoc(doc(db, "pages", "credit"), creditData)
-      alert("Данные сохранены!")
-    } catch (error) {
-      console.error("Ошибка сохранения:", error)
-      alert("Ошибка сохранения данных")
-    } finally {
-      setSaving(false)
-    }
+    })
   }
 
   const addPartner = () => {
@@ -154,10 +149,16 @@ export default function AdminCredit() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-white">Страница "Кредит"</h2>
-        <Button onClick={saveCreditData} disabled={saving} className="bg-gradient-to-r from-purple-500 to-blue-500">
-          {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+        <StatusButton
+          onClick={saveCreditData}
+          state={saveButtonState.state}
+          className="bg-gradient-to-r from-purple-500 to-blue-500"
+          successText="Сохранено"
+          errorText="Ошибка"
+        >
+          <Save className="h-4 w-4 mr-2" />
           Сохранить
-        </Button>
+        </StatusButton>
       </div>
 
       <Tabs defaultValue="main" className="w-full">

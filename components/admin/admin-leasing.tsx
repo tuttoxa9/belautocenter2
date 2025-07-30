@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Save, Loader2, Plus, Trash2, Building } from "lucide-react"
+import { useButtonState } from "@/hooks/use-button-state"
+import { StatusButton } from "@/components/ui/status-button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ImageUpload from "./image-upload"
 
@@ -43,7 +45,7 @@ interface LeasingPageData {
 
 export default function AdminLeasing() {
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const saveButtonState = useButtonState()
   const [leasingData, setLeasingData] = useState<LeasingPageData>({
     title: "Автомобиль в лизинг – выгодное решение для сохранения финансовой гибкости",
     subtitle: "Пользуйтесь автомобилем, оплачивая его стоимость по частям, и наслаждайтесь комфортом без лишних хлопот",
@@ -136,17 +138,10 @@ export default function AdminLeasing() {
   }
 
   const saveLeasingData = async () => {
-    try {
-      setSaving(true)
+    await saveButtonState.execute(async () => {
       console.log("Saving leasing data:", leasingData)
       await setDoc(doc(db, "pages", "leasing"), leasingData)
-      alert("Данные успешно сохранены!")
-    } catch (error) {
-      console.error("Ошибка сохранения:", error)
-      alert("Ошибка при сохранении данных")
-    } finally {
-      setSaving(false)
-    }
+    })
   }
 
   const resetToDefaults = async () => {
@@ -328,19 +323,15 @@ export default function AdminLeasing() {
           <Button onClick={resetToDefaults} variant="outline">
             Сбросить к умолчаниям
           </Button>
-          <Button onClick={saveLeasingData} disabled={saving}>
-            {saving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Сохранение...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                Сохранить
-              </>
-            )}
-          </Button>
+          <StatusButton
+            onClick={saveLeasingData}
+            state={saveButtonState.state}
+            successText="Сохранено"
+            errorText="Ошибка"
+          >
+            <Save className="mr-2 h-4 w-4" />
+            Сохранить
+          </StatusButton>
         </div>
       </div>
 

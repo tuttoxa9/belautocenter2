@@ -10,11 +10,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Save, Loader2 } from "lucide-react"
+import { useButtonState } from "@/hooks/use-button-state"
+import { StatusButton } from "@/components/ui/status-button"
 import AdminPrivacy from "./admin-privacy"
 
 export default function AdminPages() {
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const saveButtonState = useButtonState()
   const [pages, setPages] = useState({
     about: {
       title: "О компании Белавто Центр",
@@ -60,20 +62,13 @@ export default function AdminPages() {
   }
 
   const savePages = async () => {
-    setSaving(true)
-    try {
+    await saveButtonState.execute(async () => {
       await Promise.all([
         setDoc(doc(db, "pages", "about"), pages.about),
         setDoc(doc(db, "pages", "credit"), pages.credit),
         setDoc(doc(db, "pages", "leasing"), pages.leasing),
       ])
-      alert("Страницы сохранены!")
-    } catch (error) {
-      console.error("Ошибка сохранения:", error)
-      alert("Ошибка сохранения страниц")
-    } finally {
-      setSaving(false)
-    }
+    })
   }
 
   if (loading) {
@@ -88,10 +83,15 @@ export default function AdminPages() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Управление страницами</h2>
-        <Button onClick={savePages} disabled={saving}>
-          {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+        <StatusButton
+          onClick={savePages}
+          state={saveButtonState.state}
+          successText="Сохранено"
+          errorText="Ошибка"
+        >
+          <Save className="h-4 w-4 mr-2" />
           Сохранить все
-        </Button>
+        </StatusButton>
       </div>
 
       <Tabs defaultValue="about" className="w-full">
