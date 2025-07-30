@@ -190,11 +190,11 @@ export default function Header() {
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-80 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700/50 backdrop-blur-xl">
-            {/* Premium Header with Logo */}
-            <div className="flex items-center justify-center p-6 border-b border-slate-700/50 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-lg mx-2 mt-4">
+          <SheetContent side="left" className="w-80 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-r border-slate-200 backdrop-blur-xl">
+            {/* Clean Header with Logo */}
+            <div className="flex items-center justify-center p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg mx-2 mt-4 shadow-sm">
               {loading ? (
-                <div className="flex items-center text-white">
+                <div className="flex items-center text-slate-800">
                   <Loader2 className="h-5 w-5 animate-spin mr-3" />
                   <span className="font-semibold">Загрузка...</span>
                 </div>
@@ -205,26 +205,20 @@ export default function Header() {
                     alt="Белавто Центр"
                     width={140}
                     height={48}
-                    className="h-12 w-auto mb-2 filter brightness-0 invert"
+                    className="h-12 w-auto mb-2"
                     priority
                   />
-                  <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-slate-400 to-transparent"></div>
+                  <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
                 </div>
               )}
             </div>
 
-            {/* Professional Navigation Menu */}
+            {/* Clean Navigation Menu */}
             <div className="px-4 py-6">
               <div className="space-y-2">
                 {navigation
                   .filter((item) => !["/", "/catalog", "/credit", "/contacts"].includes(item.href))
-                  .map((item, index) => {
-                    const gradients = [
-                      "from-blue-600 via-indigo-600 to-purple-700",
-                      "from-emerald-600 via-teal-600 to-cyan-700",
-                      "from-amber-600 via-orange-600 to-red-700",
-                      "from-violet-600 via-purple-600 to-indigo-700"
-                    ];
+                  .map((item) => {
                     const isActive = pathname === item.href;
 
                     return (
@@ -234,32 +228,32 @@ export default function Header() {
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={`group flex items-center p-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] ${
                           isActive
-                            ? `bg-gradient-to-r ${gradients[index % gradients.length]} shadow-xl border border-white/10`
-                            : "bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/30 hover:border-slate-600/50"
+                            ? "bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100 shadow-lg border border-slate-200"
+                            : "bg-white hover:bg-gradient-to-r hover:from-slate-50 hover:to-white border border-slate-100 hover:border-slate-200 hover:shadow-md"
                         }`}
                       >
-                        {/* Professional Icon Container */}
+                        {/* Clean Icon Container */}
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 ${
                           isActive
-                            ? "bg-white/20 shadow-lg"
-                            : "bg-slate-700/50 group-hover:bg-slate-600/50"
+                            ? "bg-gradient-to-br from-slate-200 to-slate-300 shadow-sm"
+                            : "bg-gradient-to-br from-slate-100 to-slate-200 group-hover:from-slate-200 group-hover:to-slate-300"
                         }`}>
                           <div className={`w-2 h-2 rounded-full ${
                             isActive
-                              ? "bg-white shadow-sm"
-                              : "bg-slate-400 group-hover:bg-slate-300"
+                              ? "bg-slate-600 shadow-sm"
+                              : "bg-slate-400 group-hover:bg-slate-500"
                           }`}></div>
                         </div>
 
                         {/* Menu Item Text */}
                         <div className="flex-1">
                           <div className={`font-semibold text-base transition-colors ${
-                            isActive ? "text-white" : "text-slate-200 group-hover:text-white"
+                            isActive ? "text-slate-900" : "text-slate-700 group-hover:text-slate-900"
                           }`}>
                             {item.name}
                           </div>
                           <div className={`text-xs transition-colors ${
-                            isActive ? "text-white/80" : "text-slate-400 group-hover:text-slate-300"
+                            isActive ? "text-slate-600" : "text-slate-500 group-hover:text-slate-600"
                           }`}>
                             {item.name === "Лизинг" && "Финансовые услуги"}
                             {item.name === "О нас" && "Информация о компании"}
@@ -269,7 +263,7 @@ export default function Header() {
 
                         {/* Active Indicator */}
                         {isActive && (
-                          <div className="w-2 h-2 bg-white rounded-full shadow-sm"></div>
+                          <div className="w-2 h-2 bg-slate-600 rounded-full shadow-sm"></div>
                         )}
                       </Link>
                     );
@@ -277,24 +271,24 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Premium Contact Section */}
-            <div className="mx-4 mb-6 p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl border border-slate-700/50 shadow-xl">
+            {/* Clean Contact Section */}
+            <div className="mx-4 mb-6 p-4 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-200 shadow-lg">
               {loading ? (
-                <div className="flex items-center text-white mb-4">
+                <div className="flex items-center text-slate-800 mb-4">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   <span className="text-sm">Загрузка контактов...</span>
                 </div>
               ) : (
                 <a
                   href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                  className="block text-center text-white font-bold text-lg mb-4 p-3 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                  className="block text-center text-white font-bold text-lg mb-4 p-3 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                 >
                   {settings?.phone || "+375 XX XXX-XX-XX"}
                 </a>
               )}
 
               <Button
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] mb-4"
+                className="w-full bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] mb-4"
                 onClick={() => {
                   setIsMobileMenuOpen(false)
                   setIsCallbackOpen(true)
@@ -304,32 +298,32 @@ export default function Header() {
               </Button>
 
               {/* Contact Information */}
-              <div className="space-y-3 pt-3 border-t border-slate-700/50">
+              <div className="space-y-3 pt-3 border-t border-slate-200">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg flex items-center justify-center">
-                    <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                  <div className="w-8 h-8 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
                   </div>
                   <div>
-                    <div className="text-xs font-semibold text-slate-300 mb-1">Адрес:</div>
-                    <div className="text-xs text-slate-400">{settings?.address || "г. Минск, ул. Примерная, 123"}</div>
+                    <div className="text-xs font-semibold text-slate-800 mb-1">Адрес:</div>
+                    <div className="text-xs text-slate-600">{settings?.address || "г. Минск, ул. Примерная, 123"}</div>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg flex items-center justify-center">
-                    <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                  <div className="w-8 h-8 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
                   </div>
                   <div>
-                    <div className="text-xs font-semibold text-slate-300 mb-1">Время работы:</div>
-                    <div className="text-xs text-slate-400">Пн-Пт: 9:00-21:00</div>
-                    <div className="text-xs text-slate-400">Сб-Вс: 10:00-20:00</div>
+                    <div className="text-xs font-semibold text-slate-800 mb-1">Время работы:</div>
+                    <div className="text-xs text-slate-600">Пн-Пт: 9:00-21:00</div>
+                    <div className="text-xs text-slate-600">Сб-Вс: 10:00-20:00</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Premium Bottom Accent */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700"></div>
+            {/* Clean Bottom Accent */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300"></div>
           </SheetContent>
         </Sheet>
 
