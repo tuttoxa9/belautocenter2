@@ -109,25 +109,25 @@ export default function AdminPage() {
       <header className="bg-gray-50 border-b border-gray-200 shadow-sm">
         <div className="container px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-lg">
                 <Image src="/logo.png" alt="Белавто Центр" width={40} height={40} className="object-contain" />
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Админ-панель</h1>
-                <p className="text-sm text-gray-600">Белавто Центр</p>
+              <div className="min-w-0">
+                <h1 className="text-lg md:text-xl font-bold text-gray-900 truncate">Админ-панель</h1>
+                <p className="text-xs md:text-sm text-gray-600 truncate">Белавто Центр</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{user.email}</span>
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <span className="text-xs md:text-sm text-gray-600 hidden sm:inline truncate max-w-[120px] md:max-w-none">{user.email}</span>
               <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
-                className="border-gray-300 text-gray-700 hover:bg-gray-100 bg-white"
+                className="border-gray-300 text-gray-700 hover:bg-gray-100 bg-white flex-shrink-0"
               >
-                <LogOut className="h-4 w-4 mr-2" />
-                Выйти
+                <LogOut className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Выйти</span>
               </Button>
             </div>
           </div>
@@ -137,78 +137,159 @@ export default function AdminPage() {
       {/* Основной контент */}
       <div className="container px-4 py-8">
         <Tabs defaultValue="settings" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 bg-gray-100 border-gray-200">
-            <TabsTrigger
-              value="settings"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <Settings className="h-4 w-4" />
-              <span className="hidden sm:inline">Настройки</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="cars"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <Car className="h-4 w-4" />
-              <span className="hidden sm:inline">Автомобили</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="stories"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Новости</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="leads"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">Заявки</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="about"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <Building className="h-4 w-4" />
-              <span className="hidden sm:inline">О нас</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="credit"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <CreditCard className="h-4 w-4" />
-              <span className="hidden sm:inline">Кредит</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="contacts"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <MessageSquare className="h-4 w-4" />
-              <span className="hidden sm:inline">Контакты</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="reviews"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <Star className="h-4 w-4" />
-              <span className="hidden sm:inline">Отзывы</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="privacy"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <Shield className="h-4 w-4" />
-              <span className="hidden sm:inline">Политика</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="leasing"
-              className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-            >
-              <Building className="h-4 w-4" />
-              <span className="hidden sm:inline">Лизинг</span>
-            </TabsTrigger>
-          </TabsList>
+          {/* Мобильная версия табов - вертикальная прокрутка */}
+          <div className="md:hidden">
+            <div className="overflow-x-auto pb-4">
+              <TabsList className="flex w-max min-w-full space-x-2 bg-gray-100 border-gray-200 h-auto p-2">
+                <TabsTrigger
+                  value="settings"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Settings className="h-5 w-5 mb-1" />
+                  <span>Настройки</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="cars"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Car className="h-5 w-5 mb-1" />
+                  <span>Авто</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="stories"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <FileText className="h-5 w-5 mb-1" />
+                  <span>Новости</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="leads"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Users className="h-5 w-5 mb-1" />
+                  <span>Заявки</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="about"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Building className="h-5 w-5 mb-1" />
+                  <span>О нас</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="credit"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <CreditCard className="h-5 w-5 mb-1" />
+                  <span>Кредит</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="contacts"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <MessageSquare className="h-5 w-5 mb-1" />
+                  <span>Контакты</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="reviews"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Star className="h-5 w-5 mb-1" />
+                  <span>Отзывы</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="privacy"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Shield className="h-5 w-5 mb-1" />
+                  <span>Политика</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="leasing"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Building className="h-5 w-5 mb-1" />
+                  <span>Лизинг</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
+          </div>
+
+          {/* Десктопная версия табов */}
+          <div className="hidden md:block">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 bg-gray-100 border-gray-200">
+              <TabsTrigger
+                value="settings"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="hidden sm:inline">Настройки</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="cars"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Car className="h-4 w-4" />
+                <span className="hidden sm:inline">Автомобили</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="stories"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">Новости</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="leads"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Users className="h-4 w-4" />
+                <span className="hidden sm:inline">Заявки</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="about"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Building className="h-4 w-4" />
+                <span className="hidden sm:inline">О нас</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="credit"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <CreditCard className="h-4 w-4" />
+                <span className="hidden sm:inline">Кредит</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="contacts"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <MessageSquare className="h-4 w-4" />
+                <span className="hidden sm:inline">Контакты</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="reviews"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Star className="h-4 w-4" />
+                <span className="hidden sm:inline">Отзывы</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="privacy"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Shield className="h-4 w-4" />
+                <span className="hidden sm:inline">Политика</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="leasing"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Building className="h-4 w-4" />
+                <span className="hidden sm:inline">Лизинг</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="settings" className="mt-6">
             <AdminSettings />
