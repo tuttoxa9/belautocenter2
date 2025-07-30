@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, User } from "lucide-react"
+import { Star, User, MessageSquare, Calendar, Award, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { getCachedImageUrl } from "@/lib/image-cache"
 
 interface Review {
   id: string
@@ -13,16 +14,27 @@ interface Review {
   rating: number
   text: string
   carModel?: string
+  imageUrl?: string
   createdAt: Date
 }
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
+  const [filteredReviews, setFilteredReviews] = useState<Review[]>([])
+  const [filterRating, setFilterRating] = useState<number | null>(null)
 
   useEffect(() => {
     loadReviews()
   }, [])
+
+  useEffect(() => {
+    if (filterRating) {
+      setFilteredReviews(reviews.filter(review => review.rating === filterRating))
+    } else {
+      setFilteredReviews(reviews)
+    }
+  }, [reviews, filterRating])
 
   const loadReviews = async () => {
     try {
@@ -46,9 +58,17 @@ export default function ReviewsPage() {
     }
   }
 
-  const renderStars = (rating: number) => {
+  const renderStars = (rating: number, size: "sm" | "md" | "lg" = "md") => {
+    const sizeClasses = {
+      sm: "h-4 w-4",
+      md: "h-5 w-5",
+      lg: "h-6 w-6"
+    }
     return Array.from({ length: 5 }, (_, i) => (
-      <Star key={i} className={`h-5 w-5 ${i < rating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
+      <Star
+        key={i}
+        className={`${sizeClasses[size]} ${i < rating ? "text-amber-400 fill-current" : "text-slate-300"}`}
+      />
     ))
   }
 
@@ -58,36 +78,51 @@ export default function ReviewsPage() {
     return (sum / reviews.length).toFixed(1)
   }
 
+  const getRatingDistribution = () => {
+    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+    reviews.forEach(review => {
+      distribution[review.rating as keyof typeof distribution]++
+    })
+    return distribution
+  }
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="container px-4 py-8">
+      <div className="min-h-screen bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="animate-pulse space-y-8">
-            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-            <div className="text-center space-y-4">
-              <div className="h-12 bg-gray-200 rounded w-1/2 mx-auto"></div>
-              <div className="h-6 bg-gray-200 rounded w-1/3 mx-auto"></div>
+            <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+              <div className="h-8 bg-slate-200 rounded w-1/3 mb-4"></div>
+              <div className="h-6 bg-slate-200 rounded w-1/2 mb-6"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="space-y-4">
+                    <div className="h-16 bg-slate-200 rounded-lg"></div>
+                    <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white p-6 rounded-lg space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="h-12 w-12 bg-gray-200 rounded-full"></div>
+                <div key={i} className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="h-12 w-12 bg-slate-200 rounded-full"></div>
                     <div className="space-y-2 flex-1">
-                      <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                      <div className="h-5 bg-slate-200 rounded w-2/3"></div>
                       <div className="flex space-x-1">
                         {[...Array(5)].map((_, j) => (
-                          <div key={j} className="h-4 w-4 bg-gray-200 rounded"></div>
+                          <div key={j} className="h-4 w-4 bg-slate-200 rounded"></div>
                         ))}
                       </div>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-gray-200 rounded"></div>
-                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-slate-200 rounded"></div>
+                    <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+                    <div className="h-4 bg-slate-200 rounded w-3/4"></div>
                   </div>
-                  <div className="h-4 bg-gray-200 rounded w-1/3"></div>
                 </div>
               ))}
             </div>
@@ -97,75 +132,227 @@ export default function ReviewsPage() {
     )
   }
 
+  const distribution = getRatingDistribution()
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container px-4 py-8">
-        {/* Хлебные крошки */}
-        <nav className="mb-6">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500">
-            <li>
-              <Link href="/" className="hover:text-blue-600">
-                Главная
-              </Link>
-            </li>
-            <li>/</li>
-            <li className="text-gray-900">Отзывы</li>
-          </ol>
-        </nav>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          {/* Breadcrumbs */}
+          <nav className="mb-4">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500">
+              <li>
+                <Link href="/" className="hover:text-slate-700 transition-colors">
+                  Главная
+                </Link>
+              </li>
+              <li><ArrowRight className="h-4 w-4" /></li>
+              <li className="text-slate-900 font-medium">Отзывы клиентов</li>
+            </ol>
+          </nav>
 
-        {/* Заголовок */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Отзывы наших клиентов</h1>
-          <p className="text-xl text-gray-600 mb-6">Узнайте, что говорят о нас наши довольные клиенты</p>
-
-          {reviews.length > 0 && (
-            <div className="flex items-center justify-center space-x-2">
-              <div className="flex">{renderStars(Math.round(Number(getAverageRating())))}</div>
-              <span className="text-lg font-semibold text-gray-900">{getAverageRating()}</span>
-              <span className="text-gray-600">({reviews.length} отзывов)</span>
+          {/* Title */}
+          <div className="flex items-start justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center">
+                <MessageSquare className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900">Отзывы наших клиентов</h1>
+                <p className="text-slate-600 mt-1">Реальные истории от довольных покупателей</p>
+              </div>
             </div>
-          )}
+            <div className="hidden sm:block">
+              <div className="bg-slate-100 rounded-lg px-4 py-2 text-sm text-slate-600">
+                {reviews.length} отзывов
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Отзывы */}
-        {reviews && reviews.length > 0 ? (
+      {/* Statistics */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {reviews.length > 0 && (
+          <Card className="border-0 shadow-sm mb-8">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Overall Rating */}
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-slate-900 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <Award className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-4xl font-bold text-slate-900">{getAverageRating()}</div>
+                    <div className="flex justify-center">{renderStars(Math.round(Number(getAverageRating())), "lg")}</div>
+                    <p className="text-slate-600 text-sm">Средний рейтинг</p>
+                  </div>
+                </div>
+
+                {/* Rating Distribution */}
+                <div className="md:col-span-2">
+                  <h3 className="font-semibold text-slate-900 mb-4 flex items-center">
+                    <Star className="h-5 w-5 mr-2 text-amber-400" />
+                    Распределение оценок
+                  </h3>
+                  <div className="space-y-3">
+                    {[5, 4, 3, 2, 1].map((rating) => (
+                      <div key={rating} className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-1 w-12">
+                          <span className="text-sm font-medium text-slate-700">{rating}</span>
+                          <Star className="h-3 w-3 text-amber-400 fill-current" />
+                        </div>
+                        <div className="flex-1 bg-slate-200 rounded-full h-2">
+                          <div
+                            className="bg-slate-900 h-2 rounded-full transition-all duration-300"
+                            style={{
+                              width: reviews.length > 0 ? `${(distribution[rating as keyof typeof distribution] / reviews.length) * 100}%` : '0%'
+                            }}
+                          />
+                        </div>
+                        <span className="text-sm text-slate-600 w-8">
+                          {distribution[rating as keyof typeof distribution]}
+                        </span>
+                        <button
+                          onClick={() => setFilterRating(filterRating === rating ? null : rating)}
+                          className={`text-xs px-2 py-1 rounded-md transition-colors ${
+                            filterRating === rating
+                              ? 'bg-slate-900 text-white'
+                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}
+                        >
+                          {filterRating === rating ? 'Сбросить' : 'Фильтр'}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Reviews Grid */}
+        {filteredReviews && filteredReviews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reviews.map((review) => (
-              <Card key={review.id} className="hover:shadow-lg transition-shadow">
+            {filteredReviews.map((review) => (
+              <Card key={review.id} className="border-0 shadow-sm hover:shadow-md transition-all duration-300 group">
                 <CardContent className="p-6">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <User className="h-6 w-6 text-blue-600" />
+                  {/* Review Image */}
+                  {review.imageUrl && (
+                    <div className="mb-4 rounded-lg overflow-hidden">
+                      <img
+                        src={getCachedImageUrl(review.imageUrl)}
+                        alt="Фото отзыва"
+                        className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{review.name}</h3>
-                      <div className="flex">{renderStars(review.rating)}</div>
+                  )}
+
+                  {/* User Info */}
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
+                      <User className="h-6 w-6 text-slate-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-slate-900">{review.name}</h3>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex">{renderStars(review.rating, "sm")}</div>
+                        <span className="text-xs text-slate-500">
+                          {review.rating}/5
+                        </span>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Car Model */}
                   {review.carModel && (
-                    <p className="text-sm text-blue-600 font-medium mb-2">Автомобиль: {review.carModel}</p>
+                    <div className="bg-slate-100 rounded-lg px-3 py-2 mb-4">
+                      <p className="text-sm text-slate-700 font-medium">
+                        <span className="text-slate-500">Автомобиль:</span> {review.carModel}
+                      </p>
+                    </div>
                   )}
 
-                  <p className="text-gray-700 mb-4 leading-relaxed">{review.text}</p>
-
-                  <p className="text-xs text-gray-500">
-                    {review.createdAt.toLocaleDateString("ru-RU", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                  {/* Review Text */}
+                  <p className="text-slate-700 leading-relaxed mb-4 line-clamp-4">
+                    {review.text}
                   </p>
+
+                  {/* Date */}
+                  <div className="flex items-center space-x-2 text-xs text-slate-500">
+                    <Calendar className="h-3 w-3" />
+                    <span>
+                      {review.createdAt.toLocaleDateString("ru-RU", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+        ) : filterRating ? (
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-12 text-center">
+              <Star className="h-16 w-16 mx-auto text-slate-400 mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Нет отзывов с {filterRating} звездами
+              </h3>
+              <p className="text-slate-600 mb-4">
+                Попробуйте выбрать другой рейтинг или сбросьте фильтр
+              </p>
+              <button
+                onClick={() => setFilterRating(null)}
+                className="bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                Показать все отзывы
+              </button>
+            </CardContent>
+          </Card>
         ) : (
-          <div className="text-center py-12">
-            <User className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Пока нет отзывов</h3>
-            <p className="text-gray-600">Станьте первым, кто оставит отзыв о нашей работе!</p>
-          </div>
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-12 text-center">
+              <MessageSquare className="h-16 w-16 mx-auto text-slate-400 mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Пока нет отзывов
+              </h3>
+              <p className="text-slate-600">
+                Станьте первым, кто оставит отзыв о нашей работе!
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Call to Action */}
+        {reviews.length > 0 && (
+          <Card className="mt-8 border-0 shadow-sm bg-slate-900">
+            <CardContent className="p-8 text-center">
+              <div className="flex items-center justify-center space-x-4 mb-4">
+                <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                  <MessageSquare className="h-6 w-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-xl font-semibold text-white">
+                    Поделитесь своим опытом
+                  </h3>
+                  <p className="text-slate-300 text-sm">
+                    Ваш отзыв поможет другим клиентам сделать правильный выбор
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/contacts"
+                className="inline-flex items-center space-x-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-medium hover:bg-slate-100 transition-colors"
+              >
+                <span>Связаться с нами</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
