@@ -195,8 +195,22 @@ export default function ReviewsPage() {
             </ol>
           </nav>
 
-          {/* Title */}
-          <div className="flex items-start justify-between">
+          {/* Mobile Title */}
+          <div className="lg:hidden flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+              <MessageSquare className="h-6 w-6 text-white drop-shadow-sm" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold text-slate-900 truncate">Отзывы наших клиентов</h1>
+              <div className="flex items-center space-x-2 mt-1 text-xs text-slate-600">
+                <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-sm"></div>
+                <span>{reviews.length} отзывов</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Title */}
+          <div className="hidden lg:flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
                 <MessageSquare className="h-6 w-6 text-white" />
@@ -225,8 +239,8 @@ export default function ReviewsPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                   {/* Rating Summary */}
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
-                      <Award className="h-5 w-5 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+                      <Award className="h-6 w-6 text-white drop-shadow-sm" />
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
@@ -383,9 +397,37 @@ export default function ReviewsPage() {
           </Card>
         )}
 
-        {/* Call to Action */}
+        {/* Call to Action - Mobile */}
         {reviews.length > 0 && (
-          <Card className="mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
+          <Card className="lg:hidden mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+                  <MessageSquare className="h-6 w-6 text-white drop-shadow-sm" />
+                </div>
+                <div className="text-left flex-1">
+                  <h3 className="text-lg font-semibold text-white">
+                    Поделитесь своим опытом
+                  </h3>
+                  <p className="text-slate-300 text-sm">
+                    Ваш отзыв поможет другим клиентам
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/contacts"
+                className="w-full flex items-center justify-center space-x-2 bg-gradient-to-br from-white to-slate-100 text-slate-900 px-6 py-3 rounded-lg font-medium hover:from-slate-100 hover:to-slate-200 transition-all shadow-sm"
+              >
+                <span>Связаться с нами</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Call to Action - Desktop */}
+        {reviews.length > 0 && (
+          <Card className="hidden lg:block mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
             <CardContent className="p-8 text-center">
               <div className="flex items-center justify-center space-x-4 mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-white/20">

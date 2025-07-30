@@ -107,56 +107,64 @@ export default function PrivacyPage() {
       title: 'Общие положения',
       icon: FileText,
       content: privacyData.sections.introduction,
-      description: 'Основные принципы и область применения'
+      description: 'Основные принципы и область применения',
+      gradient: 'from-blue-600 via-purple-600 to-indigo-700'
     },
     {
       id: 'dataCollection',
       title: 'Сбор данных',
       icon: Database,
       content: privacyData.sections.dataCollection,
-      description: 'Виды собираемой информации'
+      description: 'Виды собираемой информации',
+      gradient: 'from-emerald-500 via-teal-500 to-cyan-600'
     },
     {
       id: 'dataUsage',
       title: 'Использование',
       icon: Eye,
       content: privacyData.sections.dataUsage,
-      description: 'Цели обработки данных'
+      description: 'Цели обработки данных',
+      gradient: 'from-amber-500 via-orange-500 to-red-500'
     },
     {
       id: 'dataSecurity',
       title: 'Безопасность',
       icon: Lock,
       content: privacyData.sections.dataSecurity,
-      description: 'Меры защиты информации'
+      description: 'Меры защиты информации',
+      gradient: 'from-red-600 via-pink-600 to-rose-700'
     },
     {
       id: 'userRights',
       title: 'Права пользователей',
       icon: Users,
       content: privacyData.sections.userRights,
-      description: 'Ваши законные права'
+      description: 'Ваши законные права',
+      gradient: 'from-violet-600 via-purple-600 to-indigo-700'
     },
     {
       id: 'cookies',
       title: 'Cookies',
       icon: Cookie,
       content: privacyData.sections.cookies,
-      description: 'Использование файлов cookies'
+      description: 'Использование файлов cookies',
+      gradient: 'from-yellow-500 via-amber-500 to-orange-600'
     },
     {
       id: 'thirdParty',
       title: 'Третьи лица',
       icon: Share2,
       content: privacyData.sections.thirdParty,
-      description: 'Передача данных партнерам'
+      description: 'Передача данных партнерам',
+      gradient: 'from-teal-600 via-cyan-600 to-blue-700'
     },
     {
       id: 'contact',
       title: 'Контакты',
       icon: Mail,
       content: privacyData.sections.contact,
-      description: 'Обратная связь'
+      description: 'Обратная связь',
+      gradient: 'from-green-600 via-emerald-600 to-teal-700'
     }
   ]
 
@@ -186,17 +194,17 @@ export default function PrivacyPage() {
 
           {/* Title - Different for mobile and desktop */}
           <div className="lg:hidden flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
-              <Shield className="h-5 w-5 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+              <Shield className="h-6 w-6 text-white drop-shadow-sm" />
             </div>
             <div className="flex-1 min-w-0">
               <h1 className="text-xl font-bold text-slate-900 truncate">{privacyData.title}</h1>
               <div className="flex items-center space-x-2 mt-1 text-xs text-slate-600">
-                <Clock className="h-3 w-3 flex-shrink-0" />
+                <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-sm"></div>
                 <span>Обновлено: {privacyData.lastUpdated}</span>
               </div>
             </div>
-            <div className="text-xs text-slate-500 bg-gradient-to-br from-slate-100 to-slate-200 rounded px-2 py-1 shadow-sm">
+            <div className="text-xs text-slate-500 bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 rounded-lg px-3 py-2 shadow-sm border border-indigo-200">
               {sections.length} разделов
             </div>
           </div>
@@ -239,8 +247,8 @@ export default function PrivacyPage() {
                     onClick={() => toggleSection(section.id)}
                     className="w-full flex items-center space-x-3 p-4 hover:bg-gradient-to-br hover:from-slate-50 hover:to-slate-100 transition-all"
                   >
-                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
-                      <Icon className="h-5 w-5 text-white" />
+                    <div className={`w-12 h-12 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20`}>
+                      <Icon className="h-6 w-6 text-white drop-shadow-sm" />
                     </div>
 
                     <div className="flex-1 text-left min-w-0">
