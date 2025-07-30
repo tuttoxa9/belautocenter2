@@ -214,7 +214,7 @@ export default function ContactsPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
                   </div>
                   <div className="p-4 lg:p-6 bg-gradient-to-r from-white to-gray-50">
-                    <div className="flex items-start space-x-3 lg:space-x-4">
+                    <div className="flex items-start space-x-3 lg:space-x-4 mb-4">
                       <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-inner flex-shrink-0">
                         <MapPin className="h-5 w-5 lg:h-6 lg:w-6 text-gray-700" />
                       </div>
@@ -226,6 +226,44 @@ export default function ContactsPage() {
                         )}
                       </div>
                     </div>
+
+                    {/* Время работы */}
+                    {contactsData.workingHours && (
+                      <div className="border-t border-gray-200 pt-4">
+                        <div className="flex items-start space-x-3 lg:space-x-4 mb-3">
+                          <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center shadow-inner flex-shrink-0">
+                            <Clock className="h-5 w-5 lg:h-6 lg:w-6 text-blue-700" />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-gray-900 text-base lg:text-lg mb-1">Время работы</h3>
+                          </div>
+                        </div>
+                        <div className="space-y-2 ml-13 lg:ml-16">
+                          {contactsData.workingHours.weekdays && (
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 lg:p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg gap-1 sm:gap-0">
+                              <div className="min-w-0 flex-1">
+                                <p className="font-medium text-gray-900 text-xs lg:text-sm">Будние дни</p>
+                                <p className="text-gray-600 text-xs">{contactsData.workingHours.weekdays}</p>
+                              </div>
+                              <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-xs w-fit">
+                                Открыто
+                              </Badge>
+                            </div>
+                          )}
+                          {contactsData.workingHours.weekends && (
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 lg:p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg gap-1 sm:gap-0">
+                              <div className="min-w-0 flex-1">
+                                <p className="font-medium text-gray-900 text-xs lg:text-sm">Выходные</p>
+                                <p className="text-gray-600 text-xs">{contactsData.workingHours.weekends}</p>
+                              </div>
+                              <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 text-xs w-fit">
+                                Ограничено
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -368,43 +406,7 @@ export default function ContactsPage() {
               </CardContent>
             </Card>
 
-            {/* Время работы */}
-            {contactsData.workingHours && (
-              <Card className="bg-white shadow-lg border-0">
-                <CardHeader className="pb-3 lg:pb-4">
-                  <CardTitle className="text-lg lg:text-xl font-bold text-gray-900 flex items-center">
-                    <Clock className="h-4 w-4 lg:h-5 lg:w-5 mr-2 text-gray-700" />
-                    Время работы
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-3 lg:space-y-4">
-                    {contactsData.workingHours.weekdays && (
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl gap-2 sm:gap-0">
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-gray-900 text-sm lg:text-base">Будние дни</p>
-                          <p className="text-gray-600 text-xs lg:text-sm">{contactsData.workingHours.weekdays}</p>
-                        </div>
-                        <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-xs lg:text-sm w-fit">
-                          Открыто
-                        </Badge>
-                      </div>
-                    )}
-                    {contactsData.workingHours.weekends && (
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl gap-2 sm:gap-0">
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-gray-900 text-sm lg:text-base">Выходные</p>
-                          <p className="text-gray-600 text-xs lg:text-sm">{contactsData.workingHours.weekends}</p>
-                        </div>
-                        <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 text-xs lg:text-sm w-fit">
-                          Ограничено
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+
           </div>
         </div>
 
