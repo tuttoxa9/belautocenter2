@@ -215,63 +215,110 @@ export default function ReviewsPage() {
         </div>
       </div>
 
-      {/* Statistics */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Statistics - More Compact and Professional */}
+      <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
         {reviews.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {/* Compact Overall Rating */}
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Award className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="flex items-baseline space-x-2">
-                      <span className="text-2xl font-bold text-slate-900">{getAverageRating()}</span>
-                      <div className="flex">{renderStars(Math.round(Number(getAverageRating())), "sm")}</div>
+          <div className="mb-6">
+            {/* Compact Rating Summary Card */}
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-slate-900 to-slate-800">
+              <CardContent className="p-4 lg:p-6">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                  {/* Overall Rating - Compact */}
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Award className="h-6 w-6 text-white" />
                     </div>
-                    <p className="text-slate-600 text-sm">из {reviews.length} отзывов</p>
+                    <div>
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl lg:text-3xl font-bold text-white">{getAverageRating()}</span>
+                        <div className="flex">{renderStars(Math.round(Number(getAverageRating())), "md")}</div>
+                      </div>
+                      <p className="text-slate-300 text-sm">Средний рейтинг из {reviews.length} отзывов</p>
+                    </div>
+                  </div>
+
+                  {/* Quick Stats */}
+                  <div className="flex items-center space-x-6 lg:space-x-8">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-white">{reviews.length}</div>
+                      <div className="text-xs text-slate-300">Отзывов</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-white">
+                        {Math.round((distribution[5] / reviews.length) * 100)}%
+                      </div>
+                      <div className="text-xs text-slate-300">5 звёзд</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-white">
+                        {Math.round(((distribution[4] + distribution[5]) / reviews.length) * 100)}%
+                      </div>
+                      <div className="text-xs text-slate-300">4+ звёзд</div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Rating Distribution */}
-            <Card className="border-0 shadow-sm lg:col-span-2">
-              <CardContent className="p-4">
-                <h3 className="font-semibold text-slate-900 mb-3 flex items-center text-sm">
-                  <Star className="h-4 w-4 mr-2 text-amber-400" />
-                  Распределение оценок
-                </h3>
-                <div className="space-y-2">
-                  {[5, 4, 3, 2, 1].map((rating) => (
-                    <div key={rating} className="flex items-center space-x-3">
-                      <div className="flex items-center space-x-1 w-8">
-                        <span className="text-xs font-medium text-slate-700">{rating}</span>
-                        <Star className="h-2 w-2 text-amber-400 fill-current" />
-                      </div>
-                      <div className="flex-1 bg-slate-200 rounded-full h-1.5">
-                        <div
-                          className="bg-slate-900 h-1.5 rounded-full transition-all duration-300"
-                          style={{
-                            width: reviews.length > 0 ? `${(distribution[rating as keyof typeof distribution] / reviews.length) * 100}%` : '0%'
-                          }}
-                        />
-                      </div>
-                      <span className="text-xs text-slate-600 w-6">
-                        {distribution[rating as keyof typeof distribution]}
-                      </span>
+            {/* Compact Filter Bar */}
+            <Card className="border-0 shadow-sm mt-4">
+              <CardContent className="p-3 lg:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                  <h3 className="font-semibold text-slate-900 text-sm flex items-center">
+                    <Star className="h-4 w-4 mr-2 text-amber-400" />
+                    Фильтр по рейтингу
+                  </h3>
+
+                  <div className="flex items-center space-x-2 overflow-x-auto pb-2 sm:pb-0">
+                    <button
+                      onClick={() => setFilterRating(null)}
+                      className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full transition-colors font-medium ${
+                        filterRating === null
+                          ? 'bg-slate-900 text-white'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      Все ({reviews.length})
+                    </button>
+                    {[5, 4, 3, 2, 1].map((rating) => (
                       <button
+                        key={rating}
                         onClick={() => setFilterRating(filterRating === rating ? null : rating)}
-                        className={`text-xs px-2 py-0.5 rounded transition-colors ${
+                        className={`flex-shrink-0 flex items-center space-x-1 text-xs px-3 py-1.5 rounded-full transition-colors font-medium ${
                           filterRating === rating
                             ? 'bg-slate-900 text-white'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                         }`}
                       >
-                        {filterRating === rating ? 'Сбросить' : 'Фильтр'}
+                        <span>{rating}</span>
+                        <Star className="h-2.5 w-2.5 fill-current" />
+                        <span>({distribution[rating as keyof typeof distribution]})</span>
                       </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Compact Rating Bars */}
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-5 gap-2">
+                  {[5, 4, 3, 2, 1].map((rating) => (
+                    <div key={rating} className="flex items-center space-x-2 sm:flex-col sm:space-x-0 sm:space-y-1">
+                      <div className="flex items-center space-x-1 sm:order-2">
+                        <span className="text-xs font-medium text-slate-700">{rating}</span>
+                        <Star className="h-2 w-2 text-amber-400 fill-current" />
+                      </div>
+                      <div className="flex-1 sm:order-1 sm:w-full">
+                        <div className="bg-slate-200 rounded-full h-1.5">
+                          <div
+                            className="bg-slate-900 h-1.5 rounded-full transition-all duration-300"
+                            style={{
+                              width: reviews.length > 0 ? `${(distribution[rating as keyof typeof distribution] / reviews.length) * 100}%` : '0%'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <span className="text-xs text-slate-600 sm:order-3 min-w-[1rem] text-center">
+                        {distribution[rating as keyof typeof distribution]}
+                      </span>
                     </div>
                   ))}
                 </div>
