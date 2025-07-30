@@ -523,6 +523,7 @@ export default function LeasingPage() {
                         onChange={(e) => setLeasingForm({ ...leasingForm, carPrice: e.target.value })}
                         placeholder="80000"
                         required
+                        disabled
                       />
                     </div>
                     <div>

@@ -276,7 +276,6 @@ export default function LeasingCalculator() {
                 min={getLeasingMinValue()}
                 step={isBelarusianRubles ? 500 : 1000}
                 className="h-1"
-                disabled
               />
               <Input
                 type="number"
@@ -286,7 +285,6 @@ export default function LeasingCalculator() {
                 className="text-xs h-8"
                 min={getLeasingMinValue()}
                 max={getLeasingMaxValue()}
-                disabled
               />
             </div>
           </div>
