@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Menu, Phone, Loader2, Check } from "lucide-react"
+import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock } from "lucide-react"
 import { doc, getDoc, collection, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useNotification } from "@/components/providers/notification-provider"
@@ -115,61 +115,6 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-14 items-center justify-between px-4">
-        {/* Кнопка звонка для мобильных (слева) - ЗАКОММЕНТИРОВАНО */}
-        {/* <div className="md:hidden">
-          <Dialog open={isCallbackOpen} onOpenChange={(open) => { setIsCallbackOpen(open); if (!open) setPhoneLoading(false); }}>
-            <DialogTrigger asChild>
-              <Button
-                size="sm"
-                className="bg-white hover:bg-gray-50 border-2 border-black text-xs w-8 h-8 p-0 rounded-full"
-                onClick={() => setPhoneLoading(true)}
-              >
-                {phoneLoading ? (
-                  <Loader2 className="h-3 w-3 animate-spin text-black" />
-                ) : (
-                  <Phone className="h-4 w-4 text-black" />
-                )}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Заказать обратный звонок</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleCallbackSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Ваше имя</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Введите ваше имя"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone">Номер телефона</Label>
-                  <div className="relative">
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: formatPhoneNumber(e.target.value) })}
-                      placeholder="+375XXXXXXXXX"
-                      required
-                      className="pr-10"
-                    />
-                    {isPhoneValid(formData.phone) && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-                    )}
-                  </div>
-                </div>
-                <Button type="submit" className="w-full">
-                  Заказать звонок
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div> */}
-
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
           <Image
@@ -190,35 +135,36 @@ export default function Header() {
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-80 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-r border-slate-200 backdrop-blur-xl">
-            {/* Clean Header with Logo */}
-            <div className="flex items-center justify-center p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg mx-2 mt-4 shadow-sm">
+          <SheetContent side="left" className="w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700 shadow-2xl">
+            {/* Элегантный заголовок */}
+            <div className="relative p-6 bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur-xl border border-slate-600/30 rounded-2xl mx-4 mt-6 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl"></div>
               {loading ? (
-                <div className="flex items-center text-slate-800">
+                <div className="relative flex items-center justify-center text-white">
                   <Loader2 className="h-5 w-5 animate-spin mr-3" />
                   <span className="font-semibold">Загрузка...</span>
                 </div>
               ) : (
-                <div className="flex flex-col items-center">
+                <div className="relative flex flex-col items-center">
                   <Image
                     src="/logo4.png"
                     alt="Белавто Центр"
                     width={140}
                     height={48}
-                    className="h-12 w-auto mb-2"
+                    className="h-12 w-auto mb-3 drop-shadow-lg"
                     priority
                   />
-                  <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+                  <div className="w-16 h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent"></div>
                 </div>
               )}
             </div>
 
-            {/* Clean Navigation Menu */}
-            <div className="px-4 py-6">
-              <div className="space-y-2">
+            {/* Элегантное навигационное меню */}
+            <div className="px-6 py-8">
+              <div className="space-y-3">
                 {navigation
                   .filter((item) => !["/", "/catalog", "/credit", "/contacts"].includes(item.href))
-                  .map((item) => {
+                  .map((item, index) => {
                     const isActive = pathname === item.href;
 
                     return (
@@ -226,34 +172,35 @@ export default function Header() {
                         key={item.name}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={`group flex items-center p-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] ${
+                        className={`group relative flex items-center p-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] ${
                           isActive
-                            ? "bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100 shadow-lg border border-slate-200"
-                            : "bg-white hover:bg-gradient-to-r hover:from-slate-50 hover:to-white border border-slate-100 hover:border-slate-200 hover:shadow-md"
+                            ? "bg-gradient-to-r from-blue-600/90 via-indigo-600/90 to-purple-600/90 shadow-xl border border-blue-500/30"
+                            : "bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-blue-600/30 hover:to-indigo-600/30 border border-slate-600/30 hover:border-blue-500/30 hover:shadow-lg"
                         }`}
                       >
-                        {/* Clean Icon Container */}
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 ${
-                          isActive
-                            ? "bg-gradient-to-br from-slate-200 to-slate-300 shadow-sm"
-                            : "bg-gradient-to-br from-slate-100 to-slate-200 group-hover:from-slate-200 group-hover:to-slate-300"
+                        {/* Современный индикатор */}
+                        <div className={`relative w-3 h-8 mr-4 flex items-center ${
+                          isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-80'
                         }`}>
-                          <div className={`w-2 h-2 rounded-full ${
+                          <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
                             isActive
-                              ? "bg-slate-600 shadow-sm"
-                              : "bg-slate-400 group-hover:bg-slate-500"
+                              ? "bg-white shadow-lg scale-110"
+                              : "bg-slate-300 group-hover:bg-white group-hover:scale-105"
                           }`}></div>
+                          {isActive && (
+                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-white/50 animate-ping"></div>
+                          )}
                         </div>
 
-                        {/* Menu Item Text */}
+                        {/* Контент пункта меню */}
                         <div className="flex-1">
                           <div className={`font-semibold text-base transition-colors ${
-                            isActive ? "text-slate-900" : "text-slate-700 group-hover:text-slate-900"
+                            isActive ? "text-white" : "text-slate-200 group-hover:text-white"
                           }`}>
                             {item.name}
                           </div>
                           <div className={`text-xs transition-colors ${
-                            isActive ? "text-slate-600" : "text-slate-500 group-hover:text-slate-600"
+                            isActive ? "text-blue-100" : "text-slate-400 group-hover:text-slate-300"
                           }`}>
                             {item.name === "Лизинг" && "Финансовые услуги"}
                             {item.name === "О нас" && "Информация о компании"}
@@ -261,9 +208,11 @@ export default function Header() {
                           </div>
                         </div>
 
-                        {/* Active Indicator */}
+                        {/* Стрелка для активного элемента */}
                         {isActive && (
-                          <div className="w-2 h-2 bg-slate-600 rounded-full shadow-sm"></div>
+                          <div className="text-white">
+                            <ArrowRight className="w-4 h-4" />
+                          </div>
                         )}
                       </Link>
                     );
@@ -271,59 +220,63 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Clean Contact Section */}
-            <div className="mx-4 mb-6 p-4 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-200 shadow-lg">
+            {/* Элегантная секция контактов */}
+            <div className="mx-6 mb-8 p-6 bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-xl rounded-2xl border border-slate-600/30 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-blue-500/5 rounded-2xl pointer-events-none"></div>
+
               {loading ? (
-                <div className="flex items-center text-slate-800 mb-4">
+                <div className="flex items-center text-white mb-4">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   <span className="text-sm">Загрузка контактов...</span>
                 </div>
               ) : (
                 <a
                   href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                  className="block text-center text-white font-bold text-lg mb-4 p-3 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                  className="relative block text-center text-white font-bold text-lg mb-4 p-4 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border border-emerald-500/30"
                 >
-                  {settings?.phone || "+375 XX XXX-XX-XX"}
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-xl"></div>
+                  <span className="relative">{settings?.phone || "+375 XX XXX-XX-XX"}</span>
                 </a>
               )}
 
               <Button
-                className="w-full bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] mb-4"
+                className="relative w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] mb-6 border border-blue-500/30"
                 onClick={() => {
                   setIsMobileMenuOpen(false)
                   setIsCallbackOpen(true)
                 }}
               >
-                Связаться с нами
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-xl"></div>
+                <span className="relative">Связаться с нами</span>
               </Button>
 
-              {/* Contact Information */}
-              <div className="space-y-3 pt-3 border-t border-slate-200">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center shadow-sm">
-                    <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
+              {/* Информация о контактах */}
+              <div className="space-y-4 pt-4 border-t border-slate-600/50">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 rounded-lg flex items-center justify-center shadow-lg border border-slate-500/30">
+                    <MapPin className="w-4 h-4 text-slate-200" />
                   </div>
                   <div>
-                    <div className="text-xs font-semibold text-slate-800 mb-1">Адрес:</div>
-                    <div className="text-xs text-slate-600">{settings?.address || "г. Минск, ул. Примерная, 123"}</div>
+                    <div className="text-xs font-semibold text-slate-200 mb-1">Адрес:</div>
+                    <div className="text-xs text-slate-300">{settings?.address || "г. Минск, ул. Примерная, 123"}</div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center shadow-sm">
-                    <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 rounded-lg flex items-center justify-center shadow-lg border border-slate-500/30">
+                    <Clock className="w-4 h-4 text-slate-200" />
                   </div>
                   <div>
-                    <div className="text-xs font-semibold text-slate-800 mb-1">Время работы:</div>
-                    <div className="text-xs text-slate-600">Пн-Пт: 9:00-21:00</div>
-                    <div className="text-xs text-slate-600">Сб-Вс: 10:00-20:00</div>
+                    <div className="text-xs font-semibold text-slate-200 mb-1">Время работы:</div>
+                    <div className="text-xs text-slate-300">Пн-Пт: 9:00-21:00</div>
+                    <div className="text-xs text-slate-300">Сб-Вс: 10:00-20:00</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Clean Bottom Accent */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300"></div>
+            {/* Декоративный акцент внизу */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-80"></div>
           </SheetContent>
         </Sheet>
 
