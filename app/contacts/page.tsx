@@ -229,36 +229,24 @@ export default function ContactsPage() {
 
                     {/* Время работы */}
                     {contactsData.workingHours && (
-                      <div className="border-t border-gray-200 pt-4">
-                        <div className="flex items-start space-x-3 lg:space-x-4 mb-3">
-                          <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center shadow-inner flex-shrink-0">
-                            <Clock className="h-5 w-5 lg:h-6 lg:w-6 text-blue-700" />
+                      <div className="border-t border-gray-200 pt-3">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <div className="w-6 h-6 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Clock className="h-3 w-3 text-blue-700" />
                           </div>
-                          <div className="min-w-0">
-                            <h3 className="font-semibold text-gray-900 text-base lg:text-lg mb-1">Время работы</h3>
-                          </div>
+                          <h3 className="font-medium text-gray-900 text-sm">Время работы</h3>
                         </div>
-                        <div className="space-y-2 ml-13 lg:ml-16">
+                        <div className="ml-8 space-y-1">
                           {contactsData.workingHours.weekdays && (
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 lg:p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg gap-1 sm:gap-0">
-                              <div className="min-w-0 flex-1">
-                                <p className="font-medium text-gray-900 text-xs lg:text-sm">Будние дни</p>
-                                <p className="text-gray-600 text-xs">{contactsData.workingHours.weekdays}</p>
-                              </div>
-                              <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-xs w-fit">
-                                Открыто
-                              </Badge>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-700 font-medium">Пн-Пт:</span>
+                              <span className="text-gray-600">{contactsData.workingHours.weekdays}</span>
                             </div>
                           )}
                           {contactsData.workingHours.weekends && (
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 lg:p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg gap-1 sm:gap-0">
-                              <div className="min-w-0 flex-1">
-                                <p className="font-medium text-gray-900 text-xs lg:text-sm">Выходные</p>
-                                <p className="text-gray-600 text-xs">{contactsData.workingHours.weekends}</p>
-                              </div>
-                              <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 text-xs w-fit">
-                                Ограничено
-                              </Badge>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-700 font-medium">Сб-Вс:</span>
+                              <span className="text-gray-600">{contactsData.workingHours.weekends}</span>
                             </div>
                           )}
                         </div>

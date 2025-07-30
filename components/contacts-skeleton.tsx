@@ -33,12 +33,30 @@ export default function ContactsSkeleton() {
                   <Skeleton className="h-64 lg:h-96 w-full" />
                 </div>
                 <div className="p-4 lg:p-6">
-                  <div className="flex items-start space-x-3 lg:space-x-4">
+                  <div className="flex items-start space-x-3 lg:space-x-4 mb-4">
                     <Skeleton className="w-10 h-10 lg:w-12 lg:h-12 rounded-2xl flex-shrink-0" />
                     <div className="min-w-0 flex-1">
                       <Skeleton className="h-5 lg:h-6 w-24 mb-2" />
                       <Skeleton className="h-4 lg:h-5 w-48 mb-1" />
                       <Skeleton className="h-3 lg:h-4 w-32" />
+                    </div>
+                  </div>
+
+                  {/* Время работы skeleton */}
+                  <div className="border-t border-gray-200 pt-3">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Skeleton className="w-6 h-6 rounded-lg flex-shrink-0" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <div className="ml-8 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <Skeleton className="h-3 w-12" />
+                        <Skeleton className="h-3 w-20" />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Skeleton className="h-3 w-12" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -113,33 +131,7 @@ export default function ContactsSkeleton() {
               </CardContent>
             </Card>
 
-            {/* Время работы skeleton */}
-            <Card className="bg-white shadow-lg border-0">
-              <CardHeader className="pb-3 lg:pb-4">
-                <div className="flex items-center">
-                  <Skeleton className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                  <Skeleton className="h-5 lg:h-6 w-28" />
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-3 lg:space-y-4">
-                  <div className="flex justify-between items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl">
-                    <div className="min-w-0 flex-1">
-                      <Skeleton className="h-4 w-24 mb-1" />
-                      <Skeleton className="h-3 w-32" />
-                    </div>
-                    <Skeleton className="h-6 w-16 rounded-full ml-2" />
-                  </div>
-                  <div className="flex justify-between items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl">
-                    <div className="min-w-0 flex-1">
-                      <Skeleton className="h-4 w-20 mb-1" />
-                      <Skeleton className="h-3 w-36" />
-                    </div>
-                    <Skeleton className="h-6 w-20 rounded-full ml-2" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+
           </div>
         </div>
 
