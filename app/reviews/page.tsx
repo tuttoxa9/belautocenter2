@@ -198,8 +198,8 @@ export default function ReviewsPage() {
           {/* Title */}
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center">
-                <MessageSquare className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-sm">
+                <MessageSquare className="h-6 w-6 text-white flex-shrink-0" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">Отзывы наших клиентов</h1>
@@ -207,7 +207,7 @@ export default function ReviewsPage() {
               </div>
             </div>
             <div className="hidden sm:block">
-              <div className="bg-slate-100 rounded-lg px-4 py-2 text-sm text-slate-600">
+              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg px-4 py-2 text-sm text-slate-600 shadow-sm">
                 {reviews.length} отзывов
               </div>
             </div>
@@ -338,7 +338,7 @@ export default function ReviewsPage() {
 
                   {/* Date - Simple */}
                   <div className="flex items-center space-x-1 text-xs text-slate-400 pt-2 border-t border-slate-100">
-                    <Calendar className="h-3 w-3" />
+                    <Calendar className="h-3 w-3 flex-shrink-0" />
                     <span>
                       {review.createdAt.toLocaleDateString("ru-RU", {
                         day: "numeric",
@@ -385,11 +385,11 @@ export default function ReviewsPage() {
 
         {/* Call to Action */}
         {reviews.length > 0 && (
-          <Card className="mt-8 border-0 shadow-sm bg-slate-900">
+          <Card className="mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
             <CardContent className="p-8 text-center">
               <div className="flex items-center justify-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-white/10 to-white/5 rounded-xl flex items-center justify-center shadow-sm">
+                  <MessageSquare className="h-6 w-6 text-white flex-shrink-0" />
                 </div>
                 <div className="text-left">
                   <h3 className="text-xl font-semibold text-white">
@@ -402,10 +402,10 @@ export default function ReviewsPage() {
               </div>
               <Link
                 href="/contacts"
-                className="inline-flex items-center space-x-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-medium hover:bg-slate-100 transition-colors"
+                className="inline-flex items-center space-x-2 bg-gradient-to-br from-white to-slate-100 text-slate-900 px-6 py-3 rounded-lg font-medium hover:from-slate-100 hover:to-slate-200 transition-all shadow-sm"
               >
                 <span>Связаться с нами</span>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 flex-shrink-0" />
               </Link>
             </CardContent>
           </Card>
