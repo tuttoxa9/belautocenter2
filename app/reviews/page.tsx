@@ -198,8 +198,8 @@ export default function ReviewsPage() {
           {/* Title */}
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-sm">
-                <MessageSquare className="h-6 w-6 text-white flex-shrink-0" />
+              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
+                <MessageSquare className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">Отзывы наших клиентов</h1>
@@ -225,8 +225,8 @@ export default function ReviewsPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                   {/* Rating Summary */}
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-                      <Award className="h-5 w-5 text-white flex-shrink-0" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
+                      <Award className="h-5 w-5 text-white" />
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
@@ -294,7 +294,7 @@ export default function ReviewsPage() {
 
                   {/* User Info - Compact */}
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-9 h-9 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <div className="w-9 h-9 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-300/50">
                       <User className="h-4 w-4 text-slate-600" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -338,7 +338,7 @@ export default function ReviewsPage() {
 
                   {/* Date - Simple */}
                   <div className="flex items-center space-x-1 text-xs text-slate-400 pt-2 border-t border-slate-100">
-                    <Calendar className="h-3 w-3 flex-shrink-0" />
+                    <Calendar className="h-3 w-3 flex-shrink-0 text-slate-500" />
                     <span>
                       {review.createdAt.toLocaleDateString("ru-RU", {
                         day: "numeric",
@@ -388,8 +388,8 @@ export default function ReviewsPage() {
           <Card className="mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
             <CardContent className="p-8 text-center">
               <div className="flex items-center justify-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-white/10 to-white/5 rounded-xl flex items-center justify-center shadow-sm">
-                  <MessageSquare className="h-6 w-6 text-white flex-shrink-0" />
+                <div className="w-12 h-12 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-white/20">
+                  <MessageSquare className="h-6 w-6 text-white" />
                 </div>
                 <div className="text-left">
                   <h3 className="text-xl font-semibold text-white">
