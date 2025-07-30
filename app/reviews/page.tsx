@@ -24,6 +24,13 @@ export default function ReviewsPage() {
   const [filteredReviews, setFilteredReviews] = useState<Review[]>([])
   const [filterRating, setFilterRating] = useState<number | null>(null)
 
+  console.log("ReviewsPage состояние:", {
+    reviewsCount: reviews.length,
+    filteredCount: filteredReviews.length,
+    loading,
+    filterRating
+  })
+
   useEffect(() => {
     loadReviews()
   }, [])
@@ -38,21 +45,52 @@ export default function ReviewsPage() {
 
   const loadReviews = async () => {
     try {
+      // Сначала загружаем все отзывы для отладки
+      const allReviewsQuery = query(collection(db, "reviews"), orderBy("createdAt", "desc"))
+      const allSnapshot = await getDocs(allReviewsQuery)
+      console.log("Все отзывы в Firebase:", allSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })))
+
       const reviewsQuery = query(
         collection(db, "reviews"),
         where("status", "==", "published"),
         orderBy("createdAt", "desc"),
       )
       const snapshot = await getDocs(reviewsQuery)
-      const reviewsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-      })) as Review[]
+      const reviewsData = snapshot.docs.map((doc) => {
+        const data = doc.data()
+        console.log("Обрабатываем отзыв:", doc.id, data)
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+        }
+      }) as Review[]
 
+      console.log("Отфильтрованные отзывы (published):", reviewsData)
       setReviews(reviewsData)
     } catch (error) {
       console.error("Ошибка загрузки отзывов:", error)
+      // Попробуем загрузить без фильтра по статусу
+      try {
+        console.log("Пробуем загрузить без фильтра по статусу...")
+        const simpleQuery = query(collection(db, "reviews"))
+        const simpleSnapshot = await getDocs(simpleQuery)
+        const simpleReviewsData = simpleSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() || new Date(),
+        })) as Review[]
+
+        console.log("Отзывы без фильтра:", simpleReviewsData)
+        // Фильтруем на клиенте
+        const publishedReviews = simpleReviewsData.filter(review => review.status === "published")
+        setReviews(publishedReviews)
+      } catch (fallbackError) {
+        console.error("Ошибка резервной загрузки:", fallbackError)
+      }
     } finally {
       setLoading(false)
     }
@@ -234,9 +272,12 @@ export default function ReviewsPage() {
         )}
 
         {/* Reviews Grid */}
+        {console.log("Рендеринг отзывов:", { reviews: reviews.length, filteredReviews: filteredReviews.length, filterRating })}
         {filteredReviews && filteredReviews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredReviews.map((review) => (
+            {filteredReviews.map((review) => {
+              console.log("Рендерим отзыв:", review.id, review.name, review.status)
+              return (
               <Card key={review.id} className="border-0 shadow-sm hover:shadow-md transition-all duration-300 group">
                 <CardContent className="p-6">
                   {/* Review Image */}
@@ -293,7 +334,7 @@ export default function ReviewsPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            )})}
           </div>
         ) : filterRating ? (
           <Card className="border-0 shadow-sm">
