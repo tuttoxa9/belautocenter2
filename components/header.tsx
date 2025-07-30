@@ -135,148 +135,92 @@ export default function Header() {
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700 shadow-2xl">
-            {/* Элегантный заголовок */}
-            <div className="relative p-6 bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur-xl border border-slate-600/30 rounded-2xl mx-4 mt-6 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl"></div>
+          <SheetContent side="left" className="w-80 bg-white border-r border-gray-200">
+            {/* Простой заголовок */}
+            <div className="flex items-center justify-center p-4 border-b border-gray-100">
               {loading ? (
-                <div className="relative flex items-center justify-center text-white">
-                  <Loader2 className="h-5 w-5 animate-spin mr-3" />
-                  <span className="font-semibold">Загрузка...</span>
+                <div className="flex items-center text-gray-600">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <span className="font-medium">Загрузка...</span>
                 </div>
               ) : (
-                <div className="relative flex flex-col items-center">
+                <div className="flex flex-col items-center">
                   <Image
                     src="/logo4.png"
                     alt="Белавто Центр"
-                    width={140}
-                    height={48}
-                    className="h-12 w-auto mb-3 drop-shadow-lg"
+                    width={120}
+                    height={40}
+                    className="h-10 w-auto mb-2"
                     priority
                   />
-                  <div className="w-16 h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent"></div>
+                  <div className="w-12 h-px bg-gray-300"></div>
                 </div>
               )}
             </div>
 
-            {/* Элегантное навигационное меню */}
-            <div className="px-6 py-8">
-              <div className="space-y-3">
-                {navigation
-                  .filter((item) => !["/", "/catalog", "/credit", "/contacts"].includes(item.href))
-                  .map((item, index) => {
-                    const isActive = pathname === item.href;
+            {/* Компактное навигационное меню */}
+            <div className="py-4">
+              {navigation
+                .filter((item) => !["/", "/catalog", "/credit", "/contacts"].includes(item.href))
+                .map((item) => {
+                  const isActive = pathname === item.href;
 
-                    return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`group relative flex items-center p-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] ${
-                          isActive
-                            ? "bg-gradient-to-r from-blue-600/90 via-indigo-600/90 to-purple-600/90 shadow-xl border border-blue-500/30"
-                            : "bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-blue-600/30 hover:to-indigo-600/30 border border-slate-600/30 hover:border-blue-500/30 hover:shadow-lg"
-                        }`}
-                      >
-                        {/* Современный индикатор */}
-                        <div className={`relative w-3 h-8 mr-4 flex items-center ${
-                          isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-80'
-                        }`}>
-                          <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                            isActive
-                              ? "bg-white shadow-lg scale-110"
-                              : "bg-slate-300 group-hover:bg-white group-hover:scale-105"
-                          }`}></div>
-                          {isActive && (
-                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-white/50 animate-ping"></div>
-                          )}
-                        </div>
-
-                        {/* Контент пункта меню */}
-                        <div className="flex-1">
-                          <div className={`font-semibold text-base transition-colors ${
-                            isActive ? "text-white" : "text-slate-200 group-hover:text-white"
-                          }`}>
-                            {item.name}
-                          </div>
-                          <div className={`text-xs transition-colors ${
-                            isActive ? "text-blue-100" : "text-slate-400 group-hover:text-slate-300"
-                          }`}>
-                            {item.name === "Лизинг" && "Финансовые услуги"}
-                            {item.name === "О нас" && "Информация о компании"}
-                            {item.name === "Отзывы" && "Мнения клиентов"}
-                          </div>
-                        </div>
-
-                        {/* Стрелка для активного элемента */}
-                        {isActive && (
-                          <div className="text-white">
-                            <ArrowRight className="w-4 h-4" />
-                          </div>
-                        )}
-                      </Link>
-                    );
-                  })}
-              </div>
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
+                        isActive ? 'text-blue-600 bg-blue-50' : ''
+                      }`}
+                    >
+                      <div className={`w-2 h-2 rounded-full mr-3 ${
+                        isActive ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}></div>
+                      <span className="font-medium">{item.name}</span>
+                    </Link>
+                  );
+                })}
             </div>
 
-            {/* Элегантная секция контактов */}
-            <div className="mx-6 mb-8 p-6 bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-xl rounded-2xl border border-slate-600/30 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-blue-500/5 rounded-2xl pointer-events-none"></div>
-
+            {/* Компактная секция контактов */}
+            <div className="mx-4 mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
               {loading ? (
-                <div className="flex items-center text-white mb-4">
+                <div className="flex items-center text-gray-600 mb-3">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   <span className="text-sm">Загрузка контактов...</span>
                 </div>
               ) : (
                 <a
                   href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                  className="relative block text-center text-white font-bold text-lg mb-4 p-4 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border border-emerald-500/30"
+                  className="block text-center text-white font-semibold text-base mb-3 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-xl"></div>
-                  <span className="relative">{settings?.phone || "+375 XX XXX-XX-XX"}</span>
+                  {settings?.phone || "+375 XX XXX-XX-XX"}
                 </a>
               )}
 
               <Button
-                className="relative w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] mb-6 border border-blue-500/30"
+                className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 rounded-lg transition-colors mb-4"
                 onClick={() => {
                   setIsMobileMenuOpen(false)
                   setIsCallbackOpen(true)
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-xl"></div>
-                <span className="relative">Связаться с нами</span>
+                Связаться с нами
               </Button>
 
-              {/* Информация о контактах */}
-              <div className="space-y-4 pt-4 border-t border-slate-600/50">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 rounded-lg flex items-center justify-center shadow-lg border border-slate-500/30">
-                    <MapPin className="w-4 h-4 text-slate-200" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-slate-200 mb-1">Адрес:</div>
-                    <div className="text-xs text-slate-300">{settings?.address || "г. Минск, ул. Примерная, 123"}</div>
-                  </div>
+              {/* Простая контактная информация */}
+              <div className="space-y-2 pt-3 border-t border-gray-200">
+                <div className="flex items-center space-x-2 text-xs text-gray-600">
+                  <MapPin className="w-3 h-3" />
+                  <span>{settings?.address || "г. Минск, ул. Примерная, 123"}</span>
                 </div>
-
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 rounded-lg flex items-center justify-center shadow-lg border border-slate-500/30">
-                    <Clock className="w-4 h-4 text-slate-200" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-slate-200 mb-1">Время работы:</div>
-                    <div className="text-xs text-slate-300">Пн-Пт: 9:00-21:00</div>
-                    <div className="text-xs text-slate-300">Сб-Вс: 10:00-20:00</div>
-                  </div>
+                <div className="flex items-center space-x-2 text-xs text-gray-600">
+                  <Clock className="w-3 h-3" />
+                  <span>Пн-Пт: 9:00-21:00, Сб-Вс: 10:00-20:00</span>
                 </div>
               </div>
             </div>
-
-            {/* Декоративный акцент внизу */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-80"></div>
           </SheetContent>
         </Sheet>
 
