@@ -225,9 +225,9 @@ export default function Stories() {
               )}
 
               <div className="text-center mt-2 max-w-16">
-                <p className="text-xs text-gray-600 truncate font-medium">{story.caption}</p>
+                <p className="text-xs text-gray-600 font-medium line-clamp-2">{story.caption}</p>
                 {story.subtitle && (
-                  <p className="text-xs text-gray-500 truncate mt-1">{story.subtitle}</p>
+                  <p className="text-xs text-gray-500 mt-1 line-clamp-1">{story.subtitle}</p>
                 )}
               </div>
             </button>

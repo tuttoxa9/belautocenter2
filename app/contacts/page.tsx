@@ -380,23 +380,23 @@ export default function ContactsPage() {
                 <CardContent className="pt-0">
                   <div className="space-y-3 lg:space-y-4">
                     {contactsData.workingHours.weekdays && (
-                      <div className="flex justify-between items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl gap-2 sm:gap-0">
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-gray-900 text-sm lg:text-base">Будние дни</p>
-                          <p className="text-gray-600 text-xs lg:text-sm truncate">{contactsData.workingHours.weekdays}</p>
+                          <p className="text-gray-600 text-xs lg:text-sm">{contactsData.workingHours.weekdays}</p>
                         </div>
-                        <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-xs lg:text-sm flex-shrink-0 ml-2">
+                        <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-xs lg:text-sm w-fit">
                           Открыто
                         </Badge>
                       </div>
                     )}
                     {contactsData.workingHours.weekends && (
-                      <div className="flex justify-between items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 lg:p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl gap-2 sm:gap-0">
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-gray-900 text-sm lg:text-base">Выходные</p>
-                          <p className="text-gray-600 text-xs lg:text-sm truncate">{contactsData.workingHours.weekends}</p>
+                          <p className="text-gray-600 text-xs lg:text-sm">{contactsData.workingHours.weekends}</p>
                         </div>
-                        <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 text-xs lg:text-sm flex-shrink-0 ml-2">
+                        <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 text-xs lg:text-sm w-fit">
                           Ограничено
                         </Badge>
                       </div>
