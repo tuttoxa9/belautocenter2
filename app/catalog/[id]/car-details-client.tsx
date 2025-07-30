@@ -10,6 +10,7 @@ import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -18,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useButtonState } from "@/hooks/use-button-state"
 import {
   Gauge,
   Fuel,
@@ -154,6 +156,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   // Touch events для свайпов на мобильных устройствах
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
+
+  // Button states
+  const bookingButtonState = useButtonState()
+  const callbackButtonState = useButtonState()
+  const creditButtonState = useButtonState()
 
   useEffect(() => {
     if (carId) {
@@ -404,7 +411,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
+
+    await bookingButtonState.execute(async () => {
       await addDoc(collection(db, "leads"), {
         ...bookingForm,
         carId: carId,
@@ -413,39 +421,34 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         status: "new",
         createdAt: new Date(),
       })
+
       // Отправляем уведомление в Telegram
-      try {
-        await fetch('/api/send-telegram', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: bookingForm.name,
-            phone: bookingForm.phone,
-            message: bookingForm.message,
-            carMake: car?.make,
-            carModel: car?.model,
-            carYear: car?.year,
-            carId: carId,
-            type: 'car_booking'
-          })
+      await fetch('/api/send-telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: bookingForm.name,
+          phone: bookingForm.phone,
+          message: bookingForm.message,
+          carMake: car?.make,
+          carModel: car?.model,
+          carYear: car?.year,
+          carId: carId,
+          type: 'car_booking'
         })
-      } catch (telegramError) {
-        console.error('Ошибка отправки в Telegram:', telegramError)
-      }
+      })
+
       setIsBookingOpen(false)
       setBookingForm({ name: "", phone: "+375", message: "" })
-      alert("Заявка на бронирование отправлена! Мы свяжемся с вами в ближайшее время.")
-    } catch (error) {
-      console.error("Ошибка отправки заявки:", error)
-      alert("Произошла ошибка. Попробуйте еще раз.")
-    }
+    })
   }
 
   const handleCallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
+
+    await callbackButtonState.execute(async () => {
       await addDoc(collection(db, "leads"), {
         ...callbackForm,
         carId: carId,
@@ -454,6 +457,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         status: "new",
         createdAt: new Date(),
       })
+
       // Отправляем уведомление в Telegram
       await fetch('/api/send-telegram', {
         method: 'POST',
@@ -470,18 +474,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           type: 'callback'
         })
       })
+
       setIsCallbackOpen(false)
       setCallbackForm({ name: "", phone: "+375" })
-      alert("Заявка отправлена! Мы свяжемся с вами в ближайшее время.")
-    } catch (error) {
-      console.error("Ошибка отправки заявки:", error)
-      alert("Произошла ошибка. Попробуйте еще раз.")
-    }
+    })
   }
 
   const handleCreditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
+
+    await creditButtonState.execute(async () => {
       // Сохраняем в Firestore
       await addDoc(collection(db, "leads"), {
         ...creditForm,
@@ -500,39 +502,31 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       })
 
       // Отправляем уведомление в Telegram
-      try {
-        await fetch('/api/send-telegram', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: creditForm.name,
-            phone: creditForm.phone,
-            message: creditForm.message,
-            carMake: car?.make,
-            carModel: car?.model,
-            carYear: car?.year,
-            carId: carId,
-            carPrice: formatPrice(isBelarusianRubles ? getCurrentCreditAmount() + getCurrentDownPayment() : car?.price || 0),
-            downPayment: formatPrice(getCurrentDownPayment()),
-            loanTerm: loanTerm[0],
-            bank: selectedBank?.name || "Не выбран",
-            financeType: financeType,
-            type: financeType === 'credit' ? 'credit_request' : 'leasing_request'
-          })
+      await fetch('/api/send-telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: creditForm.name,
+          phone: creditForm.phone,
+          message: creditForm.message,
+          carMake: car?.make,
+          carModel: car?.model,
+          carYear: car?.year,
+          carId: carId,
+          carPrice: formatPrice(isBelarusianRubles ? getCurrentCreditAmount() + getCurrentDownPayment() : car?.price || 0),
+          downPayment: formatPrice(getCurrentDownPayment()),
+          loanTerm: loanTerm[0],
+          bank: selectedBank?.name || "Не выбран",
+          financeType: financeType,
+          type: financeType === 'credit' ? 'credit_request' : 'leasing_request'
         })
-      } catch (telegramError) {
-        console.error('Ошибка отправки в Telegram:', telegramError)
-      }
+      })
 
       setIsCreditFormOpen(false)
       setCreditForm({ name: "", phone: "+375", message: "" })
-      alert(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} отправлена! Мы свяжемся с вами в ближайшее время.`)
-    } catch (error) {
-      console.error("Ошибка отправки заявки на кредит:", error)
-      alert("Произошла ошибка. Попробуйте еще раз.")
-    }
+    })
   }
 
   const nextImage = () => {
@@ -1547,9 +1541,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   placeholder="Удобное время для просмотра..."
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <StatusButton
+                type="submit"
+                className="w-full"
+                state={bookingButtonState.state}
+                loadingText="Отправляем..."
+                successText="Заявка отправлена!"
+                errorText="Ошибка"
+              >
                 Записаться на просмотр
-              </Button>
+              </StatusButton>
             </form>
           </DialogContent>
         </Dialog>
@@ -1588,9 +1589,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   )}
                 </div>
               </div>
-              <Button type="submit" className="w-full">
+              <StatusButton
+                type="submit"
+                className="w-full"
+                state={callbackButtonState.state}
+                loadingText="Отправляем..."
+                successText="Заявка отправлена!"
+                errorText="Ошибка"
+              >
                 Заказать звонок
-              </Button>
+              </StatusButton>
             </form>
           </DialogContent>
         </Dialog>
@@ -1693,9 +1701,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </div>
               )}
 
-              <Button type="submit" className="w-full h-9 sm:h-10 text-sm">
+              <StatusButton
+                type="submit"
+                className="w-full h-9 sm:h-10 text-sm"
+                state={creditButtonState.state}
+                loadingText="Отправляем..."
+                successText="Заявка отправлена!"
+                errorText="Ошибка"
+              >
                 Отправить заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}
-              </Button>
+              </StatusButton>
             </form>
           </DialogContent>
         </Dialog>

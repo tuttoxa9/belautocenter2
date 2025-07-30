@@ -18,12 +18,14 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { StatusButton } from '@/components/ui/status-button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import YandexMap from '@/components/yandex-map'
 import ContactsSkeleton from '@/components/contacts-skeleton'
+import { useButtonState } from '@/hooks/use-button-state'
 
 interface ContactsData {
   title?: string
@@ -77,6 +79,7 @@ export default function ContactsPage() {
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const submitButtonState = useButtonState()
 
   useEffect(() => {
     const fetchContactsData = async () => {
@@ -132,9 +135,8 @@ export default function ContactsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
 
-    try {
+    await submitButtonState.execute(async () => {
       // Отправка через API
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
@@ -149,19 +151,13 @@ export default function ContactsPage() {
         }),
       })
 
-      if (response.ok) {
-        // Очистка формы после успешной отправки
-        setContactForm({ name: '', phone: '', message: '' })
-        alert('Сообщение отправлено успешно!')
-      } else {
+      if (!response.ok) {
         throw new Error('Ошибка отправки сообщения')
       }
-    } catch (error) {
-      console.error('Ошибка отправки формы:', error)
-      alert('Ошибка отправки сообщения. Попробуйте еще раз.')
-    } finally {
-      setIsSubmitting(false)
-    }
+
+      // Очистка формы после успешной отправки
+      setContactForm({ name: '', phone: '', message: '' })
+    })
   }
 
   if (loading) {
@@ -371,25 +367,19 @@ export default function ContactsPage() {
                     />
                   </div>
 
-                  <Button
+                  <StatusButton
                     type="submit"
                     size="lg"
-                    disabled={isSubmitting}
+                    state={submitButtonState.state}
                     className="w-full h-12 lg:h-14 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+                    loadingText="Отправляем..."
+                    successText="Отправлено!"
+                    errorText="Ошибка отправки"
                   >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                        Отправка...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-5 w-5 mr-2" />
-                        Отправить сообщение
-                        <ArrowRight className="h-5 w-5 ml-2" />
-                      </>
-                    )}
-                  </Button>
+                    <Send className="h-5 w-5 mr-2" />
+                    Отправить сообщение
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                  </StatusButton>
                 </form>
               </CardContent>
             </Card>

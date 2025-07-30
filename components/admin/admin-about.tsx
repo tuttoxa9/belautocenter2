@@ -4,16 +4,19 @@ import { useState, useEffect } from "react"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Button } from "@/components/ui/button"
+import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Save, Plus, Trash2, Shield, Award, Users, Car, Phone, MapPin, Clock, CheckCircle, Star, Wrench, CreditCard, DollarSign, FileText, Building, Calculator, Handshake, Loader2 } from "lucide-react"
+import { useButtonState } from "@/hooks/use-button-state"
 
 export default function AdminAbout() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const saveButtonState = useButtonState()
   const [aboutData, setAboutData] = useState({
     pageTitle: "О компании \"АвтоБел Центр\"",
     pageSubtitle: "Мы помогаем людям найти идеальный автомобиль уже более 12 лет. Наша миссия — сделать покупку автомобиля простой, безопасной и выгодной.",
@@ -109,16 +112,9 @@ export default function AdminAbout() {
   }
 
   const saveAboutData = async () => {
-    setSaving(true)
-    try {
+    await saveButtonState.execute(async () => {
       await setDoc(doc(db, "pages", "about"), aboutData)
-      alert("Данные сохранены!")
-    } catch (error) {
-      console.error("Ошибка сохранения:", error)
-      alert("Ошибка сохранения данных")
-    } finally {
-      setSaving(false)
-    }
+    })
   }
 
   const updateStat = (index, field, value) => {
@@ -240,10 +236,17 @@ export default function AdminAbout() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-white">Страница "О нас"</h2>
-        <Button onClick={saveAboutData} disabled={saving} className="bg-gradient-to-r from-purple-500 to-blue-500">
-          {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+        <StatusButton
+          onClick={saveAboutData}
+          state={saveButtonState.state}
+          className="bg-gradient-to-r from-purple-500 to-blue-500"
+          loadingText="Сохраняем..."
+          successText="Сохранено!"
+          errorText="Ошибка"
+        >
+          <Save className="h-4 w-4 mr-2" />
           Сохранить
-        </Button>
+        </StatusButton>
       </div>
 
       <div className="space-y-6">

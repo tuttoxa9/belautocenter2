@@ -6,9 +6,11 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { StatusButton } from "@/components/ui/status-button"
 import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
+import { useButtonState } from "@/hooks/use-button-state"
 
 import { CheckCircle, Check } from "lucide-react"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
@@ -36,6 +38,8 @@ export default function HomePage() {
     name: "",
     phone: "+375",
   })
+
+  const contactButtonState = useButtonState()
 
   const [cars, setCars] = useState<Array<{
     id: string;
@@ -113,7 +117,8 @@ export default function HomePage() {
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
+
+    await contactButtonState.execute(async () => {
       // Сохраняем в Firebase
       await addDoc(collection(db, "leads"), {
         ...contactForm,
@@ -135,11 +140,7 @@ export default function HomePage() {
       })
 
       setContactForm({ name: "", phone: "+375" })
-      alert("Заявка отправлена! Мы свяжемся с вами в ближайшее время.")
-    } catch (error) {
-      console.error("Ошибка отправки заявки:", error)
-      alert("Произошла ошибка. Попробуйте еще раз.")
-    }
+    })
   }
 
   const formatPhoneNumber = (value: string) => {
@@ -310,10 +311,18 @@ export default function HomePage() {
                   <Check className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-400" />
                 )}
               </div>
-              <Button type="submit" size="sm" className="bg-white/20 hover:bg-white/30 text-white border border-white/40 backdrop-blur-sm px-4 h-10 sm:h-9 text-sm whitespace-nowrap">
+              <StatusButton
+                type="submit"
+                size="sm"
+                className="bg-white/20 hover:bg-white/30 text-white border border-white/40 backdrop-blur-sm px-4 h-10 sm:h-9 text-sm whitespace-nowrap"
+                state={contactButtonState.state}
+                loadingText="Отправляем..."
+                successText="Отправлено!"
+                errorText="Ошибка"
+              >
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Отправить
-              </Button>
+              </StatusButton>
             </form>
           </div>
         </div>

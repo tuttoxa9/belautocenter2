@@ -4,10 +4,12 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
+import { useButtonState } from "@/hooks/use-button-state"
 
 import Link from "next/link"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -44,6 +46,7 @@ interface LeasingPageSettings {
 export default function LeasingPage() {
   const [settings, setSettings] = useState<LeasingPageSettings | null>(null)
   const [loading, setLoading] = useState(true)
+  const submitButtonState = useButtonState()
 
   const [calculator, setCalculator] = useState({
     carPrice: [80000],
@@ -172,7 +175,8 @@ export default function LeasingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
+
+    await submitButtonState.execute(async () => {
       // Сохраняем в Firebase
       await addDoc(collection(db, "leads"), {
         ...leasingForm,
@@ -182,33 +186,29 @@ export default function LeasingPage() {
       })
 
       // Отправляем уведомление в Telegram
-      try {
-        const clientName = leasingForm.clientType === "individual"
-          ? leasingForm.fullName
-          : leasingForm.contactPerson;
+      const clientName = leasingForm.clientType === "individual"
+        ? leasingForm.fullName
+        : leasingForm.contactPerson;
 
-        await fetch('/api/send-telegram', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: clientName,
-            phone: leasingForm.phone,
-            email: leasingForm.email,
-            carPrice: leasingForm.carPrice,
-            downPayment: leasingForm.advance,
-            loanTerm: leasingForm.leasingTerm,
-            message: leasingForm.message,
-            clientType: leasingForm.clientType,
-            companyName: leasingForm.companyName,
-            unp: leasingForm.unp,
-            type: 'leasing_request',
-          }),
-        })
-      } catch (telegramError) {
-        console.error('Ошибка отправки в Telegram:', telegramError)
-      }
+      await fetch('/api/send-telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: clientName,
+          phone: leasingForm.phone,
+          email: leasingForm.email,
+          carPrice: leasingForm.carPrice,
+          downPayment: leasingForm.advance,
+          loanTerm: leasingForm.leasingTerm,
+          message: leasingForm.message,
+          clientType: leasingForm.clientType,
+          companyName: leasingForm.companyName,
+          unp: leasingForm.unp,
+          type: 'leasing_request',
+        }),
+      })
 
       setLeasingForm({
         clientType: "organization",
@@ -224,11 +224,7 @@ export default function LeasingPage() {
         company: "",
         message: "",
       })
-      alert("Заявка на лизинг отправлена! Мы свяжемся с вами в ближайшее время.")
-    } catch (error) {
-      console.error("Ошибка отправки заявки:", error)
-      alert("Произошла ошибка. Попробуйте еще раз.")
-    }
+    })
   }
 
   const getIcon = (iconName: string) => {
@@ -587,14 +583,18 @@ export default function LeasingPage() {
                     />
                   </div>
 
-                  <Button
+                  <StatusButton
                     type="submit"
                     size="lg"
                     className="w-full"
+                    state={submitButtonState.state}
+                    loadingText="Отправляем заявку..."
+                    successText="Заявка отправлена!"
+                    errorText="Ошибка отправки"
                   >
                     <CheckCircle className="h-5 w-5 mr-2" />
                     Отправить заявку на лизинг
-                  </Button>
+                  </StatusButton>
                 </form>
               </CardContent>
             </Card>

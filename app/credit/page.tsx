@@ -6,10 +6,12 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useButtonState } from "@/hooks/use-button-state"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calculator, CreditCard, CheckCircle, Building, Percent, Clock, DollarSign, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Shield, TrendingDown, Check } from "lucide-react"
@@ -43,6 +45,7 @@ export default function CreditPage() {
   const [loading, setLoading] = useState(true)
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(false)
   const usdBynRate = useUsdBynRate()
+  const submitButtonState = useButtonState()
 
   const [calculator, setCalculator] = useState({
     carPrice: [50000],
@@ -251,7 +254,8 @@ export default function CreditPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
+
+    await submitButtonState.execute(async () => {
       // Сохраняем в Firebase
       await addDoc(collection(db, "leads"), {
         ...creditForm,
@@ -261,20 +265,16 @@ export default function CreditPage() {
       })
 
       // Отправляем уведомление в Telegram
-      try {
-        await fetch('/api/send-telegram', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...creditForm,
-            type: 'credit_request',
-          }),
-        })
-      } catch (telegramError) {
-        console.error('Ошибка отправки в Telegram:', telegramError)
-      }
+      await fetch('/api/send-telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...creditForm,
+          type: 'credit_request',
+        }),
+      })
 
       setCreditForm({
         name: "",
@@ -286,11 +286,7 @@ export default function CreditPage() {
         bank: "",
         message: "",
       })
-      alert("Заявка на кредит отправлена! Мы свяжемся с вами в ближайшее время.")
-    } catch (error) {
-      console.error("Ошибка отправки заявки:", error)
-      alert("Произошла ошибка. Попробуйте еще раз.")
-    }
+    })
   }
 
   const getIcon = (iconName: string) => {
@@ -888,10 +884,18 @@ export default function CreditPage() {
                     />
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full">
+                  <StatusButton
+                    type="submit"
+                    size="lg"
+                    className="w-full"
+                    state={submitButtonState.state}
+                    loadingText="Отправляем заявку..."
+                    successText="Заявка отправлена!"
+                    errorText="Ошибка отправки"
+                  >
                     <CheckCircle className="h-5 w-5 mr-2" />
                     Отправить заявку на кредит
-                  </Button>
+                  </StatusButton>
                 </form>
               </CardContent>
             </Card>
