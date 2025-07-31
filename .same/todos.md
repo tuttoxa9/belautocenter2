@@ -1,37 +1,21 @@
-# Firebase Configuration Update Tasks
+# Задачи для выполнения
 
-## ✅ Completed
-- [x] Clone repository
-- [x] Analyze current Firebase configuration
+## 1. Исправить плашку "где посмотреть" на странице деталей автомобиля
+- [x] Найти файл с деталями автомобиля
+- [x] Найти плашку с текстом "где посмотреть"
+- [x] Добавить возможность редактирования через админку
+- [x] Добавить поля в базу данных/хранилище
+- [x] Обновить админ панель
+- [x] Создать хук для получения настроек
+- [x] Обновить страницу деталей автомобиля для использования настроек
 
-## ✅ Completed
-- [x] Update main Firebase configuration in lib/firebase.js
-- [x] Find and update all Firebase references in the project
-- [x] Update environment variables and API endpoints
-- [x] Update Firestore API routes
-- [x] Push changes to GitHub
+## 2. Переместить блок "Мы в социальных сетях" на странице контактов
+- [x] Найти файл страницы контактов
+- [x] Найти примеры оформления на главной странице и странице политики конфиденциальности
+- [x] Применить стиль с закругленным блоком, который "вылазит" из-под футера
+- [x] Добавить градиентный фон (оранжево-бело-желтый, светлые тона)
 
-## 📝 Summary of Changes Made (Final)
-- Updated Firebase configuration in `lib/firebase.js`
-- Changed project ID from `mebel1-36ef1` to `belauto-5dd94`
-- Updated all Firebase parameters to new project:
-  - API Key: `AIzaSyBFGDZi2gWFBlHtsh2JIgklXlmzbokE7jM`
-  - Auth Domain: `belauto-5dd94.firebaseapp.com`
-  - Storage Bucket: `belauto-5dd94.firebasestorage.app`
-  - Messaging Sender ID: `6074251913`
-  - App ID: `1:6074251913:web:60187760e6d86929016458`
-  - Measurement ID: `G-SQGZS410D5`
-- Modified Firestore API route to use new project ID
-- All Firebase imports use the centralized config, so changes propagate automatically
-- Successfully pushed all changes to GitHub
-
-## 📝 New Firebase Configuration (Updated)
-```
-apiKey: "AIzaSyBFGDZi2gWFBlHtsh2JIgklXlmzbokE7jM"
-authDomain: "belauto-5dd94.firebaseapp.com"
-projectId: "belauto-5dd94"
-storageBucket: "belauto-5dd94.firebasestorage.app"
-messagingSenderId: "6074251913"
-appId: "1:6074251913:web:60187760e6d86929016458"
-measurementId: "G-SQGZS410D5"
-```
+## 3. Пуш изменений в Git
+- [ ] Настроить Git токен
+- [ ] Сделать коммит изменений
+- [ ] Отправить в main ветку

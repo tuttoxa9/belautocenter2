@@ -21,6 +21,7 @@ import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSettings } from "@/hooks/use-settings"
 import {
   Gauge,
   Fuel,
@@ -165,6 +166,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   // Notification hook
   const { showSuccess } = useNotification()
+
+  // Settings hook
+  const { settings } = useSettings()
 
   useEffect(() => {
     if (carId) {
@@ -1054,23 +1058,27 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
                   <MapPin className="h-5 w-5 mr-2" />
-                  Где посмотреть
+                  {settings?.main?.showroomInfo?.title || "Где посмотреть"}
                 </h3>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <div className="font-medium text-slate-900">Автохаус Белавто Центр</div>
-                    <div className="text-slate-600">г. Минск, ул. Большое Стиклево 83</div>
+                    <div className="font-medium text-slate-900">
+                      {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
+                    </div>
+                    <div className="text-slate-600">
+                      {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
+                    </div>
                   </div>
                   <div className="flex items-center text-slate-600">
                     <Clock className="h-4 w-4 mr-2" />
                     <div>
-                      <div>Пн-Пт: 9:00-21:00</div>
-                      <div>Сб-Вс: 10:00-20:00</div>
+                      <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</div>
+                      <div>{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</div>
                     </div>
                   </div>
                   <div className="flex items-center text-slate-600">
                     <Phone className="h-4 w-4 mr-2" />
-                    <div>+375 29 123-45-67</div>
+                    <div>{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
                   </div>
                 </div>
               </div>

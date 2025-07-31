@@ -30,6 +30,16 @@ export default function AdminSettings() {
         tiktok: "#",
       },
       yandexMapsApiKey: "",
+      showroomInfo: {
+        title: "Где посмотреть",
+        companyName: "Автохаус Белавто Центр",
+        address: "г. Минск, ул. Большое Стиклево 83",
+        phone: "+375 29 123-45-67",
+        workingHours: {
+          weekdays: "Пн-Пт: 9:00-21:00",
+          weekends: "Сб-Вс: 10:00-20:00"
+        }
+      },
     },
     homepage: {
       heroTitle: "Найдите идеальный автомобиль с пробегом",
@@ -258,6 +268,118 @@ export default function AdminSettings() {
                         main: {
                           ...settings.main,
                           socialMedia: { ...settings.main.socialMedia, tiktok: e.target.value },
+                        },
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Информация об автосалоне (блок "Где посмотреть")</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Заголовок блока</Label>
+                <Input
+                  value={settings.main.showroomInfo.title}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      main: {
+                        ...settings.main,
+                        showroomInfo: { ...settings.main.showroomInfo, title: e.target.value },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label>Название автосалона</Label>
+                <Input
+                  value={settings.main.showroomInfo.companyName}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      main: {
+                        ...settings.main,
+                        showroomInfo: { ...settings.main.showroomInfo, companyName: e.target.value },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label>Адрес автосалона</Label>
+                <Input
+                  value={settings.main.showroomInfo.address}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      main: {
+                        ...settings.main,
+                        showroomInfo: { ...settings.main.showroomInfo, address: e.target.value },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label>Телефон автосалона</Label>
+                <Input
+                  value={settings.main.showroomInfo.phone}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      main: {
+                        ...settings.main,
+                        showroomInfo: { ...settings.main.showroomInfo, phone: e.target.value },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Время работы (будни)</Label>
+                  <Input
+                    value={settings.main.showroomInfo.workingHours.weekdays}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        main: {
+                          ...settings.main,
+                          showroomInfo: {
+                            ...settings.main.showroomInfo,
+                            workingHours: {
+                              ...settings.main.showroomInfo.workingHours,
+                              weekdays: e.target.value
+                            }
+                          },
+                        },
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Время работы (выходные)</Label>
+                  <Input
+                    value={settings.main.showroomInfo.workingHours.weekends}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        main: {
+                          ...settings.main,
+                          showroomInfo: {
+                            ...settings.main.showroomInfo,
+                            workingHours: {
+                              ...settings.main.showroomInfo.workingHours,
+                              weekends: e.target.value
+                            }
+                          },
                         },
                       })
                     }
