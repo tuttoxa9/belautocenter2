@@ -1055,7 +1055,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </div>
 
               {/* Контактная информация - iOS minimalist style */}
-              <section className="relative pt-8 pb-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white rounded-t-[30px] -mb-24 overflow-hidden -mx-4 sm:-mx-6 lg:-mx-[calc((100vw-1280px)/2+24px)]">
+              <section className="relative pt-8 pb-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white rounded-t-[30px] -mb-20 overflow-hidden -mx-4 sm:-mx-6 lg:-mx-[calc((100vw-1280px)/2+24px)]">
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-transparent to-slate-800/30"></div>
                 <div className="px-4 sm:px-6 lg:px-8 relative z-10">
                   <div className="text-center">
