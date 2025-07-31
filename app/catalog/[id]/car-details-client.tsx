@@ -1054,47 +1054,82 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </div>
               </div>
 
+              {/* Контактная информация - для ПК отдельный блок */}
+              <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-slate-100 p-6 mt-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <MapPin className="h-4 w-4 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-900">
+                    {settings?.main?.showroomInfo?.title || "Где посмотреть"}
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-4 gap-6 items-center">
+                  <div>
+                    <div className="font-medium text-slate-800 text-sm mb-1">
+                      {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
+                    </div>
+                    <div className="text-slate-600 text-xs font-light">
+                      {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 text-slate-600 col-span-2">
+                    <Clock className="h-3 w-3" />
+                    <div className="text-xs font-light">
+                      <span>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</span>
+                      <span className="ml-2">{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 text-slate-800">
+                    <Phone className="h-3 w-3" />
+                    <div className="font-medium text-sm">{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
+                  </div>
+                </div>
+              </div>
 
             </div>
           </div>
         </div>
 
-        {/* Контактная информация - Light theme */}
-        <section className="relative pt-6 lg:pt-4 pb-32 lg:pb-6 bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 rounded-t-[30px] lg:rounded-t-[20px] -mb-20 overflow-hidden w-screen -mx-[calc((100vw-100%)/2)]">
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-50/80 via-transparent to-blue-100/50"></div>
-          <div className="px-4 sm:px-6 lg:px-8 relative z-10 lg:max-w-7xl lg:mx-auto">
-            <div className="text-center lg:text-left">
-              <div className="inline-flex lg:flex items-center justify-center lg:justify-start space-x-3 mb-6 lg:mb-4">
-                <div className="w-10 h-10 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl lg:rounded-xl flex items-center justify-center shadow-lg">
-                  <MapPin className="h-5 w-5 lg:h-4 lg:w-4 text-white" />
+        {/* Контактная информация для мобильных - синий как в соцсетях */}
+        <section className="lg:hidden relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[30px] -mb-20 overflow-hidden w-screen -mx-[calc((100vw-100%)/2)] mt-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-500/80 to-cyan-400/70"></div>
+          <div className="px-4 sm:px-6 relative z-10">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-sm border border-white/30">
+                  <MapPin className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-xl lg:text-lg font-light text-slate-800 tracking-tight">
+                <h3 className="text-xl font-light text-white tracking-tight">
                   {settings?.main?.showroomInfo?.title || "Где посмотреть"}
                 </h3>
               </div>
 
-              <div className="bg-white/70 backdrop-blur-sm rounded-3xl lg:rounded-2xl border border-blue-200/50 p-6 lg:p-4 max-w-sm lg:max-w-none mx-auto lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-6 lg:items-center shadow-sm">
-                <div className="space-y-4 lg:space-y-0 text-center lg:text-left lg:contents">
-                  <div className="lg:col-span-1">
-                    <div className="font-medium text-slate-800 text-base lg:text-sm mb-1">
+              <div className="bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 p-6 max-w-sm mx-auto shadow-sm">
+                <div className="space-y-4 text-center">
+                  <div>
+                    <div className="font-medium text-slate-800 text-base mb-1">
                       {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
                     </div>
-                    <div className="text-slate-600 text-sm lg:text-xs font-light">
+                    <div className="text-slate-600 text-sm font-light">
                       {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center lg:justify-start space-x-2 text-slate-600 lg:col-span-2">
-                    <Clock className="h-4 w-4 lg:h-3 lg:w-3" />
-                    <div className="text-sm lg:text-xs font-light">
-                      <span className="lg:inline">{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</span>
-                      <span className="block lg:inline lg:ml-2">{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</span>
+                  <div className="flex items-center justify-center space-x-2 text-slate-600">
+                    <Clock className="h-4 w-4" />
+                    <div className="text-sm font-light">
+                      <span className="block">{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</span>
+                      <span className="block">{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center lg:justify-start space-x-2 text-slate-800 lg:col-span-1">
-                    <Phone className="h-4 w-4 lg:h-3 lg:w-3" />
-                    <div className="font-medium text-base lg:text-sm">{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
+                  <div className="flex items-center justify-center space-x-2 text-slate-800">
+                    <Phone className="h-4 w-4" />
+                    <div className="font-medium text-base">{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
                   </div>
                 </div>
               </div>
@@ -1391,7 +1426,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     <div className="space-y-3 sm:space-y-4 relative">
                       {/* Логотип банка в правом верхнем углу */}
                       {selectedBank.logo && (
-                        <div className="absolute top-0 right-0">
+                        <div className="absolute top-0 right-4">
                           <Image
                             src={getCachedImageUrl(selectedBank.logo)}
                             alt={`${selectedBank.name} логотип`}
@@ -1482,7 +1517,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   <div className="space-y-3 sm:space-y-4 relative">
                     {/* Логотип лизинговой компании в правом верхнем углу */}
                     {selectedLeasingCompany?.logo && (
-                      <div className="absolute top-0 right-0">
+                      <div className="absolute top-0 right-4">
                         <Image
                           src={getCachedImageUrl(selectedLeasingCompany.logo)}
                           alt={`${selectedLeasingCompany.name} логотип`}
