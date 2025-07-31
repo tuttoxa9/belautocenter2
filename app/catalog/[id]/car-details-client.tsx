@@ -745,28 +745,28 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </h3>
                 <div className="grid grid-cols-4 gap-3">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
-                      <Gauge className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-2 border border-slate-200/50">
+                      <Gauge className="h-6 w-6 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-xs">{formatMileage(car.mileage)} км</div>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
-                      <Fuel className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-2 border border-slate-200/50">
+                      <Fuel className="h-6 w-6 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-xs leading-tight">
                       {formatEngineVolume(car.engineVolume)}<br/>{car.fuelType}
                     </div>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
-                      <Settings className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-2 border border-slate-200/50">
+                      <Settings className="h-6 w-6 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-xs">{car.transmission}</div>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
-                      <Car className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-2 border border-slate-200/50">
+                      <Car className="h-6 w-6 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-xs">{car.driveTrain}</div>
                   </div>
@@ -1003,26 +1003,26 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">Основные характеристики</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
-                      <Gauge className="h-8 w-8 text-white" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
+                      <Gauge className="h-8 w-8 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-sm">{formatMileage(car.mileage)} км</div>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
-                      <Fuel className="h-8 w-8 text-white" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
+                      <Fuel className="h-8 w-8 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-sm">{formatEngineVolume(car.engineVolume)} {car.fuelType}</div>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
-                      <Settings className="h-8 w-8 text-white" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
+                      <Settings className="h-8 w-8 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-sm">{car.transmission}</div>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
-                      <Car className="h-8 w-8 text-white" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
+                      <Car className="h-8 w-8 text-slate-600" />
                     </div>
                     <div className="font-bold text-slate-900 text-sm">{car.driveTrain}</div>
                   </div>
