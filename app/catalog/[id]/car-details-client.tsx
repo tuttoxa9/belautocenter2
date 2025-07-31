@@ -743,27 +743,31 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   <Settings className="h-5 w-5 mr-2 text-slate-600" />
                   Основные характеристики
                 </h3>
-                <div className="grid grid-cols-4 gap-2">
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2 text-center">
-                    <Gauge className="h-4 w-4 text-slate-600 mx-auto mb-1" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">Пробег</div>
+                <div className="grid grid-cols-4 gap-3">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
+                      <Gauge className="h-6 w-6 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-xs">{formatMileage(car.mileage)} км</div>
                   </div>
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2 text-center">
-                    <Fuel className="h-4 w-4 text-slate-600 mx-auto mb-1" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">Двигатель</div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
+                      <Fuel className="h-6 w-6 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-xs leading-tight">
                       {formatEngineVolume(car.engineVolume)}<br/>{car.fuelType}
                     </div>
                   </div>
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2 text-center">
-                    <Settings className="h-4 w-4 text-slate-600 mx-auto mb-1" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">КПП</div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
+                      <Settings className="h-6 w-6 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-xs">{car.transmission}</div>
                   </div>
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2 text-center">
-                    <Car className="h-4 w-4 text-slate-600 mx-auto mb-1" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">Привод</div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg mb-2">
+                      <Car className="h-6 w-6 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-xs">{car.driveTrain}</div>
                   </div>
                 </div>
@@ -997,25 +1001,29 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               {/* Ключевые характеристики - только для десктопа */}
               <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-slate-100 p-6">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">Основные характеристики</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="text-center p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                    <Gauge className="h-5 w-5 text-slate-600 mx-auto mb-2" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">Пробег</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
+                      <Gauge className="h-8 w-8 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-sm">{formatMileage(car.mileage)} км</div>
                   </div>
-                  <div className="text-center p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                    <Fuel className="h-5 w-5 text-slate-600 mx-auto mb-2" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">Двигатель</div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
+                      <Fuel className="h-8 w-8 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-sm">{formatEngineVolume(car.engineVolume)} {car.fuelType}</div>
                   </div>
-                  <div className="text-center p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                    <Settings className="h-5 w-5 text-slate-600 mx-auto mb-2" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">КПП</div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
+                      <Settings className="h-8 w-8 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-sm">{car.transmission}</div>
                   </div>
-                  <div className="text-center p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                    <Car className="h-5 w-5 text-slate-600 mx-auto mb-2" />
-                    <div className="text-xs text-slate-600 font-medium mb-1">Привод</div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg mb-3">
+                      <Car className="h-8 w-8 text-white" />
+                    </div>
                     <div className="font-bold text-slate-900 text-sm">{car.driveTrain}</div>
                   </div>
                 </div>
@@ -1426,7 +1434,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     <div className="space-y-3 sm:space-y-4 relative">
                       {/* Логотип банка в правом верхнем углу */}
                       {selectedBank.logo && (
-                        <div className="absolute top-0 right-4">
+                        <div className="absolute top-0 right-8">
                           <Image
                             src={getCachedImageUrl(selectedBank.logo)}
                             alt={`${selectedBank.name} логотип`}
@@ -1517,7 +1525,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   <div className="space-y-3 sm:space-y-4 relative">
                     {/* Логотип лизинговой компании в правом верхнем углу */}
                     {selectedLeasingCompany?.logo && (
-                      <div className="absolute top-0 right-4">
+                      <div className="absolute top-0 right-8">
                         <Image
                           src={getCachedImageUrl(selectedLeasingCompany.logo)}
                           alt={`${selectedLeasingCompany.name} логотип`}
