@@ -47,37 +47,55 @@ export function useSettings() {
       setLoading(true)
       const mainDoc = await getDoc(doc(db, "settings", "main"))
 
+      // Дефолтные значения
+      const defaultSettings = {
+        companyName: "Белавто Центр",
+        phone: "+375 29 123-45-67",
+        email: "info@belavto.by",
+        address: "г. Минск, ул. Примерная, 123",
+        workingHours: "Пн-Пт: 9:00-21:00, Сб-Вс: 10:00-20:00",
+        socialMedia: {
+          instagram: "#",
+          telegram: "#",
+          avby: "#",
+          tiktok: "#",
+        },
+        yandexMapsApiKey: "",
+        showroomInfo: {
+          title: "Где посмотреть",
+          companyName: "Автохаус Белавто Центр",
+          address: "г. Минск, ул. Большое Стиклево 83",
+          phone: "+375 29 123-45-67",
+          workingHours: {
+            weekdays: "Пн-Пт: 9:00-21:00",
+            weekends: "Сб-Вс: 10:00-20:00"
+          }
+        }
+      }
+
       if (mainDoc.exists()) {
-        setSettings({
-          main: mainDoc.data() as MainSettings
-        })
-      } else {
-        // Дефолтные значения если настройки не найдены
+        const firestoreData = mainDoc.data() as Partial<MainSettings>
         setSettings({
           main: {
-            companyName: "Белавто Центр",
-            phone: "+375 29 123-45-67",
-            email: "info@belavto.by",
-            address: "г. Минск, ул. Примерная, 123",
-            workingHours: "Пн-Пт: 9:00-21:00, Сб-Вс: 10:00-20:00",
+            ...defaultSettings,
+            ...firestoreData,
             socialMedia: {
-              instagram: "#",
-              telegram: "#",
-              avby: "#",
-              tiktok: "#",
+              ...defaultSettings.socialMedia,
+              ...firestoreData.socialMedia
             },
-            yandexMapsApiKey: "",
             showroomInfo: {
-              title: "Где посмотреть",
-              companyName: "Автохаус Белавто Центр",
-              address: "г. Минск, ул. Большое Стиклево 83",
-              phone: "+375 29 123-45-67",
+              ...defaultSettings.showroomInfo,
+              ...firestoreData.showroomInfo,
               workingHours: {
-                weekdays: "Пн-Пт: 9:00-21:00",
-                weekends: "Сб-Вс: 10:00-20:00"
+                ...defaultSettings.showroomInfo.workingHours,
+                ...firestoreData.showroomInfo?.workingHours
               }
             }
           }
+        })
+      } else {
+        setSettings({
+          main: defaultSettings
         })
       }
     } catch (err) {

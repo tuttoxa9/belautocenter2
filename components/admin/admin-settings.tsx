@@ -68,9 +68,24 @@ export default function AdminSettings() {
       ])
 
       setSettings({
-        main: mainDoc.exists() ? mainDoc.data() : settings.main,
-        homepage: homepageDoc.exists() ? homepageDoc.data() : settings.homepage,
-        stories: storiesDoc.exists() ? storiesDoc.data() : settings.stories,
+        main: mainDoc.exists() ? {
+          ...settings.main,
+          ...mainDoc.data(),
+          socialMedia: {
+            ...settings.main.socialMedia,
+            ...mainDoc.data()?.socialMedia
+          },
+          showroomInfo: {
+            ...settings.main.showroomInfo,
+            ...mainDoc.data()?.showroomInfo,
+            workingHours: {
+              ...settings.main.showroomInfo.workingHours,
+              ...mainDoc.data()?.showroomInfo?.workingHours
+            }
+          }
+        } : settings.main,
+        homepage: homepageDoc.exists() ? { ...settings.homepage, ...homepageDoc.data() } : settings.homepage,
+        stories: storiesDoc.exists() ? { ...settings.stories, ...storiesDoc.data() } : settings.stories,
       })
     } catch (error) {
       console.error("Ошибка загрузки настроек:", error)
