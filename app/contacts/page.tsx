@@ -412,34 +412,35 @@ export default function ContactsPage() {
           </Card>
         </div>
 
-        {/* Social Media - styled like CTA section */}
+        {/* Social Media - iOS minimalist design */}
         {contactsData.socialMedia && Object.keys(contactsData.socialMedia).length > 0 && (
-          <section className="relative pt-8 sm:pt-12 pb-32 sm:pb-40 bg-gradient-to-r from-orange-100 via-yellow-50 to-orange-50 rounded-t-[30px] sm:rounded-t-[50px] -mb-20 overflow-hidden mt-6">
-            <div className="container px-4 relative z-10">
-              <div className="max-w-4xl mx-auto text-center">
-                <div className="flex items-center justify-center space-x-3 mb-6">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg border-2 border-white/30">
-                    <Star className="h-5 w-5 md:h-6 md:w-6 text-white" />
+          <section className="relative pt-12 pb-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white rounded-t-[40px] -mb-20 overflow-hidden mt-8 -mx-4">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-transparent to-slate-800/30"></div>
+            <div className="max-w-full mx-auto px-6 relative z-10">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center space-x-3 mb-8">
+                  <div className="w-11 h-11 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
+                    <Star className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-slate-900">
+                  <h3 className="text-2xl font-light text-white tracking-tight">
                     Мы в социальных сетях
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
                   {contactsData.socialMedia.instagram && (
                     <a
                       href={contactsData.socialMedia.instagram.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex flex-col items-center space-y-3 p-4 md:p-6 bg-white/80 backdrop-blur-sm rounded-xl hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-white/40"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 hover:bg-white/10 transition-all duration-500 hover:scale-105"
                     >
-                      <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-pink-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300 border-2 border-white/20 flex-shrink-0">
-                        <Instagram className="h-6 w-6 md:h-7 md:w-7 text-white" />
+                      <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-orange-400 rounded-2xl flex items-center justify-center shadow-xl border border-white/20">
+                        <Instagram className="h-7 w-7 text-white" />
                       </div>
-                      <div className="text-center min-w-0">
-                        <p className="font-semibold text-slate-900 text-sm md:text-base truncate">Instagram</p>
-                        <p className="text-slate-600 text-xs md:text-sm truncate">{contactsData.socialMedia.instagram.name}</p>
+                      <div className="text-center">
+                        <p className="font-medium text-white text-base">Instagram</p>
+                        <p className="text-white/70 text-sm font-light">{contactsData.socialMedia.instagram.name}</p>
                       </div>
                     </a>
                   )}
@@ -449,16 +450,16 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.telegram.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex flex-col items-center space-y-3 p-4 md:p-6 bg-white/80 backdrop-blur-sm rounded-xl hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-white/40"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 hover:bg-white/10 transition-all duration-500 hover:scale-105"
                     >
-                      <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300 border-2 border-white/20 flex-shrink-0">
-                        <svg className="h-6 w-6 md:h-7 md:w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-2xl flex items-center justify-center shadow-xl border border-white/20">
+                        <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.584 7.44c-.12.528-.432.66-.876.412l-2.424-1.788-1.164 1.12c-.132.132-.24.24-.492.24l.168-2.388 4.416-3.984c.192-.168-.036-.264-.3-.096l-5.46 3.432-2.352-.744c-.516-.156-.528-.516.108-.768l9.192-3.54c.432-.156.804.108.672.672z"/>
                         </svg>
                       </div>
-                      <div className="text-center min-w-0">
-                        <p className="font-semibold text-slate-900 text-sm md:text-base truncate">Telegram</p>
-                        <p className="text-slate-600 text-xs md:text-sm truncate">{contactsData.socialMedia.telegram.name}</p>
+                      <div className="text-center">
+                        <p className="font-medium text-white text-base">Telegram</p>
+                        <p className="text-white/70 text-sm font-light">{contactsData.socialMedia.telegram.name}</p>
                       </div>
                     </a>
                   )}
@@ -468,20 +469,20 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.avby.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex flex-col items-center space-y-3 p-4 md:p-6 bg-white/80 backdrop-blur-sm rounded-xl hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-white/40"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 hover:bg-white/10 transition-all duration-500 hover:scale-105"
                     >
-                      <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300 border-2 border-slate-200 flex-shrink-0">
+                      <div className="w-14 h-14 bg-white/90 rounded-2xl flex items-center justify-center shadow-xl border border-white/20">
                         <Image
                           src="/av.png"
                           alt="av.by"
-                          width={24}
-                          height={18}
+                          width={28}
+                          height={21}
                           className="object-contain"
                         />
                       </div>
-                      <div className="text-center min-w-0">
-                        <p className="font-semibold text-slate-900 text-sm md:text-base truncate">av.by</p>
-                        <p className="text-slate-600 text-xs md:text-sm truncate">{contactsData.socialMedia.avby.name}</p>
+                      <div className="text-center">
+                        <p className="font-medium text-white text-base">av.by</p>
+                        <p className="text-white/70 text-sm font-light">{contactsData.socialMedia.avby.name}</p>
                       </div>
                     </a>
                   )}
@@ -491,16 +492,16 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.tiktok.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex flex-col items-center space-y-3 p-4 md:p-6 bg-white/80 backdrop-blur-sm rounded-xl hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-white/40"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 hover:bg-white/10 transition-all duration-500 hover:scale-105"
                     >
-                      <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300 border border-slate-700/50 flex-shrink-0">
-                        <svg className="h-6 w-6 md:h-7 md:w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <div className="w-14 h-14 bg-gradient-to-br from-gray-700 to-black rounded-2xl flex items-center justify-center shadow-xl border border-white/20">
+                        <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
                         </svg>
                       </div>
-                      <div className="text-center min-w-0">
-                        <p className="font-semibold text-slate-900 text-sm md:text-base truncate">TikTok</p>
-                        <p className="text-slate-600 text-xs md:text-sm truncate">{contactsData.socialMedia.tiktok.name}</p>
+                      <div className="text-center">
+                        <p className="font-medium text-white text-base">TikTok</p>
+                        <p className="text-white/70 text-sm font-light">{contactsData.socialMedia.tiktok.name}</p>
                       </div>
                     </a>
                   )}
