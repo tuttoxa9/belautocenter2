@@ -1388,8 +1388,20 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 <h4 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">Результат</h4>
                 {financeType === 'credit' ? (
                   selectedBank ? (
-                    <div className="space-y-3 sm:space-y-4">
-                      <div>
+                    <div className="space-y-3 sm:space-y-4 relative">
+                      {/* Логотип банка в правом верхнем углу */}
+                      {selectedBank.logo && (
+                        <div className="absolute top-0 right-0">
+                          <Image
+                            src={getCachedImageUrl(selectedBank.logo)}
+                            alt={`${selectedBank.name} логотип`}
+                            width={60}
+                            height={60}
+                            className="object-contain rounded-lg"
+                          />
+                        </div>
+                      )}
+                      <div className="pr-16">
                         <div className="text-xs sm:text-sm text-slate-500">Ежемесячный платеж</div>
                         <div className="text-xl sm:text-3xl font-bold text-slate-900">
                           {isBelarusianRubles
@@ -1424,18 +1436,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         </div>
                       </div>
                       <div className="pt-2 sm:pt-4">
-                        <div className="flex items-center space-x-2 mb-1 sm:mb-2">
-                          {selectedBank.logo && (
-                            <Image
-                              src={getCachedImageUrl(selectedBank.logo)}
-                              alt={`${selectedBank.name} логотип`}
-                              width={24}
-                              height={24}
-                              className="object-contain rounded"
-                            />
-                          )}
-                          <div className="text-xs sm:text-sm font-semibold text-slate-700">{selectedBank.name}</div>
-                        </div>
+                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedBank.name}</div>
                         <div className="flex items-center space-x-2 text-xs text-slate-600">
                           <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
                           <span>Ставка: {selectedBank.rate}%</span>
@@ -1478,8 +1479,20 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     </div>
                   )
                 ) : (
-                  <div className="space-y-3 sm:space-y-4">
-                    <div>
+                  <div className="space-y-3 sm:space-y-4 relative">
+                    {/* Логотип лизинговой компании в правом верхнем углу */}
+                    {selectedLeasingCompany?.logo && (
+                      <div className="absolute top-0 right-0">
+                        <Image
+                          src={getCachedImageUrl(selectedLeasingCompany.logo)}
+                          alt={`${selectedLeasingCompany.name} логотип`}
+                          width={60}
+                          height={60}
+                          className="object-contain rounded-lg"
+                        />
+                      </div>
+                    )}
+                    <div className="pr-16">
                       <div className="text-xs sm:text-sm text-slate-500">Ежемесячный платеж</div>
                       <div className="text-xl sm:text-3xl font-bold text-slate-900">
                         {isBelarusianRubles
@@ -1515,18 +1528,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     </div>
                     {selectedLeasingCompany && (
                       <div className="pt-2 sm:pt-4">
-                        <div className="flex items-center space-x-2 mb-1 sm:mb-2">
-                          {selectedLeasingCompany.logo && (
-                            <Image
-                              src={getCachedImageUrl(selectedLeasingCompany.logo)}
-                              alt={`${selectedLeasingCompany.name} логотип`}
-                              width={24}
-                              height={24}
-                              className="object-contain rounded"
-                            />
-                          )}
-                          <div className="text-xs sm:text-sm font-semibold text-slate-700">{selectedLeasingCompany.name}</div>
-                        </div>
+                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedLeasingCompany.name}</div>
                         <div className="flex items-center space-x-2 text-xs text-slate-600">
                           <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
                           <span>Мин. аванс: {selectedLeasingCompany.minAdvance}%</span>
