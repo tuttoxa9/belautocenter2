@@ -1054,51 +1054,53 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </div>
               </div>
 
-              {/* Контактная информация - iOS minimalist style */}
-              <section className="relative pt-8 pb-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white rounded-t-[30px] -mb-20 overflow-hidden -mx-4 sm:-mx-6 lg:-mx-[calc((100vw-1280px)/2+24px)]">
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-transparent to-slate-800/30"></div>
-                <div className="px-4 sm:px-6 lg:px-8 relative z-10">
-                  <div className="text-center">
-                    <div className="inline-flex items-center justify-center space-x-3 mb-6">
-                      <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
-                        <MapPin className="h-5 w-5 text-white" />
-                      </div>
-                      <h3 className="text-xl font-light text-white tracking-tight">
-                        {settings?.main?.showroomInfo?.title || "Где посмотреть"}
-                      </h3>
-                    </div>
 
-                    <div className="bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 p-6 max-w-sm mx-auto">
-                      <div className="space-y-4 text-center">
-                        <div>
-                          <div className="font-medium text-white text-base mb-1">
-                            {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
-                          </div>
-                          <div className="text-white/70 text-sm font-light">
-                            {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-center space-x-2 text-white/70">
-                          <Clock className="h-4 w-4" />
-                          <div className="text-sm font-light">
-                            <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</div>
-                            <div>{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-center space-x-2 text-white">
-                          <Phone className="h-4 w-4" />
-                          <div className="font-medium text-base">{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
             </div>
           </div>
         </div>
+
+        {/* Контактная информация - iOS minimalist style */}
+        <section className="relative pt-8 pb-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white rounded-t-[30px] -mb-20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-transparent to-slate-800/30"></div>
+          <div className="px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
+                  <MapPin className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-xl font-light text-white tracking-tight">
+                  {settings?.main?.showroomInfo?.title || "Где посмотреть"}
+                </h3>
+              </div>
+
+              <div className="bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 p-6 max-w-sm mx-auto">
+                <div className="space-y-4 text-center">
+                  <div>
+                    <div className="font-medium text-white text-base mb-1">
+                      {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
+                    </div>
+                    <div className="text-white/70 text-sm font-light">
+                      {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center space-x-2 text-white/70">
+                    <Clock className="h-4 w-4" />
+                    <div className="text-sm font-light">
+                      <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</div>
+                      <div>{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center space-x-2 text-white">
+                    <Phone className="h-4 w-4" />
+                    <div className="font-medium text-base">{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Диалоги */}
         <Dialog open={isCreditOpen} onOpenChange={setIsCreditOpen}>
