@@ -412,17 +412,17 @@ export default function ContactsPage() {
           </Card>
         </div>
 
-        {/* Social Media - Light theme with blue accents */}
+        {/* Social Media - Blue gradient theme */}
         {contactsData.socialMedia && Object.keys(contactsData.socialMedia).length > 0 && (
-          <section className="relative pt-12 pb-32 bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 rounded-t-[40px] -mb-20 overflow-hidden mt-8 -mx-4 border-t border-blue-100">
-            <div className="absolute inset-0 bg-gradient-to-br from-sky-50/80 via-transparent to-blue-100/50"></div>
+          <section className="relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[40px] -mb-20 overflow-hidden mt-8 w-screen -mx-[calc((100vw-100%)/2)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-500/80 to-cyan-400/70"></div>
             <div className="max-w-full mx-auto px-6 relative z-10">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center space-x-3 mb-8">
-                  <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <div className="w-11 h-11 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-sm border border-white/30">
                     <Star className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-light text-slate-800 tracking-tight">
+                  <h3 className="text-2xl font-light text-white tracking-tight">
                     Мы в социальных сетях
                   </h3>
                 </div>
@@ -433,7 +433,7 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.instagram.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/70 backdrop-blur-sm rounded-3xl border border-blue-200/50 hover:bg-white/90 hover:shadow-lg transition-all duration-500 hover:scale-105"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
                     >
                       <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-orange-400 rounded-2xl flex items-center justify-center shadow-lg">
                         <Instagram className="h-7 w-7 text-white" />
@@ -450,7 +450,7 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.telegram.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/70 backdrop-blur-sm rounded-3xl border border-blue-200/50 hover:bg-white/90 hover:shadow-lg transition-all duration-500 hover:scale-105"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
                     >
                       <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
                         <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -469,7 +469,7 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.avby.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/70 backdrop-blur-sm rounded-3xl border border-blue-200/50 hover:bg-white/90 hover:shadow-lg transition-all duration-500 hover:scale-105"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
                     >
                       <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-slate-200">
                         <Image
@@ -492,7 +492,7 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.tiktok.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/70 backdrop-blur-sm rounded-3xl border border-blue-200/50 hover:bg-white/90 hover:shadow-lg transition-all duration-500 hover:scale-105"
+                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
                     >
                       <div className="w-14 h-14 bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
                         <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">

@@ -1060,7 +1060,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         </div>
 
         {/* Контактная информация - Light theme */}
-        <section className="relative pt-6 lg:pt-4 pb-32 lg:pb-6 bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 rounded-t-[30px] lg:rounded-t-[20px] -mb-20 lg:mb-0 overflow-hidden w-screen -mx-[calc((100vw-100%)/2)]">
+        <section className="relative pt-6 lg:pt-4 pb-32 lg:pb-6 bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 rounded-t-[30px] lg:rounded-t-[20px] -mb-20 overflow-hidden w-screen -mx-[calc((100vw-100%)/2)]">
           <div className="absolute inset-0 bg-gradient-to-br from-sky-50/80 via-transparent to-blue-100/50"></div>
           <div className="px-4 sm:px-6 lg:px-8 relative z-10 lg:max-w-7xl lg:mx-auto">
             <div className="text-center lg:text-left">
@@ -1424,7 +1424,18 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         </div>
                       </div>
                       <div className="pt-2 sm:pt-4">
-                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedBank.name}</div>
+                        <div className="flex items-center space-x-2 mb-1 sm:mb-2">
+                          {selectedBank.logo && (
+                            <Image
+                              src={getCachedImageUrl(selectedBank.logo)}
+                              alt={`${selectedBank.name} логотип`}
+                              width={24}
+                              height={24}
+                              className="object-contain rounded"
+                            />
+                          )}
+                          <div className="text-xs sm:text-sm font-semibold text-slate-700">{selectedBank.name}</div>
+                        </div>
                         <div className="flex items-center space-x-2 text-xs text-slate-600">
                           <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
                           <span>Ставка: {selectedBank.rate}%</span>
@@ -1504,7 +1515,18 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     </div>
                     {selectedLeasingCompany && (
                       <div className="pt-2 sm:pt-4">
-                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedLeasingCompany.name}</div>
+                        <div className="flex items-center space-x-2 mb-1 sm:mb-2">
+                          {selectedLeasingCompany.logo && (
+                            <Image
+                              src={getCachedImageUrl(selectedLeasingCompany.logo)}
+                              alt={`${selectedLeasingCompany.name} логотип`}
+                              width={24}
+                              height={24}
+                              className="object-contain rounded"
+                            />
+                          )}
+                          <div className="text-xs sm:text-sm font-semibold text-slate-700">{selectedLeasingCompany.name}</div>
+                        </div>
                         <div className="flex items-center space-x-2 text-xs text-slate-600">
                           <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
                           <span>Мин. аванс: {selectedLeasingCompany.minAdvance}%</span>
