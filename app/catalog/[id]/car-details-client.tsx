@@ -44,6 +44,7 @@ import {
 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import CarDetailsSkeleton from "@/components/car-details-skeleton"
+import MarkdownRenderer from "@/components/markdown-renderer"
 
 // Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => (
@@ -798,9 +799,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                 Описание
               </h4>
-              <p className="text-slate-700 text-sm leading-relaxed bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
-                {car.description}
-              </p>
+              <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
+                <MarkdownRenderer
+                  content={car.description || ''}
+                  className="text-sm leading-relaxed"
+                />
+              </div>
             </div>
 
             {/* Правая колонка: Характеристики и действия */}

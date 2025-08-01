@@ -15,6 +15,8 @@ import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Car } from "lucide-react"
 import ImageUpload from "@/components/admin/image-upload"
 import { useButtonState } from "@/hooks/use-button-state"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import MarkdownRenderer from "@/components/markdown-renderer"
 
 export default function AdminCars() {
   const [cars, setCars] = useState([])
@@ -363,14 +365,34 @@ export default function AdminCars() {
               </div>
 
               <div>
-                <Label className="text-sm">Описание</Label>
-                <textarea
-                  className="w-full p-2 border rounded-md text-sm"
-                  rows={2}
-                  value={carForm.description}
-                  onChange={(e) => setCarForm({ ...carForm, description: e.target.value })}
-                  placeholder="Подробное описание автомобиля..."
-                />
+                <Label className="text-sm">Описание (Markdown поддерживается)</Label>
+                <div className="text-xs text-gray-500 mb-2">
+                  Поддерживается: **жирный**, *курсив*, # заголовки, - списки, [ссылки](url)
+                </div>
+                <Tabs defaultValue="edit" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="edit">Редактирование</TabsTrigger>
+                    <TabsTrigger value="preview">Предпросмотр</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="edit" className="mt-2">
+                    <textarea
+                      className="w-full p-2 border rounded-md text-sm"
+                      rows={6}
+                      value={carForm.description}
+                      onChange={(e) => setCarForm({ ...carForm, description: e.target.value })}
+                      placeholder="Подробное описание автомобиля...&#10;&#10;Можно использовать:&#10;**Жирный текст**&#10;*Курсивный текст*&#10;# Заголовок&#10;- Пункт списка&#10;- Другой пункт"
+                    />
+                  </TabsContent>
+                  <TabsContent value="preview" className="mt-2">
+                    <div className="w-full p-3 border rounded-md bg-gray-50 min-h-[150px]">
+                      {carForm.description ? (
+                        <MarkdownRenderer content={carForm.description} />
+                      ) : (
+                        <p className="text-gray-500 italic">Введите описание для предпросмотра...</p>
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
 
               <div>
