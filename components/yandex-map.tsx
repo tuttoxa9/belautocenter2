@@ -19,15 +19,20 @@ export default function YandexMap({ address, className }: YandexMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [apiKey, setApiKey] = useState("")
+  const [isMounted, setIsMounted] = useState(true)
 
   useEffect(() => {
     loadApiKey()
+
+    return () => {
+      setIsMounted(false)
+    }
   }, [])
 
   const loadApiKey = async () => {
     try {
       const settingsDoc = await getDoc(doc(db, "settings", "main"))
-      if (settingsDoc.exists()) {
+      if (settingsDoc.exists() && isMounted) {
         const data = settingsDoc.data()
         setApiKey(data.yandexMapsApiKey || "")
       }
@@ -57,13 +62,16 @@ export default function YandexMap({ address, className }: YandexMapProps) {
   }, [apiKey])
 
   const initMap = async () => {
-    if (!mapRef.current || mapLoaded) return
+    if (!mapRef.current || mapLoaded || !isMounted) return
 
     try {
       // Геокодируем адрес
       const geocodeResult = await window.ymaps.geocode(address)
       const firstGeoObject = geocodeResult.geoObjects.get(0)
       const coords = firstGeoObject.geometry.getCoordinates()
+
+      // Проверяем еще раз, что компонент не размонтирован
+      if (!isMounted || !mapRef.current) return
 
       // Создаем карту с минимальными элементами управления
       const map = new window.ymaps.Map(mapRef.current, {
@@ -90,7 +98,10 @@ export default function YandexMap({ address, className }: YandexMapProps) {
       )
 
       map.geoObjects.add(placemark)
-      setMapLoaded(true)
+
+      if (isMounted) {
+        setMapLoaded(true)
+      }
     } catch (error) {
       console.error("Ошибка инициализации карты:", error)
     }

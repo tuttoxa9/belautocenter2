@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
 export type ButtonState = 'idle' | 'loading' | 'success' | 'error'
 
@@ -18,6 +18,14 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
   } = options
 
   const [state, setState] = useState<ButtonState>('idle')
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([])
+
+  useEffect(() => {
+    return () => {
+      // Очищаем все таймауты при размонтировании
+      timeoutRefs.current.forEach(timeout => clearTimeout(timeout))
+    }
+  }, [])
 
   const execute = useCallback(async (asyncFunction: () => Promise<void>) => {
     setState('loading')
@@ -27,16 +35,18 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
       setState('success')
       onSuccess?.()
 
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setState('idle')
       }, successDuration)
+      timeoutRefs.current.push(timeout)
     } catch (error) {
       setState('error')
       onError?.()
 
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setState('idle')
       }, errorDuration)
+      timeoutRefs.current.push(timeout)
     }
   }, [successDuration, errorDuration, onSuccess, onError])
 
@@ -47,17 +57,19 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
   const setSuccess = useCallback(() => {
     setState('success')
     onSuccess?.()
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setState('idle')
     }, successDuration)
+    timeoutRefs.current.push(timeout)
   }, [successDuration, onSuccess])
 
   const setError = useCallback(() => {
     setState('error')
     onError?.()
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setState('idle')
     }, errorDuration)
+    timeoutRefs.current.push(timeout)
   }, [errorDuration, onError])
 
   return {
