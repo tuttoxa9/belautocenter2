@@ -645,15 +645,17 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-slate-900">
                     {car.make} {car.model}
                   </h1>
-                  {car.isAvailable ? (
-                    <div className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold">
-                      В наличии
-                    </div>
-                  ) : (
-                    <div className="bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold">
-                      Продан
-                    </div>
-                  )}
+                  <div className="self-start sm:self-auto">
+                    {car.isAvailable ? (
+                      <div className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
+                        В наличии
+                      </div>
+                    ) : (
+                      <div className="bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
+                        Продан
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 sm:space-x-3 text-slate-600">
                   <span className="bg-slate-100 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.year}</span>
@@ -782,8 +784,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
               {/* Описание под галереей для десктопов */}
               <div className="hidden lg:block p-6 bg-slate-50/50 border-slate-200/50">
-                <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
-                  <div className="w-2 h-4 bg-green-500 rounded-full mr-3"></div>
+                <h4 className="text-lg font-bold text-slate-900 mb-3">
                   Описание
                 </h4>
                 <p className="text-slate-700 text-sm leading-relaxed bg-white rounded-xl p-4 border border-slate-200/50">
@@ -794,8 +795,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
             {/* Описание для мобильных устройств под галереей */}
             <div className="lg:hidden p-3 sm:p-4 bg-slate-50/50 border-b border-slate-200/50">
-              <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
-                <div className="w-2 h-4 bg-green-500 rounded-full mr-3"></div>
+              <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                 Описание
               </h4>
               <p className="text-slate-700 text-sm leading-relaxed bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
@@ -809,8 +809,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                 {/* Основные характеристики - компактный стиль */}
                 <div>
-                  <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4 flex items-center">
-                    <div className="w-2 h-4 bg-blue-500 rounded-full mr-3"></div>
+                  <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4">
                     Характеристики
                   </h3>
                   <div className="grid grid-cols-2 gap-2 lg:gap-3">
@@ -836,8 +835,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 {/* Комплектация */}
                 {car.features && car.features.length > 0 && (
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
-                      <div className="w-2 h-4 bg-purple-500 rounded-full mr-3"></div>
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                       Комплектация
                     </h4>
                     <div className="space-y-2">
@@ -856,8 +854,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 {/* Технические характеристики */}
                 {car.specifications && (
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
-                      <div className="w-2 h-4 bg-orange-500 rounded-full mr-3"></div>
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                       Технические данные
                     </h4>
                     <div className="space-y-1 sm:space-y-2">
@@ -873,8 +870,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                 {/* Финансирование - компактный блок */}
                 <div>
-                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
-                    <div className="w-2 h-4 bg-yellow-500 rounded-full mr-3"></div>
+                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                     Финансирование
                   </h4>
                   <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200/50">
