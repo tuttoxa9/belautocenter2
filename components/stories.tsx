@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ChevronLeft, ChevronRight, Play } from "lucide-react"
 import FadeInImage from "@/components/fade-in-image"
@@ -36,68 +36,46 @@ export default function Stories() {
   const [viewedStories, setViewedStories] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const loadData = async () => {
-      await Promise.all([loadStories(), loadSettings()])
-    }
-    loadData()
-  }, [])
-
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const settingsDoc = await getDoc(doc(db, "settings", "stories"))
       if (settingsDoc.exists()) {
         setSettings(settingsDoc.data() as StoriesSettings)
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек историй:", error)
+      console.error("Error loading stories settings:", error)
     }
-  }
+  }, [])
 
-  const loadStories = async () => {
+  const loadStories = useCallback(async () => {
     try {
-      const storiesQuery = query(collection(db, "stories"), orderBy("order", "asc"))
+      const storiesQuery = query(
+        collection(db, "stories"),
+        orderBy("order", "asc"),
+        orderBy("createdAt", "desc")
+      )
+
       const snapshot = await getDocs(storiesQuery)
-      const storiesData = snapshot.docs.map((doc) => ({
+      const storiesData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        createdAt: doc.data().createdAt?.toDate() || new Date()
       })) as Story[]
 
       setStories(storiesData)
     } catch (error) {
-      console.error("Ошибка загрузки историй:", error)
-      // Используем моковые данные в случае ошибки
-      setStories([
-        {
-          id: "1",
-          mediaUrl: "/placeholder.svg?height=600&width=400",
-          mediaType: "image",
-          caption: "Новое поступление BMW X5 2020",
-          order: 1,
-          createdAt: new Date(),
-        },
-        {
-          id: "2",
-          mediaUrl: "/placeholder.svg?height=600&width=400",
-          mediaType: "image",
-          caption: "Audi A6 в отличном состоянии",
-          order: 2,
-          createdAt: new Date(),
-        },
-        {
-          id: "3",
-          mediaUrl: "/placeholder.svg?height=600&width=400",
-          mediaType: "image",
-          caption: "Mercedes-Benz C-Class готов к продаже",
-          order: 3,
-          createdAt: new Date(),
-        },
-      ])
+      console.error("Error loading stories:", error)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    const loadData = async () => {
+      await Promise.all([loadStories(), loadSettings()])
+    }
+    loadData()
+  }, [loadStories, loadSettings])
 
   const handleNext = React.useCallback(() => {
     if (currentIndex < stories.length - 1) {
@@ -128,7 +106,7 @@ export default function Stories() {
         clearInterval(interval)
       }
     }
-  }, [selectedStory, isPlaying, handleNext])
+  }, [selectedStory, isPlaying, handleNext, stories.length])
 
   const handleStoryClick = (index: number) => {
     // Всегда сначала открываем полноэкранный просмотр

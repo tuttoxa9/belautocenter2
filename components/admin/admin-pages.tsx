@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Button } from "@/components/ui/button"
@@ -37,11 +37,7 @@ export default function AdminPages() {
     },
   })
 
-  useEffect(() => {
-    loadPages()
-  }, [])
-
-  const loadPages = async () => {
+  const loadPages = useCallback(async () => {
     try {
       const [aboutDoc, creditDoc, leasingDoc] = await Promise.all([
         getDoc(doc(db, "pages", "about")),
@@ -50,16 +46,18 @@ export default function AdminPages() {
       ])
 
       setPages({
-        about: aboutDoc.exists() ? aboutDoc.data() : pages.about,
-        credit: creditDoc.exists() ? creditDoc.data() : pages.credit,
-        leasing: leasingDoc.exists() ? leasingDoc.data() : pages.leasing,
+        about: aboutDoc.exists() ? aboutDoc.data().content || "" : "",
+        credit: creditDoc.exists() ? creditDoc.data().content || "" : "",
+        leasing: leasingDoc.exists() ? leasingDoc.data().content || "" : "",
       })
     } catch (error) {
-      console.error("Ошибка загрузки страниц:", error)
-    } finally {
-      setLoading(false)
+      console.error("Error loading pages:", error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    loadPages()
+  }, [loadPages])
 
   const savePages = async () => {
     await saveButtonState.execute(async () => {

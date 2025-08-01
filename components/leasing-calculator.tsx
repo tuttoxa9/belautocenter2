@@ -55,7 +55,6 @@ export default function LeasingCalculator() {
   }, [])
 
   useEffect(() => {
-    // Инициализируем ручные поля значениями слайдеров
     setManualInputs({
       carPrice: calculator.carPrice[0].toString(),
       advance: calculator.advance[0].toString(),
@@ -63,7 +62,7 @@ export default function LeasingCalculator() {
       residualValue: calculator.residualValue[0].toString(),
       selectedCompany: ''
     })
-  }, [])
+  }, [calculator.carPrice, calculator.advance, calculator.leasingTerm, calculator.residualValue])
 
   const loadCalculatorData = async () => {
     try {

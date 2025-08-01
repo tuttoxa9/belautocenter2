@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -67,18 +67,7 @@ export default function HomePage() {
     ctaSubtitle: "Оставьте заявку, и мы подберем автомобиль специально для вас",
   })
 
-  useEffect(() => {
-    const loadData = async () => {
-      await Promise.all([loadHomepageSettings(), loadFeaturedCars()])
-    }
-    loadData()
-
-    return () => {
-      setIsMounted(false)
-    }
-  }, [])
-
-  const loadHomepageSettings = async () => {
+  const loadHomepageSettings = useCallback(async () => {
     try {
       const settingsDoc = await getDoc(doc(db, "settings", "homepage"))
       if (settingsDoc.exists() && isMounted) {
@@ -91,31 +80,65 @@ export default function HomePage() {
     } catch (error) {
       console.error("Ошибка загрузки настроек главной страницы:", error)
     }
-  }
+  }, [isMounted])
 
-  const loadFeaturedCars = async () => {
+  const loadFeaturedCars = useCallback(async () => {
     try {
       if (isMounted) {
         setLoadingCars(true)
       }
-      const carsQuery = query(collection(db, "cars"), orderBy("createdAt", "desc"), limit(4))
+
+      const carsQuery = query(
+        collection(db, "cars"),
+        orderBy("featured", "desc"),
+        orderBy("createdAt", "desc"),
+        limit(12)
+      )
+
       const snapshot = await getDocs(carsQuery)
       const carsData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }))
+      })) as Array<{
+        id: string;
+        make: string;
+        model: string;
+        year: number;
+        price: number;
+        imageUrls: string[];
+        featured: boolean;
+        mileage: number;
+        transmission: string;
+        fuelType: string;
+        engineVolume: number;
+        bodyType: string;
+        condition: string;
+        description: string;
+        createdAt: Date;
+      }>
 
       if (isMounted) {
         setCars(carsData)
+        setLoadingCars(false)
       }
     } catch (error) {
       console.error("Ошибка загрузки автомобилей:", error)
-    } finally {
       if (isMounted) {
         setLoadingCars(false)
       }
     }
-  }
+  }, [isMounted])
+
+  useEffect(() => {
+    const loadData = async () => {
+      await Promise.all([loadHomepageSettings(), loadFeaturedCars()])
+    }
+    loadData()
+
+    return () => {
+      setIsMounted(false)
+    }
+  }, [loadHomepageSettings, loadFeaturedCars])
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()

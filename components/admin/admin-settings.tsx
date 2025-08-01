@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
@@ -55,11 +55,7 @@ export default function AdminSettings() {
     },
   })
 
-  useEffect(() => {
-    loadSettings()
-  }, [])
-
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const [mainDoc, homepageDoc, storiesDoc] = await Promise.all([
         getDoc(doc(db, "settings", "main")),
@@ -67,32 +63,19 @@ export default function AdminSettings() {
         getDoc(doc(db, "settings", "stories")),
       ])
 
-      setSettings({
-        main: mainDoc.exists() ? {
-          ...settings.main,
-          ...mainDoc.data(),
-          socialMedia: {
-            ...settings.main.socialMedia,
-            ...mainDoc.data()?.socialMedia
-          },
-          showroomInfo: {
-            ...settings.main.showroomInfo,
-            ...mainDoc.data()?.showroomInfo,
-            workingHours: {
-              ...settings.main.showroomInfo.workingHours,
-              ...mainDoc.data()?.showroomInfo?.workingHours
-            }
-          }
-        } : settings.main,
-        homepage: homepageDoc.exists() ? { ...settings.homepage, ...homepageDoc.data() } : settings.homepage,
-        stories: storiesDoc.exists() ? { ...settings.stories, ...storiesDoc.data() } : settings.stories,
-      })
+      setSettings((prevSettings) => ({
+        main: mainDoc.exists() ? mainDoc.data() : prevSettings.main,
+        homepage: homepageDoc.exists() ? homepageDoc.data() : prevSettings.homepage,
+        stories: storiesDoc.exists() ? storiesDoc.data() : prevSettings.stories,
+      }))
     } catch (error) {
-      console.error("Ошибка загрузки настроек:", error)
-    } finally {
-      setLoading(false)
+      console.error("Error loading settings:", error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    loadSettings()
+  }, [loadSettings])
 
   const saveSettings = async () => {
     setSaving(true)
