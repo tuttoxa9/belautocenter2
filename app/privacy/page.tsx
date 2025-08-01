@@ -183,11 +183,11 @@ export default function PrivacyPage() {
           <nav className="mb-3 lg:mb-4">
             <ol className="flex items-center space-x-2 text-sm text-slate-500">
               <li>
-                <Link href="/" className="hover:text-slate-700 transition-colors">
+                <Link href="/" className="hover:text-blue-600 transition-colors">
                   Главная
                 </Link>
               </li>
-              <li><ArrowRight className="h-3 w-3 lg:h-4 lg:w-4" /></li>
+              <li><ArrowRight className="h-3 w-3" /></li>
               <li className="text-slate-900 font-medium">Политика конфиденциальности</li>
             </ol>
           </nav>

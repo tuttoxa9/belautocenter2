@@ -132,12 +132,12 @@ export default function CatalogPage() {
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <Link href="/" className="hover:text-blue-600">
+              <Link href="/" className="hover:text-blue-600 transition-colors">
                 Главная
               </Link>
             </li>
-            <li>/</li>
-            <li className="text-gray-900">Каталог</li>
+            <li><ArrowRight className="h-3 w-3" /></li>
+            <li className="text-gray-900 font-medium">Каталог</li>
           </ol>
         </nav>
 
