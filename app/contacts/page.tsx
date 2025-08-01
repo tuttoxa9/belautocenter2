@@ -415,12 +415,13 @@ export default function ContactsPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
 
-        {/* Social Media - Blue gradient theme */}
-        {contactsData.socialMedia && Object.keys(contactsData.socialMedia).length > 0 && (
-          <section className="relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[40px] -mb-20 overflow-hidden mt-8 w-screen -mx-[calc((100vw-100%)/2)] min-h-[400px]">
+      {/* Social Media - Blue gradient theme */}
+      {contactsData.socialMedia && Object.keys(contactsData.socialMedia).length > 0 && (
+        <section className="relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[40px] -mb-20 overflow-hidden mt-8">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-500/80 to-cyan-400/70"></div>
-            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center space-x-3 mb-8">
                   <div className="w-11 h-11 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-sm border border-white/30">
@@ -512,9 +513,8 @@ export default function ContactsPage() {
                 </div>
               </div>
             </div>
-          </section>
-        )}
-      </div>
+        </section>
+      )}
     </div>
   )
 }
