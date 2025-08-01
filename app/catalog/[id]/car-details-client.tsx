@@ -687,7 +687,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
             {/* Левая колонка: Галерея */}
             <div className="lg:col-span-7 lg:border-r border-slate-200/50">
               <div
-                className="relative h-64 sm:h-80 md:h-96 lg:h-[600px] select-none bg-gradient-to-br from-slate-50 via-white to-slate-100"
+                className="relative h-64 sm:h-72 md:h-80 lg:h-[400px] select-none bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-2xl mx-4 my-4 overflow-hidden"
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
