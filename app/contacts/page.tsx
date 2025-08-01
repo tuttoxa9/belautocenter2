@@ -432,20 +432,26 @@ export default function ContactsPage() {
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
+                <div className="flex flex-col space-y-4 max-w-2xl mx-auto">
                   {contactsData.socialMedia.instagram && (
                     <a
                       href={contactsData.socialMedia.instagram.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
+                      className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-pink-200"
                     >
-                      <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-orange-400 rounded-2xl flex items-center justify-center shadow-lg">
-                        <Instagram className="h-7 w-7 text-white" />
+                      <div className="w-16 h-16 bg-gradient-to-br from-pink-400 via-pink-500 to-orange-400 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-pink-300/50 transition-all duration-500 flex-shrink-0">
+                        <Instagram className="h-8 w-8 text-white" />
                       </div>
-                      <div className="text-center">
-                        <p className="font-medium text-slate-800 text-base">Instagram</p>
-                        <p className="text-slate-600 text-sm font-light">{contactsData.socialMedia.instagram.name}</p>
+                      <div className="ml-5 flex-1">
+                        <h4 className="font-semibold text-slate-900 text-lg group-hover:text-pink-600 transition-colors">Instagram</h4>
+                        <p className="text-slate-600 text-sm">{contactsData.socialMedia.instagram.name}</p>
+                        <p className="text-slate-500 text-xs mt-1">Фото и видео наших автомобилей</p>
+                      </div>
+                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+                        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </a>
                   )}
@@ -455,16 +461,22 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.telegram.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
+                      className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-blue-200"
                     >
-                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
-                        <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-blue-300/50 transition-all duration-500 flex-shrink-0">
+                        <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.584 7.44c-.12.528-.432.66-.876.412l-2.424-1.788-1.164 1.12c-.132.132-.24.24-.492.24l.168-2.388 4.416-3.984c.192-.168-.036-.264-.3-.096l-5.46 3.432-2.352-.744c-.516-.156-.528-.516.108-.768l9.192-3.54c.432-.156.804.108.672.672z"/>
                         </svg>
                       </div>
-                      <div className="text-center">
-                        <p className="font-medium text-slate-800 text-base">Telegram</p>
-                        <p className="text-slate-600 text-sm font-light">{contactsData.socialMedia.telegram.name}</p>
+                      <div className="ml-5 flex-1">
+                        <h4 className="font-semibold text-slate-900 text-lg group-hover:text-blue-600 transition-colors">Telegram</h4>
+                        <p className="text-slate-600 text-sm">{contactsData.socialMedia.telegram.name}</p>
+                        <p className="text-slate-500 text-xs mt-1">Быстрые консультации и уведомления</p>
+                      </div>
+                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+                        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </a>
                   )}
@@ -474,20 +486,26 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.avby.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
+                      className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-emerald-200"
                     >
-                      <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-slate-200">
+                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-emerald-300/50 transition-all duration-500 flex-shrink-0">
                         <Image
                           src="/av.png"
                           alt="av.by"
-                          width={28}
-                          height={21}
-                          className="object-contain"
+                          width={32}
+                          height={24}
+                          className="object-contain brightness-0 invert"
                         />
                       </div>
-                      <div className="text-center">
-                        <p className="font-medium text-slate-800 text-base">av.by</p>
-                        <p className="text-slate-600 text-sm font-light">{contactsData.socialMedia.avby.name}</p>
+                      <div className="ml-5 flex-1">
+                        <h4 className="font-semibold text-slate-900 text-lg group-hover:text-emerald-600 transition-colors">av.by</h4>
+                        <p className="text-slate-600 text-sm">{contactsData.socialMedia.avby.name}</p>
+                        <p className="text-slate-500 text-xs mt-1">Наш официальный профиль на av.by</p>
+                      </div>
+                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+                        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </a>
                   )}
@@ -497,16 +515,22 @@ export default function ContactsPage() {
                       href={contactsData.socialMedia.tiktok.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col items-center space-y-4 p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 hover:bg-white hover:shadow-xl transition-all duration-500 hover:scale-105"
+                      className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-gray-300"
                     >
-                      <div className="w-14 h-14 bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
-                        <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <div className="w-16 h-16 bg-gradient-to-br from-gray-700 via-gray-800 to-black rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-gray-400/50 transition-all duration-500 flex-shrink-0">
+                        <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
                         </svg>
                       </div>
-                      <div className="text-center">
-                        <p className="font-medium text-slate-800 text-base">TikTok</p>
-                        <p className="text-slate-600 text-sm font-light">{contactsData.socialMedia.tiktok.name}</p>
+                      <div className="ml-5 flex-1">
+                        <h4 className="font-semibold text-slate-900 text-lg group-hover:text-gray-700 transition-colors">TikTok</h4>
+                        <p className="text-slate-600 text-sm">{contactsData.socialMedia.tiktok.name}</p>
+                        <p className="text-slate-500 text-xs mt-1">Короткие видео и обзоры авто</p>
+                      </div>
+                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+                        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </a>
                   )}
