@@ -133,34 +133,110 @@ export default function ReviewsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
           <div className="animate-pulse">
-            {/* Мобильная загрузка */}
+            {/* Единый контейнер в стиле страницы автомобиля */}
             <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden">
-              <div className="p-4 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200/50">
-                <div className="h-6 bg-slate-200 rounded-xl w-2/3 mb-2"></div>
-                <div className="h-4 bg-slate-200 rounded-xl w-1/2"></div>
-              </div>
-              <div className="p-4 space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-slate-50 rounded-xl p-4 border border-slate-200/50 space-y-3">
+
+              {/* Header - адаптивный для мобилки */}
+              <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200/50">
+                {/* Breadcrumbs */}
+                <nav className="mb-3 sm:mb-4">
+                  <ol className="flex items-center space-x-2 text-xs sm:text-sm">
+                    <li>
+                      <div className="h-3 sm:h-4 bg-slate-200 rounded w-12 animate-pulse"></div>
+                    </li>
+                    <li><div className="h-3 w-3 bg-slate-200 rounded animate-pulse"></div></li>
+                    <li><div className="h-3 sm:h-4 bg-slate-200 rounded w-16 animate-pulse"></div></li>
+                  </ol>
+                </nav>
+
+                {/* Title and Stats - мобильная адаптация */}
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-200 rounded-xl sm:rounded-2xl animate-pulse flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <div className="h-6 sm:h-8 lg:h-9 bg-slate-300 rounded w-40 sm:w-56 animate-pulse mb-1"></div>
+                      <div className="h-3 sm:h-4 bg-slate-200 rounded w-36 sm:w-48 animate-pulse"></div>
+                    </div>
+                  </div>
+
+                  {/* Статистика рейтинга - компактная для мобилки */}
+                  <div className="flex items-center justify-between bg-slate-50/50 rounded-xl p-3 sm:p-4">
                     <div className="flex items-center space-x-3">
-                      <div className="h-10 w-10 bg-slate-200 rounded-full"></div>
-                      <div className="space-y-2 flex-1">
-                        <div className="h-4 bg-slate-200 rounded w-2/3"></div>
-                        <div className="flex space-x-1">
+                      <div className="text-center">
+                        <div className="h-5 sm:h-6 bg-slate-300 rounded w-8 mx-auto animate-pulse mb-1"></div>
+                        <div className="flex justify-center space-x-1">
                           {[...Array(5)].map((_, j) => (
-                            <div key={j} className="h-3 w-3 bg-slate-200 rounded"></div>
+                            <div key={j} className="h-3 w-3 bg-slate-200 rounded animate-pulse"></div>
                           ))}
                         </div>
                       </div>
+                      <div className="h-3 sm:h-4 bg-slate-200 rounded w-20 sm:w-24 animate-pulse"></div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-slate-200 rounded"></div>
-                      <div className="h-3 bg-slate-200 rounded w-5/6"></div>
+                    {/* Кнопка фильтра для мобилки */}
+                    <div className="flex items-center space-x-2 bg-slate-100 px-3 py-2 rounded-lg lg:hidden">
+                      <div className="h-4 w-4 bg-slate-200 rounded animate-pulse"></div>
+                      <div className="h-3 bg-slate-200 rounded w-12 animate-pulse"></div>
+                      <div className="h-3 w-3 bg-slate-200 rounded animate-pulse"></div>
                     </div>
                   </div>
-                ))}
+                </div>
+              </div>
+
+              {/* Фильтры - скрываемые на мобилке */}
+              <div className="p-4 sm:p-6 bg-slate-50/50 border-b border-slate-200/50 hidden lg:block">
+                <div className="flex items-center space-x-3">
+                  <div className="h-3 sm:h-4 bg-slate-200 rounded w-32 animate-pulse"></div>
+                  <div className="flex space-x-2">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="h-8 bg-slate-200 rounded-xl w-12 animate-pulse"></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Reviews Grid - мобильная адаптация */}
+              <div className="p-4 sm:p-6">
+                <div className="space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-6 lg:space-y-0">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200/50">
+                      {/* User Info */}
+                      <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-200 rounded-full animate-pulse flex-shrink-0"></div>
+                        <div className="flex-1 min-w-0">
+                          <div className="h-4 bg-slate-300 rounded w-24 sm:w-32 animate-pulse mb-1"></div>
+                          <div className="flex items-center space-x-2">
+                            <div className="flex space-x-1">
+                              {[...Array(5)].map((_, j) => (
+                                <div key={j} className="h-3 w-3 bg-slate-200 rounded animate-pulse"></div>
+                              ))}
+                            </div>
+                            <div className="h-3 bg-slate-200 rounded w-8 animate-pulse"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Car Model */}
+                      <div className="bg-white rounded-lg px-3 py-2 mb-3 sm:mb-4 border border-slate-200/50">
+                        <div className="h-3 bg-slate-200 rounded w-full animate-pulse"></div>
+                      </div>
+
+                      {/* Review Text */}
+                      <div className="mb-3 sm:mb-4 space-y-2">
+                        <div className="h-3 bg-slate-200 rounded w-full animate-pulse"></div>
+                        <div className="h-3 bg-slate-200 rounded w-5/6 animate-pulse"></div>
+                        <div className="h-3 bg-slate-200 rounded w-4/6 animate-pulse"></div>
+                      </div>
+
+                      {/* Date */}
+                      <div className="flex items-center space-x-2 pt-3 border-t border-slate-200/50">
+                        <div className="h-3 w-3 bg-slate-200 rounded animate-pulse flex-shrink-0"></div>
+                        <div className="h-3 bg-slate-200 rounded w-16 animate-pulse"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

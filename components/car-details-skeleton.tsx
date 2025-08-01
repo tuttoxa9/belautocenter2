@@ -28,24 +28,25 @@ export default function CarDetailsSkeleton() {
 
           {/* Заголовок и цена - компактный верхний блок */}
           <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
-              <div className="flex-1">
+            {/* Мобильная компоновка - горизонтальная для экономии места */}
+            <div className="flex items-start justify-between gap-3 lg:gap-4">
+              <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  <div className="h-6 sm:h-8 lg:h-10 bg-slate-300 rounded w-64 sm:w-80 animate-pulse"></div>
-                  <div className="h-6 bg-green-300 rounded-full w-20 animate-pulse"></div>
+                  <div className="h-5 sm:h-8 lg:h-10 bg-slate-300 rounded w-40 sm:w-64 animate-pulse"></div>
+                  <div className="h-5 sm:h-6 bg-green-300 rounded-full w-16 sm:w-20 animate-pulse self-start sm:self-auto"></div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 sm:space-x-3">
-                  <div className="h-5 bg-slate-200 rounded-lg w-12 animate-pulse"></div>
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <div className="h-5 bg-slate-200 rounded-lg w-10 animate-pulse"></div>
+                  <div className="h-5 bg-slate-200 rounded-lg w-14 animate-pulse"></div>
                   <div className="h-5 bg-slate-200 rounded-lg w-16 animate-pulse"></div>
-                  <div className="h-5 bg-slate-200 rounded-lg w-20 animate-pulse"></div>
                 </div>
               </div>
 
-              {/* Цена справа */}
-              <div className="text-left sm:text-right">
-                <div className="h-8 sm:h-10 lg:h-12 bg-slate-300 rounded w-32 sm:w-40 animate-pulse mb-1"></div>
-                <div className="h-4 sm:h-5 bg-slate-200 rounded w-24 sm:w-32 animate-pulse"></div>
-                <div className="h-3 sm:h-4 bg-slate-200 rounded w-20 sm:w-24 animate-pulse mt-1"></div>
+              {/* Цена справа - всегда горизонтально */}
+              <div className="text-right flex-shrink-0">
+                <div className="h-5 sm:h-8 lg:h-10 bg-slate-300 rounded w-20 sm:w-32 animate-pulse mb-1"></div>
+                <div className="h-3 sm:h-5 lg:h-6 bg-slate-200 rounded w-16 sm:w-24 animate-pulse"></div>
+                <div className="h-3 sm:h-4 bg-slate-200 rounded w-14 sm:w-20 animate-pulse mt-1"></div>
               </div>
             </div>
           </div>
