@@ -30,7 +30,12 @@ import {
   Building2,
   Globe,
   Mail,
-  Calendar
+  Calendar,
+  Heart,
+  Target,
+  Zap,
+  Eye,
+  Handshake
 } from "lucide-react"
 
 export default function AboutPage() {
@@ -208,6 +213,11 @@ export default function AboutPage() {
                       case "award": return Award
                       case "users": return Users
                       case "star": return Star
+                      case "heart": return Heart
+                      case "target": return Target
+                      case "zap": return Zap
+                      case "eye": return Eye
+                      case "handshake": return Handshake
                       default: return Shield
                     }
                   }
@@ -215,6 +225,10 @@ export default function AboutPage() {
                   const colors = [
                     { bg: "bg-blue-100", text: "text-blue-600" },
                     { bg: "bg-emerald-100", text: "text-emerald-600" },
+                    { bg: "bg-violet-100", text: "text-violet-600" },
+                    { bg: "bg-orange-100", text: "text-orange-600" },
+                    { bg: "bg-cyan-100", text: "text-cyan-600" },
+                    { bg: "bg-rose-100", text: "text-rose-600" },
                     { bg: "bg-amber-100", text: "text-amber-600" }
                   ]
                   const color = colors[index % colors.length]
@@ -238,25 +252,43 @@ export default function AboutPage() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-slate-900 text-sm md:text-base mb-1">Надежность</h4>
-                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Гарантируем качество каждого автомобиля</p>
+                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Гарантируем качество каждого автомобиля и честность во всех сделках</p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-                        <Users className="h-4 w-4 text-emerald-600" />
+                        <Heart className="h-4 w-4 text-emerald-600" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-slate-900 text-sm md:text-base mb-1">Клиентоориентированность</h4>
-                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Ваши потребности - наш приоритет</p>
+                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Ваши потребности и комфорт - наш главный приоритет</p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-                        <Star className="h-4 w-4 text-amber-600" />
+                      <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <Award className="h-4 w-4 text-violet-600" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-slate-900 text-sm md:text-base mb-1">Профессионализм</h4>
-                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Глубокие знания автомобильного рынка</p>
+                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Глубокие знания автомобильного рынка и экспертная оценка</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <Eye className="h-4 w-4 text-orange-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-900 text-sm md:text-base mb-1">Прозрачность</h4>
+                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Открытая информация о каждом автомобиле и честные цены</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <Zap className="h-4 w-4 text-cyan-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-900 text-sm md:text-base mb-1">Оперативность</h4>
+                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Быстрое решение вопросов и минимальные сроки оформления</p>
                       </div>
                     </div>
                   </>
