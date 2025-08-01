@@ -834,7 +834,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     </div>
                     <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
                       <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
-                      <div className="text-sm lg:text-lg font-bold text-slate-900">{formatEngineVolume(car.engineVolume)}л {car.fuelType}</div>
+                      <div className="text-sm lg:text-lg font-bold text-slate-900">
+                        {car.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car.engineVolume)}л ${car.fuelType}`}
+                      </div>
                     </div>
                     <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
                       <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>

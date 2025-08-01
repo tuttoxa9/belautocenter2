@@ -21,7 +21,8 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 
     const car = { id: carDoc.id, ...carDoc.data() } as any
     const carTitle = `${car.make} ${car.model} ${car.year}`
-    const carDescription = `${carTitle} - ${car.color}, ${car.mileage?.toLocaleString()} км, ${car.engineVolume}л ${car.fuelType}, ${car.transmission}. Цена: ${car.price?.toLocaleString()}. Кредит и лизинг в Белавто Центр, Минск.`
+    const engineInfo = car.fuelType === "Электро" ? car.fuelType : `${car.engineVolume}л ${car.fuelType}`
+    const carDescription = `${carTitle} - ${car.color}, ${car.mileage?.toLocaleString()} км, ${engineInfo}, ${car.transmission}. Цена: ${car.price?.toLocaleString()}. Кредит и лизинг в Белавто Центр, Минск.`
 
     // Определяем изображение для социальных сетей
     let carImage = 'https://belautocenter.by/social-preview.jpg' // fallback по умолчанию
