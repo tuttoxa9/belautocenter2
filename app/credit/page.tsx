@@ -10,12 +10,11 @@ import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calculator, CreditCard, CheckCircle, Building, Percent, Clock, DollarSign, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Shield, TrendingDown, Check, ArrowRight, ChevronRight, AlertCircle } from "lucide-react"
+import { ChevronRight, Check } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
@@ -80,7 +79,6 @@ export default function CreditPage() {
   }, [])
 
   useEffect(() => {
-    // Инициализируем ручные поля значениями слайдеров
     setManualInputs({
       carPrice: calculator.carPrice[0].toString(),
       downPayment: calculator.downPayment[0].toString(),
@@ -98,7 +96,6 @@ export default function CreditPage() {
       if (doc_snap.exists()) {
         setSettings(doc_snap.data() as CreditPageSettings)
       } else {
-        // Default fallback data only if no data exists
         setSettings({
           title: "Автокредит на выгодных условиях",
           subtitle: "Получите кредит на автомобиль мечты уже сегодня",
@@ -159,7 +156,6 @@ export default function CreditPage() {
     if (!usdBynRate) return
 
     if (checked) {
-      // Переключение на BYN - устанавливаем минимальные значения для BYN
       const newCarPrice = Math.max(3000, Math.round(calculator.carPrice[0] * usdBynRate))
       const newDownPayment = Math.max(300, Math.round(calculator.downPayment[0] * usdBynRate))
 
@@ -168,14 +164,12 @@ export default function CreditPage() {
         carPrice: [newCarPrice],
         downPayment: [newDownPayment]
       })
-      // Обновляем ручные поля
       setManualInputs({
         ...manualInputs,
         carPrice: newCarPrice.toString(),
         downPayment: newDownPayment.toString()
       })
     } else {
-      // Переключение на USD
       const newCarPrice = Math.max(1000, Math.round(calculator.carPrice[0] / usdBynRate))
       const newDownPayment = Math.max(100, Math.round(calculator.downPayment[0] / usdBynRate))
 
@@ -184,7 +178,6 @@ export default function CreditPage() {
         carPrice: [newCarPrice],
         downPayment: [newDownPayment]
       })
-      // Обновляем ручные поля
       setManualInputs({
         ...manualInputs,
         carPrice: newCarPrice.toString(),
@@ -235,15 +228,12 @@ export default function CreditPage() {
   }
 
   const formatPhoneNumber = (value: string) => {
-    // Удаляем все нецифровые символы кроме +
     let numbers = value.replace(/[^\d+]/g, "")
 
-    // Если нет + в начале, добавляем +375
     if (!numbers.startsWith("+375")) {
       numbers = "+375"
     }
 
-    // Берем только +375 и следующие 9 цифр максимум
     const prefix = "+375"
     const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9)
 
@@ -258,7 +248,6 @@ export default function CreditPage() {
     e.preventDefault()
 
     await submitButtonState.execute(async () => {
-      // Сохраняем в Firebase
       await addDoc(collection(db, "leads"), {
         ...creditForm,
         type: "credit_request",
@@ -266,7 +255,6 @@ export default function CreditPage() {
         createdAt: new Date(),
       })
 
-      // Отправляем уведомление в Telegram
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {
@@ -292,71 +280,21 @@ export default function CreditPage() {
     })
   }
 
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case "percent":
-        return Percent
-      case "clock":
-        return Clock
-      case "building":
-        return Building
-      case "dollar-sign":
-        return DollarSign
-      case "file-text":
-        return FileText
-      case "users":
-        return Users
-      case "zap":
-        return Zap
-      case "award":
-        return Award
-      case "target":
-        return Target
-      case "briefcase":
-        return Briefcase
-      case "trending-up":
-        return TrendingUp
-      case "handshake":
-        return Handshake
-      case "check-square":
-        return CheckSquare
-      case "coins":
-        return Coins
-      case "timer":
-        return Timer
-      case "heart":
-        return Heart
-      case "shield":
-        return Shield
-      case "trending-down":
-        return TrendingDown
-      default:
-        return CreditCard
-    }
-  }
-
   const monthlyPayment = calculateMonthlyPayment()
   const totalAmount = monthlyPayment * calculator.loanTerm[0]
   const overpayment = totalAmount - (calculator.carPrice[0] - calculator.downPayment[0])
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="animate-pulse">
-            <div className="h-6 bg-gray-200 rounded w-64 mb-8"></div>
-            <div className="bg-gray-50 rounded-lg border p-8">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
-                  ))}
-                </div>
-                <div className="space-y-4">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="h-10 bg-gray-200 rounded"></div>
-                  ))}
-                </div>
+            <div className="h-4 bg-slate-200 rounded-full w-48 mb-8"></div>
+            <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
+              <div className="space-y-6">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-20 bg-slate-100 rounded-2xl"></div>
+                ))}
               </div>
             </div>
           </div>
@@ -367,66 +305,72 @@ export default function CreditPage() {
 
   if (!settings) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">Не удалось загрузить информацию о кредитах</p>
+          <p className="text-slate-600">Не удалось загрузить информацию о кредитах</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-6 py-6">
-        {/* Хлебные крошки */}
-        <nav className="mb-6">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+
+        {/* Breadcrumbs */}
+        <nav className="mb-8">
+          <ol className="flex items-center space-x-2 text-sm text-slate-500">
             <li>
-              <Link href="/" className="hover:text-gray-900 transition-colors">
+              <Link href="/" className="hover:text-slate-900 transition-colors">
                 Главная
               </Link>
             </li>
-            <li><ChevronRight className="h-3 w-3" /></li>
-            <li className="text-gray-900">Автокредит</li>
+            <li><ChevronRight className="h-4 w-4" /></li>
+            <li className="text-slate-900 font-medium">Автокредит</li>
           </ol>
         </nav>
 
-        {/* Основной блок */}
-        <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
-          {/* Заголовок */}
-          <div className="px-8 py-6 border-b border-gray-200 bg-white">
-            <h1 className="text-2xl font-semibold text-gray-900 mb-2">{settings?.title}</h1>
-            <p className="text-gray-600">{settings?.description}</p>
+        {/* Hero Section */}
+        <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-8">
+          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-12">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
+            <div className="relative max-w-4xl">
+              <h1 className="text-4xl font-bold text-white mb-4">{settings?.title}</h1>
+              <p className="text-xl text-slate-300 mb-6">{settings?.subtitle}</p>
+              <p className="text-slate-400 leading-relaxed">{settings?.description}</p>
+            </div>
           </div>
 
-          {/* Основной контент */}
-          <div className="grid md:grid-cols-2 divide-x divide-gray-200">
+          {/* Main Content Grid */}
+          <div className="p-8 grid lg:grid-cols-5 gap-8">
 
-            {/* Калькулятор */}
-            <div className="p-6 bg-white">
-              <h2 className="text-lg font-medium text-gray-900 mb-6">Расчет кредита</h2>
+            {/* Calculator Section - 3 columns */}
+            <div className="lg:col-span-3 space-y-6">
 
-              {/* Валюта */}
-              <div className="mb-6">
+              {/* Calculator Header */}
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-semibold text-slate-900">Кредитный калькулятор</h2>
                 <div className="flex items-center space-x-3">
                   <Checkbox
-                    id="currency-switch"
+                    id="currency"
                     checked={isBelarusianRubles}
                     onCheckedChange={handleCurrencyChange}
+                    className="data-[state=checked]:bg-slate-900"
                   />
-                  <Label htmlFor="currency-switch" className="text-sm text-gray-700">
+                  <Label htmlFor="currency" className="text-sm font-medium text-slate-700 cursor-pointer">
                     В белорусских рублях
                   </Label>
                 </div>
               </div>
 
-              {/* Параметры */}
-              <div className="space-y-6">
-                {/* Стоимость */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm font-medium text-gray-900">Стоимость автомобиля</Label>
-                    <span className="text-sm font-medium">{formatCurrency(calculator.carPrice[0])}</span>
+              {/* Parameters Grid */}
+              <div className="grid md:grid-cols-2 gap-6">
+
+                {/* Car Price */}
+                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-4">
+                    <label className="text-sm font-semibold text-slate-900">Стоимость автомобиля</label>
+                    <span className="text-lg font-bold text-slate-900">{formatCurrency(calculator.carPrice[0])}</span>
                   </div>
                   <Slider
                     value={calculator.carPrice}
@@ -437,24 +381,22 @@ export default function CreditPage() {
                     max={getCreditMaxValue()}
                     min={getCreditMinValue()}
                     step={isBelarusianRubles ? 500 : 1000}
-                    className="mb-2"
+                    className="mb-4"
                   />
                   <Input
                     type="number"
-                    placeholder="Введите сумму"
                     value={manualInputs.carPrice}
                     onChange={(e) => handleManualInputChange('carPrice', e.target.value)}
-                    className="h-9 text-sm"
-                    min={getCreditMinValue()}
-                    max={getCreditMaxValue()}
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    placeholder="Введите сумму"
                   />
                 </div>
 
-                {/* Взнос */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm font-medium text-gray-900">Первоначальный взнос</Label>
-                    <span className="text-sm font-medium">{formatCurrency(calculator.downPayment[0])}</span>
+                {/* Down Payment */}
+                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-4">
+                    <label className="text-sm font-semibold text-slate-900">Первоначальный взнос</label>
+                    <span className="text-lg font-bold text-slate-900">{formatCurrency(calculator.downPayment[0])}</span>
                   </div>
                   <Slider
                     value={calculator.downPayment}
@@ -465,24 +407,22 @@ export default function CreditPage() {
                     max={calculator.carPrice[0] * 0.8}
                     min={calculator.carPrice[0] * 0.1}
                     step={isBelarusianRubles ? 200 : 500}
-                    className="mb-2"
+                    className="mb-4"
                   />
                   <Input
                     type="number"
-                    placeholder="Введите сумму"
                     value={manualInputs.downPayment}
                     onChange={(e) => handleManualInputChange('downPayment', e.target.value)}
-                    className="h-9 text-sm"
-                    min={calculator.carPrice[0] * 0.1}
-                    max={calculator.carPrice[0] * 0.8}
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    placeholder="Введите сумму"
                   />
                 </div>
 
-                {/* Срок */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm font-medium text-gray-900">Срок кредита</Label>
-                    <span className="text-sm font-medium">{calculator.loanTerm[0]} мес.</span>
+                {/* Loan Term */}
+                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-4">
+                    <label className="text-sm font-semibold text-slate-900">Срок кредита</label>
+                    <span className="text-lg font-bold text-slate-900">{calculator.loanTerm[0]} мес.</span>
                   </div>
                   <Slider
                     value={calculator.loanTerm}
@@ -493,24 +433,22 @@ export default function CreditPage() {
                     max={84}
                     min={12}
                     step={3}
-                    className="mb-2"
+                    className="mb-4"
                   />
                   <Input
                     type="number"
-                    placeholder="Месяцы"
                     value={manualInputs.loanTerm}
                     onChange={(e) => handleManualInputChange('loanTerm', e.target.value)}
-                    className="h-9 text-sm"
-                    min={12}
-                    max={84}
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    placeholder="Месяцы"
                   />
                 </div>
 
-                {/* Ставка */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm font-medium text-gray-900">Процентная ставка</Label>
-                    <span className="text-sm font-medium">{calculator.interestRate[0]}%</span>
+                {/* Interest Rate */}
+                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-4">
+                    <label className="text-sm font-semibold text-slate-900">Процентная ставка</label>
+                    <span className="text-lg font-bold text-slate-900">{calculator.interestRate[0]}%</span>
                   </div>
                   <Slider
                     value={calculator.interestRate}
@@ -522,364 +460,281 @@ export default function CreditPage() {
                     min={10}
                     step={0.25}
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}
-                    className="mb-2"
+                    className="mb-4"
                   />
                   <Input
                     type="number"
-                    placeholder="Процент"
                     value={manualInputs.interestRate}
                     onChange={(e) => handleManualInputChange('interestRate', e.target.value)}
-                    className="h-9 text-sm"
-                    min={10}
-                    max={25}
-                    step={0.25}
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    placeholder="Процент"
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}
                   />
                 </div>
-
-                {/* Банк */}
-                <div>
-                  <Label className="text-sm font-medium text-gray-900 mb-2 block">Банк</Label>
-                  <Select
-                    value={manualInputs.selectedBank}
-                    onValueChange={handleBankSelection}
-                  >
-                    <SelectTrigger className="h-9">
-                      <SelectValue placeholder="Выберите банк">
-                        {manualInputs.selectedBank && manualInputs.selectedBank !== 'custom' && settings?.partners ? (
-                          <div className="flex items-center justify-between w-full">
-                            <div className="flex items-center gap-2 flex-1 pr-4">
-                              {(() => {
-                                const selectedPartner = settings.partners.find(partner =>
-                                  partner.name.toLowerCase().replace(/[\s-]/g, '') === manualInputs.selectedBank
-                                )
-                                return selectedPartner ? (
-                                  <>
-                                    {selectedPartner.logoUrl && (
-                                      <Image
-                                        src={getCachedImageUrl(selectedPartner.logoUrl)}
-                                        alt={`${selectedPartner.name} логотип`}
-                                        width={16}
-                                        height={16}
-                                        className="object-contain"
-                                      />
-                                    )}
-                                    <span className="text-sm">{selectedPartner.name}</span>
-                                  </>
-                                ) : null
-                              })()}
-                            </div>
-                            {(() => {
-                              const selectedPartner = settings.partners.find(partner =>
-                                partner.name.toLowerCase().replace(/[\s-]/g, '') === manualInputs.selectedBank
-                              )
-                              return selectedPartner ? (
-                                <span className="text-xs text-gray-500">{selectedPartner.minRate}%</span>
-                              ) : null
-                            })()}
-                          </div>
-                        ) : manualInputs.selectedBank === 'custom' ? (
-                          'Ввести ставку вручную'
-                        ) : null}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {settings?.partners?.map((partner) => (
-                        <SelectItem
-                          key={partner.name}
-                          value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
-                          className="relative pr-12"
-                        >
-                          <div className="flex items-center gap-2 pr-8">
-                            {partner.logoUrl && (
-                              <Image
-                                src={getCachedImageUrl(partner.logoUrl)}
-                                alt={`${partner.name} логотип`}
-                                width={16}
-                                height={16}
-                                className="object-contain"
-                              />
-                            )}
-                            <span className="text-sm">{partner.name}</span>
-                          </div>
-                          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">{partner.minRate}%</span>
-                        </SelectItem>
-                      ))}
-                      <SelectItem value="custom">Ввести ставку вручную</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
 
-              {/* Результат */}
-              <div className="mt-6 p-4 bg-gray-50 rounded border">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Сумма кредита:</span>
-                    <span className="font-medium">{formatCurrency(calculator.carPrice[0] - calculator.downPayment[0])}</span>
+              {/* Bank Selection */}
+              <div className="bg-slate-50 rounded-2xl p-6">
+                <label className="text-sm font-semibold text-slate-900 mb-4 block">Выберите банк-партнер</label>
+                <Select
+                  value={manualInputs.selectedBank}
+                  onValueChange={handleBankSelection}
+                >
+                  <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-xl h-12">
+                    <SelectValue placeholder="Выберите банк или введите ставку вручную" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {settings?.partners?.map((partner) => (
+                      <SelectItem
+                        key={partner.name}
+                        value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
+                        className="flex items-center justify-between p-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          {partner.logoUrl && (
+                            <Image
+                              src={getCachedImageUrl(partner.logoUrl)}
+                              alt={partner.name}
+                              width={24}
+                              height={24}
+                              className="object-contain rounded"
+                            />
+                          )}
+                          <span className="font-medium">{partner.name}</span>
+                        </div>
+                        <span className="text-sm text-slate-600">{partner.minRate}%</span>
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="custom">Ввести ставку вручную</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Results Card */}
+              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
+                <h3 className="text-lg font-semibold mb-4">Результат расчета</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                    <div className="text-sm text-slate-300 mb-1">Сумма кредита</div>
+                    <div className="text-xl font-bold">{formatCurrency(calculator.carPrice[0] - calculator.downPayment[0])}</div>
                   </div>
-                  <div className="flex justify-between text-sm py-2 px-2 bg-white rounded border">
-                    <span className="text-gray-600">Ежемесячный платеж:</span>
-                    <span className="font-semibold">{formatCurrency(monthlyPayment)}</span>
+                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                    <div className="text-sm text-slate-300 mb-1">Ежемесячный платеж</div>
+                    <div className="text-xl font-bold text-green-400">{formatCurrency(monthlyPayment)}</div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Общая сумма:</span>
-                    <span className="font-medium">{formatCurrency(totalAmount)}</span>
+                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                    <div className="text-sm text-slate-300 mb-1">Общая сумма</div>
+                    <div className="text-xl font-bold">{formatCurrency(totalAmount)}</div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Переплата:</span>
-                    <span className="font-medium text-red-600">{formatCurrency(overpayment)}</span>
+                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                    <div className="text-sm text-slate-300 mb-1">Переплата</div>
+                    <div className="text-xl font-bold text-red-400">{formatCurrency(overpayment)}</div>
                   </div>
-                  {!isBelarusianRubles && usdBynRate && (
-                    <div className="pt-2 mt-2 border-t text-xs text-gray-500">
-                      В BYN: {convertUsdToByn(monthlyPayment, usdBynRate)} руб./мес.
-                    </div>
-                  )}
                 </div>
+                {!isBelarusianRubles && usdBynRate && (
+                  <div className="mt-4 pt-4 border-t border-white/20">
+                    <div className="text-sm text-slate-300">
+                      В белорусских рублях: <span className="font-semibold text-white">{convertUsdToByn(monthlyPayment, usdBynRate)} BYN/месяц</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Форма */}
-            <div className="p-6 bg-white">
-              <h2 className="text-lg font-medium text-gray-900 mb-6">Заявка на кредит</h2>
+            {/* Application Form - 2 columns */}
+            <div className="lg:col-span-2">
+              <div className="bg-slate-50 rounded-2xl p-6 h-full">
+                <h2 className="text-2xl font-semibold text-slate-900 mb-6">Подать заявку</h2>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <Label htmlFor="name" className="text-sm font-medium text-gray-900 mb-1 block">Имя</Label>
+                    <Label htmlFor="name" className="text-sm font-medium text-slate-900 mb-2 block">Ваше имя</Label>
                     <Input
                       id="name"
                       value={creditForm.name}
                       onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
-                      placeholder="Ваше имя"
-                      className="h-9"
+                      className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                      placeholder="Введите ваше имя"
                       required
                     />
                   </div>
+
                   <div>
-                    <Label htmlFor="phone" className="text-sm font-medium text-gray-900 mb-1 block">Телефон</Label>
+                    <Label htmlFor="phone" className="text-sm font-medium text-slate-900 mb-2 block">Номер телефона</Label>
                     <div className="relative">
                       <Input
                         id="phone"
                         value={creditForm.phone}
                         onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
+                        className="bg-white border-slate-200 focus:border-slate-400 rounded-xl pr-10"
                         placeholder="+375XXXXXXXXX"
-                        className="h-9 pr-8"
                         required
                       />
                       {isPhoneValid(creditForm.phone) && (
-                        <Check className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-600" />
+                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-600" />
                       )}
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-900 mb-1 block">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={creditForm.email}
-                    onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
-                    placeholder="your@email.com"
-                    className="h-9"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="carPrice" className="text-sm font-medium text-gray-900 mb-1 block">Стоимость ($)</Label>
+                    <Label htmlFor="email" className="text-sm font-medium text-slate-900 mb-2 block">Email</Label>
                     <Input
-                      id="carPrice"
-                      type="number"
-                      value={creditForm.carPrice}
-                      onChange={(e) => setCreditForm({ ...creditForm, carPrice: e.target.value })}
-                      placeholder="50000"
-                      className="h-9"
+                      id="email"
+                      type="email"
+                      value={creditForm.email}
+                      onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
+                      className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                      placeholder="your@email.com"
                       required
                     />
                   </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="carPrice" className="text-sm font-medium text-slate-900 mb-2 block">Стоимость ($)</Label>
+                      <Input
+                        id="carPrice"
+                        type="number"
+                        value={creditForm.carPrice}
+                        onChange={(e) => setCreditForm({ ...creditForm, carPrice: e.target.value })}
+                        className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                        placeholder="50000"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="downPayment" className="text-sm font-medium text-slate-900 mb-2 block">Взнос ($)</Label>
+                      <Input
+                        id="downPayment"
+                        type="number"
+                        value={creditForm.downPayment}
+                        onChange={(e) => setCreditForm({ ...creditForm, downPayment: e.target.value })}
+                        className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                        placeholder="15000"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="loanTerm" className="text-sm font-medium text-slate-900 mb-2 block">Срок</Label>
+                      <Select
+                        value={creditForm.loanTerm}
+                        onValueChange={(value) => setCreditForm({ ...creditForm, loanTerm: value })}
+                      >
+                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-xl">
+                          <SelectValue placeholder="Месяцы" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="12">12 месяцев</SelectItem>
+                          <SelectItem value="24">24 месяца</SelectItem>
+                          <SelectItem value="36">36 месяцев</SelectItem>
+                          <SelectItem value="48">48 месяцев</SelectItem>
+                          <SelectItem value="60">60 месяцев</SelectItem>
+                          <SelectItem value="72">72 месяца</SelectItem>
+                          <SelectItem value="84">84 месяца</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="bank" className="text-sm font-medium text-slate-900 mb-2 block">Банк</Label>
+                      <Select
+                        value={creditForm.bank}
+                        onValueChange={(value) => setCreditForm({ ...creditForm, bank: value })}
+                      >
+                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-xl">
+                          <SelectValue placeholder="Выберите" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {settings?.partners?.map((partner) => (
+                            <SelectItem
+                              key={partner.name}
+                              value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
+                            >
+                              {partner.name}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="any">Любой банк</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
                   <div>
-                    <Label htmlFor="downPayment" className="text-sm font-medium text-gray-900 mb-1 block">Взнос ($)</Label>
+                    <Label htmlFor="message" className="text-sm font-medium text-slate-900 mb-2 block">Комментарий</Label>
                     <Input
-                      id="downPayment"
-                      type="number"
-                      value={creditForm.downPayment}
-                      onChange={(e) => setCreditForm({ ...creditForm, downPayment: e.target.value })}
-                      placeholder="15000"
-                      className="h-9"
-                      required
+                      id="message"
+                      value={creditForm.message}
+                      onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
+                      className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                      placeholder="Дополнительная информация..."
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="loanTerm" className="text-sm font-medium text-gray-900 mb-1 block">Срок</Label>
-                    <Select
-                      value={creditForm.loanTerm}
-                      onValueChange={(value) => setCreditForm({ ...creditForm, loanTerm: value })}
-                    >
-                      <SelectTrigger className="h-9">
-                        <SelectValue placeholder="Месяцы" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="12">12 месяцев</SelectItem>
-                        <SelectItem value="24">24 месяца</SelectItem>
-                        <SelectItem value="36">36 месяцев</SelectItem>
-                        <SelectItem value="48">48 месяцев</SelectItem>
-                        <SelectItem value="60">60 месяцев</SelectItem>
-                        <SelectItem value="72">72 месяца</SelectItem>
-                        <SelectItem value="84">84 месяца</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <StatusButton
+                    type="submit"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-xl py-3 mt-6"
+                    state={submitButtonState.state}
+                    loadingText="Отправляем..."
+                    successText="Отправлено!"
+                    errorText="Ошибка"
+                  >
+                    Отправить заявку на кредит
+                  </StatusButton>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Partners & Benefits */}
+        <div className="grid lg:grid-cols-2 gap-8">
+
+          {/* Partners */}
+          <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
+            <h3 className="text-2xl font-semibold text-slate-900 mb-6">Банки-партнеры</h3>
+            <div className="space-y-4">
+              {settings?.partners?.map((partner, index) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center gap-4">
+                    {partner.logoUrl && (
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                        <img
+                          src={getCachedImageUrl(partner.logoUrl)}
+                          alt={partner.name}
+                          className="h-8 w-10 object-contain"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <div className="font-semibold text-slate-900">{partner.name}</div>
+                      <div className="text-sm text-slate-600">до {partner.maxTerm} месяцев</div>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="bank" className="text-sm font-medium text-gray-900 mb-1 block">Банк</Label>
-                    <Select
-                      value={creditForm.bank}
-                      onValueChange={(value) => setCreditForm({ ...creditForm, bank: value })}
-                    >
-                      <SelectTrigger className="h-9">
-                        <SelectValue placeholder="Выберите банк">
-                          {creditForm.bank && creditForm.bank !== 'any' && settings?.partners ? (
-                            <div className="flex items-center justify-between w-full">
-                              <div className="flex items-center gap-2 flex-1 pr-4">
-                                {(() => {
-                                  const selectedPartner = settings.partners.find(partner =>
-                                    partner.name.toLowerCase().replace(/[\s-]/g, '') === creditForm.bank
-                                  )
-                                  return selectedPartner ? (
-                                    <>
-                                      {selectedPartner.logoUrl && (
-                                        <Image
-                                          src={getCachedImageUrl(selectedPartner.logoUrl)}
-                                          alt={`${selectedPartner.name} логотип`}
-                                          width={16}
-                                          height={16}
-                                          className="object-contain"
-                                        />
-                                      )}
-                                      <span className="text-sm">{selectedPartner.name}</span>
-                                    </>
-                                  ) : null
-                                })()}
-                              </div>
-                              {(() => {
-                                const selectedPartner = settings.partners.find(partner =>
-                                  partner.name.toLowerCase().replace(/[\s-]/g, '') === creditForm.bank
-                                )
-                                return selectedPartner ? (
-                                  <span className="text-xs text-gray-500">{selectedPartner.minRate}%</span>
-                                ) : null
-                              })()}
-                            </div>
-                          ) : creditForm.bank === 'any' ? (
-                            'Любой банк'
-                          ) : null}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {settings?.partners?.map((partner) => (
-                          <SelectItem
-                            key={partner.name}
-                            value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
-                            className="relative pr-12"
-                          >
-                            <div className="flex items-center gap-2 pr-8">
-                              {partner.logoUrl && (
-                                <Image
-                                  src={getCachedImageUrl(partner.logoUrl)}
-                                  alt={`${partner.name} логотип`}
-                                  width={16}
-                                  height={16}
-                                  className="object-contain"
-                                />
-                              )}
-                              <span className="text-sm">{partner.name}</span>
-                            </div>
-                            <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">{partner.minRate}%</span>
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="any">Любой банк</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-slate-900">от {partner.minRate}%</div>
+                    <div className="text-sm text-slate-600">годовых</div>
                   </div>
                 </div>
-
-                <div>
-                  <Label htmlFor="message" className="text-sm font-medium text-gray-900 mb-1 block">Комментарий</Label>
-                  <Input
-                    id="message"
-                    value={creditForm.message}
-                    onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
-                    placeholder="Дополнительная информация..."
-                    className="h-9"
-                  />
-                </div>
-
-                <StatusButton
-                  type="submit"
-                  className="w-full mt-6 bg-gray-900 hover:bg-gray-800 text-white"
-                  state={submitButtonState.state}
-                  loadingText="Отправляем..."
-                  successText="Отправлено!"
-                  errorText="Ошибка"
-                >
-                  Отправить заявку
-                </StatusButton>
-              </form>
+              ))}
             </div>
           </div>
 
-          {/* Дополнительная информация */}
-          <div className="border-t border-gray-200 p-6 bg-gray-50">
-            <div className="grid md:grid-cols-2 gap-8">
-
-              {/* Банки */}
-              <div>
-                <h3 className="text-base font-medium text-gray-900 mb-4">Банки-партнеры</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {settings?.partners?.map((partner, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-white rounded border">
-                      <div className="flex items-center gap-2">
-                        {partner.logoUrl && (
-                          <img
-                            src={getCachedImageUrl(partner.logoUrl)}
-                            alt={partner.name}
-                            className="h-6 w-8 object-contain"
-                          />
-                        )}
-                        <span className="text-sm font-medium">{partner.name}</span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs text-gray-500">от {partner.minRate}%</div>
-                        <div className="text-xs text-gray-500">до {partner.maxTerm}м</div>
-                      </div>
-                    </div>
-                  ))}
+          {/* Benefits */}
+          <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
+            <h3 className="text-2xl font-semibold text-slate-900 mb-6">Преимущества</h3>
+            <div className="space-y-4">
+              {settings?.benefits?.map((benefit, index) => (
+                <div key={index} className="p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors">
+                  <h4 className="font-semibold text-slate-900 mb-2">{benefit.title}</h4>
+                  <p className="text-sm text-slate-600 leading-relaxed">{benefit.description}</p>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              {/* Преимущества */}
-              <div>
-                <h3 className="text-base font-medium text-gray-900 mb-4">Преимущества</h3>
-                <div className="space-y-3">
-                  {settings?.benefits?.map((benefit, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-white rounded border">
-                      <div className="flex-1">
-                        <h4 className="text-sm font-medium text-gray-900 mb-1">{benefit.title}</h4>
-                        <p className="text-xs text-gray-600 leading-relaxed">{benefit.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4">
-                  <CreditConditions />
-                </div>
-              </div>
+            <div className="mt-6 pt-6 border-t border-slate-200">
+              <CreditConditions />
             </div>
           </div>
         </div>
