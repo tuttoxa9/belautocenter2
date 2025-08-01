@@ -266,23 +266,23 @@ export default function AboutPage() {
           </Card>
         </div>
 
-        {/* Services Section - Modern macOS Style */}
-        <div className="mb-8 md:mb-12">
-          <div className="text-center mb-6 md:mb-8">
-            <div className="flex items-center justify-center space-x-3 mb-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-xl shadow-blue-500/25 border border-white/20 backdrop-blur-sm">
-                <Wrench className="h-5 w-5 text-white" />
+        {/* Services Section */}
+        <div className="mb-6 md:mb-8">
+          <div className="mb-4 md:mb-6">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                <Wrench className="h-5 w-5 text-slate-600" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900">
                 {aboutData.services?.title || "Наши услуги"}
               </h2>
             </div>
-            <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              Профессиональный сервис полного цикла для вашего комфорта
+            <p className="text-sm md:text-base text-slate-600">
+              Полный спектр услуг для комфортной покупки автомобиля
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {aboutData?.services?.items?.map((service, index) => {
               const getIcon = (iconName: string) => {
                 switch (iconName) {
@@ -300,128 +300,80 @@ export default function AboutPage() {
               }
               const IconComponent = getIcon(service?.icon || 'check')
 
-              const gradients = [
-                { from: "from-blue-500", to: "to-cyan-500", shadow: "shadow-blue-500/25", bg: "bg-blue-50/80" },
-                { from: "from-emerald-500", to: "to-teal-500", shadow: "shadow-emerald-500/25", bg: "bg-emerald-50/80" },
-                { from: "from-violet-500", to: "to-purple-500", shadow: "shadow-violet-500/25", bg: "bg-violet-50/80" },
-                { from: "from-orange-500", to: "to-amber-500", shadow: "shadow-orange-500/25", bg: "bg-orange-50/80" },
-                { from: "from-rose-500", to: "to-pink-500", shadow: "shadow-rose-500/25", bg: "bg-rose-50/80" },
-                { from: "from-indigo-500", to: "to-blue-500", shadow: "shadow-indigo-500/25", bg: "bg-indigo-50/80" }
-              ]
-              const gradient = gradients[index % gradients.length]
-
               return (
-                <Card key={index} className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/60 transition-all duration-500 hover:-translate-y-1 rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-slate-50/80 opacity-60"></div>
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className={`w-14 h-14 bg-gradient-to-br ${gradient.from} ${gradient.to} rounded-2xl flex items-center justify-center mb-5 shadow-lg ${gradient.shadow} group-hover:scale-110 transition-transform duration-300 border border-white/30`}>
-                      <IconComponent className="h-7 w-7 text-white" />
+                <Card key={index} className="border border-slate-200 bg-white hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <IconComponent className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-slate-800 transition-colors">
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-2 leading-tight">
                       {service?.title || ''}
                     </h3>
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+                    <p className="text-slate-600 text-xs md:text-sm leading-relaxed">
                       {service?.description || ''}
                     </p>
-                    <div className={`absolute top-0 right-0 w-24 h-24 ${gradient.bg} rounded-full -translate-y-12 translate-x-12 opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
                   </CardContent>
                 </Card>
               )
             }) || (
               <>
-                <Card className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/60 transition-all duration-500 hover:-translate-y-1 rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-slate-50/80 opacity-60"></div>
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform duration-300 border border-white/30">
-                      <Car className="h-7 w-7 text-white" />
+                <Card className="border border-slate-200 bg-white hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <Car className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-slate-800 transition-colors">
-                      Продажа автомобилей
-                    </h3>
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
-                      Широкий выбор проверенных автомобилей с полной историей обслуживания и гарантией качества
-                    </p>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50/80 rounded-full -translate-y-12 translate-x-12 opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-2">Продажа автомобилей</h3>
+                    <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Широкий выбор качественных автомобилей с пробегом. Все автомобили проходят тщательную проверку перед продажей.</p>
                   </CardContent>
                 </Card>
 
-                <Card className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/60 transition-all duration-500 hover:-translate-y-1 rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-slate-50/80 opacity-60"></div>
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-emerald-500/25 group-hover:scale-110 transition-transform duration-300 border border-white/30">
-                      <CreditCard className="h-7 w-7 text-white" />
+                <Card className="border border-slate-200 bg-white hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <CreditCard className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-slate-800 transition-colors">
-                      Кредитование
-                    </h3>
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
-                      Индивидуальные условия автокредитования с минимальным пакетом документов и быстрым решением
-                    </p>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50/80 rounded-full -translate-y-12 translate-x-12 opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-2">Кредитование</h3>
+                    <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Помощь в оформлении автокредита на выгодных условиях. Работаем с ведущими банками Беларуси.</p>
                   </CardContent>
                 </Card>
 
-                <Card className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/60 transition-all duration-500 hover:-translate-y-1 rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-slate-50/80 opacity-60"></div>
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-violet-500/25 group-hover:scale-110 transition-transform duration-300 border border-white/30">
-                      <Handshake className="h-7 w-7 text-white" />
+                <Card className="border border-slate-200 bg-white hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <Handshake className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-slate-800 transition-colors">
-                      Трейд-ин
-                    </h3>
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
-                      Справедливая оценка вашего автомобиля и выгодный обмен на новый с прозрачным расчетом
-                    </p>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-violet-50/80 rounded-full -translate-y-12 translate-x-12 opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-2">Трейд-ин</h3>
+                    <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Обмен вашего автомобиля на более новый с доплатой. Честная оценка и прозрачные условия.</p>
                   </CardContent>
                 </Card>
 
-                <Card className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/60 transition-all duration-500 hover:-translate-y-1 rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-slate-50/80 opacity-60"></div>
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-orange-500/25 group-hover:scale-110 transition-transform duration-300 border border-white/30">
-                      <Shield className="h-7 w-7 text-white" />
+                <Card className="border border-slate-200 bg-white hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <Shield className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-slate-800 transition-colors">
-                      Гарантия качества
-                    </h3>
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
-                      Комплексная диагностика перед продажей и послепродажная поддержка для вашего спокойствия
-                    </p>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50/80 rounded-full -translate-y-12 translate-x-12 opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-2">Гарантия качества</h3>
+                    <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Гарантия на каждый проданный автомобиль. Полная диагностика и техническая проверка.</p>
                   </CardContent>
                 </Card>
 
-                <Card className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/60 transition-all duration-500 hover:-translate-y-1 rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-slate-50/80 opacity-60"></div>
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className="w-14 h-14 bg-gradient-to-br from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-rose-500/25 group-hover:scale-110 transition-transform duration-300 border border-white/30">
-                      <Phone className="h-7 w-7 text-white" />
+                <Card className="border border-slate-200 bg-white hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <FileText className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-slate-800 transition-colors">
-                      Консультации 24/7
-                    </h3>
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
-                      Круглосуточная поддержка клиентов и экспертные консультации по всем вопросам покупки
-                    </p>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50/80 rounded-full -translate-y-12 translate-x-12 opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-2">Оформление документов</h3>
+                    <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Полное юридическое сопровождение сделки. Помощь в оформлении всех необходимых документов.</p>
                   </CardContent>
                 </Card>
 
-                <Card className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/60 transition-all duration-500 hover:-translate-y-1 rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-slate-50/80 opacity-60"></div>
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-indigo-500/25 group-hover:scale-110 transition-transform duration-300 border border-white/30">
-                      <FileText className="h-7 w-7 text-white" />
+                <Card className="border border-slate-200 bg-white hover:shadow-lg hover:border-slate-300 transition-all duration-200">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <Phone className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-slate-800 transition-colors">
-                      Оформление документов
-                    </h3>
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
-                      Полное юридическое сопровождение сделки и помощь в оформлении всех необходимых документов
-                    </p>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50/80 rounded-full -translate-y-12 translate-x-12 opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900 mb-2">Консультации</h3>
+                    <p className="text-slate-600 text-xs md:text-sm leading-relaxed">Профессиональные консультации по выбору автомобиля. Экспертная оценка технического состояния.</p>
                   </CardContent>
                 </Card>
               </>
@@ -429,62 +381,47 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Company Details Grid - Enhanced Design */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10">
+        {/* Company Details Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
 
           {/* Company Info */}
-          <Card className="relative overflow-hidden border-0 bg-white/90 backdrop-blur-xl shadow-xl shadow-slate-200/50 rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-white/30"></div>
-            <CardHeader className="relative pb-4 px-6 md:px-8 pt-6 md:pt-8">
-              <CardTitle className="text-xl md:text-2xl font-bold text-slate-900 flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 rounded-2xl flex items-center justify-center shadow-xl shadow-slate-700/30 mr-4 flex-shrink-0 border border-white/20">
-                  <Building className="h-6 w-6 text-white" />
+          <Card className="border border-slate-200 bg-white shadow-sm hover:shadow-lg transition-all duration-200">
+            <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6">
+              <CardTitle className="text-lg md:text-xl font-bold text-slate-900 flex items-center">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-100 rounded-xl flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                  <Building className="h-4 w-4 md:h-5 md:w-5 text-slate-600" />
                 </div>
-                <div>
-                  <div className="text-lg font-bold">Реквизиты компании</div>
-                  <div className="text-sm text-slate-600 font-normal">Официальная информация</div>
-                </div>
+                Реквизиты компании
               </CardTitle>
             </CardHeader>
-            <CardContent className="relative px-6 md:px-8 pb-6 md:pb-8">
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4 p-4 bg-slate-50/50 rounded-xl border border-slate-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 flex-shrink-0">
-                    <Building2 className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">Полное наименование</span>
-                    <p className="font-bold text-slate-900 text-base">{aboutData?.companyInfo?.fullName || 'ООО "Белавто Центр"'}</p>
+            <CardContent className="px-4 md:px-6 pb-4 md:pb-6">
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <Building2 className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Полное наименование</span>
+                    <p className="font-semibold text-slate-900 text-sm">{aboutData?.companyInfo?.fullName || 'ООО "Белавто Центр"'}</p>
                   </div>
                 </div>
-
-                <div className="flex items-start space-x-4 p-4 bg-slate-50/50 rounded-xl border border-slate-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 flex-shrink-0">
-                    <FileText className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">УНП (Учетный номер плательщика)</span>
-                    <p className="font-mono text-slate-900 font-bold text-base tracking-wider">{aboutData?.companyInfo?.unp || '191234567'}</p>
+                <div className="flex items-start space-x-3">
+                  <FileText className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">УНП</span>
+                    <p className="font-mono text-slate-900 font-semibold text-sm">{aboutData?.companyInfo?.unp || '191234567'}</p>
                   </div>
                 </div>
-
-                <div className="flex items-start space-x-4 p-4 bg-slate-50/50 rounded-xl border border-slate-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
-                    <MapPin className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">Юридический адрес</span>
-                    <p className="font-semibold text-slate-900 text-base leading-relaxed">{aboutData?.companyInfo?.legalAddress || 'г. Минск, ул. Примерная, 123, офис 45'}</p>
+                <div className="flex items-start space-x-3">
+                  <MapPin className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Юридический адрес</span>
+                    <p className="font-semibold text-slate-900 text-sm">{aboutData?.companyInfo?.legalAddress || 'г. Минск, ул. Примерная, 123, офис 45'}</p>
                   </div>
                 </div>
-
-                <div className="flex items-start space-x-4 p-4 bg-slate-50/50 rounded-xl border border-slate-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20 flex-shrink-0">
-                    <Calendar className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">Дата регистрации</span>
-                    <p className="font-bold text-slate-900 text-base">{aboutData?.companyInfo?.registrationDate || '15.03.2012'}</p>
+                <div className="flex items-start space-x-3">
+                  <Calendar className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Дата регистрации</span>
+                    <p className="font-semibold text-slate-900 text-sm">{aboutData?.companyInfo?.registrationDate || '15.03.2012'}</p>
                   </div>
                 </div>
               </div>
@@ -492,58 +429,43 @@ export default function AboutPage() {
           </Card>
 
           {/* Bank Details */}
-          <Card className="relative overflow-hidden border-0 bg-white/90 backdrop-blur-xl shadow-xl shadow-slate-200/50 rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-white/30"></div>
-            <CardHeader className="relative pb-4 px-6 md:px-8 pt-6 md:pt-8">
-              <CardTitle className="text-xl md:text-2xl font-bold text-slate-900 flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 rounded-2xl flex items-center justify-center shadow-xl shadow-green-600/30 mr-4 flex-shrink-0 border border-white/20">
-                  <CreditCard className="h-6 w-6 text-white" />
+          <Card className="border border-slate-200 bg-white shadow-sm hover:shadow-lg transition-all duration-200">
+            <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6">
+              <CardTitle className="text-lg md:text-xl font-bold text-slate-900 flex items-center">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-100 rounded-xl flex items-center justify-center mr-2 md:mr-3 flex-shrink-0">
+                  <CreditCard className="h-4 w-4 md:h-5 md:w-5 text-slate-600" />
                 </div>
-                <div>
-                  <div className="text-lg font-bold">Банковские реквизиты</div>
-                  <div className="text-sm text-slate-600 font-normal">Для безналичных платежей</div>
-                </div>
+                Банковские реквизиты
               </CardTitle>
             </CardHeader>
-            <CardContent className="relative px-6 md:px-8 pb-6 md:pb-8">
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4 p-4 bg-green-50/50 rounded-xl border border-green-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 flex-shrink-0">
-                    <CreditCard className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">Расчетный счет</span>
-                    <p className="font-mono text-slate-900 font-bold text-base tracking-wider break-all">{aboutData?.bankDetails?.account || 'BY12 ALFA 1234 5678 9012 3456 7890'}</p>
+            <CardContent className="px-4 md:px-6 pb-4 md:pb-6">
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <CreditCard className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Расчетный счет</span>
+                    <p className="font-mono text-slate-900 font-semibold text-xs md:text-sm break-all">{aboutData?.bankDetails?.account || 'BY12 ALFA 1234 5678 9012 3456 7890'}</p>
                   </div>
                 </div>
-
-                <div className="flex items-start space-x-4 p-4 bg-green-50/50 rounded-xl border border-green-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 flex-shrink-0">
-                    <Building className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">Наименование банка</span>
-                    <p className="font-bold text-slate-900 text-base">{aboutData?.bankDetails?.bankName || 'ОАО "Альфа-Банк"'}</p>
+                <div className="flex items-start space-x-3">
+                  <Building className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Банк</span>
+                    <p className="font-semibold text-slate-900 text-sm">{aboutData?.bankDetails?.bankName || 'ОАО "Альфа-Банк"'}</p>
                   </div>
                 </div>
-
-                <div className="flex items-start space-x-4 p-4 bg-green-50/50 rounded-xl border border-green-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
-                    <Globe className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">БИК (Банковский идентификационный код)</span>
-                    <p className="font-mono text-slate-900 font-bold text-base tracking-wider">{aboutData?.bankDetails?.bik || 'ALFABY2X'}</p>
+                <div className="flex items-start space-x-3">
+                  <Globe className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">БИК</span>
+                    <p className="font-mono text-slate-900 font-semibold text-sm">{aboutData?.bankDetails?.bik || 'ALFABY2X'}</p>
                   </div>
                 </div>
-
-                <div className="flex items-start space-x-4 p-4 bg-green-50/50 rounded-xl border border-green-200/50">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20 flex-shrink-0">
-                    <MapPin className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-slate-500 font-medium block mb-1">Адрес банка</span>
-                    <p className="font-semibold text-slate-900 text-base leading-relaxed">{aboutData?.bankDetails?.bankAddress || 'г. Минск, пр. Дзержинского, 1'}</p>
+                <div className="flex items-start space-x-3">
+                  <MapPin className="h-4 w-4 text-slate-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Адрес банка</span>
+                    <p className="font-semibold text-slate-900 text-sm">{aboutData?.bankDetails?.bankAddress || 'г. Минск, пр. Дзержинского, 1'}</p>
                   </div>
                 </div>
               </div>
