@@ -34,8 +34,7 @@ import {
   Heart,
   Target,
   Zap,
-  Eye,
-  Handshake
+  Eye
 } from "lucide-react"
 
 export default function AboutPage() {
