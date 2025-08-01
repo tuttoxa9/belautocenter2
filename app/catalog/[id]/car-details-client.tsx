@@ -766,8 +766,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         onClick={() => setCurrentImageIndex(index)}
                         className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden transition-all duration-300 ${
                           index === currentImageIndex
-                            ? 'ring-2 ring-blue-500 ring-offset-2 scale-105 shadow-lg'
-                            : 'ring-1 ring-slate-200 hover:ring-slate-300 hover:scale-105'
+                            ? 'ring-2 ring-blue-500 ring-offset-2 shadow-lg'
+                            : 'ring-1 ring-slate-200 hover:ring-slate-300'
                         }`}
                       >
                         <Image
