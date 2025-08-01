@@ -280,18 +280,18 @@ export default function Stories() {
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
                     <p className="text-white text-sm font-medium">{stories[currentIndex].caption}</p>
                     {stories[currentIndex].linkUrl && (
-                    <div className="flex items-center mt-2">
-                      <div className="w-6 h-6 bg-blue-500 bg-opacity-80 rounded-full flex items-center justify-center mr-2">
-                        <svg className="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
+                      <div className="flex items-center mt-2">
+                        <div className="w-6 h-6 bg-blue-500 bg-opacity-80 rounded-full flex items-center justify-center mr-2">
+                          <svg className="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
                       </div>
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               )}
-              </div>
 
               {/* Кнопки управления */}
               <div className="absolute inset-0 flex pointer-events-none">
