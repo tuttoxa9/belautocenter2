@@ -10,6 +10,11 @@ interface MarkdownRendererProps {
 }
 
 export default function MarkdownRenderer({ content, className = '' }: MarkdownRendererProps) {
+  // Если нет контента, показываем заглушку
+  if (!content) {
+    return <div className={className}>Нет описания</div>
+  }
+
   return (
     <div className={`markdown-content ${className}`}>
       <ReactMarkdown

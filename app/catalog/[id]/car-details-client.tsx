@@ -800,10 +800,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 Описание
               </h4>
               <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
-                <MarkdownRenderer
-                  content={car.description || ''}
-                  className="text-sm leading-relaxed"
-                />
+                {car.description ? (
+                  <MarkdownRenderer
+                    content={car.description}
+                    className="text-sm leading-relaxed"
+                  />
+                ) : (
+                  <p className="text-slate-500 italic text-sm">Описание отсутствует</p>
+                )}
               </div>
             </div>
 
