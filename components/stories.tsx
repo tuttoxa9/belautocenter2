@@ -112,12 +112,22 @@ export default function Stories() {
   }, [selectedStory, isPlaying, handleNext, stories.length])
 
   const handleStoryClick = (index: number) => {
-    // Всегда сначала открываем полноэкранный просмотр
-    setSelectedStory(index)
-    setCurrentIndex(index)
-    setProgress(0)
-    setIsPlaying(true)
-    setViewedStories((prev) => new Set([...prev, stories[index].id]))
+    console.log('Story clicked:', index, stories[index]?.id)
+
+    // Сначала принудительно закрываем диалог если он открыт
+    if (selectedStory !== null) {
+      setSelectedStory(null)
+      setProgress(0)
+    }
+
+    // Небольшая задержка для корректного закрытия перед открытием
+    setTimeout(() => {
+      setSelectedStory(index)
+      setCurrentIndex(index)
+      setProgress(0)
+      setIsPlaying(true)
+      setViewedStories((prev) => new Set([...prev, stories[index].id]))
+    }, 50)
   }
 
   const handleFullscreenClick = () => {
@@ -142,7 +152,9 @@ export default function Stories() {
   }
 
   const handleClose = () => {
+    console.log('Closing stories dialog')
     setSelectedStory(null)
+    setCurrentIndex(0)
     setProgress(0)
     setIsPlaying(true)
   }
