@@ -788,9 +788,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 <h4 className="text-lg font-bold text-slate-900 mb-3">
                   Описание
                 </h4>
-                <p className="text-slate-700 text-sm leading-relaxed bg-white rounded-xl p-4 border border-slate-200/50">
-                  {car.description}
-                </p>
+                <div className="bg-white rounded-xl p-4 border border-slate-200/50">
+                  {car.description ? (
+                    <MarkdownRenderer
+                      content={car.description}
+                      className="text-sm leading-relaxed"
+                    />
+                  ) : (
+                    <p className="text-slate-500 italic text-sm">Описание отсутствует</p>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -801,15 +808,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </h4>
               <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
                 {car.description ? (
-                  <>
-                    <div style={{ background: 'yellow', padding: '5px', marginBottom: '10px', fontSize: '12px' }}>
-                      DEBUG: Описание найдено, длина: {car.description.length}
-                    </div>
-                    <MarkdownRenderer
-                      content={car.description}
-                      className="text-sm leading-relaxed"
-                    />
-                  </>
+                  <MarkdownRenderer
+                    content={car.description}
+                    className="text-sm leading-relaxed"
+                  />
                 ) : (
                   <p className="text-slate-500 italic text-sm">Описание отсутствует</p>
                 )}
