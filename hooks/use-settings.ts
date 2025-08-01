@@ -74,21 +74,23 @@ export function useSettings() {
       }
 
       if (mainDoc.exists()) {
-        const firestoreData = mainDoc.data() as Partial<MainSettings>
+        const rawData = mainDoc.data()
+        // Очистка данных от несериализуемых объектов Firestore
+        const firestoreData = JSON.parse(JSON.stringify(rawData)) as Partial<MainSettings>
         setSettings({
           main: {
             ...defaultSettings,
             ...firestoreData,
             socialMedia: {
               ...defaultSettings.socialMedia,
-              ...firestoreData.socialMedia
+              ...(firestoreData.socialMedia || {})
             },
             showroomInfo: {
               ...defaultSettings.showroomInfo,
-              ...firestoreData.showroomInfo,
+              ...(firestoreData.showroomInfo || {}),
               workingHours: {
                 ...defaultSettings.showroomInfo.workingHours,
-                ...firestoreData.showroomInfo?.workingHours
+                ...(firestoreData.showroomInfo && firestoreData.showroomInfo.workingHours ? firestoreData.showroomInfo.workingHours : {})
               }
             }
           }

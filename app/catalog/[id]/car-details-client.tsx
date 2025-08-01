@@ -187,7 +187,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   // Сброс значений калькулятора при открытии модального окна кредита
   useEffect(() => {
-    if (isCreditOpen && car) {
+    if (isCreditOpen && car && car.price) {
       const price = car.price
       if (isBelarusianRubles && usdBynRate) {
         setCreditAmount([Math.round(price * 0.8 * usdBynRate)])
@@ -211,15 +211,18 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingBanks(true)
       const creditDoc = await getDoc(doc(db, "pages", "credit"))
       if (creditDoc.exists() && creditDoc.data()?.partners) {
-        const partners = creditDoc.data()?.partners
+        const rawData = creditDoc.data()
+        // Очистка данных от несериализуемых объектов Firestore
+        const cleanData = JSON.parse(JSON.stringify(rawData))
+        const partners = cleanData?.partners
         // Convert partners to the format we need
         const formattedPartners = partners.map((partner: any, index: number) => ({
           id: index + 1,
-          name: partner.name,
+          name: partner.name || "",
           logo: partner.logoUrl || "",
-          rate: partner.minRate,
+          rate: partner.minRate || 15,
           minDownPayment: 15, // Default value
-          maxTerm: partner.maxTerm,
+          maxTerm: partner.maxTerm || 60,
           features: ["Выгодные условия", "Быстрое одобрение"],
           color: ["emerald", "blue", "purple", "red"][index % 4] // Cycle through colors
         }))
@@ -247,9 +250,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingLeasing(true)
       const leasingDoc = await getDoc(doc(db, "pages", "leasing"))
       if (leasingDoc.exists() && leasingDoc.data()?.leasingCompanies) {
-        const companies = leasingDoc.data()?.leasingCompanies
+        const rawData = leasingDoc.data()
+        // Очистка данных от несериализуемых объектов Firestore
+        const cleanData = JSON.parse(JSON.stringify(rawData))
+        const companies = cleanData?.leasingCompanies || []
         // Sort leasing companies by minAdvance (ascending - lowest first)
-        const sortedCompanies = companies.sort((a: any, b: any) => a.minAdvance - b.minAdvance)
+        const sortedCompanies = companies.sort((a: any, b: any) => (a.minAdvance || 0) - (b.minAdvance || 0))
         setLeasingCompanies(sortedCompanies)
         // Set the best leasing company (lowest advance) as default selected
         if (sortedCompanies.length > 0) {
@@ -271,8 +277,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     try {
       const contactsDoc = await getDoc(doc(db, "pages", "contacts"))
       if (contactsDoc.exists()) {
-        const data = contactsDoc.data()
-        setContactPhone(data?.phone || "+375 29 123-45-67")
+        const rawData = contactsDoc.data()
+        // Очистка данных от несериализуемых объектов Firestore
+        const cleanData = JSON.parse(JSON.stringify(rawData))
+        setContactPhone(cleanData?.phone || "+375 29 123-45-67")
       } else {
         setContactPhone("+375 29 123-45-67") // fallback phone
       }
@@ -287,11 +295,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoading(true)
       const carDoc = await getDoc(doc(db, "cars", carId))
       if (carDoc.exists()) {
-        const carData = { id: carDoc.id, ...carDoc.data() }
-        setCar(carData as Car)
+        const rawData = carDoc.data()
+        // Очистка данных от несериализуемых объектов Firestore
+        const cleanCarData = JSON.parse(JSON.stringify({ id: carDoc.id, ...rawData }))
+        setCar(cleanCarData as Car)
         setCarNotFound(false)
         // Устанавливаем значения калькулятора по умолчанию
-        const price = carData.price || 95000
+        const price = cleanCarData.price || 95000
         setCreditAmount([price * 0.8])
         setDownPayment([price * 0.2])
       } else {
@@ -329,9 +339,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   const getCreditMaxValue = () => {
     if (isBelarusianRubles && usdBynRate) {
-      return car ? car.price * usdBynRate : 200000
+      return car && car.price ? car.price * usdBynRate : 200000
     }
-    return car ? car.price : 200000
+    return car && car.price ? car.price : 200000
   }
 
   const getCurrentCreditAmount = () => {
@@ -352,7 +362,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const handleCurrencyChange = (checked: boolean) => {
     setIsBelarusianRubles(checked)
 
-    if (!car || !usdBynRate) return
+    if (!car || !car.price || !usdBynRate) return
 
     if (checked) {
       // Переключение на BYN
@@ -411,7 +421,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   // Расчет ежемесячного лизингового платежа
   const calculateLeasingPayment = () => {
-    const carPrice = isBelarusianRubles && usdBynRate ? car?.price * usdBynRate || 0 : car?.price || 0
+    const carPrice = isBelarusianRubles && usdBynRate ? (car && car.price ? car.price * usdBynRate : 0) : (car && car.price ? car.price : 0)
     const advance = isBelarusianRubles && usdBynRate ? leasingAdvance[0] : leasingAdvance[0]
     const term = leasingTerm[0]
     const residualVal = (carPrice * residualValue[0]) / 100
@@ -427,7 +437,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       await addDoc(collection(db, "leads"), {
         ...bookingForm,
         carId: carId,
-        carInfo: `${car?.make} ${car?.model} ${car?.year}`,
+        carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
         type: "booking",
         status: "new",
         createdAt: new Date(),
@@ -443,9 +453,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           name: bookingForm.name,
           phone: bookingForm.phone,
           message: bookingForm.message,
-          carMake: car?.make,
-          carModel: car?.model,
-          carYear: car?.year,
+          carMake: car && car.make ? car.make : '',
+          carModel: car && car.model ? car.model : '',
+          carYear: car && car.year ? car.year : '',
           carId: carId,
           type: 'car_booking'
         })
@@ -479,9 +489,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         body: JSON.stringify({
           name: callbackForm.name,
           phone: callbackForm.phone,
-          carMake: car?.make,
-          carModel: car?.model,
-          carYear: car?.year,
+          carMake: car && car.make ? car.make : '',
+          carModel: car && car.model ? car.model : '',
+          carYear: car && car.year ? car.year : '',
           carId: carId,
           type: 'callback'
         })
@@ -524,9 +534,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           name: creditForm.name,
           phone: creditForm.phone,
           message: creditForm.message,
-          carMake: car?.make,
-          carModel: car?.model,
-          carYear: car?.year,
+          carMake: car && car.make ? car.make : '',
+          carModel: car && car.model ? car.model : '',
+          carYear: car && car.year ? car.year : '',
           carId: carId,
           carPrice: formatPrice(isBelarusianRubles ? getCurrentCreditAmount() + getCurrentDownPayment() : car?.price || 0),
           downPayment: formatPrice(getCurrentDownPayment()),

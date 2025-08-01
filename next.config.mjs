@@ -26,6 +26,21 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // Добавляем конфигурацию для совместимости с iOS Safari
+  transpilePackages: ['firebase'],
+  webpack: (config, { isServer }) => {
+    // Добавляем полифиллы для совместимости с iOS 16.2
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      }
+    }
+    return config
+  },
   // Оптимизация для кэширования
   headers: async () => {
     return [
