@@ -120,12 +120,12 @@ export default function CarDetailsSkeleton() {
 
                 {/* Основные характеристики - компактный стиль */}
                 <div>
-                  <div className="h-4 lg:h-5 bg-slate-300 rounded w-32 animate-pulse mb-2 lg:mb-3"></div>
+                  <div className="h-4 lg:h-5 bg-slate-300 rounded w-32 animate-pulse mb-3 lg:mb-4"></div>
                   <div className="grid grid-cols-2 gap-2 lg:gap-3">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="bg-slate-50 rounded-xl p-2.5 lg:p-3.5 border border-slate-200/50">
-                        <div className="h-3 bg-slate-200 rounded w-12 animate-pulse mb-0.5"></div>
-                        <div className="h-3.5 lg:h-4 bg-slate-300 rounded w-20 animate-pulse"></div>
+                      <div key={i} className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
+                        <div className="h-3 bg-slate-200 rounded w-12 animate-pulse mb-1"></div>
+                        <div className="h-4 lg:h-5 bg-slate-300 rounded w-20 animate-pulse"></div>
                       </div>
                     ))}
                   </div>
@@ -133,14 +133,14 @@ export default function CarDetailsSkeleton() {
 
                 {/* Комплектация */}
                 <div>
-                  <div className="h-4 sm:h-5 bg-slate-300 rounded w-24 animate-pulse mb-2"></div>
-                  <div className="space-y-1.5">
+                  <div className="h-4 sm:h-5 bg-slate-300 rounded w-24 animate-pulse mb-3"></div>
+                  <div className="space-y-2">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="flex items-center space-x-3 p-1.5 sm:p-2.5 bg-slate-50 rounded-xl border border-slate-200/50">
+                      <div key={i} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50">
                         <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-300 rounded-full animate-pulse flex-shrink-0">
-                          <div className="h-2 w-2 sm:h-3 sm:w-3 bg-white rounded-full mx-auto mt-1 sm:mt-1 animate-pulse"></div>
+                          <div className="h-2 w-2 sm:h-3 sm:w-3 bg-white rounded-full mx-auto mt-1 animate-pulse"></div>
                         </div>
-                        <div className="h-3 sm:h-3.5 bg-slate-200 rounded w-32 animate-pulse"></div>
+                        <div className="h-3 sm:h-4 bg-slate-200 rounded w-32 animate-pulse"></div>
                       </div>
                     ))}
                   </div>
@@ -148,12 +148,12 @@ export default function CarDetailsSkeleton() {
 
                 {/* Технические характеристики */}
                 <div>
-                  <div className="h-4 sm:h-5 bg-slate-300 rounded w-36 animate-pulse mb-2"></div>
-                  <div className="space-y-0.5 sm:space-y-1">
+                  <div className="h-4 sm:h-5 bg-slate-300 rounded w-36 animate-pulse mb-3"></div>
+                  <div className="space-y-1 sm:space-y-2">
                     {[1, 2, 3, 4, 5].map((i) => (
-                      <div key={i} className="flex justify-between items-center py-1.5 sm:py-2.5 px-2.5 sm:px-3.5 bg-slate-50 rounded-xl border border-slate-200/50">
-                        <div className="h-3 sm:h-3.5 bg-slate-200 rounded w-20 animate-pulse"></div>
-                        <div className="h-3 sm:h-3.5 bg-slate-300 rounded w-16 animate-pulse"></div>
+                      <div key={i} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50">
+                        <div className="h-3 sm:h-4 bg-slate-200 rounded w-20 animate-pulse"></div>
+                        <div className="h-3 sm:h-4 bg-slate-300 rounded w-16 animate-pulse"></div>
                       </div>
                     ))}
                   </div>
@@ -161,30 +161,30 @@ export default function CarDetailsSkeleton() {
 
                 {/* Финансирование - компактный блок */}
                 <div>
-                  <div className="h-4 sm:h-5 bg-slate-300 rounded w-28 animate-pulse mb-2"></div>
-                  <div className="bg-slate-50 rounded-xl p-2.5 sm:p-3.5 border border-slate-200/50">
-                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 mb-2.5 sm:mb-3.5">
+                  <div className="h-4 sm:h-5 bg-slate-300 rounded w-28 animate-pulse mb-3"></div>
+                  <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200/50">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
-                        <div className="h-3 sm:h-3.5 bg-slate-200 rounded w-16 mx-auto animate-pulse mb-0.5"></div>
-                        <div className="h-3.5 sm:h-4 bg-slate-300 rounded w-20 mx-auto animate-pulse"></div>
+                        <div className="h-3 sm:h-4 bg-slate-200 rounded w-16 mx-auto animate-pulse mb-1"></div>
+                        <div className="h-4 sm:h-5 bg-slate-300 rounded w-20 mx-auto animate-pulse"></div>
                       </div>
                       <div className="text-center">
-                        <div className="h-3 sm:h-3.5 bg-slate-200 rounded w-16 mx-auto animate-pulse mb-0.5"></div>
-                        <div className="h-3.5 sm:h-4 bg-slate-300 rounded w-20 mx-auto animate-pulse"></div>
+                        <div className="h-3 sm:h-4 bg-slate-200 rounded w-16 mx-auto animate-pulse mb-1"></div>
+                        <div className="h-4 sm:h-5 bg-slate-300 rounded w-20 mx-auto animate-pulse"></div>
                       </div>
                     </div>
-                    <div className="h-7 sm:h-9 bg-slate-300 rounded-xl animate-pulse"></div>
+                    <div className="h-8 sm:h-10 bg-slate-300 rounded-xl animate-pulse"></div>
                   </div>
                 </div>
 
                 {/* Кнопки действий */}
-                <div className="pt-2.5 sm:pt-3.5 border-t border-slate-200/50">
-                  <div className="grid grid-cols-1 gap-1.5 sm:gap-2.5">
-                    <div className="h-7 sm:h-9 bg-blue-200 rounded-xl animate-pulse flex items-center justify-center">
+                <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
+                  <div className="grid grid-cols-1 gap-2 sm:gap-3">
+                    <div className="h-8 sm:h-10 bg-blue-200 rounded-xl animate-pulse flex items-center justify-center">
                       <div className="h-3 w-3 sm:h-4 sm:w-4 bg-blue-300 rounded mr-2 animate-pulse"></div>
                       <div className="h-3 bg-blue-300 rounded w-32 animate-pulse"></div>
                     </div>
-                    <div className="h-7 sm:h-9 bg-slate-200 border-2 border-slate-300 rounded-xl animate-pulse flex items-center justify-center">
+                    <div className="h-8 sm:h-10 bg-slate-200 border-2 border-slate-300 rounded-xl animate-pulse flex items-center justify-center">
                       <div className="h-3 w-3 sm:h-4 sm:w-4 bg-slate-300 rounded mr-2 animate-pulse"></div>
                       <div className="h-3 bg-slate-300 rounded w-24 animate-pulse"></div>
                     </div>

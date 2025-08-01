@@ -180,11 +180,11 @@ export default function ReviewsPage() {
 
           {/* Header - адаптивный для мобилки */}
           <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200/50">
-            {/* Breadcrumbs - скрыты на очень маленьких экранах */}
-            <nav className="mb-3 sm:mb-4 hidden xs:block">
+            {/* Breadcrumbs */}
+            <nav className="mb-3 sm:mb-4">
               <ol className="flex items-center space-x-2 text-xs sm:text-sm text-slate-500">
                 <li>
-                  <Link href="/" className="hover:text-slate-700 transition-colors">
+                  <Link href="/" className="hover:text-blue-600 transition-colors">
                     Главная
                   </Link>
                 </li>
