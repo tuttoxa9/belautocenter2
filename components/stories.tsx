@@ -104,7 +104,7 @@ export default function Stories() {
       const nextIndex = currentIndex + 1
       setCurrentIndex(nextIndex)
       setProgress(0)
-      setViewedStories((prev) => new Set([...prev, stories[nextIndex].id]))
+      setViewedStories((prev) => new Set([...prev, stories[nextIndex]?.id]))
     } else {
       setSelectedStory(null)
     }
@@ -112,7 +112,7 @@ export default function Stories() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined
-    if (selectedStory !== null && isPlaying) {
+    if (selectedStory !== null && isPlaying && stories.length > 0) {
       interval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
@@ -141,15 +141,15 @@ export default function Stories() {
 
   const handleFullscreenClick = () => {
     const story = stories[currentIndex]
-    // Если у истории есть ссылка, переходим по ней
-    if (story.linkUrl) {
+    // Проверяем, что история существует и у неё есть ссылка
+    if (story && story.linkUrl) {
       if (story.linkUrl.startsWith('http')) {
         window.open(story.linkUrl, '_blank')
       } else {
         window.location.href = story.linkUrl
       }
     }
-    // если нет ссылки - ничего не делаем
+    // если нет истории или ссылки - ничего не делаем
   }
 
   const handlePrevious = () => {
@@ -255,30 +255,31 @@ export default function Stories() {
               </div>
 
               {/* Контент истории */}
-              <div
-                className={`relative h-full ${stories[currentIndex].linkUrl ? 'cursor-pointer' : ''}`}
-                onClick={stories[currentIndex].linkUrl ? handleFullscreenClick : undefined}
-              >
-                {stories[currentIndex].mediaType === "image" ? (
-                  <FadeInImage
-                    src={stories[currentIndex].mediaUrl || "/placeholder.svg"}
-                    alt={stories[currentIndex].caption}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <video
-                    src={stories[currentIndex].mediaUrl}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                  />
-                )}
+              {stories[currentIndex] && (
+                <div
+                  className={`relative h-full ${stories[currentIndex].linkUrl ? 'cursor-pointer' : ''}`}
+                  onClick={stories[currentIndex].linkUrl ? handleFullscreenClick : undefined}
+                >
+                  {stories[currentIndex].mediaType === "image" ? (
+                    <FadeInImage
+                      src={stories[currentIndex].mediaUrl || "/placeholder.svg"}
+                      alt={stories[currentIndex].caption}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <video
+                      src={stories[currentIndex].mediaUrl}
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted
+                      loop
+                    />
+                  )}
 
-                {/* Подпись с затемнением */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                  <p className="text-white text-sm font-medium">{stories[currentIndex].caption}</p>
-                  {stories[currentIndex].linkUrl && (
+                  {/* Подпись с затемнением */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <p className="text-white text-sm font-medium">{stories[currentIndex].caption}</p>
+                    {stories[currentIndex].linkUrl && (
                     <div className="flex items-center mt-2">
                       <div className="w-6 h-6 bg-blue-500 bg-opacity-80 rounded-full flex items-center justify-center mr-2">
                         <svg className="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,6 +290,7 @@ export default function Stories() {
                     </div>
                   )}
                 </div>
+              )}
               </div>
 
               {/* Кнопки управления */}
