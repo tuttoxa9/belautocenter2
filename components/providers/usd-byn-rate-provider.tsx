@@ -11,16 +11,27 @@ export function UsdBynRateProvider({ children }: { children: React.ReactNode }) 
   const [usdBynRate, setUsdBynRate] = useState<number | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadRate = async () => {
       try {
         const rate = await fetchUsdBynRate();
-        setUsdBynRate(rate);
+        if (isMounted) {
+          setUsdBynRate(rate);
+        }
       } catch (error) {
         console.error('Failed to fetch USD/BYN rate:', error);
-        setUsdBynRate(null);
+        if (isMounted) {
+          setUsdBynRate(null);
+        }
       }
     };
+
     loadRate();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

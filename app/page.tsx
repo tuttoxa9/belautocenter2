@@ -42,6 +42,7 @@ export default function HomePage() {
 
   const contactButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const [isMounted, setIsMounted] = useState(true)
 
   const [cars, setCars] = useState<Array<{
     id: string;
@@ -71,12 +72,16 @@ export default function HomePage() {
       await Promise.all([loadHomepageSettings(), loadFeaturedCars()])
     }
     loadData()
+
+    return () => {
+      setIsMounted(false)
+    }
   }, [])
 
   const loadHomepageSettings = async () => {
     try {
       const settingsDoc = await getDoc(doc(db, "settings", "homepage"))
-      if (settingsDoc.exists()) {
+      if (settingsDoc.exists() && isMounted) {
         const data = settingsDoc.data() as Partial<HomepageSettings>
         setSettings((prev) => ({
           ...prev,
@@ -90,7 +95,9 @@ export default function HomePage() {
 
   const loadFeaturedCars = async () => {
     try {
-      setLoadingCars(true)
+      if (isMounted) {
+        setLoadingCars(true)
+      }
       const carsQuery = query(collection(db, "cars"), orderBy("createdAt", "desc"), limit(4))
       const snapshot = await getDocs(carsQuery)
       const carsData = snapshot.docs.map((doc) => ({
@@ -98,11 +105,15 @@ export default function HomePage() {
         ...doc.data(),
       }))
 
-      setCars(carsData)
+      if (isMounted) {
+        setCars(carsData)
+      }
     } catch (error) {
       console.error("Ошибка загрузки автомобилей:", error)
     } finally {
-      setLoadingCars(false)
+      if (isMounted) {
+        setLoadingCars(false)
+      }
     }
   }
 

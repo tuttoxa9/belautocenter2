@@ -14,23 +14,26 @@ export function SuccessNotification({ show, message, onClose }: SuccessNotificat
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
+    let showTimer: NodeJS.Timeout | undefined
+    let hideTimer: NodeJS.Timeout | undefined
+
     if (show) {
       // Задержка перед показом уведомления
-      const showTimer = setTimeout(() => {
+      showTimer = setTimeout(() => {
         setIsVisible(true)
       }, 300) // 300мс задержка
 
       // Автоматическое скрытие через 6 секунд
-      const hideTimer = setTimeout(() => {
+      hideTimer = setTimeout(() => {
         onClose()
       }, 6000)
-
-      return () => {
-        clearTimeout(showTimer)
-        clearTimeout(hideTimer)
-      }
     } else {
       setIsVisible(false)
+    }
+
+    return () => {
+      if (showTimer) clearTimeout(showTimer)
+      if (hideTimer) clearTimeout(hideTimer)
     }
   }, [show, onClose])
 
