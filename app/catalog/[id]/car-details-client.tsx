@@ -602,10 +602,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 max-w-6xl">
         {/* Хлебные крошки */}
-        <nav className="mb-6">
-          <ol className="flex items-center space-x-2 text-sm text-slate-500">
+        <nav className="mb-4 sm:mb-6">
+          <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500">
             <li>
               <button
                 onClick={() => router.push('/')}
@@ -638,54 +638,54 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden">
 
           {/* Заголовок и цена - компактный верхний блок */}
-          <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl lg:text-4xl font-bold text-slate-900">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                  <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-slate-900">
                     {car.make} {car.model}
                   </h1>
                   {car.isAvailable ? (
-                    <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    <div className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold">
                       В наличии
                     </div>
                   ) : (
-                    <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    <div className="bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold">
                       Продан
                     </div>
                   )}
                 </div>
-                <div className="flex items-center space-x-3 text-slate-600">
-                  <span className="bg-slate-100 px-3 py-1 rounded-lg text-sm font-medium">{car.year}</span>
-                  <span className="bg-slate-100 px-3 py-1 rounded-lg text-sm font-medium">{car.color}</span>
-                  <span className="bg-slate-100 px-3 py-1 rounded-lg text-sm font-medium">{car.bodyType}</span>
+                <div className="flex flex-wrap items-center gap-2 sm:space-x-3 text-slate-600">
+                  <span className="bg-slate-100 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.year}</span>
+                  <span className="bg-slate-100 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.color}</span>
+                  <span className="bg-slate-100 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.bodyType}</span>
                 </div>
               </div>
 
               {/* Цена справа */}
-              <div className="text-right">
-                <div className="text-3xl lg:text-4xl font-bold text-slate-900 mb-1">
+              <div className="text-left sm:text-right">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-1">
                   {formatPrice(car.price)}
                 </div>
                 {usdBynRate && (
-                  <div className="text-lg font-semibold text-slate-600">
+                  <div className="text-base sm:text-lg font-semibold text-slate-600">
                     ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
                   </div>
                 )}
-                <div className="text-sm text-slate-500 mt-1">
+                <div className="text-xs sm:text-sm text-slate-500 mt-1">
                   от {formatPrice(Math.round(car.price * 0.8 / 60))}/мес
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Основной контент - галерея и информация в одном ряду */}
+          {/* Основной контент - мобильная и десктопная версии */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
 
             {/* Левая колонка: Галерея */}
             <div className="lg:col-span-7 lg:border-r border-slate-200/50">
               <div
-                className="relative h-80 sm:h-96 lg:h-[600px] select-none bg-gradient-to-br from-slate-50 via-white to-slate-100"
+                className="relative h-64 sm:h-80 md:h-96 lg:h-[600px] select-none bg-gradient-to-br from-slate-50 via-white to-slate-100"
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
@@ -755,7 +755,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
               {/* Миниатюры внизу галереи */}
               {car.imageUrls && car.imageUrls.length > 1 && (
-                <div className="p-4 bg-slate-50/50 border-b border-slate-200/50">
+                <div className="p-4 bg-slate-50/50 border-b lg:border-b-0 border-slate-200/50">
                   <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-1">
                     {car.imageUrls.map((url, index) => (
                       <button
@@ -779,63 +779,74 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 </div>
               )}
+
+              {/* Описание под галереей для десктопов */}
+              <div className="hidden lg:block p-6 bg-slate-50/50 border-slate-200/50">
+                <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                  <div className="w-2 h-4 bg-green-500 rounded-full mr-3"></div>
+                  Описание
+                </h4>
+                <p className="text-slate-700 text-sm leading-relaxed bg-white rounded-xl p-4 border border-slate-200/50">
+                  {car.description}
+                </p>
+              </div>
             </div>
 
-            {/* Правая колонка: Вся информация */}
+            {/* Описание для мобильных устройств под галереей */}
+            <div className="lg:hidden p-3 sm:p-4 bg-slate-50/50 border-b border-slate-200/50">
+              <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
+                <div className="w-2 h-4 bg-green-500 rounded-full mr-3"></div>
+                Описание
+              </h4>
+              <p className="text-slate-700 text-sm leading-relaxed bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
+                {car.description}
+              </p>
+            </div>
+
+            {/* Правая колонка: Характеристики и действия */}
             <div className="lg:col-span-5">
-              <div className="p-6 space-y-6">
+              <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
 
                 {/* Основные характеристики - компактный стиль */}
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center">
+                  <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4 flex items-center">
                     <div className="w-2 h-4 bg-blue-500 rounded-full mr-3"></div>
                     Характеристики
                   </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                  <div className="grid grid-cols-2 gap-2 lg:gap-3">
+                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
                       <div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>
-                      <div className="text-lg font-bold text-slate-900">{formatMileage(car.mileage)} км</div>
+                      <div className="text-sm lg:text-lg font-bold text-slate-900">{formatMileage(car.mileage)} км</div>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
                       <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
-                      <div className="text-lg font-bold text-slate-900">{formatEngineVolume(car.engineVolume)}л {car.fuelType}</div>
+                      <div className="text-sm lg:text-lg font-bold text-slate-900">{formatEngineVolume(car.engineVolume)}л {car.fuelType}</div>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
                       <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>
-                      <div className="text-lg font-bold text-slate-900">{car.transmission}</div>
+                      <div className="text-sm lg:text-lg font-bold text-slate-900">{car.transmission}</div>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
                       <div className="text-xs text-slate-500 font-medium mb-1">Привод</div>
-                      <div className="text-lg font-bold text-slate-900">{car.driveTrain}</div>
+                      <div className="text-sm lg:text-lg font-bold text-slate-900">{car.driveTrain}</div>
                     </div>
                   </div>
-                </div>
-
-                {/* Описание */}
-                <div>
-                  <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
-                    <div className="w-2 h-4 bg-green-500 rounded-full mr-3"></div>
-                    Описание
-                  </h4>
-                  <p className="text-slate-700 text-sm leading-relaxed bg-slate-50 rounded-xl p-4 border border-slate-200/50">
-                    {car.description}
-                  </p>
                 </div>
 
                 {/* Комплектация */}
                 {car.features && car.features.length > 0 && (
                   <div>
-                    <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
                       <div className="w-2 h-4 bg-purple-500 rounded-full mr-3"></div>
                       Комплектация
                     </h4>
                     <div className="space-y-2">
                       {car.features.map((feature, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                            <Check className="h-3 w-3 text-white" />
+                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50">
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Check className="h-2 w-2 sm:h-3 sm:w-3 text-white" />
                           </div>
-                          <span className="text-slate-700 font-medium text-sm">{feature}</span>
+                          <span className="text-slate-700 font-medium text-xs sm:text-sm">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -845,15 +856,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 {/* Технические характеристики */}
                 {car.specifications && (
                   <div>
-                    <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
                       <div className="w-2 h-4 bg-orange-500 rounded-full mr-3"></div>
                       Технические данные
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-1 sm:space-y-2">
                       {Object.entries(car.specifications).map(([key, value]) => (
-                        <div key={key} className="flex justify-between items-center py-3 px-4 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <span className="text-slate-600 font-medium text-sm">{key}</span>
-                          <span className="text-slate-900 font-bold text-sm">{value}</span>
+                        <div key={key} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50">
+                          <span className="text-slate-600 font-medium text-xs sm:text-sm">{key}</span>
+                          <span className="text-slate-900 font-bold text-xs sm:text-sm">{value}</span>
                         </div>
                       ))}
                     </div>
@@ -862,42 +873,42 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                 {/* Финансирование - компактный блок */}
                 <div>
-                  <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center">
                     <div className="w-2 h-4 bg-yellow-500 rounded-full mr-3"></div>
                     Финансирование
                   </h4>
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200/50">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
-                        <div className="text-sm text-slate-500 mb-1">Кредит от</div>
-                        <div className="text-lg font-bold text-slate-900">
+                        <div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>
+                        <div className="text-sm sm:text-lg font-bold text-slate-900">
                           {formatPrice(Math.round(car.price * 0.8 / 60))}/мес
                         </div>
                       </div>
                       <div className="text-center">
-                        <div className="text-sm text-slate-500 mb-1">Лизинг от</div>
-                        <div className="text-lg font-bold text-slate-900">
+                        <div className="text-xs sm:text-sm text-slate-500 mb-1">Лизинг от</div>
+                        <div className="text-sm sm:text-lg font-bold text-slate-900">
                           {formatPrice(Math.round(car.price * 0.7 / 36))}/мес
                         </div>
                       </div>
                     </div>
                     <Button
                       onClick={() => setIsCreditOpen(true)}
-                      className="w-full bg-slate-900 hover:bg-black text-white font-semibold rounded-xl py-3"
+                      className="w-full bg-slate-900 hover:bg-black text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"
                     >
-                      <Calculator className="h-4 w-4 mr-2" />
+                      <Calculator className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                       Рассчитать кредит/лизинг
                     </Button>
                   </div>
                 </div>
 
                 {/* Кнопки действий */}
-                <div className="pt-4 border-t border-slate-200/50">
-                  <div className="grid grid-cols-1 gap-3">
+                <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
+                  <div className="grid grid-cols-1 gap-2 sm:gap-3">
                     <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
                       <DialogTrigger asChild>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3">
-                          <Eye className="h-4 w-4 mr-2" />
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+                          <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                           Записаться на просмотр
                         </Button>
                       </DialogTrigger>
@@ -905,8 +916,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                     <Dialog open={isCallbackOpen} onOpenChange={setIsCallbackOpen}>
                       <DialogTrigger asChild>
-                        <Button className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-3">
-                          <Phone className="h-4 w-4 mr-2" />
+                        <Button className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+                          <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                           Заказать звонок
                         </Button>
                       </DialogTrigger>
@@ -919,20 +930,20 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           </div>
 
           {/* Контактная информация внизу */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-6 border-t border-slate-200/50">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-              <div>
-                <div className="font-medium text-lg mb-1">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 sm:p-6 border-t border-slate-200/50">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center">
+              <div className="text-center md:text-left">
+                <div className="font-medium text-base sm:text-lg mb-1">
                   {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
                 </div>
-                <div className="text-blue-100 text-sm">
+                <div className="text-blue-100 text-xs sm:text-sm">
                   {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
                 </div>
               </div>
 
               <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 text-blue-100 text-sm">
-                  <Clock className="h-4 w-4" />
+                <div className="flex items-center justify-center space-x-2 text-blue-100 text-xs sm:text-sm">
+                  <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                   <div>
                     <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</div>
                     <div>{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</div>
@@ -940,10 +951,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="flex items-center justify-end space-x-2">
-                  <Phone className="h-4 w-4" />
-                  <div className="font-medium text-lg">
+              <div className="text-center md:text-right">
+                <div className="flex items-center justify-center md:justify-end space-x-2">
+                  <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <div className="font-medium text-base sm:text-lg">
                     {settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}
                   </div>
                 </div>
