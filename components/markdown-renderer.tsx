@@ -15,8 +15,13 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
     return <div className={className}>Нет описания</div>
   }
 
+  console.log('MarkdownRenderer вызван с контентом:', content.substring(0, 100))
+
   return (
     <div className={`markdown-content ${className}`}>
+      <div style={{ background: 'lightblue', padding: '5px', marginBottom: '10px', fontSize: '12px' }}>
+        DEBUG: MarkdownRenderer работает! Контент: {content.substring(0, 50)}...
+      </div>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw]}
