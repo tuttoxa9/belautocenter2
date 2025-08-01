@@ -78,7 +78,7 @@ export default function AdminCars() {
         ...carForm,
         price: Number(carForm.price),
         mileage: Number(carForm.mileage),
-        engineVolume: parseFloat(carForm.engineVolume),
+        engineVolume: carForm.fuelType === "Электро" ? 0 : parseFloat(carForm.engineVolume),
         year: Number(carForm.year),
         imageUrls: carForm.imageUrls.filter((url) => url.trim() !== ""),
         createdAt: editingCar ? editingCar.createdAt : new Date(),
@@ -288,14 +288,23 @@ export default function AdminCars() {
                     step="0.1"
                     value={carForm.engineVolume}
                     onChange={(e) => setCarForm({ ...carForm, engineVolume: e.target.value })}
-                    required
+                    disabled={carForm.fuelType === "Электро"}
+                    placeholder={carForm.fuelType === "Электро" ? "Не требуется для электро" : ""}
+                    required={carForm.fuelType !== "Электро"}
                   />
                 </div>
                 <div>
                   <Label>Тип топлива</Label>
                   <Select
                     value={carForm.fuelType}
-                    onValueChange={(value) => setCarForm({ ...carForm, fuelType: value })}
+                    onValueChange={(value) => {
+                      const newForm = { ...carForm, fuelType: value }
+                      // Очищаем объем двигателя для электро
+                      if (value === "Электро") {
+                        newForm.engineVolume = ""
+                      }
+                      setCarForm(newForm)
+                    }}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Выберите тип топлива" />
