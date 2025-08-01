@@ -23,12 +23,14 @@ interface Settings {
 }
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear()
+  const [currentYear, setCurrentYear] = useState(2024) // Fallback значение
   const [loading, setLoading] = useState(true)
   const [settings, setSettings] = useState<Settings | null>(null)
 
   useEffect(() => {
     loadSettings()
+    // Устанавливаем текущий год только на клиенте
+    setCurrentYear(new Date().getFullYear())
   }, [])
 
   const loadSettings = async () => {
