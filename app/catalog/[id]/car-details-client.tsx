@@ -650,10 +650,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
           {/* Заголовок и цена - компактный верхний блок */}
           <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
-              <div className="flex-1">
+            {/* Мобильная компоновка - горизонтальная для экономии места */}
+            <div className="flex items-start justify-between gap-3 lg:gap-4">
+              <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-slate-900">
+                  <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight">
                     {car.make} {car.model}
                   </h1>
                   <div className="self-start sm:self-auto">
@@ -668,20 +669,20 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 sm:space-x-3 text-slate-600">
-                  <span className="bg-slate-100 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.year}</span>
-                  <span className="bg-slate-100 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.color}</span>
-                  <span className="bg-slate-100 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.bodyType}</span>
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-600">
+                  <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.year}</span>
+                  <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.color}</span>
+                  <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car.bodyType}</span>
                 </div>
               </div>
 
-              {/* Цена справа */}
-              <div className="text-left sm:text-right">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-1">
+              {/* Цена справа - всегда горизонтально */}
+              <div className="text-right flex-shrink-0">
+                <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 mb-1 leading-tight">
                   {formatPrice(car.price)}
                 </div>
                 {usdBynRate && (
-                  <div className="text-base sm:text-lg font-semibold text-slate-600">
+                  <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600">
                     ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
                   </div>
                 )}
