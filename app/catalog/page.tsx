@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import CarCard from "@/components/car-card"
-import { Filter, SlidersHorizontal } from "lucide-react"
+import { Filter, SlidersHorizontal, ArrowRight } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import CarCardSkeleton from "@/components/car-card-skeleton"
 import { collection, getDocs } from "firebase/firestore"

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
-import { Shield, Users, Award, Clock, Car, Phone, MapPin, CheckCircle, Star, Wrench, CreditCard, DollarSign, FileText, Building, TrendingUp, Calculator, Handshake, Check } from "lucide-react"
+import { Shield, Users, Award, Clock, Car, Phone, MapPin, CheckCircle, Star, Wrench, CreditCard, DollarSign, FileText, Building, TrendingUp, Calculator, Handshake, Check, ArrowRight } from "lucide-react"
 
 
 export default function AboutPage() {

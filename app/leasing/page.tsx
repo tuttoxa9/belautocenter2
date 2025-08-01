@@ -14,7 +14,7 @@ import { useNotification } from "@/components/providers/notification-provider"
 
 import Link from "next/link"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Car, CheckCircle, Building, TrendingDown, Shield, DollarSign, Clock, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Calendar, Check } from "lucide-react"
+import { Car, CheckCircle, Building, TrendingDown, Shield, DollarSign, Clock, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Heart, Calendar, Check, ArrowRight } from "lucide-react"
 import { doc, getDoc, addDoc, collection, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { getCachedImageUrl } from "@/lib/image-cache"
