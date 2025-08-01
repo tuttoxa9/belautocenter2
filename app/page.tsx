@@ -88,34 +88,22 @@ export default function HomePage() {
         setLoadingCars(true)
       }
 
+      console.log("Loading cars from Firestore...")
       const carsQuery = query(
         collection(db, "cars"),
-        orderBy("featured", "desc"),
         orderBy("createdAt", "desc"),
-        limit(12)
+        limit(4)
       )
 
       const snapshot = await getDocs(carsQuery)
+      console.log("Cars snapshot size:", snapshot.size)
+
       const carsData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as Array<{
-        id: string;
-        make: string;
-        model: string;
-        year: number;
-        price: number;
-        imageUrls: string[];
-        featured: boolean;
-        mileage: number;
-        transmission: string;
-        fuelType: string;
-        engineVolume: number;
-        bodyType: string;
-        condition: string;
-        description: string;
-        createdAt: Date;
-      }>
+      }))
+
+      console.log("Loaded cars:", carsData)
 
       if (isMounted) {
         setCars(carsData)

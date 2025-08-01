@@ -49,19 +49,22 @@ export default function Stories() {
 
   const loadStories = useCallback(async () => {
     try {
+      console.log("Loading stories from Firestore...")
       const storiesQuery = query(
         collection(db, "stories"),
-        orderBy("order", "asc"),
-        orderBy("createdAt", "desc")
+        orderBy("order", "asc")
       )
 
       const snapshot = await getDocs(storiesQuery)
+      console.log("Stories snapshot size:", snapshot.size)
+
       const storiesData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date()
       })) as Story[]
 
+      console.log("Loaded stories:", storiesData)
       setStories(storiesData)
     } catch (error) {
       console.error("Error loading stories:", error)
