@@ -94,10 +94,12 @@ export default function ContactsPage() {
 
         if (contactsDoc.exists()) {
           const data = contactsDoc.data() as ContactsData
-          setContactsData(data)
+          // Создаем чистую копию данных без несериализуемых объектов Firestore
+          const cleanData = JSON.parse(JSON.stringify(data))
+          setContactsData(cleanData)
         } else {
           // Если документ не существует, используем fallback данные
-          setContactsData({
+          const fallbackData = {
             title: "Контакты",
             subtitle: "Свяжитесь с нами любым удобным способом",
             address: "г. Минск",
@@ -108,14 +110,15 @@ export default function ContactsPage() {
               weekends: "Сб-Вс: 10:00 - 16:00"
             },
             socialMedia: {}
-          })
+          }
+          setContactsData(fallbackData)
         }
       } catch (err) {
         console.error('Ошибка загрузки данных контактов:', err)
         setError('Не удалось загрузить данные контактов')
 
         // Fallback данные при ошибке
-        setContactsData({
+        const fallbackData = {
           title: "Контакты",
           subtitle: "Свяжитесь с нами любым удобным способом",
           address: "г. Минск",
@@ -126,7 +129,8 @@ export default function ContactsPage() {
             weekends: "Сб-Вс: 10:00 - 16:00"
           },
           socialMedia: {}
-        })
+        }
+        setContactsData(fallbackData)
       } finally {
         setLoading(false)
       }
