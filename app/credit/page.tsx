@@ -287,13 +287,13 @@ export default function CreditPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
           <div className="animate-pulse">
-            <div className="h-4 bg-slate-200 rounded-full w-48 mb-8"></div>
-            <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
-              <div className="space-y-6">
+            <div className="h-4 bg-slate-200 rounded-full w-48 mb-6 md:mb-8"></div>
+            <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 p-4 md:p-8">
+              <div className="space-y-4 md:space-y-6">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-20 bg-slate-100 rounded-2xl"></div>
+                  <div key={i} className="h-16 md:h-20 bg-slate-100 rounded-xl md:rounded-2xl"></div>
                 ))}
               </div>
             </div>
@@ -306,7 +306,7 @@ export default function CreditPage() {
   if (!settings) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center px-4">
           <p className="text-slate-600">Не удалось загрузить информацию о кредитах</p>
         </div>
       </div>
@@ -315,10 +315,10 @@ export default function CreditPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
 
         {/* Breadcrumbs */}
-        <nav className="mb-8">
+        <nav className="mb-6 md:mb-8">
           <ol className="flex items-center space-x-2 text-sm text-slate-500">
             <li>
               <Link href="/" className="hover:text-slate-900 transition-colors">
@@ -331,25 +331,25 @@ export default function CreditPage() {
         </nav>
 
         {/* Hero Section */}
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-8">
-          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-12">
+        <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-6 md:mb-8">
+          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-8 md:px-8 md:py-12">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
-            <div className="relative max-w-4xl">
-              <h1 className="text-4xl font-bold text-white mb-4">{settings?.title}</h1>
-              <p className="text-xl text-slate-300 mb-6">{settings?.subtitle}</p>
-              <p className="text-slate-400 leading-relaxed">{settings?.description}</p>
+            <div className="relative">
+              <h1 className="text-2xl md:text-4xl font-bold text-white mb-3 md:mb-4">{settings?.title}</h1>
+              <p className="text-lg md:text-xl text-slate-300 mb-4 md:mb-6">{settings?.subtitle}</p>
+              <p className="text-slate-400 leading-relaxed text-sm md:text-base">{settings?.description}</p>
             </div>
           </div>
 
-          {/* Main Content Grid */}
-          <div className="p-8 grid lg:grid-cols-5 gap-8">
+          {/* Main Content */}
+          <div className="p-4 md:p-8 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-8">
 
-            {/* Calculator Section - 3 columns */}
-            <div className="lg:col-span-3 space-y-6">
+            {/* Calculator Section */}
+            <div className="lg:col-span-3 space-y-4 md:space-y-6">
 
               {/* Calculator Header */}
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-slate-900">Кредитный калькулятор</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h2 className="text-xl md:text-2xl font-semibold text-slate-900">Кредитный калькулятор</h2>
                 <div className="flex items-center space-x-3">
                   <Checkbox
                     id="currency"
@@ -364,13 +364,13 @@ export default function CreditPage() {
               </div>
 
               {/* Parameters Grid */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
                 {/* Car Price */}
-                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
                     <label className="text-sm font-semibold text-slate-900">Стоимость автомобиля</label>
-                    <span className="text-lg font-bold text-slate-900">{formatCurrency(calculator.carPrice[0])}</span>
+                    <span className="text-base md:text-lg font-bold text-slate-900">{formatCurrency(calculator.carPrice[0])}</span>
                   </div>
                   <Slider
                     value={calculator.carPrice}
@@ -381,22 +381,22 @@ export default function CreditPage() {
                     max={getCreditMaxValue()}
                     min={getCreditMinValue()}
                     step={isBelarusianRubles ? 500 : 1000}
-                    className="mb-4"
+                    className="mb-3 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.carPrice}
                     onChange={(e) => handleManualInputChange('carPrice', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                     placeholder="Введите сумму"
                   />
                 </div>
 
                 {/* Down Payment */}
-                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
                     <label className="text-sm font-semibold text-slate-900">Первоначальный взнос</label>
-                    <span className="text-lg font-bold text-slate-900">{formatCurrency(calculator.downPayment[0])}</span>
+                    <span className="text-base md:text-lg font-bold text-slate-900">{formatCurrency(calculator.downPayment[0])}</span>
                   </div>
                   <Slider
                     value={calculator.downPayment}
@@ -407,22 +407,22 @@ export default function CreditPage() {
                     max={calculator.carPrice[0] * 0.8}
                     min={calculator.carPrice[0] * 0.1}
                     step={isBelarusianRubles ? 200 : 500}
-                    className="mb-4"
+                    className="mb-3 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.downPayment}
                     onChange={(e) => handleManualInputChange('downPayment', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                     placeholder="Введите сумму"
                   />
                 </div>
 
                 {/* Loan Term */}
-                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
                     <label className="text-sm font-semibold text-slate-900">Срок кредита</label>
-                    <span className="text-lg font-bold text-slate-900">{calculator.loanTerm[0]} мес.</span>
+                    <span className="text-base md:text-lg font-bold text-slate-900">{calculator.loanTerm[0]} мес.</span>
                   </div>
                   <Slider
                     value={calculator.loanTerm}
@@ -433,22 +433,22 @@ export default function CreditPage() {
                     max={84}
                     min={12}
                     step={3}
-                    className="mb-4"
+                    className="mb-3 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.loanTerm}
                     onChange={(e) => handleManualInputChange('loanTerm', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                     placeholder="Месяцы"
                   />
                 </div>
 
                 {/* Interest Rate */}
-                <div className="bg-slate-50 rounded-2xl p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
                     <label className="text-sm font-semibold text-slate-900">Процентная ставка</label>
-                    <span className="text-lg font-bold text-slate-900">{calculator.interestRate[0]}%</span>
+                    <span className="text-base md:text-lg font-bold text-slate-900">{calculator.interestRate[0]}%</span>
                   </div>
                   <Slider
                     value={calculator.interestRate}
@@ -460,13 +460,13 @@ export default function CreditPage() {
                     min={10}
                     step={0.25}
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}
-                    className="mb-4"
+                    className="mb-3 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.interestRate}
                     onChange={(e) => handleManualInputChange('interestRate', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                     placeholder="Процент"
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}
                   />
@@ -474,13 +474,13 @@ export default function CreditPage() {
               </div>
 
               {/* Bank Selection */}
-              <div className="bg-slate-50 rounded-2xl p-6">
-                <label className="text-sm font-semibold text-slate-900 mb-4 block">Выберите банк-партнер</label>
+              <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6">
+                <label className="text-sm font-semibold text-slate-900 mb-3 md:mb-4 block">Выберите банк-партнер</label>
                 <Select
                   value={manualInputs.selectedBank}
                   onValueChange={handleBankSelection}
                 >
-                  <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-xl h-12">
+                  <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-12">
                     <SelectValue placeholder="Выберите банк или введите ставку вручную" />
                   </SelectTrigger>
                   <SelectContent>
@@ -488,21 +488,21 @@ export default function CreditPage() {
                       <SelectItem
                         key={partner.name}
                         value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
-                        className="flex items-center justify-between p-3"
+                        className="flex items-center justify-between p-2 md:p-3"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           {partner.logoUrl && (
                             <Image
                               src={getCachedImageUrl(partner.logoUrl)}
                               alt={partner.name}
-                              width={24}
-                              height={24}
-                              className="object-contain rounded"
+                              width={20}
+                              height={20}
+                              className="object-contain rounded md:w-6 md:h-6"
                             />
                           )}
-                          <span className="font-medium">{partner.name}</span>
+                          <span className="font-medium text-sm md:text-base">{partner.name}</span>
                         </div>
-                        <span className="text-sm text-slate-600">{partner.minRate}%</span>
+                        <span className="text-xs md:text-sm text-slate-600">{partner.minRate}%</span>
                       </SelectItem>
                     ))}
                     <SelectItem value="custom">Ввести ставку вручную</SelectItem>
@@ -511,29 +511,29 @@ export default function CreditPage() {
               </div>
 
               {/* Results Card */}
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
-                <h3 className="text-lg font-semibold mb-4">Результат расчета</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
-                    <div className="text-sm text-slate-300 mb-1">Сумма кредита</div>
-                    <div className="text-xl font-bold">{formatCurrency(calculator.carPrice[0] - calculator.downPayment[0])}</div>
+              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
+                <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Результат расчета</h3>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-white/10 rounded-lg md:rounded-xl p-3 md:p-4 backdrop-blur">
+                    <div className="text-xs md:text-sm text-slate-300 mb-1">Сумма кредита</div>
+                    <div className="text-base md:text-xl font-bold">{formatCurrency(calculator.carPrice[0] - calculator.downPayment[0])}</div>
                   </div>
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
-                    <div className="text-sm text-slate-300 mb-1">Ежемесячный платеж</div>
-                    <div className="text-xl font-bold text-green-400">{formatCurrency(monthlyPayment)}</div>
+                  <div className="bg-white/10 rounded-lg md:rounded-xl p-3 md:p-4 backdrop-blur">
+                    <div className="text-xs md:text-sm text-slate-300 mb-1">Ежемесячный платеж</div>
+                    <div className="text-base md:text-xl font-bold text-green-400">{formatCurrency(monthlyPayment)}</div>
                   </div>
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
-                    <div className="text-sm text-slate-300 mb-1">Общая сумма</div>
-                    <div className="text-xl font-bold">{formatCurrency(totalAmount)}</div>
+                  <div className="bg-white/10 rounded-lg md:rounded-xl p-3 md:p-4 backdrop-blur">
+                    <div className="text-xs md:text-sm text-slate-300 mb-1">Общая сумма</div>
+                    <div className="text-base md:text-xl font-bold">{formatCurrency(totalAmount)}</div>
                   </div>
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
-                    <div className="text-sm text-slate-300 mb-1">Переплата</div>
-                    <div className="text-xl font-bold text-red-400">{formatCurrency(overpayment)}</div>
+                  <div className="bg-white/10 rounded-lg md:rounded-xl p-3 md:p-4 backdrop-blur">
+                    <div className="text-xs md:text-sm text-slate-300 mb-1">Переплата</div>
+                    <div className="text-base md:text-xl font-bold text-red-400">{formatCurrency(overpayment)}</div>
                   </div>
                 </div>
                 {!isBelarusianRubles && usdBynRate && (
-                  <div className="mt-4 pt-4 border-t border-white/20">
-                    <div className="text-sm text-slate-300">
+                  <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-white/20">
+                    <div className="text-xs md:text-sm text-slate-300">
                       В белорусских рублях: <span className="font-semibold text-white">{convertUsdToByn(monthlyPayment, usdBynRate)} BYN/месяц</span>
                     </div>
                   </div>
@@ -541,19 +541,19 @@ export default function CreditPage() {
               </div>
             </div>
 
-            {/* Application Form - 2 columns */}
+            {/* Application Form */}
             <div className="lg:col-span-2">
-              <div className="bg-slate-50 rounded-2xl p-6 h-full">
-                <h2 className="text-2xl font-semibold text-slate-900 mb-6">Подать заявку</h2>
+              <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 h-full">
+                <h2 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Подать заявку</h2>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                   <div>
                     <Label htmlFor="name" className="text-sm font-medium text-slate-900 mb-2 block">Ваше имя</Label>
                     <Input
                       id="name"
                       value={creditForm.name}
                       onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
-                      className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                      className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                       placeholder="Введите ваше имя"
                       required
                     />
@@ -566,12 +566,12 @@ export default function CreditPage() {
                         id="phone"
                         value={creditForm.phone}
                         onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
-                        className="bg-white border-slate-200 focus:border-slate-400 rounded-xl pr-10"
+                        className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl pr-10 h-10 md:h-auto"
                         placeholder="+375XXXXXXXXX"
                         required
                       />
                       {isPhoneValid(creditForm.phone) && (
-                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-600" />
+                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 md:h-5 w-4 md:w-5 text-green-600" />
                       )}
                     </div>
                   </div>
@@ -583,13 +583,13 @@ export default function CreditPage() {
                       type="email"
                       value={creditForm.email}
                       onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
-                      className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                      className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                       placeholder="your@email.com"
                       required
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3 md:gap-4">
                     <div>
                       <Label htmlFor="carPrice" className="text-sm font-medium text-slate-900 mb-2 block">Стоимость ($)</Label>
                       <Input
@@ -597,7 +597,7 @@ export default function CreditPage() {
                         type="number"
                         value={creditForm.carPrice}
                         onChange={(e) => setCreditForm({ ...creditForm, carPrice: e.target.value })}
-                        className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                        className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                         placeholder="50000"
                         required
                       />
@@ -609,21 +609,21 @@ export default function CreditPage() {
                         type="number"
                         value={creditForm.downPayment}
                         onChange={(e) => setCreditForm({ ...creditForm, downPayment: e.target.value })}
-                        className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                        className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                         placeholder="15000"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3 md:gap-4">
                     <div>
                       <Label htmlFor="loanTerm" className="text-sm font-medium text-slate-900 mb-2 block">Срок</Label>
                       <Select
                         value={creditForm.loanTerm}
                         onValueChange={(value) => setCreditForm({ ...creditForm, loanTerm: value })}
                       >
-                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-xl">
+                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto">
                           <SelectValue placeholder="Месяцы" />
                         </SelectTrigger>
                         <SelectContent>
@@ -643,7 +643,7 @@ export default function CreditPage() {
                         value={creditForm.bank}
                         onValueChange={(value) => setCreditForm({ ...creditForm, bank: value })}
                       >
-                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-xl">
+                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto">
                           <SelectValue placeholder="Выберите" />
                         </SelectTrigger>
                         <SelectContent>
@@ -667,14 +667,14 @@ export default function CreditPage() {
                       id="message"
                       value={creditForm.message}
                       onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
-                      className="bg-white border-slate-200 focus:border-slate-400 rounded-xl"
+                      className="bg-white border-slate-200 focus:border-slate-400 rounded-lg md:rounded-xl h-10 md:h-auto"
                       placeholder="Дополнительная информация..."
                     />
                   </div>
 
                   <StatusButton
                     type="submit"
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-xl py-3 mt-6"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-lg md:rounded-xl py-3 mt-4 md:mt-6 h-12 md:h-auto"
                     state={submitButtonState.state}
                     loadingText="Отправляем..."
                     successText="Отправлено!"
@@ -689,32 +689,32 @@ export default function CreditPage() {
         </div>
 
         {/* Partners & Benefits */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
 
           {/* Partners */}
-          <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
-            <h3 className="text-2xl font-semibold text-slate-900 mb-6">Банки-партнеры</h3>
-            <div className="space-y-4">
+          <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 p-6 md:p-8">
+            <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Банки-партнеры</h3>
+            <div className="space-y-3 md:space-y-4">
               {settings?.partners?.map((partner, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center gap-4">
+                <div key={index} className="flex items-center justify-between p-3 md:p-4 bg-slate-50 rounded-xl md:rounded-2xl hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center gap-3 md:gap-4">
                     {partner.logoUrl && (
-                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-lg md:rounded-xl flex items-center justify-center shadow-sm">
                         <img
                           src={getCachedImageUrl(partner.logoUrl)}
                           alt={partner.name}
-                          className="h-8 w-10 object-contain"
+                          className="h-6 w-8 md:h-8 md:w-10 object-contain"
                         />
                       </div>
                     )}
                     <div>
-                      <div className="font-semibold text-slate-900">{partner.name}</div>
-                      <div className="text-sm text-slate-600">до {partner.maxTerm} месяцев</div>
+                      <div className="font-semibold text-slate-900 text-sm md:text-base">{partner.name}</div>
+                      <div className="text-xs md:text-sm text-slate-600">до {partner.maxTerm} месяцев</div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-slate-900">от {partner.minRate}%</div>
-                    <div className="text-sm text-slate-600">годовых</div>
+                    <div className="text-base md:text-lg font-bold text-slate-900">от {partner.minRate}%</div>
+                    <div className="text-xs md:text-sm text-slate-600">годовых</div>
                   </div>
                 </div>
               ))}
@@ -722,18 +722,18 @@ export default function CreditPage() {
           </div>
 
           {/* Benefits */}
-          <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
-            <h3 className="text-2xl font-semibold text-slate-900 mb-6">Преимущества</h3>
-            <div className="space-y-4">
+          <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 p-6 md:p-8">
+            <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Преимущества</h3>
+            <div className="space-y-3 md:space-y-4">
               {settings?.benefits?.map((benefit, index) => (
-                <div key={index} className="p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors">
-                  <h4 className="font-semibold text-slate-900 mb-2">{benefit.title}</h4>
-                  <p className="text-sm text-slate-600 leading-relaxed">{benefit.description}</p>
+                <div key={index} className="p-3 md:p-4 bg-slate-50 rounded-xl md:rounded-2xl hover:bg-slate-100 transition-colors">
+                  <h4 className="font-semibold text-slate-900 mb-1 md:mb-2 text-sm md:text-base">{benefit.title}</h4>
+                  <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{benefit.description}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-slate-200">
+            <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-200">
               <CreditConditions />
             </div>
           </div>
