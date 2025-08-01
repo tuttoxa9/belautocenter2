@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, User, MessageSquare, Calendar, Award, ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
+import { Star, User, MessageSquare, Calendar, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
@@ -131,43 +131,39 @@ export default function ReviewsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="animate-pulse space-y-8">
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
-              <div className="h-8 bg-slate-200 rounded w-1/3 mb-4"></div>
-              <div className="h-6 bg-slate-200 rounded w-1/2 mb-6"></div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="space-y-4">
-                    <div className="h-16 bg-slate-200 rounded-lg"></div>
-                    <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                    <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                  </div>
-                ))}
+          <div className="animate-pulse">
+            {/* Загрузка основного блока */}
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden mb-8">
+              <div className="p-6 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200/50">
+                <div className="h-8 bg-slate-200 rounded-xl w-1/3 mb-4"></div>
+                <div className="h-6 bg-slate-200 rounded-xl w-1/2"></div>
               </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="h-12 w-12 bg-slate-200 rounded-full"></div>
-                    <div className="space-y-2 flex-1">
-                      <div className="h-5 bg-slate-200 rounded w-2/3"></div>
-                      <div className="flex space-x-1">
-                        {[...Array(5)].map((_, j) => (
-                          <div key={j} className="h-4 w-4 bg-slate-200 rounded"></div>
-                        ))}
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="bg-slate-50 rounded-xl p-6 border border-slate-200/50 space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="h-12 w-12 bg-slate-200 rounded-full"></div>
+                        <div className="space-y-2 flex-1">
+                          <div className="h-5 bg-slate-200 rounded w-2/3"></div>
+                          <div className="flex space-x-1">
+                            {[...Array(5)].map((_, j) => (
+                              <div key={j} className="h-4 w-4 bg-slate-200 rounded"></div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-4 bg-slate-200 rounded"></div>
+                        <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+                        <div className="h-4 bg-slate-200 rounded w-3/4"></div>
                       </div>
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-4 bg-slate-200 rounded"></div>
-                    <div className="h-4 bg-slate-200 rounded w-5/6"></div>
-                    <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
@@ -178,280 +174,223 @@ export default function ReviewsPage() {
   const distribution = getRatingDistribution()
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          {/* Breadcrumbs */}
-          <nav className="mb-4">
-            <ol className="flex items-center space-x-2 text-sm text-slate-500">
-              <li>
-                <Link href="/" className="hover:text-blue-600 transition-colors">
-                  Главная
-                </Link>
-              </li>
-              <li><ArrowRight className="h-3 w-3" /></li>
-              <li className="text-slate-900 font-medium">Отзывы клиентов</li>
-            </ol>
-          </nav>
-
-          {/* Mobile Title */}
-          <div className="lg:hidden flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
-              <MessageSquare className="h-6 w-6 text-white drop-shadow-sm" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-slate-900 truncate">Отзывы наших клиентов</h1>
-              <div className="flex items-center space-x-2 mt-1 text-xs text-slate-600">
-                <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-sm"></div>
-                <span>{reviews.length} отзывов</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Title */}
-          <div className="hidden lg:flex items-start justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
-                <MessageSquare className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">Отзывы наших клиентов</h1>
-                <p className="text-slate-600 mt-1">Реальные истории от довольных покупателей</p>
-              </div>
-            </div>
-            <div className="hidden sm:block">
-              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg px-4 py-2 text-sm text-slate-600 shadow-sm">
-                {reviews.length} отзывов
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Statistics - More Compact and Professional */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        {reviews.length > 0 && (
-          <div className="mb-6">
-            {/* Compact Rating Summary */}
-            <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                  {/* Rating Summary */}
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
-                      <Award className="h-6 w-6 text-white drop-shadow-sm" />
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl font-bold text-slate-900">{getAverageRating()}</span>
-                        <div className="flex">{renderStars(Math.round(Number(getAverageRating())), "sm")}</div>
-                        <span className="text-sm text-slate-600">({reviews.length})</span>
-                      </div>
-                      <p className="text-xs text-slate-500">Средний рейтинг клиентов</p>
-                    </div>
-                  </div>
 
-                  {/* Filter Buttons */}
-                  <div className="flex items-center space-x-2 overflow-x-auto">
-                    <button
-                      onClick={() => setFilterRating(null)}
-                      className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-md transition-colors shadow-sm ${
-                        filterRating === null
-                          ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white'
-                          : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 hover:from-slate-200 hover:to-slate-300'
-                      }`}
-                    >
-                      Все
-                    </button>
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                      <button
-                        key={rating}
-                        onClick={() => setFilterRating(filterRating === rating ? null : rating)}
-                        className={`flex-shrink-0 flex items-center space-x-1 text-xs px-2 py-1.5 rounded-md transition-colors shadow-sm ${
-                          filterRating === rating
-                            ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white'
-                            : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 hover:from-slate-200 hover:to-slate-300'
-                        }`}
+        {/* Единый контейнер в стиле страницы автомобиля */}
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden">
+
+          {/* Header с хлебными крошками */}
+          <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200/50">
+            {/* Breadcrumbs */}
+            <nav className="mb-4">
+              <ol className="flex items-center space-x-2 text-sm text-slate-500">
+                <li>
+                  <Link href="/" className="hover:text-slate-700 transition-colors">
+                    Главная
+                  </Link>
+                </li>
+                <li><ArrowRight className="h-3 w-3" /></li>
+                <li className="text-slate-900 font-medium">Отзывы клиентов</li>
+              </ol>
+            </nav>
+
+            {/* Title and Stats */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center">
+                  <MessageSquare className="h-6 w-6 text-slate-600" />
+                </div>
+                <div>
+                  <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Отзывы наших клиентов</h1>
+                  <p className="text-slate-600 mt-1">Реальные истории от довольных покупателей</p>
+                </div>
+              </div>
+
+              {/* Статистика рейтинга */}
+              {reviews.length > 0 && (
+                <div className="flex items-center space-x-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-slate-900">{getAverageRating()}</div>
+                    <div className="flex justify-center mb-1">{renderStars(Math.round(Number(getAverageRating())), "sm")}</div>
+                    <div className="text-xs text-slate-500">{reviews.length} отзывов</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Фильтры */}
+          {reviews.length > 0 && (
+            <div className="p-4 lg:p-6 bg-slate-50/50 border-b border-slate-200/50">
+              <div className="flex items-center space-x-3 overflow-x-auto">
+                <span className="text-sm font-medium text-slate-700 whitespace-nowrap">Фильтр по рейтингу:</span>
+                <button
+                  onClick={() => setFilterRating(null)}
+                  className={`flex-shrink-0 text-sm px-4 py-2 rounded-xl transition-colors ${
+                    filterRating === null
+                      ? 'bg-slate-900 text-white shadow-lg'
+                      : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                  }`}
+                >
+                  Все
+                </button>
+                {[5, 4, 3, 2, 1].map((rating) => (
+                  <button
+                    key={rating}
+                    onClick={() => setFilterRating(filterRating === rating ? null : rating)}
+                    className={`flex-shrink-0 flex items-center space-x-2 text-sm px-4 py-2 rounded-xl transition-colors ${
+                      filterRating === rating
+                        ? 'bg-slate-900 text-white shadow-lg'
+                        : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                    }`}
+                  >
+                    <span>{rating}</span>
+                    <Star className="h-3 w-3 fill-current" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Reviews Grid */}
+          <div className="p-4 lg:p-6">
+            {console.log("Рендеринг отзывов:", { reviews: reviews.length, filteredReviews: filteredReviews.length, filterRating })}
+            {filteredReviews && filteredReviews.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredReviews.map((review) => {
+                  console.log("Рендерим отзыв:", review.id, review.name, review.status)
+                  const isExpanded = expandedReview === review.id
+                  return (
+                  <div key={review.id} className="bg-slate-50 rounded-xl p-5 border border-slate-200/50 hover:shadow-md transition-all duration-300">
+                    {/* Review Image */}
+                    {review.imageUrl && (
+                      <div className="mb-4 rounded-xl overflow-hidden bg-white">
+                        <img
+                          src={getCachedImageUrl(review.imageUrl)}
+                          alt="Фото отзыва"
+                          className="w-full aspect-square object-cover"
+                        />
+                      </div>
+                    )}
+
+                    {/* User Info */}
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-slate-200">
+                        <User className="h-5 w-5 text-slate-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-slate-900 text-sm truncate">{review.name}</h3>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <div className="flex">{renderStars(review.rating, "sm")}</div>
+                          <span className="text-xs text-slate-500">{review.rating}/5</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Car Model */}
+                    {review.carModel && (
+                      <div className="bg-white rounded-xl px-3 py-2 mb-4 border border-slate-200/50">
+                        <p className="text-xs text-slate-600">
+                          <span className="font-medium">Автомобиль:</span> {review.carModel}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Review Text */}
+                    <div className="mb-4">
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => toggleExpandReview(review.id)}
                       >
-                        <span>{rating}</span>
-                        <Star className="h-2.5 w-2.5 fill-current" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Reviews Grid */}
-        {console.log("Рендеринг отзывов:", { reviews: reviews.length, filteredReviews: filteredReviews.length, filterRating })}
-        {filteredReviews && filteredReviews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredReviews.map((review) => {
-              console.log("Рендерим отзыв:", review.id, review.name, review.status)
-              const isExpanded = expandedReview === review.id
-              return (
-              <Card key={review.id} className="border border-slate-200 hover:shadow-md transition-shadow duration-300 bg-gradient-to-br from-white to-slate-50">
-                <CardContent className="p-5">
-                  {/* Review Image - No hover effect */}
-                  {review.imageUrl && (
-                    <div className="mb-4 rounded-lg overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-inner">
-                      <img
-                        src={getCachedImageUrl(review.imageUrl)}
-                        alt="Фото отзыва"
-                        className="w-full aspect-square object-cover"
-                      />
-                    </div>
-                  )}
-
-                  {/* User Info - Compact */}
-                  <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-9 h-9 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-300/50">
-                      <User className="h-4 w-4 text-slate-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-slate-900 text-sm truncate">{review.name}</h3>
-                      <div className="flex items-center space-x-1 mt-0.5">
-                        <div className="flex">{renderStars(review.rating, "sm")}</div>
-                        <span className="text-xs text-slate-500 ml-1">
-                          {review.rating}/5
-                        </span>
+                        <p className={`text-slate-700 text-sm leading-relaxed transition-all duration-200 ${
+                          isExpanded ? 'line-clamp-none' : 'line-clamp-4'
+                        }`}>
+                          {review.text}
+                        </p>
+                        {review.text.length > 120 && (
+                          <button className="text-xs text-slate-500 hover:text-slate-700 mt-2 transition-colors">
+                            {isExpanded ? 'Скрыть' : 'Читать полностью'}
+                          </button>
+                        )}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Car Model - Compact */}
-                  {review.carModel && (
-                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-md px-3 py-2 mb-3 shadow-inner">
-                      <p className="text-xs text-slate-700">
-                        <span className="text-slate-500">Автомобиль:</span> <span className="font-medium">{review.carModel}</span>
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Review Text - Simplified */}
-                  <div className="mb-3">
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => toggleExpandReview(review.id)}
-                    >
-                      <p className={`text-slate-700 text-sm leading-relaxed transition-all duration-200 ${
-                        isExpanded ? 'line-clamp-none' : 'line-clamp-4'
-                      }`}>
-                        {review.text}
-                      </p>
-                      {review.text.length > 120 && (
-                        <button className="text-xs text-slate-500 hover:text-slate-700 mt-1 transition-colors">
-                          {isExpanded ? 'Скрыть' : 'Читать полностью'}
-                        </button>
-                      )}
+                    {/* Date */}
+                    <div className="flex items-center space-x-2 text-xs text-slate-400 pt-3 border-t border-slate-200/50">
+                      <Calendar className="h-3 w-3" />
+                      <span>
+                        {review.createdAt.toLocaleDateString("ru-RU", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
                     </div>
                   </div>
-
-                  {/* Date - Simple */}
-                  <div className="flex items-center space-x-1 text-xs text-slate-400 pt-2 border-t border-slate-100">
-                    <Calendar className="h-3 w-3 flex-shrink-0 text-slate-500" />
-                    <span>
-                      {review.createdAt.toLocaleDateString("ru-RU", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            )})}
+                )})}
+              </div>
+            ) : filterRating ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-8 w-8 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  Нет отзывов с {filterRating} звездами
+                </h3>
+                <p className="text-slate-600 mb-6">
+                  Попробуйте выбрать другой рейтинг или сбросьте фильтр
+                </p>
+                <button
+                  onClick={() => setFilterRating(null)}
+                  className="bg-slate-900 text-white px-6 py-3 rounded-xl hover:bg-slate-800 transition-colors"
+                >
+                  Показать все отзывы
+                </button>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <MessageSquare className="h-8 w-8 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  Пока нет отзывов
+                </h3>
+                <p className="text-slate-600">
+                  Станьте первым, кто оставит отзыв о нашей работе!
+                </p>
+              </div>
+            )}
           </div>
-        ) : filterRating ? (
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-12 text-center">
-              <Star className="h-16 w-16 mx-auto text-slate-400 mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Нет отзывов с {filterRating} звездами
-              </h3>
-              <p className="text-slate-600 mb-4">
-                Попробуйте выбрать другой рейтинг или сбросьте фильтр
-              </p>
-              <button
-                onClick={() => setFilterRating(null)}
-                className="bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
-              >
-                Показать все отзывы
-              </button>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-12 text-center">
-              <MessageSquare className="h-16 w-16 mx-auto text-slate-400 mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Пока нет отзывов
-              </h3>
-              <p className="text-slate-600">
-                Станьте первым, кто оставит отзыв о нашей работе!
-              </p>
-            </CardContent>
-          </Card>
-        )}
 
-        {/* Call to Action - Mobile */}
-        {reviews.length > 0 && (
-          <Card className="lg:hidden mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
-                  <MessageSquare className="h-6 w-6 text-white drop-shadow-sm" />
+          {/* Call to Action */}
+          {reviews.length > 0 && (
+            <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-white border-t border-slate-200/50">
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                    <MessageSquare className="h-5 w-5 text-slate-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-semibold text-slate-900">
+                      Поделитесь своим опытом
+                    </h3>
+                    <p className="text-slate-600 text-sm">
+                      Ваш отзыв поможет другим клиентам сделать правильный выбор
+                    </p>
+                  </div>
                 </div>
-                <div className="text-left flex-1">
-                  <h3 className="text-lg font-semibold text-white">
-                    Поделитесь своим опытом
-                  </h3>
-                  <p className="text-slate-300 text-sm">
-                    Ваш отзыв поможет другим клиентам
-                  </p>
-                </div>
+                <Link
+                  href="/contacts"
+                  className="inline-flex items-center space-x-2 bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-colors"
+                >
+                  <span>Связаться с нами</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              <Link
-                href="/contacts"
-                className="w-full flex items-center justify-center space-x-2 bg-gradient-to-br from-white to-slate-100 text-slate-900 px-6 py-3 rounded-lg font-medium hover:from-slate-100 hover:to-slate-200 transition-all shadow-sm"
-              >
-                <span>Связаться с нами</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Call to Action - Desktop */}
-        {reviews.length > 0 && (
-          <Card className="hidden lg:block mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
-            <CardContent className="p-8 text-center">
-              <div className="flex items-center justify-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-white/20">
-                  <MessageSquare className="h-6 w-6 text-white" />
-                </div>
-                <div className="text-left">
-                  <h3 className="text-xl font-semibold text-white">
-                    Поделитесь своим опытом
-                  </h3>
-                  <p className="text-slate-300 text-sm">
-                    Ваш отзыв поможет другим клиентам сделать правильный выбор
-                  </p>
-                </div>
-              </div>
-              <Link
-                href="/contacts"
-                className="inline-flex items-center space-x-2 bg-gradient-to-br from-white to-slate-100 text-slate-900 px-6 py-3 rounded-lg font-medium hover:from-slate-100 hover:to-slate-200 transition-all shadow-sm"
-              >
-                <span>Связаться с нами</span>
-                <ArrowRight className="h-4 w-4 flex-shrink-0" />
-              </Link>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
