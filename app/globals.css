@@ -159,6 +159,7 @@
     @apply bg-background text-foreground;
     font-family: 'Geoform', 'Roboto Custom', 'Etude Noire', 'Aviano', 'Squad', system-ui, sans-serif;
     font-feature-settings: 'kern' 1, 'liga' 1;
+    zoom: 0.9;
   }
 
   .container {
