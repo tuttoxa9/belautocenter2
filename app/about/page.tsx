@@ -5,8 +5,33 @@ import Link from "next/link"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
-import { Shield, Users, Award, Clock, Car, Phone, MapPin, CheckCircle, Star, Wrench, CreditCard, DollarSign, FileText, Building, TrendingUp, Calculator, Handshake, Check, ArrowRight } from "lucide-react"
-
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import AboutSkeleton from "@/components/about-skeleton"
+import {
+  Shield,
+  Users,
+  Award,
+  Clock,
+  Car,
+  Phone,
+  MapPin,
+  CheckCircle,
+  Star,
+  Wrench,
+  CreditCard,
+  DollarSign,
+  FileText,
+  Building,
+  TrendingUp,
+  Calculator,
+  Handshake,
+  Check,
+  ArrowRight,
+  Building2,
+  Globe,
+  Mail
+} from "lucide-react"
 
 export default function AboutPage() {
   const [loading, setLoading] = useState(true)
@@ -68,223 +93,328 @@ export default function AboutPage() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="container px-4 py-8">
-          <div className="animate-pulse space-y-8">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-12 bg-gray-200 rounded w-3/4"></div>
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-              <div className="h-4 bg-gray-200 rounded w-4/6"></div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white p-6 rounded-lg space-y-4">
-                  <div className="h-12 w-12 bg-gray-200 rounded"></div>
-                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="space-y-2">
-                    <div className="h-4 bg-gray-200 rounded"></div>
-                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    return <AboutSkeleton />
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container px-4 py-8">
-        {/* Хлебные крошки */}
-        <nav className="mb-6">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50/50">
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Breadcrumbs */}
+        <nav className="mb-8">
+          <ol className="flex items-center space-x-2 text-sm text-slate-500">
             <li>
-              <Link href="/" className="hover:text-blue-600 transition-colors">
+              <Link href="/" className="hover:text-slate-700 transition-colors">
                 Главная
               </Link>
             </li>
             <li><ArrowRight className="h-3 w-3" /></li>
-            <li className="text-gray-900 font-medium">О нас</li>
+            <li className="text-slate-900 font-medium">О нас</li>
           </ol>
         </nav>
 
-        {/* Заголовок */}
+        {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{aboutData.pageTitle}</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl shadow-xl shadow-slate-800/25 mb-6 transform hover:scale-105 transition-transform duration-300">
+            <Building2 className="h-10 w-10 text-white" />
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">
+            {aboutData.pageTitle}
+          </h1>
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
             {aboutData.pageSubtitle}
           </p>
         </div>
 
-        {/* Статистика */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-12">
-          {aboutData?.stats?.map((stat, index) => (
-            <Card key={index} className="border-0 shadow-sm bg-gradient-to-br from-white to-gray-50/80">
-              <CardContent className="p-3 lg:p-6 text-center">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 lg:mb-3 shadow-md">
-                  {stat?.icon && <stat.icon className="h-5 w-5 lg:h-6 lg:w-6 text-white" />}
-                </div>
-                <div className="text-lg lg:text-2xl font-bold text-gray-900 mb-1">{stat?.value || ''}</div>
-                <div className="text-xs lg:text-sm text-gray-600 leading-tight">{stat?.label || ''}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {/* Main unified card container */}
+        <Card className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-2xl shadow-slate-200/50 border border-white/50 overflow-hidden">
+          <CardContent className="p-0">
 
-        {/* Основной контент */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              {aboutData.history?.title || "Наша история"}
-            </h2>
-            <div className="space-y-4 text-gray-700">
-              {aboutData.history?.content?.map((paragraph, index) => (
-                <p key={index}>
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              {aboutData.principles?.title || "Наши принципы"}
-            </h2>
-            <div className="space-y-6">
-              {aboutData?.principles?.items?.map((principle, index) => {
-                const getIcon = (iconName: string) => {
-
-                  switch (iconName) {
-                    case "shield": return Shield
-                    case "award": return Award
-                    case "users": return Users
-                    case "car": return Car
-                    case "phone": return Phone
-                    case "mappin":
-                    case "map-pin": return MapPin
-                    case "clock": return Clock
-                    case "checkcircle":
-                    case "check-circle": return CheckCircle
-                    case "star": return Star
-                    case "wrench": return Wrench
-                    case "credit-card":
-                    case "creditcard": return CreditCard
-                    case "dollar-sign":
-                    case "dollarsign": return DollarSign
-                    case "file-text":
-                    case "filetext": return FileText
-                    case "building": return Building
-                    case "trending-up":
-                    case "trendingup": return TrendingUp
-                    case "calculator": return Calculator
-                    case "handshake": return Handshake
-                    default:
-
-                      return Shield
-                  }
-                }
-                const IconComponent = getIcon(principle?.icon || 'shield')
-                const getIconColor = (index: number) => {
-                  const colors = ["blue", "green", "yellow"]
-                  return colors[index % colors.length]
-                }
-                const color = getIconColor(index)
-
-                return (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className={`w-8 h-8 bg-${color}-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1`}>
-                      <IconComponent className={`h-4 w-4 text-${color}-600`} />
+            {/* Statistics Section */}
+            <div className="p-8 lg:p-12 pb-0">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                {aboutData?.stats?.map((stat, index) => (
+                  <div key={index} className="text-center group">
+                    <div className="relative mb-4">
+                      <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center mx-auto shadow-xl shadow-slate-800/20 group-hover:shadow-slate-800/30 transform group-hover:scale-105 transition-all duration-300">
+                        {stat?.icon && <stat.icon className="h-8 w-8 lg:h-10 lg:w-10 text-white" />}
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">{principle?.title || ''}</h3>
-                      <p className="text-gray-600">{principle?.description || ''}</p>
+                    <div className="text-2xl lg:text-3xl font-bold text-slate-900 mb-2">{stat?.value || ''}</div>
+                    <div className="text-sm lg:text-base text-slate-600 leading-tight">{stat?.label || ''}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Separator className="mx-8 lg:mx-12 my-8 lg:my-12" />
+
+            {/* Content Sections */}
+            <div className="px-8 lg:px-12 space-y-8 lg:space-y-12">
+
+              {/* History and Principles */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                {/* History */}
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+                      <Clock className="h-6 w-6 text-white" />
+                    </div>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">
+                      {aboutData.history?.title || "Наша история"}
+                    </h2>
+                  </div>
+                  <div className="space-y-4 text-slate-700 leading-relaxed">
+                    {aboutData.history?.content?.map((paragraph, index) => (
+                      <p key={index} className="text-base lg:text-lg">
+                        {paragraph}
+                      </p>
+                    )) || (
+                      <p className="text-base lg:text-lg">
+                        Уже более 12 лет мы помогаем нашим клиентам найти идеальный автомобиль.
+                        За это время мы продали тысячи автомобилей и заслужили доверие покупателей благодаря
+                        честному подходу к бизнесу и качественному сервису.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Principles */}
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
+                      <Shield className="h-6 w-6 text-white" />
+                    </div>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">
+                      {aboutData.principles?.title || "Наши принципы"}
+                    </h2>
+                  </div>
+                  <div className="space-y-4">
+                    {aboutData?.principles?.items?.map((principle, index) => {
+                      const getIcon = (iconName: string) => {
+                        switch (iconName) {
+                          case "shield": return Shield
+                          case "award": return Award
+                          case "users": return Users
+                          case "car": return Car
+                          case "phone": return Phone
+                          case "mappin":
+                          case "map-pin": return MapPin
+                          case "clock": return Clock
+                          case "checkcircle":
+                          case "check-circle": return CheckCircle
+                          case "star": return Star
+                          case "wrench": return Wrench
+                          case "credit-card":
+                          case "creditcard": return CreditCard
+                          case "dollar-sign":
+                          case "dollarsign": return DollarSign
+                          case "file-text":
+                          case "filetext": return FileText
+                          case "building": return Building
+                          case "trending-up":
+                          case "trendingup": return TrendingUp
+                          case "calculator": return Calculator
+                          case "handshake": return Handshake
+                          default: return Shield
+                        }
+                      }
+                      const IconComponent = getIcon(principle?.icon || 'shield')
+                      const colors = [
+                        { bg: "bg-blue-100", text: "text-blue-600" },
+                        { bg: "bg-emerald-100", text: "text-emerald-600" },
+                        { bg: "bg-amber-100", text: "text-amber-600" },
+                        { bg: "bg-purple-100", text: "text-purple-600" }
+                      ]
+                      const color = colors[index % colors.length]
+
+                      return (
+                        <div key={index} className="flex items-start space-x-4 p-4 rounded-xl bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                          <div className={`w-10 h-10 ${color.bg} rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                            <IconComponent className={`h-5 w-5 ${color.text}`} />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-slate-900 mb-2 text-lg">{principle?.title || ''}</h3>
+                            <p className="text-slate-600 leading-relaxed">{principle?.description || ''}</p>
+                          </div>
+                        </div>
+                      )
+                    }) || (
+                      <>
+                        <div className="flex items-start space-x-4 p-4 rounded-xl bg-slate-50/50">
+                          <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                            <Shield className="h-5 w-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-slate-900 mb-2 text-lg">Надежность</h3>
+                            <p className="text-slate-600 leading-relaxed">Мы гарантируем качество каждого автомобиля и честность во всех сделках</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-4 p-4 rounded-xl bg-slate-50/50">
+                          <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                            <Users className="h-5 w-5 text-emerald-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-slate-900 mb-2 text-lg">Клиентоориентированность</h3>
+                            <p className="text-slate-600 leading-relaxed">Ваши потребности - наш приоритет. Мы поможем найти именно ваш автомобиль</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-4 p-4 rounded-xl bg-slate-50/50">
+                          <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                            <Star className="h-5 w-5 text-amber-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-slate-900 mb-2 text-lg">Профессионализм</h3>
+                            <p className="text-slate-600 leading-relaxed">Наша команда экспертов обладает глубокими знаниями автомобильного рынка</p>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <Separator className="my-8 lg:my-12" />
+
+              {/* Services */}
+              <div className="space-y-8">
+                <div className="text-center">
+                  <div className="flex items-center justify-center space-x-3 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg shadow-purple-600/20">
+                      <Wrench className="h-6 w-6 text-white" />
+                    </div>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">
+                      {aboutData.services?.title || "Наши услуги"}
+                    </h2>
+                  </div>
+                  <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                    Полный спектр услуг для комфортной покупки автомобиля
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {aboutData?.services?.items?.map((service, index) => (
+                    <div key={index} className="group relative">
+                      <div className="bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6 hover:shadow-xl hover:shadow-slate-200/25 hover:border-slate-300/50 transition-all duration-300 h-full transform group-hover:-translate-y-1">
+                        <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center mb-4 group-hover:from-slate-200 group-hover:to-slate-300 transition-all duration-300 shadow-sm">
+                          <Check className="h-6 w-6 text-slate-600" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-slate-900 mb-3 leading-tight">
+                          {service?.title || ''}
+                        </h3>
+                        <p className="text-slate-600 leading-relaxed">
+                          {service?.description || ''}
+                        </p>
+                      </div>
+                    </div>
+                  )) || (
+                    <>
+                      <div className="group relative">
+                        <div className="bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6 hover:shadow-xl hover:shadow-slate-200/25 transition-all duration-300 h-full transform group-hover:-translate-y-1">
+                          <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                            <Car className="h-6 w-6 text-slate-600" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-slate-900 mb-3">Продажа автомобилей</h3>
+                          <p className="text-slate-600 leading-relaxed">Широкий выбор качественных автомобилей с пробегом по выгодным ценам</p>
+                        </div>
+                      </div>
+                      <div className="group relative">
+                        <div className="bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6 hover:shadow-xl hover:shadow-slate-200/25 transition-all duration-300 h-full transform group-hover:-translate-y-1">
+                          <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                            <CreditCard className="h-6 w-6 text-slate-600" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-slate-900 mb-3">Кредитование</h3>
+                          <p className="text-slate-600 leading-relaxed">Помощь в оформлении автокредита на выгодных условиях</p>
+                        </div>
+                      </div>
+                      <div className="group relative">
+                        <div className="bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6 hover:shadow-xl hover:shadow-slate-200/25 transition-all duration-300 h-full transform group-hover:-translate-y-1">
+                          <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                            <Handshake className="h-6 w-6 text-slate-600" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-slate-900 mb-3">Трейд-ин</h3>
+                          <p className="text-slate-600 leading-relaxed">Обмен вашего автомобиля на более новый с доплатой</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <Separator className="my-8 lg:my-12" />
+
+              {/* Company Details */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 pb-8">
+                {/* Company Info */}
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl flex items-center justify-center shadow-lg shadow-slate-600/20">
+                      <Building className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900">Реквизиты компании</h3>
+                  </div>
+                  <div className="bg-slate-50/50 rounded-2xl p-6 space-y-4">
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="flex items-start space-x-3">
+                        <Building2 className="h-5 w-5 text-slate-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium text-slate-500">Полное наименование</span>
+                          <p className="font-semibold text-slate-900">{aboutData?.companyInfo?.fullName || ''}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <FileText className="h-5 w-5 text-slate-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium text-slate-500">УНП</span>
+                          <p className="font-semibold text-slate-900">{aboutData?.companyInfo?.unp || ''}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <MapPin className="h-5 w-5 text-slate-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium text-slate-500">Адрес</span>
+                          <p className="font-semibold text-slate-900">{aboutData?.companyInfo?.legalAddress || ''}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
+                </div>
 
-        {/* Услуги - Компактный современный дизайн */}
-        <div className="mb-16">
-          <div className="text-center mb-8 lg:mb-12">
-            <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-3 lg:mb-4">
-              {aboutData.services?.title || "Наши услуги"}
-            </h2>
-            <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
-              Полный спектр услуг для комфортной покупки автомобиля
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {aboutData?.services?.items?.map((service, index) => (
-              <div key={index} className="group">
-                <div className="bg-white border border-gray-200 rounded-lg lg:rounded-xl p-4 lg:p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-300 h-full">
-                  {/* Галочка */}
-                  <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray-100 rounded-md lg:rounded-lg flex items-center justify-center mb-3 lg:mb-4 group-hover:bg-gray-200 transition-colors duration-300">
-                    <Check className="h-4 w-4 lg:h-5 lg:w-5 text-gray-600" />
+                {/* Bank Details */}
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-600/20">
+                      <CreditCard className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900">Банковские реквизиты</h3>
                   </div>
-
-                  {/* Контент */}
-                  <div className="space-y-2 lg:space-y-3">
-                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 leading-tight">
-                      {service?.title || ''}
-                    </h3>
-                    <p className="text-gray-600 text-xs lg:text-sm leading-relaxed">
-                      {service?.description || ''}
-                    </p>
+                  <div className="bg-slate-50/50 rounded-2xl p-6 space-y-4">
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="flex items-start space-x-3">
+                        <CreditCard className="h-5 w-5 text-slate-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium text-slate-500">Расчетный счет</span>
+                          <p className="font-mono text-slate-900 font-semibold">{aboutData?.bankDetails?.account || ''}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <Building className="h-5 w-5 text-slate-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium text-slate-500">Банк</span>
+                          <p className="font-semibold text-slate-900">{aboutData?.bankDetails?.bankName || ''}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <Globe className="h-5 w-5 text-slate-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium text-slate-500">БИК</span>
+                          <p className="font-mono text-slate-900 font-semibold">{aboutData?.bankDetails?.bik || ''}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Реквизиты */}
-        <Card>
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Реквизиты компании</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Общая информация</h3>
-                <div className="space-y-2 text-gray-600">
-                  <p>
-                    <span className="font-medium">Полное наименование:</span> {aboutData?.companyInfo?.fullName || ''}
-                  </p>
-                  <p>
-                    <span className="font-medium">УНП:</span> {aboutData?.companyInfo?.unp || ''}
-                  </p>
-                  <p>
-                    <span className="font-medium">Дата регистрации:</span> {aboutData?.companyInfo?.registrationDate || ''}
-                  </p>
-                  <p>
-                    <span className="font-medium">Юридический адрес:</span> {aboutData?.companyInfo?.legalAddress || ''}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Банковские реквизиты</h3>
-                <div className="space-y-2 text-gray-600">
-                  <p>
-                    <span className="font-medium">Расчетный счет:</span> {aboutData?.bankDetails?.account || ''}
-                  </p>
-                  <p>
-                    <span className="font-medium">Банк:</span> {aboutData?.bankDetails?.bankName || ''}
-                  </p>
-                  <p>
-                    <span className="font-medium">БИК:</span> {aboutData?.bankDetails?.bik || ''}
-                  </p>
-                  <p>
-                    <span className="font-medium">Адрес банка:</span> {aboutData?.bankDetails?.bankAddress || ''}
-                  </p>
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>
