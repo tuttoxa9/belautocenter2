@@ -602,10 +602,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Хлебные крошки - улучшенный дизайн как на странице контактов */}
-        <nav className="mb-4 sm:mb-6">
-          <ol className="flex items-center space-x-1 sm:space-x-2 text-sm text-slate-500">
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        {/* Хлебные крошки */}
+        <nav className="mb-6">
+          <ol className="flex items-center space-x-2 text-sm text-slate-500">
             <li>
               <button
                 onClick={() => router.push('/')}
@@ -615,7 +615,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </button>
             </li>
             <li>
-              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
+              <ChevronRight className="h-4 w-4 text-slate-400" />
             </li>
             <li>
               <button
@@ -626,7 +626,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </button>
             </li>
             <li>
-              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
+              <ChevronRight className="h-4 w-4 text-slate-400" />
             </li>
             <li className="text-slate-900 font-medium px-2 py-1 bg-slate-100 rounded-md">
               {car.make} {car.model}
@@ -634,635 +634,324 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           </ol>
         </nav>
 
-        {/* Компактный заголовок - улучшенный дизайн */}
-        <div className="mb-6">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 p-5">
-            <div className="flex flex-col space-y-4">
-              {/* Заголовок с бейджом */}
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                      {car.make} {car.model}
-                    </h1>
-                    {car.isAvailable ? (
-                      <div className="bg-gradient-to-br from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                        В наличии
-                      </div>
-                    ) : (
-                      <div className="bg-gradient-to-br from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                        Продан
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2 text-slate-600">
-                    <span className="bg-slate-100 px-2 py-1 rounded-lg text-sm font-medium">{car.year}</span>
-                    <span className="bg-slate-100 px-2 py-1 rounded-lg text-sm font-medium">{car.color}</span>
-                    <span className="bg-slate-100 px-2 py-1 rounded-lg text-sm font-medium">{car.bodyType}</span>
-                  </div>
+        {/* ЕДИНЫЙ ОСНОВНОЙ БЛОК */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden">
+
+          {/* Заголовок и цена - компактный верхний блок */}
+          <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-slate-900">
+                    {car.make} {car.model}
+                  </h1>
+                  {car.isAvailable ? (
+                    <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                      В наличии
+                    </div>
+                  ) : (
+                    <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                      Продан
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center space-x-3 text-slate-600">
+                  <span className="bg-slate-100 px-3 py-1 rounded-lg text-sm font-medium">{car.year}</span>
+                  <span className="bg-slate-100 px-3 py-1 rounded-lg text-sm font-medium">{car.color}</span>
+                  <span className="bg-slate-100 px-3 py-1 rounded-lg text-sm font-medium">{car.bodyType}</span>
                 </div>
               </div>
 
-              {/* Цена */}
-              <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
-                      {formatPrice(car.price)}
-                    </div>
-                    {usdBynRate && (
-                      <div className="text-lg font-semibold text-slate-600">
-                        ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
-                      </div>
-                    )}
+              {/* Цена справа */}
+              <div className="text-right">
+                <div className="text-3xl lg:text-4xl font-bold text-slate-900 mb-1">
+                  {formatPrice(car.price)}
+                </div>
+                {usdBynRate && (
+                  <div className="text-lg font-semibold text-slate-600">
+                    ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm text-slate-500 mb-1">от</div>
-                    <div className="text-lg font-bold text-blue-600">
-                      {formatPrice(Math.round(car.price * 0.8 / 60))}/мес
-                    </div>
-                  </div>
+                )}
+                <div className="text-sm text-slate-500 mt-1">
+                  от {formatPrice(Math.round(car.price * 0.8 / 60))}/мес
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ОСНОВНОЙ КОНТЕНТ */}
-        <div className="space-y-4">
+          {/* Основной контент - галерея и информация в одном ряду */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
 
-          {/* Основной контент: Галерея + Информация + Кнопки */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Левая колонка: Галерея + Компактные характеристики */}
-            <div className="lg:col-span-7 space-y-4">
-              {/* Галерея изображений - улучшенный iOS-подобный дизайн */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden">
+            {/* Левая колонка: Галерея */}
+            <div className="lg:col-span-7 lg:border-r border-slate-200/50">
+              <div
+                className="relative h-80 sm:h-96 lg:h-[600px] select-none bg-gradient-to-br from-slate-50 via-white to-slate-100"
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+              >
                 <div
-                  className="relative h-80 sm:h-96 lg:h-[500px] select-none bg-gradient-to-br from-slate-50 via-white to-slate-100"
-                  onTouchStart={onTouchStart}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}
+                  className="w-full h-full transition-transform duration-200 ease-out"
+                  style={{
+                    transform: isDragging ? `translateX(${dragOffset}px)` : 'translateX(0px)',
+                    opacity: isDragging ? Math.max(0.7, 1 - Math.abs(dragOffset) / 200) : 1
+                  }}
                 >
-                  <div
-                    className="w-full h-full transition-transform duration-200 ease-out"
-                    style={{
-                      transform: isDragging ? `translateX(${dragOffset}px)` : 'translateX(0px)',
-                      opacity: isDragging ? Math.max(0.7, 1 - Math.abs(dragOffset) / 200) : 1
-                    }}
-                  >
-                    <Image
-                      src={getCachedImageUrl(car.imageUrls?.[currentImageIndex] || "/placeholder.svg")}
-                      alt={`${car.make} {car.model}`}
-                      fill
-                      className="object-contain"
-                      priority
-                    />
-                  </div>
-
-                  {/* Навигация по фотографиям - iOS стиль */}
-                  {car.imageUrls && car.imageUrls.length > 1 && (
-                    <>
-                      <button
-                        onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                      >
-                        <ChevronLeft className="h-6 w-6 text-slate-700" />
-                      </button>
-                      <button
-                        onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                      >
-                        <ChevronRight className="h-6 w-6 text-slate-700" />
-                      </button>
-                    </>
-                  )}
-
-                  {/* Индикатор точек - iOS стиль */}
-                  {car.imageUrls && car.imageUrls.length > 1 && (
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-                      <div className="flex space-x-2">
-                        {car.imageUrls.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setCurrentImageIndex(index)}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                              index === currentImageIndex
-                                ? 'bg-white shadow-lg scale-125'
-                                : 'bg-white/50 hover:bg-white/75'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Счетчик фотографий */}
-                  {car.imageUrls && car.imageUrls.length > 1 && (
-                    <div className="absolute top-4 right-4">
-                      <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
-                        {currentImageIndex + 1}/{car.imageUrls.length}
-                      </div>
-                    </div>
-                  )}
+                  <Image
+                    src={getCachedImageUrl(car.imageUrls?.[currentImageIndex] || "/placeholder.svg")}
+                    alt={`${car.make} ${car.model}`}
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
 
-                {/* Миниатюры - компактный дизайн */}
+                {/* Навигация по фотографиям */}
                 {car.imageUrls && car.imageUrls.length > 1 && (
-                  <div className="p-4 bg-slate-50/80 backdrop-blur-sm">
-                    <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-1">
-                      {car.imageUrls.map((url, index) => (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                    >
+                      <ChevronLeft className="h-6 w-6 text-slate-700" />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                    >
+                      <ChevronRight className="h-6 w-6 text-slate-700" />
+                    </button>
+                  </>
+                )}
+
+                {/* Индикатор точек */}
+                {car.imageUrls && car.imageUrls.length > 1 && (
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+                    <div className="flex space-x-2">
+                      {car.imageUrls.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => setCurrentImageIndex(index)}
-                          className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden transition-all duration-300 ${
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
                             index === currentImageIndex
-                              ? 'ring-2 ring-blue-500 ring-offset-2 scale-105 shadow-lg'
-                              : 'ring-1 ring-slate-200 hover:ring-slate-300 hover:scale-105'
+                              ? 'bg-white shadow-lg scale-125'
+                              : 'bg-white/50 hover:bg-white/75'
                           }`}
-                        >
-                          <Image
-                            src={getCachedImageUrl(url)}
-                            alt={`${car.make} ${car.model} - фото ${index + 1}`}
-                            width={56}
-                            height={56}
-                            className="w-full h-full object-cover"
-                          />
-                        </button>
+                        />
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Счетчик фотографий */}
+                {car.imageUrls && car.imageUrls.length > 1 && (
+                  <div className="absolute top-4 right-4">
+                    <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
+                      {currentImageIndex + 1}/{car.imageUrls.length}
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Компактные характеристики для мобильной версии - iOS стиль */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 p-5 lg:hidden">
-                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center">
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-sm">
-                    <Settings className="h-4 w-4 text-white" />
-                  </div>
-                  Характеристики
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200/50">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <Gauge className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-slate-500 font-medium">Пробег</div>
-                        <div className="text-sm font-bold text-slate-900">{formatMileage(car.mileage)} км</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200/50">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <Fuel className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-slate-500 font-medium">Двигатель</div>
-                        <div className="text-sm font-bold text-slate-900">{formatEngineVolume(car.engineVolume)}л {car.fuelType}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200/50">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <Settings className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-slate-500 font-medium">КПП</div>
-                        <div className="text-sm font-bold text-slate-900">{car.transmission}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200/50">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <Car className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-slate-500 font-medium">Привод</div>
-                        <div className="text-sm font-bold text-slate-900">{car.driveTrain}</div>
-                      </div>
-                    </div>
+              {/* Миниатюры внизу галереи */}
+              {car.imageUrls && car.imageUrls.length > 1 && (
+                <div className="p-4 bg-slate-50/50 border-b border-slate-200/50">
+                  <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-1">
+                    {car.imageUrls.map((url, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden transition-all duration-300 ${
+                          index === currentImageIndex
+                            ? 'ring-2 ring-blue-500 ring-offset-2 scale-105 shadow-lg'
+                            : 'ring-1 ring-slate-200 hover:ring-slate-300 hover:scale-105'
+                        }`}
+                      >
+                        <Image
+                          src={getCachedImageUrl(url)}
+                          alt={`${car.make} ${car.model} - фото ${index + 1}`}
+                          width={56}
+                          height={56}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
                   </div>
                 </div>
-              </div>
-
-              {/* Вкладки - улучшенный iOS-подобный дизайн */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden">
-                <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="grid grid-cols-3 bg-gradient-to-r from-slate-100 to-slate-50 rounded-t-2xl p-2 w-full h-auto border-b border-slate-200/50">
-                    <TabsTrigger
-                      value="description"
-                      className="rounded-xl font-semibold text-xs sm:text-sm py-3 px-2 text-center transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-slate-900 data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-800"
-                    >
-                      Описание
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="equipment"
-                      className="rounded-xl font-semibold text-xs sm:text-sm py-3 px-2 text-center transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-slate-900 data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-800"
-                    >
-                      Комплектация
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="credit"
-                      className="rounded-xl font-semibold text-xs sm:text-sm py-3 px-2 text-center transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-slate-900 data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-800"
-                    >
-                      Финансы
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="description" className="p-5 min-h-[200px]">
-                    <div className="space-y-5">
-                      <div>
-                        <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
-                          <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg mr-2"></div>
-                          Описание
-                        </h4>
-                        <p className="text-slate-700 text-sm leading-relaxed bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200/50">{car.description}</p>
-                      </div>
-
-                      {/* Технические характеристики */}
-                      {car.specifications && (
-                        <div>
-                          <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
-                            <div className="w-5 h-5 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg mr-2"></div>
-                            Характеристики
-                          </h4>
-                          <div className="space-y-2">
-                            {Object.entries(car.specifications).map(([key, value]) => (
-                              <div key={key} className="flex justify-between items-center py-3 px-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200/50">
-                                <span className="text-slate-600 font-medium text-sm">{key}</span>
-                                <span className="text-slate-900 font-bold text-sm">{value}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="equipment" className="p-5 min-h-[200px]">
-                    <div className="space-y-3">
-                      <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
-                        <div className="w-5 h-5 bg-gradient-to-br from-green-500 to-green-600 rounded-lg mr-2"></div>
-                        Комплектация
-                      </h4>
-                      {car.features && car.features.length > 0 ? (
-                        <div className="space-y-2">
-                          {car.features.map((feature, index) => (
-                            <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200/50">
-                              <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-sm flex-shrink-0">
-                                <Check className="h-3 w-3 text-white" />
-                              </div>
-                              <span className="text-slate-700 font-medium text-sm">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-8">
-                          <div className="w-16 h-16 bg-gradient-to-br from-slate-200 to-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                            <AlertCircle className="h-8 w-8 text-slate-500" />
-                          </div>
-                          <p className="text-slate-500 text-sm">Комплектация не указана</p>
-                        </div>
-                      )}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="credit" className="p-5 min-h-[200px]">
-                    <div className="space-y-4">
-                      <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
-                        <div className="w-5 h-5 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg mr-2"></div>
-                        Финансирование
-                      </h4>
-
-                      {/* Переключатель между кредитом и лизингом */}
-                      <div className="flex items-center justify-center space-x-1 bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl p-1.5 border border-slate-200/50">
-                        <button
-                          onClick={() => setFinanceType('credit')}
-                          className={`flex-1 text-sm font-semibold py-3 px-4 rounded-xl transition-all duration-300 ${
-                            financeType === 'credit'
-                              ? 'bg-white text-slate-900 shadow-lg scale-105'
-                              : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
-                          }`}
-                        >
-                          Кредит
-                        </button>
-                        <button
-                          onClick={() => setFinanceType('leasing')}
-                          className={`flex-1 text-sm font-semibold py-3 px-4 rounded-xl transition-all duration-300 ${
-                            financeType === 'leasing'
-                              ? 'bg-white text-slate-900 shadow-lg scale-105'
-                              : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
-                          }`}
-                        >
-                          Лизинг
-                        </button>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200/50">
-                        <h5 className="text-base font-bold text-slate-900 mb-3 flex items-center">
-                          <Calculator className="h-4 w-4 mr-2 text-slate-600" />
-                          {financeType === 'credit' ? 'Расчет кредита' : 'Расчет лизинга'}
-                        </h5>
-
-                        {financeType === 'credit' ? (
-                          <>
-                            <div className="space-y-3">
-                              <div className="bg-white rounded-2xl p-4 border border-slate-200/50 shadow-sm">
-                                <div className="text-xs text-slate-500 mb-2 font-medium">Ежемесячный платеж</div>
-                                <div className="text-xl font-bold text-slate-900 mb-1">
-                                  {selectedBank ? formatPrice(calculateMonthlyPayment()) : "Выберите банк"}
-                                </div>
-                                {selectedBank && usdBynRate && (
-                                  <div className="text-sm font-semibold text-slate-600">
-                                    ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="bg-white rounded-2xl p-4 border border-slate-200/50 shadow-sm">
-                                <div className="text-xs text-slate-500 mb-2 font-medium">Общая сумма</div>
-                                <div className="text-lg font-bold text-slate-900 mb-1">
-                                  {selectedBank ? formatPrice(calculateMonthlyPayment() * loanTerm[0] + downPayment[0]) : "Выберите банк"}
-                                </div>
-                                {selectedBank && usdBynRate && (
-                                  <div className="text-sm font-semibold text-slate-600">
-                                    ≈ {convertUsdToByn(calculateMonthlyPayment() * loanTerm[0] + downPayment[0], usdBynRate)} BYN
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Лучший банк */}
-                            {partnerBanks.length > 0 && (
-                              <div className="mt-3 p-3 bg-white rounded-2xl border border-slate-200/50 shadow-sm">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-2">
-                                    <span className="text-xs text-slate-600 font-medium">Лучшее предложение:</span>
-                                    <div className="flex items-center space-x-2">
-                                      {partnerBanks[0]?.logo && (
-                                        <Image
-                                          src={getCachedImageUrl(partnerBanks[0].logo)}
-                                          alt={`${partnerBanks[0].name} логотип`}
-                                          width={20}
-                                          height={20}
-                                          className="object-contain rounded"
-                                        />
-                                      )}
-                                      <span className="font-bold text-slate-900 text-sm">{partnerBanks[0]?.rate}%</span>
-                                    </div>
-                                  </div>
-                                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white text-xs px-2 py-1 rounded-lg font-bold">
-                                    +{partnerBanks.length - 1}
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                            <Button
-                              onClick={() => setIsCreditOpen(true)}
-                              className="w-full mt-4 bg-gradient-to-br from-slate-900 to-black hover:from-black hover:to-slate-900 text-white text-sm font-semibold rounded-2xl py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-                              size="lg"
-                            >
-                              <CreditCard className="h-4 w-4 mr-2" />
-                              Рассчитать кредит
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="space-y-3">
-                              <div className="bg-white rounded-2xl p-4 border border-slate-200/50 shadow-sm">
-                                <div className="text-xs text-slate-500 mb-2 font-medium">Ежемесячный платеж</div>
-                                <div className="text-xl font-bold text-slate-900 mb-1">
-                                  {formatPrice(Math.round((car.price * 0.7) / 36))}
-                                </div>
-                                {usdBynRate && (
-                                  <div className="text-sm font-semibold text-slate-600">
-                                    ≈ {convertUsdToByn(Math.round((car.price * 0.7) / 36), usdBynRate)} BYN
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="bg-white rounded-2xl p-4 border border-slate-200/50 shadow-sm">
-                                <div className="text-xs text-slate-500 mb-2 font-medium">Авансовый платеж</div>
-                                <div className="text-lg font-bold text-slate-900 mb-1">
-                                  {formatPrice(Math.round(car.price * 0.2))}
-                                </div>
-                                {usdBynRate && (
-                                  <div className="text-sm font-semibold text-slate-600">
-                                    ≈ {convertUsdToByn(Math.round(car.price * 0.2), usdBynRate)} BYN
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Лучшая лизинговая компания */}
-                            {leasingCompanies.length > 0 && (
-                              <div className="mt-3 p-3 bg-white rounded-2xl border border-slate-200/50 shadow-sm">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-2">
-                                    <span className="text-xs text-slate-600 font-medium">Лучшее предложение:</span>
-                                    <div className="flex items-center space-x-2">
-                                      {leasingCompanies[0]?.logoUrl && (
-                                        <Image
-                                          src={getCachedImageUrl(leasingCompanies[0].logoUrl)}
-                                          alt={`${leasingCompanies[0].name} логотип`}
-                                          width={20}
-                                          height={20}
-                                          className="object-contain rounded"
-                                        />
-                                      )}
-                                      <span className="font-bold text-slate-900 text-sm">{leasingCompanies[0]?.minAdvance}%</span>
-                                    </div>
-                                  </div>
-                                  <div className="bg-gradient-to-br from-green-500 to-green-600 text-white text-xs px-2 py-1 rounded-lg font-bold">
-                                    +{leasingCompanies.length - 1}
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                            <Button
-                              onClick={() => {
-                                setFinanceType('leasing')
-                                setIsCreditOpen(true)
-                              }}
-                              className="w-full mt-4 bg-gradient-to-br from-slate-900 to-black hover:from-black hover:to-slate-900 text-white text-sm font-semibold rounded-2xl py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-                              size="lg"
-                            >
-                              <Calculator className="h-4 w-4 mr-2" />
-                              Рассчитать лизинг
-                            </Button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
+              )}
             </div>
 
-            {/* Боковая панель: Характеристики для десктопа + Кнопки */}
-            <div className="lg:col-span-5 space-y-6">
+            {/* Правая колонка: Вся информация */}
+            <div className="lg:col-span-5">
+              <div className="p-6 space-y-6">
 
-              {/* Ключевые характеристики - только для десктопа */}
-              <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Основные характеристики</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
-                      <Gauge className="h-8 w-8 text-slate-600" />
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">{formatMileage(car.mileage)} км</div>
-                  </div>
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
-                      <Fuel className="h-8 w-8 text-slate-600" />
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">{formatEngineVolume(car.engineVolume)} {car.fuelType}</div>
-                  </div>
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
-                      <Settings className="h-8 w-8 text-slate-600" />
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">{car.transmission}</div>
-                  </div>
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-sm mb-3 border border-slate-200/50">
-                      <Car className="h-8 w-8 text-slate-600" />
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">{car.driveTrain}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Кнопки действий - улучшенный дизайн */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 p-6">
-                <h3 className="text-lg font-bold text-slate-900 mb-5 flex items-center">
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-sm">
-                    <Heart className="h-3 w-3 text-white" />
-                  </div>
-                  Действия
-                </h3>
-                <div className="space-y-3">
-                  <Dialog open={isCreditOpen} onOpenChange={setIsCreditOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full bg-gradient-to-br from-slate-900 to-black hover:from-black hover:to-slate-900 text-white font-semibold rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" size="lg">
-                        <Calculator className="h-5 w-5 mr-3" />
-                        Лизинг / Кредит
-                      </Button>
-                    </DialogTrigger>
-                  </Dialog>
-
-                  <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full bg-gradient-to-br from-white to-slate-50 hover:from-slate-50 hover:to-slate-100 text-slate-900 border-2 border-slate-200 font-semibold rounded-2xl py-4 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105" size="lg">
-                        <Eye className="h-5 w-5 mr-3" />
-                        Записаться на просмотр
-                      </Button>
-                    </DialogTrigger>
-                  </Dialog>
-
-                  <Dialog open={isCallbackOpen} onOpenChange={setIsCallbackOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full bg-gradient-to-br from-white to-slate-50 hover:from-slate-50 hover:to-slate-100 text-slate-900 border-2 border-slate-200 font-semibold rounded-2xl py-4 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105" size="lg">
-                        <Phone className="h-5 w-5 mr-3" />
-                        Заказать звонок
-                      </Button>
-                    </DialogTrigger>
-                  </Dialog>
-                </div>
-              </div>
-
-              {/* Контактная информация - для ПК отдельный блок */}
-              <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-slate-100 p-6 mt-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <MapPin className="h-4 w-4 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-slate-900">
-                    {settings?.main?.showroomInfo?.title || "Где посмотреть"}
+                {/* Основные характеристики - компактный стиль */}
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center">
+                    <div className="w-2 h-4 bg-blue-500 rounded-full mr-3"></div>
+                    Характеристики
                   </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                      <div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>
+                      <div className="text-lg font-bold text-slate-900">{formatMileage(car.mileage)} км</div>
+                    </div>
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                      <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
+                      <div className="text-lg font-bold text-slate-900">{formatEngineVolume(car.engineVolume)}л {car.fuelType}</div>
+                    </div>
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                      <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>
+                      <div className="text-lg font-bold text-slate-900">{car.transmission}</div>
+                    </div>
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                      <div className="text-xs text-slate-500 font-medium mb-1">Привод</div>
+                      <div className="text-lg font-bold text-slate-900">{car.driveTrain}</div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-4 gap-6 items-center">
+                {/* Описание */}
+                <div>
+                  <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                    <div className="w-2 h-4 bg-green-500 rounded-full mr-3"></div>
+                    Описание
+                  </h4>
+                  <p className="text-slate-700 text-sm leading-relaxed bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                    {car.description}
+                  </p>
+                </div>
+
+                {/* Комплектация */}
+                {car.features && car.features.length > 0 && (
                   <div>
-                    <div className="font-medium text-slate-800 text-sm mb-1">
-                      {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
-                    </div>
-                    <div className="text-slate-600 text-xs font-light">
-                      {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
+                    <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                      <div className="w-2 h-4 bg-purple-500 rounded-full mr-3"></div>
+                      Комплектация
+                    </h4>
+                    <div className="space-y-2">
+                      {car.features.map((feature, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border border-slate-200/50">
+                          <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Check className="h-3 w-3 text-white" />
+                          </div>
+                          <span className="text-slate-700 font-medium text-sm">{feature}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
+                )}
 
-                  <div className="flex items-center space-x-2 text-slate-600 col-span-2">
-                    <Clock className="h-3 w-3" />
-                    <div className="text-xs font-light">
-                      <span>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</span>
-                      <span className="ml-2">{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</span>
+                {/* Технические характеристики */}
+                {car.specifications && (
+                  <div>
+                    <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                      <div className="w-2 h-4 bg-orange-500 rounded-full mr-3"></div>
+                      Технические данные
+                    </h4>
+                    <div className="space-y-2">
+                      {Object.entries(car.specifications).map(([key, value]) => (
+                        <div key={key} className="flex justify-between items-center py-3 px-4 bg-slate-50 rounded-xl border border-slate-200/50">
+                          <span className="text-slate-600 font-medium text-sm">{key}</span>
+                          <span className="text-slate-900 font-bold text-sm">{value}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
+                )}
 
-                  <div className="flex items-center space-x-2 text-slate-800">
-                    <Phone className="h-3 w-3" />
-                    <div className="font-medium text-sm">{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
+                {/* Финансирование - компактный блок */}
+                <div>
+                  <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                    <div className="w-2 h-4 bg-yellow-500 rounded-full mr-3"></div>
+                    Финансирование
+                  </h4>
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50">
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="text-center">
+                        <div className="text-sm text-slate-500 mb-1">Кредит от</div>
+                        <div className="text-lg font-bold text-slate-900">
+                          {formatPrice(Math.round(car.price * 0.8 / 60))}/мес
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm text-slate-500 mb-1">Лизинг от</div>
+                        <div className="text-lg font-bold text-slate-900">
+                          {formatPrice(Math.round(car.price * 0.7 / 36))}/мес
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => setIsCreditOpen(true)}
+                      className="w-full bg-slate-900 hover:bg-black text-white font-semibold rounded-xl py-3"
+                    >
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Рассчитать кредит/лизинг
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Кнопки действий */}
+                <div className="pt-4 border-t border-slate-200/50">
+                  <div className="grid grid-cols-1 gap-3">
+                    <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+                      <DialogTrigger asChild>
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3">
+                          <Eye className="h-4 w-4 mr-2" />
+                          Записаться на просмотр
+                        </Button>
+                      </DialogTrigger>
+                    </Dialog>
+
+                    <Dialog open={isCallbackOpen} onOpenChange={setIsCallbackOpen}>
+                      <DialogTrigger asChild>
+                        <Button className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-3">
+                          <Phone className="h-4 w-4 mr-2" />
+                          Заказать звонок
+                        </Button>
+                      </DialogTrigger>
+                    </Dialog>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          {/* Контактная информация внизу */}
+          <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-6 border-t border-slate-200/50">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+              <div>
+                <div className="font-medium text-lg mb-1">
+                  {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
+                </div>
+                <div className="text-blue-100 text-sm">
+                  {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 text-blue-100 text-sm">
+                  <Clock className="h-4 w-4" />
+                  <div>
+                    <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</div>
+                    <div>{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</div>
                   </div>
                 </div>
               </div>
 
+              <div className="text-right">
+                <div className="flex items-center justify-end space-x-2">
+                  <Phone className="h-4 w-4" />
+                  <div className="font-medium text-lg">
+                    {settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
-
-        {/* Контактная информация для мобильных - синий как в соцсетях */}
-        <section className="lg:hidden relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[30px] -mb-20 overflow-hidden w-screen -mx-[calc((100vw-100%)/2)] mt-8">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-500/80 to-cyan-400/70"></div>
-          <div className="px-4 sm:px-6 relative z-10">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-sm border border-white/30">
-                  <MapPin className="h-5 w-5 text-white" />
-                </div>
-                <h3 className="text-xl font-light text-white tracking-tight">
-                  {settings?.main?.showroomInfo?.title || "Где посмотреть"}
-                </h3>
-              </div>
-
-              <div className="bg-white/90 backdrop-blur-sm rounded-3xl border border-white/30 p-6 max-w-sm mx-auto shadow-sm">
-                <div className="space-y-4 text-center">
-                  <div>
-                    <div className="font-medium text-slate-800 text-base mb-1">
-                      {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
-                    </div>
-                    <div className="text-slate-600 text-sm font-light">
-                      {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-center space-x-2 text-slate-600">
-                    <Clock className="h-4 w-4" />
-                    <div className="text-sm font-light">
-                      <span className="block">{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</span>
-                      <span className="block">{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-center space-x-2 text-slate-800">
-                    <Phone className="h-4 w-4" />
-                    <div className="font-medium text-base">{settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Диалоги */}
         <Dialog open={isCreditOpen} onOpenChange={setIsCreditOpen}>
