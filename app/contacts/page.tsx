@@ -414,9 +414,9 @@ export default function ContactsPage() {
 
         {/* Social Media - Blue gradient theme */}
         {contactsData.socialMedia && Object.keys(contactsData.socialMedia).length > 0 && (
-          <section className="relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[40px] -mb-20 overflow-hidden mt-8 w-screen -mx-[calc((100vw-100%)/2)]">
+          <section className="relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[40px] -mb-20 overflow-hidden mt-8 w-screen -mx-[calc((100vw-100%)/2)] min-h-[400px]">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-500/80 to-cyan-400/70"></div>
-            <div className="max-w-full mx-auto px-6 relative z-10">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center space-x-3 mb-8">
                   <div className="w-11 h-11 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-sm border border-white/30">
@@ -427,7 +427,7 @@ export default function ContactsPage() {
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
                   {contactsData.socialMedia.instagram && (
                     <a
                       href={contactsData.socialMedia.instagram.url || "#"}
