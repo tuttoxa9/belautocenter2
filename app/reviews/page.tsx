@@ -186,11 +186,11 @@ export default function ReviewsPage() {
           <nav className="mb-4">
             <ol className="flex items-center space-x-2 text-sm text-slate-500">
               <li>
-                <Link href="/" className="hover:text-slate-700 transition-colors">
+                <Link href="/" className="hover:text-blue-600 transition-colors">
                   Главная
                 </Link>
               </li>
-              <li><ArrowRight className="h-4 w-4" /></li>
+              <li><ArrowRight className="h-3 w-3" /></li>
               <li className="text-slate-900 font-medium">Отзывы клиентов</li>
             </ol>
           </nav>
