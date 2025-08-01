@@ -1,164 +1,182 @@
 import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight, Building2 } from "lucide-react"
 
 export default function AboutSkeleton() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50/50">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Breadcrumbs */}
-        <nav className="mb-8">
-          <ol className="flex items-center space-x-2 text-sm text-slate-500">
-            <li>
-              <Link href="/" className="hover:text-slate-700 transition-colors">
-                Главная
-              </Link>
-            </li>
-            <li><ArrowRight className="h-3 w-3" /></li>
-            <li className="text-slate-900 font-medium">О нас</li>
-          </ol>
-        </nav>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-4 lg:py-6">
+          {/* Breadcrumbs */}
+          <nav className="mb-3 lg:mb-4">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500">
+              <li>
+                <Link href="/" className="hover:text-blue-600 transition-colors">
+                  Главная
+                </Link>
+              </li>
+              <li><ArrowRight className="h-3 w-3" /></li>
+              <li className="text-slate-900 font-medium">О нас</li>
+            </ol>
+          </nav>
 
-        {/* Header skeleton */}
-        <div className="text-center mb-12 animate-pulse">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-200/60 rounded-3xl mb-6 mx-auto"></div>
-          <div className="h-12 bg-slate-200/60 rounded-xl w-3/4 mx-auto mb-4"></div>
-          <div className="h-6 bg-slate-200/60 rounded-lg w-1/2 mx-auto"></div>
+          {/* Title - Different for mobile and desktop */}
+          <div className="lg:hidden flex items-center space-x-3">
+            <div className="w-12 h-12 bg-slate-200/60 rounded-xl flex-shrink-0 animate-pulse"></div>
+            <div className="flex-1 min-w-0">
+              <div className="h-6 bg-slate-200/60 rounded w-32 mb-2 animate-pulse"></div>
+              <div className="h-4 bg-slate-200/60 rounded w-40 animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Desktop Title */}
+          <div className="hidden lg:flex items-start justify-between">
+            <div className="flex items-center space-x-4 animate-pulse">
+              <div className="w-12 h-12 bg-slate-200/60 rounded-xl"></div>
+              <div>
+                <div className="h-8 bg-slate-200/60 rounded w-48 mb-2"></div>
+                <div className="h-5 bg-slate-200/60 rounded w-64"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-6 lg:py-8">
+
+        {/* Stats Cards Grid skeleton */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+              <CardContent className="p-4 md:p-6 text-center animate-pulse">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-200/60 rounded-xl mx-auto mb-3 md:mb-4"></div>
+                <div className="h-6 md:h-8 bg-slate-200/60 rounded w-16 mx-auto mb-1"></div>
+                <div className="h-3 md:h-4 bg-slate-200/60 rounded w-20 mx-auto"></div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Main card skeleton */}
-        <Card className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-2xl shadow-slate-200/50 border border-white/50 overflow-hidden">
-          <CardContent className="p-0">
+        {/* Content Grid skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-6 md:mb-8">
 
-            {/* Statistics skeleton */}
-            <div className="p-8 lg:p-12 pb-0 animate-pulse">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="text-center space-y-3">
-                    <div className="w-16 h-16 lg:w-20 lg:h-20 bg-slate-200/60 rounded-2xl mx-auto"></div>
-                    <div className="h-8 bg-slate-200/60 rounded-lg w-16 mx-auto"></div>
-                    <div className="h-4 bg-slate-200/60 rounded w-20 mx-auto"></div>
+          {/* History Card skeleton */}
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+            <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6">
+              <CardTitle className="flex items-center animate-pulse">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200/60 rounded-xl mr-2 md:mr-3 flex-shrink-0"></div>
+                <div className="h-5 md:h-6 bg-slate-200/60 rounded w-32"></div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 md:px-6 pb-4 md:pb-6">
+              <div className="space-y-3 animate-pulse">
+                <div className="h-4 bg-slate-200/60 rounded"></div>
+                <div className="h-4 bg-slate-200/60 rounded w-5/6"></div>
+                <div className="h-4 bg-slate-200/60 rounded w-4/6"></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Principles Card skeleton */}
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+            <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6">
+              <CardTitle className="flex items-center animate-pulse">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200/60 rounded-xl mr-2 md:mr-3 flex-shrink-0"></div>
+                <div className="h-5 md:h-6 bg-slate-200/60 rounded w-36"></div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 md:px-6 pb-4 md:pb-6">
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-start space-x-3 animate-pulse">
+                    <div className="w-8 h-8 bg-slate-200/60 rounded-lg flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-slate-200/60 rounded w-24 mb-1"></div>
+                      <div className="h-3 bg-slate-200/60 rounded"></div>
+                      <div className="h-3 bg-slate-200/60 rounded w-4/5"></div>
+                    </div>
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Services Section skeleton */}
+        <div className="mb-6 md:mb-8">
+          <div className="text-center mb-4 md:mb-6 animate-pulse">
+            <div className="flex items-center justify-center space-x-2 mb-2">
+              <div className="w-8 h-8 bg-slate-200/60 rounded-lg"></div>
+              <div className="h-6 md:h-8 bg-slate-200/60 rounded w-32"></div>
             </div>
+            <div className="h-4 md:h-5 bg-slate-200/60 rounded w-64 mx-auto"></div>
+          </div>
 
-            <Separator className="mx-8 lg:mx-12 my-8 lg:my-12" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {[...Array(6)].map((_, i) => (
+              <Card key={i} className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+                <CardContent className="p-4 md:p-6 animate-pulse">
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200/60 rounded-lg mb-3 md:mb-4"></div>
+                  <div className="h-4 md:h-5 bg-slate-200/60 rounded w-32 mb-2"></div>
+                  <div className="h-3 md:h-4 bg-slate-200/60 rounded"></div>
+                  <div className="h-3 md:h-4 bg-slate-200/60 rounded w-4/5"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
 
-            {/* Content skeleton */}
-            <div className="px-8 lg:px-12 space-y-8 lg:space-y-12 animate-pulse">
+        {/* Company Details Grid skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
 
-              {/* History and Principles skeleton */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                {/* History skeleton */}
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-slate-200/60 rounded-xl"></div>
-                    <div className="h-8 bg-slate-200/60 rounded-lg w-48"></div>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="h-4 bg-slate-200/60 rounded"></div>
-                    <div className="h-4 bg-slate-200/60 rounded w-5/6"></div>
-                    <div className="h-4 bg-slate-200/60 rounded w-4/6"></div>
-                  </div>
-                </div>
-
-                {/* Principles skeleton */}
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-slate-200/60 rounded-xl"></div>
-                    <div className="h-8 bg-slate-200/60 rounded-lg w-48"></div>
-                  </div>
-                  <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="flex items-start space-x-4 p-4 rounded-xl bg-slate-100/50">
-                        <div className="w-10 h-10 bg-slate-200/60 rounded-xl flex-shrink-0"></div>
-                        <div className="flex-1 space-y-2">
-                          <div className="h-5 bg-slate-200/60 rounded w-32"></div>
-                          <div className="h-4 bg-slate-200/60 rounded"></div>
-                          <div className="h-4 bg-slate-200/60 rounded w-4/5"></div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <Separator className="my-8 lg:my-12" />
-
-              {/* Services skeleton */}
-              <div className="space-y-8">
-                <div className="text-center">
-                  <div className="flex items-center justify-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-slate-200/60 rounded-xl"></div>
-                    <div className="h-8 bg-slate-200/60 rounded-lg w-48"></div>
-                  </div>
-                  <div className="h-6 bg-slate-200/60 rounded-lg w-96 mx-auto"></div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="group relative">
-                      <div className="bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6 h-full">
-                        <div className="w-12 h-12 bg-slate-200/60 rounded-xl mb-4"></div>
-                        <div className="h-6 bg-slate-200/60 rounded w-32 mb-3"></div>
-                        <div className="space-y-2">
-                          <div className="h-4 bg-slate-200/60 rounded"></div>
-                          <div className="h-4 bg-slate-200/60 rounded w-4/5"></div>
-                        </div>
-                      </div>
+          {/* Company Info skeleton */}
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+            <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6">
+              <CardTitle className="flex items-center animate-pulse">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200/60 rounded-xl mr-2 md:mr-3 flex-shrink-0"></div>
+                <div className="h-5 md:h-6 bg-slate-200/60 rounded w-40"></div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 md:px-6 pb-4 md:pb-6">
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-start space-x-3 animate-pulse">
+                    <div className="w-4 h-4 bg-slate-200/60 rounded mt-1 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="h-3 bg-slate-200/60 rounded w-24 mb-1"></div>
+                      <div className="h-4 bg-slate-200/60 rounded w-48"></div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
+            </CardContent>
+          </Card>
 
-              <Separator className="my-8 lg:my-12" />
-
-              {/* Company Details skeleton */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 pb-8">
-                {/* Company Info skeleton */}
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-slate-200/60 rounded-xl"></div>
-                    <div className="h-8 bg-slate-200/60 rounded-lg w-48"></div>
+          {/* Bank Details skeleton */}
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+            <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6">
+              <CardTitle className="flex items-center animate-pulse">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-200/60 rounded-xl mr-2 md:mr-3 flex-shrink-0"></div>
+                <div className="h-5 md:h-6 bg-slate-200/60 rounded w-44"></div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 md:px-6 pb-4 md:pb-6">
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-start space-x-3 animate-pulse">
+                    <div className="w-4 h-4 bg-slate-200/60 rounded mt-1 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="h-3 bg-slate-200/60 rounded w-24 mb-1"></div>
+                      <div className="h-4 bg-slate-200/60 rounded w-56"></div>
+                    </div>
                   </div>
-                  <div className="bg-slate-50/50 rounded-2xl p-6 space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="flex items-start space-x-3">
-                        <div className="w-5 h-5 bg-slate-200/60 rounded mt-0.5 flex-shrink-0"></div>
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-slate-200/60 rounded w-24"></div>
-                          <div className="h-5 bg-slate-200/60 rounded w-48"></div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Bank Details skeleton */}
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-slate-200/60 rounded-xl"></div>
-                    <div className="h-8 bg-slate-200/60 rounded-lg w-48"></div>
-                  </div>
-                  <div className="bg-slate-50/50 rounded-2xl p-6 space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="flex items-start space-x-3">
-                        <div className="w-5 h-5 bg-slate-200/60 rounded mt-0.5 flex-shrink-0"></div>
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-slate-200/60 rounded w-24"></div>
-                          <div className="h-5 bg-slate-200/60 rounded w-56"></div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                ))}
               </div>
-
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
