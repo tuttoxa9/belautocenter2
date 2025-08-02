@@ -14,7 +14,7 @@ import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronRight, Check } from "lucide-react"
+import { ChevronRight, Check, DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
@@ -743,14 +743,14 @@ export default function CreditPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {settings?.benefits?.map((benefit, index) => {
                 // Определяем иконки для каждого преимущества
-                const icons = ['💰', '⚡', '🔒', '📋', '🏆', '📞', '🚗', '⭐', '✅', '💳'];
-                const currentIcon = icons[index % icons.length];
+                const iconComponents = [DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard];
+                const IconComponent = iconComponents[index % iconComponents.length];
 
                 return (
                   <div key={index} className="group p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all duration-300 border border-slate-200 hover:border-slate-300 hover:shadow-md">
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:from-blue-600 group-hover:to-blue-700 transition-all shadow-md">
-                        <span className="text-white text-xl">{currentIcon}</span>
+                        <IconComponent className="h-6 w-6 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-slate-900 mb-2 text-base leading-tight">{benefit.title}</h4>
