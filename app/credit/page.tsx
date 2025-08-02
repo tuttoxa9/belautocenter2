@@ -22,7 +22,6 @@ import { doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import CreditConditions from "@/components/credit-conditions"
 import { getCachedImageUrl } from "@/lib/image-cache"
-import CreditSkeleton from "@/components/credit-skeleton"
 
 interface CreditPageSettings {
   title: string
@@ -292,25 +291,11 @@ export default function CreditPage() {
   const totalAmount = monthlyPayment * calculator.loanTerm[0]
   const overpayment = totalAmount - (calculator.carPrice[0] - calculator.downPayment[0])
 
-  if (loading) {
-    return <CreditSkeleton />
-  }
-
-  if (!settings) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
-        <div className="text-center px-4">
-          <p className="text-slate-600">Не удалось загрузить информацию о кредитах</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
 
-        {/* Breadcrumbs */}
+        {/* Breadcrumbs - статичные, показываем всегда */}
         <nav className="mb-6 md:mb-8">
           <ol className="flex items-center space-x-2 text-sm text-slate-500">
             <li>
@@ -323,12 +308,12 @@ export default function CreditPage() {
           </ol>
         </nav>
 
-        {/* Hero Section - скрываем подзаголовки на мобильном */}
+        {/* Hero Section - заголовки и описание со скелетонами */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-6 md:mb-8">
           <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-6 md:px-8 md:py-12">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
 
-            {/* Credit Image */}
+            {/* Credit Image - статичное, показываем всегда */}
             <div className="absolute -top-6 right-0 md:-top-12 md:right-4 z-10">
               <Image
                 src="/car_credit3new.png"
@@ -341,47 +326,62 @@ export default function CreditPage() {
             </div>
 
             <div className="relative z-20">
-              <h1 className="text-xl md:text-4xl font-bold text-white mb-2 md:mb-4 relative z-30">{settings?.title}</h1>
-              <p className="text-sm md:text-lg md:text-xl text-slate-300 mb-2 md:mb-4 md:mb-6 relative z-30">{settings?.subtitle}</p>
-              <p className="hidden md:block text-slate-400 leading-relaxed text-sm md:text-base relative z-30">{settings?.description}</p>
+              {loading ? (
+                <>
+                  <div className="h-6 md:h-10 bg-slate-400 rounded w-64 md:w-96 mb-2 md:mb-4 animate-pulse"></div>
+                  <div className="h-4 md:h-6 bg-slate-300 rounded w-48 md:w-80 mb-2 md:mb-4 animate-pulse"></div>
+                  <div className="hidden md:block h-4 bg-slate-300 rounded w-72 animate-pulse"></div>
+                </>
+              ) : (
+                <>
+                  <h1 className="text-xl md:text-4xl font-bold text-white mb-2 md:mb-4 relative z-30">{settings?.title}</h1>
+                  <p className="text-sm md:text-lg md:text-xl text-slate-300 mb-2 md:mb-4 md:mb-6 relative z-30">{settings?.subtitle}</p>
+                  <p className="hidden md:block text-slate-400 leading-relaxed text-sm md:text-base relative z-30">{settings?.description}</p>
+                </>
+              )}
             </div>
           </div>
 
           {/* Main Content */}
           <div className="p-4 md:p-8 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-8">
 
-            {/* Banks Partners Section - переносим в начало на мобильном */}
+            {/* Banks Partners Section - только логотипы со скелетонами, остальное статично */}
             <div className="lg:hidden mb-4">
               <div className="flex justify-between items-center">
-                {settings?.partners?.slice(0, 6).map((partner, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-center group relative"
-                    title={`${partner.name} - от ${partner.minRate}%`}
-                  >
-                    {partner.logoUrl && (
-                      <img
-                        src={getCachedImageUrl(partner.logoUrl)}
-                        alt={partner.name}
-                        className="h-6 w-9 object-contain hover:opacity-75 transition-opacity"
-                      />
-                    )}
-                    {/* Tooltip on hover */}
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                      от {partner.minRate}%
+                {loading ? (
+                  Array.from({ length: 6 }).map((_, index) => (
+                    <div key={index} className="h-6 w-9 bg-slate-200 rounded animate-pulse"></div>
+                  ))
+                ) : (
+                  settings?.partners?.slice(0, 6).map((partner, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-center group relative"
+                      title={`${partner.name} - от ${partner.minRate}%`}
+                    >
+                      {partner.logoUrl && (
+                        <img
+                          src={getCachedImageUrl(partner.logoUrl)}
+                          alt={partner.name}
+                          className="h-6 w-9 object-contain hover:opacity-75 transition-opacity"
+                        />
+                      )}
+                      {/* Tooltip on hover */}
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                        от {partner.minRate}%
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
-            {/* Calculator Section - коллапсирующийся на мобильном */}
+            {/* Calculator Section - статичная часть */}
             <div className="lg:col-span-3 space-y-2 md:space-y-6">
 
-              {/* Calculator Header - с кнопкой разворачивания на мобильном */}
+              {/* Calculator Header - статичный */}
               <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex items-center justify-between">
-                  {/* Кликабельная область для всего заголовка калькулятора на мобильном */}
                   <button
                     onClick={() => setIsCalculatorExpanded(!isCalculatorExpanded)}
                     className="lg:hover:none flex items-center gap-2 lg:cursor-default flex-1 lg:flex-none lg:pointer-events-none"
@@ -391,7 +391,6 @@ export default function CreditPage() {
                       Калькулятор
                     </h2>
                   </button>
-                  {/* Кнопка разворачивания только на мобильном */}
                   <button
                     onClick={() => setIsCalculatorExpanded(!isCalculatorExpanded)}
                     className="lg:hidden bg-slate-100 hover:bg-slate-200 p-2 rounded-lg transition-all duration-200"
@@ -416,13 +415,13 @@ export default function CreditPage() {
                 </div>
               </div>
 
-              {/* Parameters Grid - коллапсирующийся на мобильном */}
+              {/* Parameters Grid - статичный калькулятор */}
               <div className={`transition-all duration-500 ease-in-out overflow-hidden lg:max-h-screen lg:opacity-100 ${
                 isMounted && (isCalculatorExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 lg:max-h-screen lg:opacity-100')
               }`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6 pt-2 lg:pt-0">
 
-                {/* Car Price */}
+                {/* Car Price - статичный */}
                 <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
                   <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Стоимость авто</label>
@@ -448,7 +447,7 @@ export default function CreditPage() {
                   />
                 </div>
 
-                {/* Down Payment */}
+                {/* Down Payment - статичный */}
                 <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
                   <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Первый взнос</label>
@@ -474,7 +473,7 @@ export default function CreditPage() {
                   />
                 </div>
 
-                {/* Loan Term */}
+                {/* Loan Term - статичный */}
                 <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
                   <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Срок кредита</label>
@@ -500,7 +499,7 @@ export default function CreditPage() {
                   />
                 </div>
 
-                {/* Interest Rate */}
+                {/* Interest Rate - статичный */}
                 <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
                   <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Процентная ставка</label>
@@ -529,7 +528,7 @@ export default function CreditPage() {
                 </div>
                 </div>
 
-                  {/* Bank Selection */}
+                  {/* Bank Selection - со скелетоном для опций из БД */}
                 <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6">
                   <label className="text-xs md:text-sm font-semibold text-slate-900 mb-1 md:mb-4 block">Выберите банк-партнер</label>
                   <Select
@@ -540,33 +539,43 @@ export default function CreditPage() {
                       <SelectValue placeholder="Выберите банк или введите ставку вручную" />
                     </SelectTrigger>
                     <SelectContent>
-                      {settings?.partners?.map((partner) => (
-                        <SelectItem
-                          key={partner.name}
-                          value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
-                          className="flex items-center justify-between p-2 md:p-3"
-                        >
-                          <div className="flex items-center gap-2 md:gap-3">
-                            {partner.logoUrl && (
-                              <Image
-                                src={getCachedImageUrl(partner.logoUrl)}
-                                alt={partner.name}
-                                width={20}
-                                height={20}
-                                className="object-contain rounded md:w-6 md:h-6"
-                              />
-                            )}
-                            <span className="font-medium text-sm md:text-base">{partner.name}</span>
-                          </div>
-                          <span className="text-xs md:text-sm text-slate-600">{partner.minRate}%</span>
-                        </SelectItem>
-                      ))}
-                      <SelectItem value="custom">Ввести ставку вручную</SelectItem>
+                      {loading ? (
+                        <div className="p-2">
+                          <div className="h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
+                          <div className="h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
+                          <div className="h-8 bg-slate-200 rounded animate-pulse"></div>
+                        </div>
+                      ) : (
+                        <>
+                          {settings?.partners?.map((partner) => (
+                            <SelectItem
+                              key={partner.name}
+                              value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
+                              className="flex items-center justify-between p-2 md:p-3"
+                            >
+                              <div className="flex items-center gap-2 md:gap-3">
+                                {partner.logoUrl && (
+                                  <Image
+                                    src={getCachedImageUrl(partner.logoUrl)}
+                                    alt={partner.name}
+                                    width={20}
+                                    height={20}
+                                    className="object-contain rounded md:w-6 md:h-6"
+                                  />
+                                )}
+                                <span className="font-medium text-sm md:text-base">{partner.name}</span>
+                              </div>
+                              <span className="text-xs md:text-sm text-slate-600">{partner.minRate}%</span>
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="custom">Ввести ставку вручную</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
 
-                {/* Results Card - более компактный */}
+                {/* Results Card - статичный */}
                 <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg md:rounded-2xl p-3 md:p-6 text-white">
                   <h3 className="text-sm md:text-lg font-semibold mb-2 md:mb-4">Результат расчета</h3>
                   <div className="grid grid-cols-2 gap-2 md:gap-4">
@@ -598,7 +607,7 @@ export default function CreditPage() {
               </div>
             </div>
 
-            {/* Application Form - компактная версия */}
+            {/* Application Form - статичная форма */}
             <div className="lg:col-span-2">
               <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl md:rounded-3xl p-3 md:p-6 h-full shadow-lg border border-slate-200">
                 <h2 className="text-lg md:text-xl font-bold text-slate-900 mb-3 md:mb-4">Подать заявку</h2>
@@ -721,15 +730,25 @@ export default function CreditPage() {
                           <SelectValue placeholder="Любой" />
                         </SelectTrigger>
                         <SelectContent>
-                          {settings?.partners?.map((partner) => (
-                            <SelectItem
-                              key={partner.name}
-                              value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
-                            >
-                              {partner.name}
-                            </SelectItem>
-                          ))}
-                          <SelectItem value="any">Любой банк</SelectItem>
+                          {loading ? (
+                            <div className="p-2">
+                              <div className="h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
+                              <div className="h-8 bg-slate-200 rounded animate-pulse mb-2"></div>
+                              <div className="h-8 bg-slate-200 rounded animate-pulse"></div>
+                            </div>
+                          ) : (
+                            <>
+                              {settings?.partners?.map((partner) => (
+                                <SelectItem
+                                  key={partner.name}
+                                  value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
+                                >
+                                  {partner.name}
+                                </SelectItem>
+                              ))}
+                              <SelectItem value="any">Любой банк</SelectItem>
+                            </>
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
@@ -767,29 +786,35 @@ export default function CreditPage() {
                     {" "}и даете согласие на их использование.
                   </p>
 
-                  {/* Partners Section - только для десктопа */}
+                  {/* Partners Section - со скелетонами для логотипов из БД */}
                   <div className="hidden lg:block mt-4 pt-4 border-t border-slate-200">
                     <h4 className="text-sm font-semibold text-slate-900 mb-3">Банки-партнеры</h4>
                     <div className="flex flex-wrap gap-2">
-                      {settings?.partners?.map((partner, index) => (
-                        <div
-                          key={index}
-                          className="w-16 h-16 bg-white rounded-xl border border-slate-200 flex items-center justify-center hover:shadow-lg hover:border-slate-300 transition-all duration-200 group relative"
-                          title={`${partner.name} - от ${partner.minRate}%`}
-                        >
-                          {partner.logoUrl && (
-                            <img
-                              src={getCachedImageUrl(partner.logoUrl)}
-                              alt={partner.name}
-                              className="h-8 w-10 object-contain"
-                            />
-                          )}
-                          {/* Tooltip on hover */}
-                          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                            от {partner.minRate}%
+                      {loading ? (
+                        Array.from({ length: 6 }).map((_, index) => (
+                          <div key={index} className="w-16 h-16 bg-slate-200 rounded-xl animate-pulse"></div>
+                        ))
+                      ) : (
+                        settings?.partners?.map((partner, index) => (
+                          <div
+                            key={index}
+                            className="w-16 h-16 bg-white rounded-xl border border-slate-200 flex items-center justify-center hover:shadow-lg hover:border-slate-300 transition-all duration-200 group relative"
+                            title={`${partner.name} - от ${partner.minRate}%`}
+                          >
+                            {partner.logoUrl && (
+                              <img
+                                src={getCachedImageUrl(partner.logoUrl)}
+                                alt={partner.name}
+                                className="h-8 w-10 object-contain"
+                              />
+                            )}
+                            {/* Tooltip on hover */}
+                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                              от {partner.minRate}%
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </div>
                 </form>
@@ -798,32 +823,45 @@ export default function CreditPage() {
           </div>
         </div>
 
-        {/* Benefits Section - Compact & Modern для мобильного */}
+        {/* Benefits Section - со скелетонами только для данных из БД */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
           <div className="p-4 md:p-8">
             <h3 className="text-lg md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Наши преимущества</h3>
 
-            {/* Более компактный дизайн для мобильного */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              {settings?.benefits?.map((benefit, index) => {
-                // Определяем иконки для каждого преимущества
-                const iconComponents = [DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard];
-                const IconComponent = iconComponents[index % iconComponents.length];
-
-                return (
-                  <div key={index} className="group p-3 md:p-4 bg-slate-50 rounded-lg md:rounded-xl hover:bg-slate-100 transition-all duration-300 border border-slate-200 hover:border-slate-300 hover:shadow-md">
+              {loading ? (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="p-3 md:p-4 bg-slate-50 rounded-lg md:rounded-xl border border-slate-200">
                     <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg md:rounded-xl flex items-center justify-center group-hover:from-blue-600 group-hover:to-blue-700 transition-all shadow-md">
-                        <IconComponent className="h-5 w-5 md:h-6 md:w-6 text-white" />
-                      </div>
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-300 rounded-lg md:rounded-xl animate-pulse"></div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-slate-900 mb-1 md:mb-2 text-sm md:text-base leading-tight">{benefit.title}</h4>
-                        <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{benefit.description}</p>
+                        <div className="h-4 bg-slate-300 rounded w-24 mb-1 md:mb-2 animate-pulse"></div>
+                        <div className="h-3 bg-slate-200 rounded w-full mb-1 animate-pulse"></div>
+                        <div className="h-3 bg-slate-200 rounded w-3/4 animate-pulse"></div>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                ))
+              ) : (
+                settings?.benefits?.map((benefit, index) => {
+                  const iconComponents = [DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard];
+                  const IconComponent = iconComponents[index % iconComponents.length];
+
+                  return (
+                    <div key={index} className="group p-3 md:p-4 bg-slate-50 rounded-lg md:rounded-xl hover:bg-slate-100 transition-all duration-300 border border-slate-200 hover:border-slate-300 hover:shadow-md">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg md:rounded-xl flex items-center justify-center group-hover:from-blue-600 group-hover:to-blue-700 transition-all shadow-md">
+                          <IconComponent className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-slate-900 mb-1 md:mb-2 text-sm md:text-base leading-tight">{benefit.title}</h4>
+                          <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{benefit.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
 
             <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-200">

@@ -133,7 +133,7 @@ export default function ReviewsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
           <div className="animate-pulse">
             {/* Единый контейнер в стиле страницы автомобиля */}
             <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden">
@@ -198,7 +198,7 @@ export default function ReviewsPage() {
 
               {/* Reviews Grid - мобильная адаптация */}
               <div className="p-4 sm:p-6">
-                <div className="space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-6 lg:space-y-0">
+                <div className="space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6 lg:space-y-0">
                   {[...Array(6)].map((_, i) => (
                     <div key={i} className="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200/50">
                       {/* User Info */}
@@ -249,7 +249,7 @@ export default function ReviewsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
 
         {/* Единый контейнер в стиле страницы автомобиля */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 overflow-hidden">
@@ -361,7 +361,7 @@ export default function ReviewsPage() {
           <div className="p-4 sm:p-6">
             {console.log("Рендеринг отзывов:", { reviews: reviews.length, filteredReviews: filteredReviews.length, filterRating })}
             {filteredReviews && filteredReviews.length > 0 ? (
-              <div className="space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-6 lg:space-y-0">
+              <div className="space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6 lg:space-y-0">
                 {filteredReviews.map((review) => {
                   console.log("Рендерим отзыв:", review.id, review.name, review.status)
                   const isExpanded = expandedReview === review.id
