@@ -599,16 +599,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }
 
-  if (loading) {
-    return <CarDetailsSkeleton />
-  }
-
   if (carNotFound) {
     return <CarNotFoundComponent contactPhone={contactPhone} />
-  }
-
-  if (!car) {
-    return null
   }
 
   return (
@@ -640,13 +632,57 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               <ChevronRight className="h-4 w-4 text-slate-400" />
             </li>
             <li className="text-slate-900 font-medium px-2 py-1 bg-slate-100 rounded-md">
-              {car.make} {car.model}
+              {loading ? (
+                <div className="h-4 bg-slate-300 rounded w-20 animate-pulse inline-block"></div>
+              ) : (
+                `${car?.make || ''} ${car?.model || ''}`
+              )}
             </li>
           </ol>
         </nav>
 
         {/* ЕДИНЫЙ ОСНОВНОЙ БЛОК */}
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden">
+
+          {loading ? (
+            /* Скелетон внутри единого блока */
+            <div className="p-4 md:p-8 space-y-6">
+
+              {/* Галерея скелетон */}
+              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-3xl h-64 md:h-80 lg:h-96 animate-pulse flex items-center justify-center">
+                <div className="w-16 h-16 bg-slate-300 rounded-full animate-pulse"></div>
+              </div>
+
+              {/* Характеристики скелетон */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-slate-100 rounded-xl p-4 animate-pulse">
+                    <div className="h-3 bg-slate-300 rounded w-16 mb-2"></div>
+                    <div className="h-5 bg-slate-300 rounded w-24"></div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Описание скелетон */}
+              <div className="bg-slate-100 rounded-xl p-4 animate-pulse">
+                <div className="h-5 bg-slate-300 rounded w-24 mb-3"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-slate-200 rounded w-full"></div>
+                  <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+                  <div className="h-4 bg-slate-200 rounded w-4/6"></div>
+                </div>
+              </div>
+
+              {/* Кнопки действий скелетон */}
+              <div className="flex flex-col md:flex-row gap-3">
+                <div className="h-12 bg-blue-200 rounded-xl flex-1 animate-pulse"></div>
+                <div className="h-12 bg-slate-200 rounded-xl flex-1 animate-pulse"></div>
+              </div>
+
+            </div>
+          ) : car ? (
+            /* Основной контент когда данные загружены */
+            <>
 
           {/* Заголовок и цена - компактный верхний блок */}
           <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
@@ -985,6 +1021,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </div>
             </div>
           </div>
+
+          ) : null}
 
         </div>
 

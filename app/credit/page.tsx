@@ -22,6 +22,7 @@ import { doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import CreditConditions from "@/components/credit-conditions"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import CreditSkeleton from "@/components/credit-skeleton"
 
 interface CreditPageSettings {
   title: string
@@ -292,22 +293,7 @@ export default function CreditPage() {
   const overpayment = totalAmount - (calculator.carPrice[0] - calculator.downPayment[0])
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-          <div className="animate-pulse">
-            <div className="h-4 bg-slate-200 rounded-full w-48 mb-6 md:mb-8"></div>
-            <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 p-4 md:p-8">
-              <div className="space-y-4 md:space-y-6">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-16 md:h-20 bg-slate-100 rounded-xl md:rounded-2xl"></div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    return <CreditSkeleton />
   }
 
   if (!settings) {
@@ -395,10 +381,16 @@ export default function CreditPage() {
               {/* Calculator Header - с кнопкой разворачивания на мобильном */}
               <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base md:text-2xl font-semibold text-slate-900 flex items-center gap-2">
-                    <Calculator className="h-5 w-5 md:h-6 md:w-6 text-slate-600" />
-                    Калькулятор
-                  </h2>
+                  {/* Кликабельная область для всего заголовка калькулятора на мобильном */}
+                  <button
+                    onClick={() => setIsCalculatorExpanded(!isCalculatorExpanded)}
+                    className="lg:hover:none flex items-center gap-2 lg:cursor-default flex-1 lg:flex-none lg:pointer-events-none"
+                  >
+                    <h2 className="text-base md:text-2xl font-semibold text-slate-900 flex items-center gap-2">
+                      <Calculator className="h-5 w-5 md:h-6 md:w-6 text-slate-600" />
+                      Калькулятор
+                    </h2>
+                  </button>
                   {/* Кнопка разворачивания только на мобильном */}
                   <button
                     onClick={() => setIsCalculatorExpanded(!isCalculatorExpanded)}
@@ -411,7 +403,7 @@ export default function CreditPage() {
                     )}
                   </button>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="hidden md:flex items-center space-x-2">
                   <Checkbox
                     id="currency"
                     checked={isBelarusianRubles}
@@ -767,15 +759,13 @@ export default function CreditPage() {
                     Отправить заявку на кредит
                   </StatusButton>
 
-                  <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                    <p className="text-xs text-slate-600 leading-tight">
-                      Нажимая кнопку "Отправить заявку на кредит", вы соглашаетесь с{" "}
-                      <Link href="/privacy#data-processing" className="text-blue-600 hover:text-blue-800 underline">
-                        условиями обработки персональных данных
-                      </Link>
-                      {" "}и даете согласие на их использование.
-                    </p>
-                  </div>
+                  <p className="text-xs text-slate-600 leading-tight text-center">
+                    Нажимая кнопку "Отправить заявку на кредит", вы соглашаетесь с{" "}
+                    <Link href="/privacy#data-processing" className="text-blue-600 hover:text-blue-800 underline">
+                      условиями обработки персональных данных
+                    </Link>
+                    {" "}и даете согласие на их использование.
+                  </p>
 
                   {/* Partners Section - только для десктопа */}
                   <div className="hidden lg:block mt-4 pt-4 border-t border-slate-200">
