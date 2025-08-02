@@ -359,25 +359,25 @@ export default function CreditPage() {
           <div className="p-4 md:p-8 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-8">
 
             {/* Banks Partners Section - переносим в начало на мобильном */}
-            <div className="lg:hidden mb-4">
-              <div className="bg-slate-50 rounded-xl p-4">
-                <h4 className="text-sm font-semibold text-slate-900 mb-3">Банки-партнеры</h4>
-                <div className="grid grid-cols-4 gap-2">
+            <div className="lg:hidden mb-3">
+              <div className="bg-slate-50 rounded-lg p-3">
+                <h4 className="text-xs font-semibold text-slate-900 mb-2">Банки-партнёры</h4>
+                <div className="flex flex-wrap gap-2">
                   {settings?.partners?.slice(0, 8).map((partner, index) => (
                     <div
                       key={index}
-                      className="aspect-square bg-white rounded-lg border border-slate-200 flex items-center justify-center hover:shadow-md transition-all duration-200 group relative"
+                      className="flex items-center justify-center p-1 hover:opacity-75 transition-opacity group relative"
                       title={`${partner.name} - от ${partner.minRate}%`}
                     >
                       {partner.logoUrl && (
                         <img
                           src={getCachedImageUrl(partner.logoUrl)}
                           alt={partner.name}
-                          className="h-6 w-8 object-contain"
+                          className="h-5 w-8 object-contain"
                         />
                       )}
                       {/* Tooltip on hover */}
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                         от {partner.minRate}%
                       </div>
                     </div>
@@ -387,32 +387,32 @@ export default function CreditPage() {
             </div>
 
             {/* Calculator Section - делаем более компактным */}
-            <div className="lg:col-span-3 space-y-3 md:space-y-6">
+            <div className="lg:col-span-3 space-y-2 md:space-y-6">
 
               {/* Calculator Header */}
-              <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 gap-4">
-                <h2 className="text-lg md:text-2xl font-semibold text-slate-900">Калькулятор</h2>
-                <div className="flex items-center space-x-3">
+              <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between md:space-y-0 gap-4">
+                <h2 className="text-base md:text-2xl font-semibold text-slate-900">Калькулятор</h2>
+                <div className="flex items-center space-x-2">
                   <Checkbox
                     id="currency"
                     checked={isBelarusianRubles}
                     onCheckedChange={handleCurrencyChange}
                     className="data-[state=checked]:bg-slate-900"
                   />
-                  <Label htmlFor="currency" className="text-sm font-medium text-slate-700 cursor-pointer">
+                  <Label htmlFor="currency" className="text-xs md:text-sm font-medium text-slate-700 cursor-pointer">
                     В белорусских рублях
                   </Label>
                 </div>
               </div>
 
               {/* Parameters Grid - более компактный для мобильного */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6">
 
                 {/* Car Price */}
-                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-3 md:p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-2 md:mb-4">
+                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Стоимость авто</label>
-                    <span className="text-sm md:text-lg font-bold text-slate-900">{formatCurrency(calculator.carPrice[0])}</span>
+                    <span className="text-xs md:text-lg font-bold text-slate-900">{formatCurrency(calculator.carPrice[0])}</span>
                   </div>
                   <Slider
                     value={calculator.carPrice}
@@ -423,22 +423,22 @@ export default function CreditPage() {
                     max={getCreditMaxValue()}
                     min={getCreditMinValue()}
                     step={isBelarusianRubles ? 500 : 1000}
-                    className="mb-2 md:mb-4"
+                    className="mb-1 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.carPrice}
                     onChange={(e) => handleManualInputChange('carPrice', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-8 md:h-auto text-sm"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded text-xs md:text-sm h-7 md:h-auto"
                     placeholder="Введите сумму"
                   />
                 </div>
 
                 {/* Down Payment */}
-                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-3 md:p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-2 md:mb-4">
+                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Первый взнос</label>
-                    <span className="text-sm md:text-lg font-bold text-slate-900">{formatCurrency(calculator.downPayment[0])}</span>
+                    <span className="text-xs md:text-lg font-bold text-slate-900">{formatCurrency(calculator.downPayment[0])}</span>
                   </div>
                   <Slider
                     value={calculator.downPayment}
@@ -449,22 +449,22 @@ export default function CreditPage() {
                     max={calculator.carPrice[0] * 0.8}
                     min={calculator.carPrice[0] * 0.1}
                     step={isBelarusianRubles ? 200 : 500}
-                    className="mb-2 md:mb-4"
+                    className="mb-1 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.downPayment}
                     onChange={(e) => handleManualInputChange('downPayment', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-8 md:h-auto text-sm"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded text-xs md:text-sm h-7 md:h-auto"
                     placeholder="Введите сумму"
                   />
                 </div>
 
                 {/* Loan Term */}
-                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-3 md:p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-2 md:mb-4">
+                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Срок кредита</label>
-                    <span className="text-sm md:text-lg font-bold text-slate-900">{calculator.loanTerm[0]} мес.</span>
+                    <span className="text-xs md:text-lg font-bold text-slate-900">{calculator.loanTerm[0]} мес.</span>
                   </div>
                   <Slider
                     value={calculator.loanTerm}
@@ -475,22 +475,22 @@ export default function CreditPage() {
                     max={84}
                     min={12}
                     step={3}
-                    className="mb-2 md:mb-4"
+                    className="mb-1 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.loanTerm}
                     onChange={(e) => handleManualInputChange('loanTerm', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-8 md:h-auto text-sm"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded text-xs md:text-sm h-7 md:h-auto"
                     placeholder="Месяцы"
                   />
                 </div>
 
                 {/* Interest Rate */}
-                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-3 md:p-6 hover:bg-slate-100 transition-colors">
-                  <div className="flex items-center justify-between mb-2 md:mb-4">
+                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center justify-between mb-1 md:mb-4">
                     <label className="text-xs md:text-sm font-semibold text-slate-900">Процентная ставка</label>
-                    <span className="text-sm md:text-lg font-bold text-slate-900">{calculator.interestRate[0]}%</span>
+                    <span className="text-xs md:text-lg font-bold text-slate-900">{calculator.interestRate[0]}%</span>
                   </div>
                   <Slider
                     value={calculator.interestRate}
@@ -502,13 +502,13 @@ export default function CreditPage() {
                     min={10}
                     step={0.25}
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}
-                    className="mb-2 md:mb-4"
+                    className="mb-1 md:mb-4"
                   />
                   <Input
                     type="number"
                     value={manualInputs.interestRate}
                     onChange={(e) => handleManualInputChange('interestRate', e.target.value)}
-                    className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-8 md:h-auto text-sm"
+                    className="bg-white border-slate-200 focus:border-slate-400 rounded text-xs md:text-sm h-7 md:h-auto"
                     placeholder="Процент"
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}
                   />
@@ -516,13 +516,13 @@ export default function CreditPage() {
               </div>
 
               {/* Bank Selection */}
-              <div className="bg-slate-50 rounded-lg md:rounded-2xl p-3 md:p-6">
-                <label className="text-xs md:text-sm font-semibold text-slate-900 mb-2 md:mb-4 block">Выберите банк-партнер</label>
+              <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6">
+                <label className="text-xs md:text-sm font-semibold text-slate-900 mb-1 md:mb-4 block">Выберите банк-партнер</label>
                 <Select
                   value={manualInputs.selectedBank}
                   onValueChange={handleBankSelection}
                 >
-                  <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-12 text-sm">
+                  <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded text-xs md:text-sm h-8 md:h-12">
                     <SelectValue placeholder="Выберите банк или введите ставку вручную" />
                   </SelectTrigger>
                   <SelectContent>
