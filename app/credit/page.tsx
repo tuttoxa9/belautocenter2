@@ -14,7 +14,7 @@ import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronRight, Check, DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard } from "lucide-react"
+import { ChevronRight, Check, DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard, ChevronDown, ChevronUp, Calculator } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
@@ -73,6 +73,13 @@ export default function CreditPage() {
     bank: "",
     message: "",
   })
+
+  const [isCalculatorExpanded, setIsCalculatorExpanded] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     loadSettings()
@@ -359,25 +366,24 @@ export default function CreditPage() {
           <div className="p-4 md:p-8 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-8">
 
             {/* Banks Partners Section - переносим в начало на мобильном */}
-            <div className="lg:hidden mb-3">
-              <div className="bg-slate-50 rounded-lg p-3">
-                <h4 className="text-xs font-semibold text-slate-900 mb-2">Банки-партнёры</h4>
-                <div className="flex flex-wrap gap-2">
+            <div className="lg:hidden mb-4">
+              <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
+                <div className="flex flex-wrap gap-3 justify-center">
                   {settings?.partners?.slice(0, 8).map((partner, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-center p-1 hover:opacity-75 transition-opacity group relative"
+                      className="flex items-center justify-center p-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group relative border border-slate-200"
                       title={`${partner.name} - от ${partner.minRate}%`}
                     >
                       {partner.logoUrl && (
                         <img
                           src={getCachedImageUrl(partner.logoUrl)}
                           alt={partner.name}
-                          className="h-5 w-8 object-contain"
+                          className="h-8 w-12 object-contain"
                         />
                       )}
                       {/* Tooltip on hover */}
-                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                         от {partner.minRate}%
                       </div>
                     </div>
@@ -386,12 +392,28 @@ export default function CreditPage() {
               </div>
             </div>
 
-            {/* Calculator Section - делаем более компактным */}
+            {/* Calculator Section - коллапсирующийся на мобильном */}
             <div className="lg:col-span-3 space-y-2 md:space-y-6">
 
-              {/* Calculator Header */}
-              <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between md:space-y-0 gap-4">
-                <h2 className="text-base md:text-2xl font-semibold text-slate-900">Калькулятор</h2>
+              {/* Calculator Header - с кнопкой разворачивания на мобильном */}
+              <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-base md:text-2xl font-semibold text-slate-900 flex items-center gap-2">
+                    <Calculator className="h-5 w-5 md:h-6 md:w-6 text-slate-600" />
+                    Калькулятор
+                  </h2>
+                  {/* Кнопка разворачивания только на мобильном */}
+                  <button
+                    onClick={() => setIsCalculatorExpanded(!isCalculatorExpanded)}
+                    className="lg:hidden bg-slate-100 hover:bg-slate-200 p-2 rounded-lg transition-all duration-200"
+                  >
+                    {isCalculatorExpanded ? (
+                      <ChevronUp className="h-5 w-5 text-slate-600" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5 text-slate-600" />
+                    )}
+                  </button>
+                </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="currency"
@@ -405,8 +427,11 @@ export default function CreditPage() {
                 </div>
               </div>
 
-              {/* Parameters Grid - более компактный для мобильного */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6">
+              {/* Parameters Grid - коллапсирующийся на мобильном */}
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden lg:max-h-screen lg:opacity-100 ${
+                isMounted && (isCalculatorExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 lg:max-h-screen lg:opacity-100')
+              }`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6 pt-2 lg:pt-0">
 
                 {/* Car Price */}
                 <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 transition-colors">
@@ -513,160 +538,187 @@ export default function CreditPage() {
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}
                   />
                 </div>
-              </div>
-
-              {/* Bank Selection */}
-              <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6">
-                <label className="text-xs md:text-sm font-semibold text-slate-900 mb-1 md:mb-4 block">Выберите банк-партнер</label>
-                <Select
-                  value={manualInputs.selectedBank}
-                  onValueChange={handleBankSelection}
-                >
-                  <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded text-xs md:text-sm h-8 md:h-12">
-                    <SelectValue placeholder="Выберите банк или введите ставку вручную" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {settings?.partners?.map((partner) => (
-                      <SelectItem
-                        key={partner.name}
-                        value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
-                        className="flex items-center justify-between p-2 md:p-3"
-                      >
-                        <div className="flex items-center gap-2 md:gap-3">
-                          {partner.logoUrl && (
-                            <Image
-                              src={getCachedImageUrl(partner.logoUrl)}
-                              alt={partner.name}
-                              width={20}
-                              height={20}
-                              className="object-contain rounded md:w-6 md:h-6"
-                            />
-                          )}
-                          <span className="font-medium text-sm md:text-base">{partner.name}</span>
-                        </div>
-                        <span className="text-xs md:text-sm text-slate-600">{partner.minRate}%</span>
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">Ввести ставку вручную</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Results Card - более компактный */}
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg md:rounded-2xl p-3 md:p-6 text-white">
-                <h3 className="text-sm md:text-lg font-semibold mb-2 md:mb-4">Результат расчета</h3>
-                <div className="grid grid-cols-2 gap-2 md:gap-4">
-                  <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
-                    <div className="text-xs text-slate-300 mb-1">Сумма кредита</div>
-                    <div className="text-sm md:text-xl font-bold">{formatCurrency(calculator.carPrice[0] - calculator.downPayment[0])}</div>
-                  </div>
-                  <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
-                    <div className="text-xs text-slate-300 mb-1">Ежемесячный платеж</div>
-                    <div className="text-sm md:text-xl font-bold text-green-400">{formatCurrency(monthlyPayment)}</div>
-                  </div>
-                  <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
-                    <div className="text-xs text-slate-300 mb-1">Общая сумма</div>
-                    <div className="text-sm md:text-xl font-bold">{formatCurrency(totalAmount)}</div>
-                  </div>
-                  <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
-                    <div className="text-xs text-slate-300 mb-1">Переплата</div>
-                    <div className="text-sm md:text-xl font-bold text-red-400">{formatCurrency(overpayment)}</div>
-                  </div>
                 </div>
-                {!isBelarusianRubles && usdBynRate && (
-                  <div className="mt-2 md:mt-4 pt-2 md:pt-4 border-t border-white/20">
-                    <div className="text-xs md:text-sm text-slate-300">
-                      В белорусских рублях: <span className="font-semibold text-white">{convertUsdToByn(monthlyPayment, usdBynRate)} BYN/месяц</span>
+
+                  {/* Bank Selection */}
+                <div className="bg-slate-50 rounded-lg md:rounded-2xl p-2 md:p-6">
+                  <label className="text-xs md:text-sm font-semibold text-slate-900 mb-1 md:mb-4 block">Выберите банк-партнер</label>
+                  <Select
+                    value={manualInputs.selectedBank}
+                    onValueChange={handleBankSelection}
+                  >
+                    <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded text-xs md:text-sm h-8 md:h-12">
+                      <SelectValue placeholder="Выберите банк или введите ставку вручную" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {settings?.partners?.map((partner) => (
+                        <SelectItem
+                          key={partner.name}
+                          value={partner.name.toLowerCase().replace(/[\s-]/g, '')}
+                          className="flex items-center justify-between p-2 md:p-3"
+                        >
+                          <div className="flex items-center gap-2 md:gap-3">
+                            {partner.logoUrl && (
+                              <Image
+                                src={getCachedImageUrl(partner.logoUrl)}
+                                alt={partner.name}
+                                width={20}
+                                height={20}
+                                className="object-contain rounded md:w-6 md:h-6"
+                              />
+                            )}
+                            <span className="font-medium text-sm md:text-base">{partner.name}</span>
+                          </div>
+                          <span className="text-xs md:text-sm text-slate-600">{partner.minRate}%</span>
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="custom">Ввести ставку вручную</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Results Card - более компактный */}
+                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg md:rounded-2xl p-3 md:p-6 text-white">
+                  <h3 className="text-sm md:text-lg font-semibold mb-2 md:mb-4">Результат расчета</h3>
+                  <div className="grid grid-cols-2 gap-2 md:gap-4">
+                    <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
+                      <div className="text-xs text-slate-300 mb-1">Сумма кредита</div>
+                      <div className="text-sm md:text-xl font-bold">{formatCurrency(calculator.carPrice[0] - calculator.downPayment[0])}</div>
+                    </div>
+                    <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
+                      <div className="text-xs text-slate-300 mb-1">Ежемесячный платеж</div>
+                      <div className="text-sm md:text-xl font-bold text-green-400">{formatCurrency(monthlyPayment)}</div>
+                    </div>
+                    <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
+                      <div className="text-xs text-slate-300 mb-1">Общая сумма</div>
+                      <div className="text-sm md:text-xl font-bold">{formatCurrency(totalAmount)}</div>
+                    </div>
+                    <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
+                      <div className="text-xs text-slate-300 mb-1">Переплата</div>
+                      <div className="text-sm md:text-xl font-bold text-red-400">{formatCurrency(overpayment)}</div>
                     </div>
                   </div>
-                )}
+                  {!isBelarusianRubles && usdBynRate && (
+                    <div className="mt-2 md:mt-4 pt-2 md:pt-4 border-t border-white/20">
+                      <div className="text-xs md:text-sm text-slate-300">
+                        В белорусских рублях: <span className="font-semibold text-white">{convertUsdToByn(monthlyPayment, usdBynRate)} BYN/месяц</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Application Form - улучшенная мобильная версия */}
+            {/* Application Form - современная мобильная версия */}
             <div className="lg:col-span-2">
-              <div className="bg-slate-50 rounded-lg md:rounded-2xl p-4 md:p-6 h-full">
-                <h2 className="text-lg md:text-2xl font-semibold text-slate-900 mb-3 md:mb-6">Подать заявку</h2>
-
-                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
-                  <div>
-                    <Label htmlFor="name" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Ваше имя</Label>
-                    <Input
-                      id="name"
-                      value={creditForm.name}
-                      onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
-                      className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-auto text-sm"
-                      placeholder="Введите ваше имя"
-                      required
-                    />
+              <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl md:rounded-3xl p-4 md:p-8 h-full shadow-lg border border-slate-200">
+                <div className="flex items-center gap-3 mb-4 md:mb-6">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <FileText className="h-5 w-5 md:h-6 md:w-6 text-white" />
                   </div>
+                  <h2 className="text-lg md:text-2xl font-bold text-slate-900">Подать заявку</h2>
+                </div>
 
-                  <div>
-                    <Label htmlFor="phone" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Номер телефона</Label>
-                    <div className="relative">
+                <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+                  <div className="space-y-4">
+                    <div className="group">
+                      <Label htmlFor="name" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        Ваше имя
+                      </Label>
                       <Input
-                        id="phone"
-                        value={creditForm.phone}
-                        onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
-                        className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl pr-10 h-9 md:h-auto text-sm"
-                        placeholder="+375XXXXXXXXX"
+                        id="name"
+                        value={creditForm.name}
+                        onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
+                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                        placeholder="Введите ваше имя"
                         required
                       />
-                      {isPhoneValid(creditForm.phone) && (
-                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-600" />
-                      )}
+                    </div>
+
+                    <div className="group">
+                      <Label htmlFor="phone" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        Номер телефона
+                      </Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <Input
+                          id="phone"
+                          value={creditForm.phone}
+                          onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
+                          className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl pl-10 pr-10 h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                          placeholder="+375XXXXXXXXX"
+                          required
+                        />
+                        {isPhoneValid(creditForm.phone) && (
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="group">
+                      <Label htmlFor="email" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={creditForm.email}
+                        onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
+                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                        placeholder="your@email.com"
+                        required
+                      />
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="email" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={creditForm.email}
-                      onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
-                      className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-auto text-sm"
-                      placeholder="your@email.com"
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 md:gap-4">
-                    <div>
-                      <Label htmlFor="carPrice" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Стоимость ($)</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="group">
+                      <Label htmlFor="carPrice" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                        <DollarSign className="w-3 h-3 text-blue-500" />
+                        Стоимость ($)
+                      </Label>
                       <Input
                         id="carPrice"
                         type="number"
                         value={creditForm.carPrice}
                         onChange={(e) => setCreditForm({ ...creditForm, carPrice: e.target.value })}
-                        className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-auto text-sm"
+                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
                         placeholder="50000"
                         required
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="downPayment" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Взнос ($)</Label>
+                    <div className="group">
+                      <Label htmlFor="downPayment" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                        <CreditCard className="w-3 h-3 text-blue-500" />
+                        Взнос ($)
+                      </Label>
                       <Input
                         id="downPayment"
                         type="number"
                         value={creditForm.downPayment}
                         onChange={(e) => setCreditForm({ ...creditForm, downPayment: e.target.value })}
-                        className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-auto text-sm"
+                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
                         placeholder="15000"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 md:gap-4">
-                    <div>
-                      <Label htmlFor="loanTerm" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Срок</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="group">
+                      <Label htmlFor="loanTerm" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                        <Award className="w-3 h-3 text-blue-500" />
+                        Срок кредита
+                      </Label>
                       <Select
                         value={creditForm.loanTerm}
                         onValueChange={(value) => setCreditForm({ ...creditForm, loanTerm: value })}
                       >
-                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-auto text-sm">
-                          <SelectValue placeholder="Месяцы" />
+                        <SelectTrigger className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md">
+                          <SelectValue placeholder="Выберите срок" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="12">12 месяцев</SelectItem>
@@ -679,14 +731,17 @@ export default function CreditPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div>
-                      <Label htmlFor="bank" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Банк</Label>
+                    <div className="group">
+                      <Label htmlFor="bank" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                        <Shield className="w-3 h-3 text-blue-500" />
+                        Предпочитаемый банк
+                      </Label>
                       <Select
                         value={creditForm.bank}
                         onValueChange={(value) => setCreditForm({ ...creditForm, bank: value })}
                       >
-                        <SelectTrigger className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-auto text-sm">
-                          <SelectValue placeholder="Выберите" />
+                        <SelectTrigger className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md">
+                          <SelectValue placeholder="Выберите банк" />
                         </SelectTrigger>
                         <SelectContent>
                           {settings?.partners?.map((partner) => (
@@ -703,35 +758,43 @@ export default function CreditPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="message" className="text-xs md:text-sm font-medium text-slate-900 mb-1 md:mb-2 block">Комментарий</Label>
+                  <div className="group">
+                    <Label htmlFor="message" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
+                      <FileText className="w-3 h-3 text-blue-500" />
+                      Комментарий
+                    </Label>
                     <Input
                       id="message"
                       value={creditForm.message}
                       onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
-                      className="bg-white border-slate-200 focus:border-slate-400 rounded-md md:rounded-xl h-9 md:h-auto text-sm"
+                      className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
                       placeholder="Дополнительная информация..."
                     />
                   </div>
 
                   <StatusButton
                     type="submit"
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-md md:rounded-xl py-3 mt-3 md:mt-6 h-10 md:h-auto text-sm"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-4 mt-6 font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
                     state={submitButtonState.state}
-                    loadingText="Отправляем..."
-                    successText="Отправлено!"
-                    errorText="Ошибка"
+                    loadingText="Отправляем заявку..."
+                    successText="Заявка отправлена!"
+                    errorText="Ошибка отправки"
                   >
-                    Отправить заявку на кредит
+                    <div className="flex items-center justify-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      Отправить заявку на кредит
+                    </div>
                   </StatusButton>
 
-                  <p className="text-xs text-slate-500 mt-2 leading-tight">
-                    Нажимая кнопку "Отправить заявку на кредит", вы соглашаетесь с{" "}
-                    <Link href="/privacy#data-processing" className="text-slate-700 hover:text-slate-900 underline">
-                      условиями обработки персональных данных
-                    </Link>
-                    {" "}и даете согласие на их использование для рассмотрения вашей заявки.
-                  </p>
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      Нажимая кнопку "Отправить заявку на кредит", вы соглашаетесь с{" "}
+                      <Link href="/privacy#data-processing" className="text-blue-600 hover:text-blue-800 underline font-medium">
+                        условиями обработки персональных данных
+                      </Link>
+                      {" "}и даете согласие на их использование для рассмотрения вашей заявки.
+                    </p>
+                  </div>
 
                   {/* Partners Section - только для десктопа */}
                   <div className="hidden lg:block mt-4 pt-4 border-t border-slate-200">
