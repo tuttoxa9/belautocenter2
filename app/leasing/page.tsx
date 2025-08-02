@@ -21,7 +21,7 @@ import { convertUsdToByn } from "@/lib/utils"
 import { doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import LeasingConditions from "@/components/leasing-conditions"
-import LeasingSkeleton from "@/components/leasing-skeleton"
+
 import { getCachedImageUrl } from "@/lib/image-cache"
 
 interface LeasingPageSettings {
@@ -297,9 +297,7 @@ export default function LeasingPage() {
   const totalAmount = monthlyPayment * calculator.leasingTerm[0] + calculator.advance[0]
   const leasingSum = calculator.carPrice[0] - calculator.advance[0] - residualValue
 
-  if (loading) {
-    return <LeasingSkeleton />
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
@@ -320,7 +318,7 @@ export default function LeasingPage() {
 
         {/* Hero Section - заголовки и описание со скелетонами */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-6 md:mb-8">
-          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-6 md:px-8 md:py-12 min-h-[160px] md:min-h-[280px]">
+          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-6 md:px-8 md:py-12 min-h-[120px] md:min-h-[220px]">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
 
             {/* Leasing Image - статичное, показываем всегда */}
