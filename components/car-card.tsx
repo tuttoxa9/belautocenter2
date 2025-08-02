@@ -5,7 +5,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 
-import FadeInImage from "@/components/fade-in-image"
+import Image from "next/image"
+import { useState, useRef, useEffect } from "react"
+import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
 
@@ -28,6 +30,37 @@ interface CarCardProps {
 
 export default function CarCard({ car }: CarCardProps) {
   const usdBynRate = useUsdBynRate()
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [shouldLoadImage, setShouldLoadImage] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !shouldLoadImage) {
+            setShouldLoadImage(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        root: null,
+        rootMargin: '100px', // Начинаем загрузку за 100px до появления
+        threshold: 0.1
+      }
+    )
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current)
+    }
+
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current)
+      }
+    }
+  }, [shouldLoadImage])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -47,16 +80,33 @@ export default function CarCard({ car }: CarCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300 h-full">
+    <Card ref={cardRef} className="overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300 h-full">
       <Link href={`/catalog/${car.id}`} className="block h-full">
         {/* Image Section */}
         <div className="relative">
-          <div className="relative overflow-hidden bg-slate-100">
-            <FadeInImage
-              src={car.imageUrls[0] || "/placeholder.svg?height=200&width=280"}
-              alt={`${car.make} ${car.model}`}
-              className="w-full h-56 object-cover group-hover:scale-102 transition-transform duration-300"
-            />
+          <div className="relative overflow-hidden bg-slate-100 h-56">
+            {shouldLoadImage ? (
+              <>
+                {!isImageLoaded && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse" />
+                )}
+                <Image
+                  src={getCachedImageUrl(car.imageUrls[0] || "/placeholder.svg?height=200&width=280")}
+                  alt={`${car.make} ${car.model}`}
+                  fill
+                  className={`object-cover group-hover:scale-102 transition-all duration-300 ${
+                    isImageLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  onLoad={() => setIsImageLoaded(true)}
+                  onError={() => setIsImageLoaded(true)}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+              </>
+            ) : (
+              <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                <div className="w-12 h-12 bg-slate-300 rounded-full animate-pulse" />
+              </div>
+            )}
 
             {/* Status indicator */}
             <div className="absolute top-3 left-3">

@@ -45,6 +45,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import CarDetailsSkeleton from "@/components/car-details-skeleton"
 import MarkdownRenderer from "@/components/markdown-renderer"
+import LazyThumbnail from "@/components/lazy-thumbnail"
 
 // Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => (
@@ -177,12 +178,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     if (carId) {
       loadCarData(carId)
     }
-    // Load partner banks from Firestore
-    loadPartnerBanks()
-    // Load leasing companies from Firestore
-    loadLeasingCompanies()
-    // Load contact data for error message
-    loadContactData()
+    // Load all static data in one request
+    loadStaticData()
   }, [carId])
 
   // Сброс значений калькулятора при открытии модального окна кредита
@@ -206,87 +203,48 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
 
-  const loadPartnerBanks = async () => {
+  const loadStaticData = async () => {
     try {
       setLoadingBanks(true)
-      const creditDoc = await getDoc(doc(db, "pages", "credit"))
-      if (creditDoc.exists() && creditDoc.data()?.partners) {
-        const rawData = creditDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanData = JSON.parse(JSON.stringify(rawData))
-        const partners = cleanData?.partners
-        // Convert partners to the format we need
-        const formattedPartners = partners.map((partner: any, index: number) => ({
-          id: index + 1,
-          name: partner.name || "",
-          logo: partner.logoUrl || "",
-          rate: partner.minRate || 15,
-          minDownPayment: 15, // Default value
-          maxTerm: partner.maxTerm || 60,
-          features: ["Выгодные условия", "Быстрое одобрение"],
-          color: ["emerald", "blue", "purple", "red"][index % 4] // Cycle through colors
-        }))
-        // Sort banks by rate (ascending - lowest first)
-        const sortedPartners = formattedPartners.sort((a, b) => a.rate - b.rate)
-        setPartnerBanks(sortedPartners)
-        // Set the best bank (lowest rate) as default selected bank
-        if (sortedPartners.length > 0) {
-          setSelectedBank(sortedPartners[0])
-        }
+      setLoadingLeasing(true)
+
+      const response = await fetch('/api/car-page-data')
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      // Устанавливаем данные банков
+      if (data.banks && data.banks.length > 0) {
+        setPartnerBanks(data.banks)
+        setSelectedBank(data.banks[0]) // Выбираем лучший банк по умолчанию
       } else {
-        console.warn("Банки-партнеры не найдены в Firestore")
+        console.warn("Банки-партнеры не найдены")
         setPartnerBanks([])
       }
-    } catch (error) {
-      console.error("Ошибка загрузки банков-партнеров:", error)
-      setPartnerBanks([])
-    } finally {
-      setLoadingBanks(false)
-    }
-  }
 
-  const loadLeasingCompanies = async () => {
-    try {
-      setLoadingLeasing(true)
-      const leasingDoc = await getDoc(doc(db, "pages", "leasing"))
-      if (leasingDoc.exists() && leasingDoc.data()?.leasingCompanies) {
-        const rawData = leasingDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanData = JSON.parse(JSON.stringify(rawData))
-        const companies = cleanData?.leasingCompanies || []
-        // Sort leasing companies by minAdvance (ascending - lowest first)
-        const sortedCompanies = companies.sort((a: any, b: any) => (a.minAdvance || 0) - (b.minAdvance || 0))
-        setLeasingCompanies(sortedCompanies)
-        // Set the best leasing company (lowest advance) as default selected
-        if (sortedCompanies.length > 0) {
-          setSelectedLeasingCompany(sortedCompanies[0])
-        }
+      // Устанавливаем данные лизинговых компаний
+      if (data.leasingCompanies && data.leasingCompanies.length > 0) {
+        setLeasingCompanies(data.leasingCompanies)
+        setSelectedLeasingCompany(data.leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
       } else {
-        console.warn("Лизинговые компании не найдены в Firestore")
+        console.warn("Лизинговые компании не найдены")
         setLeasingCompanies([])
       }
-    } catch (error) {
-      console.error("Ошибка загрузки лизинговых компаний:", error)
-      setLeasingCompanies([])
-    } finally {
-      setLoadingLeasing(false)
-    }
-  }
 
-  const loadContactData = async () => {
-    try {
-      const contactsDoc = await getDoc(doc(db, "pages", "contacts"))
-      if (contactsDoc.exists()) {
-        const rawData = contactsDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanData = JSON.parse(JSON.stringify(rawData))
-        setContactPhone(cleanData?.phone || "+375 29 123-45-67")
-      } else {
-        setContactPhone("+375 29 123-45-67") // fallback phone
-      }
+      // Устанавливаем контактный телефон
+      setContactPhone(data.contactPhone || "+375 29 123-45-67")
+
     } catch (error) {
-      console.error("Ошибка загрузки контактных данных:", error)
-      setContactPhone("+375 29 123-45-67") // fallback phone
+      console.error("Ошибка загрузки статических данных:", error)
+      setPartnerBanks([])
+      setLeasingCompanies([])
+      setContactPhone("+375 29 123-45-67")
+    } finally {
+      setLoadingBanks(false)
+      setLoadingLeasing(false)
     }
   }
 
@@ -300,6 +258,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         const cleanCarData = JSON.parse(JSON.stringify({ id: carDoc.id, ...rawData }))
         setCar(cleanCarData as Car)
         setCarNotFound(false)
+
+        // Предзагрузка первых 3 изображений для быстрого переключения
+        if (cleanCarData.imageUrls && cleanCarData.imageUrls.length > 1) {
+          cleanCarData.imageUrls.slice(0, 3).forEach((url: string) => {
+            const img = new window.Image()
+            img.src = getCachedImageUrl(url)
+          })
+        }
+
         // Устанавливаем значения калькулятора по умолчанию
         const price = cleanCarData.price || 95000
         setCreditAmount([price * 0.8])
@@ -554,11 +521,27 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   }
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % (car?.imageUrls?.length || 1))
+    setCurrentImageIndex((prev) => {
+      const nextIndex = (prev + 1) % (car?.imageUrls?.length || 1)
+      // Предзагружаем следующее изображение
+      if (car?.imageUrls && car.imageUrls.length > nextIndex + 1) {
+        const img = new window.Image()
+        img.src = getCachedImageUrl(car.imageUrls[nextIndex + 1])
+      }
+      return nextIndex
+    })
   }
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + (car?.imageUrls?.length || 1)) % (car?.imageUrls?.length || 1))
+    setCurrentImageIndex((prev) => {
+      const prevIndex = (prev - 1 + (car?.imageUrls?.length || 1)) % (car?.imageUrls?.length || 1)
+      // Предзагружаем предыдущее изображение
+      if (car?.imageUrls && prevIndex > 0) {
+        const img = new window.Image()
+        img.src = getCachedImageUrl(car.imageUrls[prevIndex - 1])
+      }
+      return prevIndex
+    })
   }
 
   // Минимальное расстояние для свайпа
@@ -798,7 +781,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 )}
               </div>
 
-              {/* Миниатюры внизу галереи */}
+              {/* Миниатюры внизу галереи с ленивой загрузкой */}
               {loading ? (
                 <div className="p-4 bg-slate-50/50 border-b lg:border-b-0 border-slate-200/50">
                   <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-1">
@@ -814,23 +797,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 <div className="p-4 bg-slate-50/50 border-b lg:border-b-0 border-slate-200/50">
                   <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-1">
                     {car.imageUrls.map((url, index) => (
-                      <button
+                      <LazyThumbnail
                         key={index}
+                        src={url}
+                        alt={`${car?.make} ${car?.model} - фото ${index + 1}`}
+                        isSelected={index === currentImageIndex}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden transition-all duration-300 ${
-                          index === currentImageIndex
-                            ? 'ring-2 ring-blue-500 ring-offset-2 shadow-lg'
-                            : 'ring-1 ring-slate-200 hover:ring-slate-300'
-                        }`}
-                      >
-                        <Image
-                          src={getCachedImageUrl(url)}
-                          alt={`${car?.make} ${car?.model} - фото ${index + 1}`}
-                          width={56}
-                          height={56}
-                          className="w-full h-full object-cover"
-                        />
-                      </button>
+                        index={index}
+                      />
                     ))}
                   </div>
                 </div>
