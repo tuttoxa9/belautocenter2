@@ -366,7 +366,7 @@ export default function CreditPage() {
 
             {/* Banks Partners Section - переносим в начало на мобильном */}
             <div className="lg:hidden mb-4">
-              <div className="flex flex-wrap gap-3 justify-center">
+              <div className="flex justify-between items-center">
                 {settings?.partners?.slice(0, 6).map((partner, index) => (
                   <div
                     key={index}
