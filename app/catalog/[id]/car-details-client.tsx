@@ -682,7 +682,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
             </div>
           ) : car ? (
             /* Основной контент когда данные загружены */
-            <>
+            <div>
 
           {/* Заголовок и цена - компактный верхний блок */}
           <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
@@ -1020,6 +1020,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </div>
               </div>
             </div>
+          </div>
           </div>
 
           ) : null}
