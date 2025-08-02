@@ -49,8 +49,8 @@ export default function CatalogPage() {
   const applyFilters = useCallback(() => {
     const filtered = cars.filter((car) => {
       return (
-        (filters.priceFrom === "" || filters.priceFrom === "0" || car.price >= Number.parseInt(filters.priceFrom)) &&
-        (filters.priceTo === "" || filters.priceTo === "0" || car.price <= Number.parseInt(filters.priceTo)) &&
+        (filters.priceFrom === "" || filters.priceFrom === "0" || (car.price && car.price >= Number.parseInt(filters.priceFrom))) &&
+        (filters.priceTo === "" || filters.priceTo === "0" || (car.price && car.price <= Number.parseInt(filters.priceTo))) &&
         (filters.make === "all" || car.make === filters.make) &&
         (filters.model === "all" || car.model === filters.model) &&
         (filters.yearFrom === "" || car.year >= Number.parseInt(filters.yearFrom)) &&
@@ -67,9 +67,9 @@ export default function CatalogPage() {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "price-asc":
-          return a.price - b.price
+          return (a.price || 0) - (b.price || 0)
         case "price-desc":
-          return b.price - a.price
+          return (b.price || 0) - (a.price || 0)
         case "year-desc":
           return b.year - a.year
         case "year-asc":

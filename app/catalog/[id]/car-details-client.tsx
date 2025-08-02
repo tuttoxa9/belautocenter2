@@ -715,15 +715,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               {/* Цена справа - всегда горизонтально */}
               <div className="text-right flex-shrink-0">
                 <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 mb-1 leading-tight">
-                  {formatPrice(car.price)}
+                  {car?.price ? formatPrice(car.price) : 'Цена по запросу'}
                 </div>
-                {usdBynRate && (
+                {usdBynRate && car?.price && (
                   <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600">
                     ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
                   </div>
                 )}
                 <div className="text-xs sm:text-sm text-slate-500 mt-1">
-                  от {formatPrice(Math.round(car.price * 0.8 / 60))}/мес
+                  от {car?.price ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
                 </div>
               </div>
             </div>
@@ -942,13 +942,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>
                         <div className="text-sm sm:text-lg font-bold text-slate-900">
-                          {formatPrice(Math.round(car.price * 0.8 / 60))}/мес
+                          {car?.price ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
                         </div>
                       </div>
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 mb-1">Лизинг от</div>
                         <div className="text-sm sm:text-lg font-bold text-slate-900">
-                          {formatPrice(Math.round(car.price * 0.7 / 36))}/мес
+                          {car?.price ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес
                         </div>
                       </div>
                     </div>
@@ -1079,7 +1079,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <Label className="text-xs sm:text-sm">Стоимость авто</Label>
                         <Input
                           type="number"
-                          value={isBelarusianRubles && usdBynRate ? Math.round(car.price * usdBynRate) : car.price}
+                          value={car?.price ? (isBelarusianRubles && usdBynRate ? Math.round(car.price * usdBynRate) : car.price) : 0}
                           readOnly
                           className="bg-slate-50 text-xs sm:text-sm h-8 sm:h-10"
                         />
@@ -1104,8 +1104,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           type="number"
                           value={downPayment[0]}
                           onChange={(e) => setDownPayment([Number(e.target.value)])}
-                          min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
-                          max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
+                          min={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1) : 0}
+                          max={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5) : 100000}
                           step={isBelarusianRubles ? 100 : 1000}
                           className="text-xs sm:text-sm h-8 sm:h-10"
                         />
@@ -1206,8 +1206,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           type="number"
                           value={leasingAdvance[0]}
                           onChange={(e) => setLeasingAdvance([Number(e.target.value)])}
-                          min={isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1}
-                          max={isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5}
+                          min={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1) : 0}
+                          max={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5) : 100000}
                           step={isBelarusianRubles ? 100 : 1000}
                           className="text-xs sm:text-sm h-8 sm:h-10"
                         />

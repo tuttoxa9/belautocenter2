@@ -107,11 +107,11 @@ export default function AdminCars() {
     setEditingCar(car)
     setCarForm({
       ...car,
-      price: car.price.toString(),
-      mileage: car.mileage.toString(),
-      engineVolume: car.engineVolume.toString(),
-      year: car.year.toString(),
-      imageUrls: car.imageUrls.length > 0 ? car.imageUrls : [""],
+      price: (car.price || 0).toString(),
+      mileage: (car.mileage || 0).toString(),
+      engineVolume: (car.engineVolume || 0).toString(),
+      year: (car.year || 0).toString(),
+      imageUrls: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls : [""],
       specifications: car.specifications || {},
       features: car.features || [],
     })

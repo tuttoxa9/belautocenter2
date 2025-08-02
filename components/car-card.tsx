@@ -80,9 +80,9 @@ export default function CarCard({ car }: CarCardProps) {
               {car.make} {car.model}
             </h3>
             <div className="font-bold text-slate-900 text-lg">
-              {formatPrice(car.price)}
+              {car?.price ? formatPrice(car.price) : 'Цена по запросу'}
             </div>
-            {usdBynRate && (
+            {usdBynRate && car?.price && (
               <div className="text-xs text-slate-500 font-medium">
                 ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
               </div>
