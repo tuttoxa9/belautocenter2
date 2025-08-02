@@ -1,4 +1,4 @@
-import type React from "react"
+import React from "react"
 import type { Metadata } from "next"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
