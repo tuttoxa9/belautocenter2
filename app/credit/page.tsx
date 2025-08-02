@@ -334,10 +334,23 @@ export default function CreditPage() {
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-6 md:mb-8">
           <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-8 md:px-8 md:py-12">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
-            <div className="relative">
-              <h1 className="text-2xl md:text-4xl font-bold text-white mb-3 md:mb-4">{settings?.title}</h1>
-              <p className="text-lg md:text-xl text-slate-300 mb-4 md:mb-6">{settings?.subtitle}</p>
-              <p className="text-slate-400 leading-relaxed text-sm md:text-base">{settings?.description}</p>
+
+            {/* Credit Image */}
+            <div className="absolute top-4 right-4 md:top-8 md:right-8 z-10">
+              <Image
+                src="/car_credit.png"
+                alt="Car Credit"
+                width={200}
+                height={200}
+                className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain"
+                style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }}
+              />
+            </div>
+
+            <div className="relative z-20">
+              <h1 className="text-2xl md:text-4xl font-bold text-white mb-3 md:mb-4 relative z-30">{settings?.title}</h1>
+              <p className="text-lg md:text-xl text-slate-300 mb-4 md:mb-6 relative z-30">{settings?.subtitle}</p>
+              <p className="text-slate-400 leading-relaxed text-sm md:text-base relative z-30">{settings?.description}</p>
             </div>
           </div>
 
@@ -682,6 +695,14 @@ export default function CreditPage() {
                   >
                     Отправить заявку на кредит
                   </StatusButton>
+
+                  <p className="text-xs text-slate-500 mt-3 leading-tight">
+                    Нажимая кнопку "Отправить заявку на кредит", вы соглашаетесь с{" "}
+                    <Link href="/privacy#data-processing" className="text-slate-700 hover:text-slate-900 underline">
+                      условиями обработки персональных данных
+                    </Link>
+                    {" "}и даете согласие на их использование для рассмотрения вашей заявки.
+                  </p>
                 </form>
               </div>
             </div>
