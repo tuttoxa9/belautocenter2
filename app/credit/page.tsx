@@ -704,30 +704,26 @@ export default function CreditPage() {
                     {" "}и даете согласие на их использование для рассмотрения вашей заявки.
                   </p>
 
-                  {/* Partners Section - Compact */}
+                  {/* Partners Section - Ultra Compact */}
                   <div className="mt-4 pt-4 border-t border-slate-200">
                     <h4 className="text-sm font-semibold text-slate-900 mb-3">Банки-партнеры</h4>
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {settings?.partners?.map((partner, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
-                          <div className="flex items-center gap-2">
-                            {partner.logoUrl && (
-                              <div className="w-6 h-6 bg-white rounded flex items-center justify-center shadow-sm">
-                                <img
-                                  src={getCachedImageUrl(partner.logoUrl)}
-                                  alt={partner.name}
-                                  className="h-4 w-5 object-contain"
-                                />
-                              </div>
-                            )}
-                            <div>
-                              <div className="font-medium text-slate-900 text-xs">{partner.name}</div>
-                              <div className="text-xs text-slate-500">до {partner.maxTerm} мес.</div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-xs font-bold text-slate-900">от {partner.minRate}%</div>
-                            <div className="text-xs text-slate-500">год.</div>
+                        <div
+                          key={index}
+                          className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center hover:shadow-md hover:border-slate-300 transition-all duration-200 group relative"
+                          title={`${partner.name} - от ${partner.minRate}%`}
+                        >
+                          {partner.logoUrl && (
+                            <img
+                              src={getCachedImageUrl(partner.logoUrl)}
+                              alt={partner.name}
+                              className="h-6 w-7 object-contain"
+                            />
+                          )}
+                          {/* Tooltip on hover */}
+                          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                            от {partner.minRate}%
                           </div>
                         </div>
                       ))}
@@ -745,23 +741,29 @@ export default function CreditPage() {
             <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-6">Наши преимущества</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {settings?.benefits?.map((benefit, index) => (
-                <div key={index} className="group p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl hover:from-slate-100 hover:to-slate-200 transition-all duration-300 border border-slate-200/50">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center group-hover:bg-slate-800 transition-colors">
-                      <span className="text-white text-lg font-bold">{benefit.icon || '★'}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-slate-900 mb-2 text-sm leading-tight">{benefit.title}</h4>
-                      <p className="text-xs text-slate-600 leading-relaxed">{benefit.description}</p>
+              {settings?.benefits?.map((benefit, index) => {
+                // Определяем иконки для каждого преимущества
+                const icons = ['💰', '⚡', '🔒', '📋', '🏆', '📞'];
+                const currentIcon = icons[index % icons.length];
+
+                return (
+                  <div key={index} className="group p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all duration-300 border border-slate-200 hover:border-slate-300 hover:shadow-md">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center group-hover:bg-slate-800 transition-colors">
+                        <span className="text-white text-lg">{benefit.icon || currentIcon}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-slate-900 mb-2 text-sm leading-tight">{benefit.title}</h4>
+                        <p className="text-sm text-slate-700 leading-relaxed">{benefit.description}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="mt-6 pt-6 border-t border-slate-200">
-              <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-xl p-4">
+              <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-xl p-4 text-white">
                 <CreditConditions />
               </div>
             </div>
