@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'edge'
 
-const CACHE_TTL = 300 // 5 минут
-const STALE_WHILE_REVALIDATE = 60 // 1 минута
+const CACHE_TTL = 108000 // 30 часов
+const STALE_WHILE_REVALIDATE = 3600 // 1 час
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url)

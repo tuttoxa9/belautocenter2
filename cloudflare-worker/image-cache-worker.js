@@ -74,7 +74,7 @@ async function handleFirestoreRequest(request, env, ctx) {
         'User-Agent': 'Cloudflare-Worker-Firestore-Cache/2.0'
       },
       cf: {
-        cacheTtl: 300, // 5 минут в Cloudflare cache
+        cacheTtl: 108000, // 30 часов в Cloudflare cache
         cacheEverything: true
       }
     });
@@ -114,14 +114,14 @@ async function handleFirestoreRequest(request, env, ctx) {
 
     // Добавляем улучшенные заголовки кэширования
     const headers = new Headers();
-    headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, must-revalidate');
-    headers.set('CDN-Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
-    headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=300');
+    headers.set('Cache-Control', 'public, max-age=108000, stale-while-revalidate=3600, must-revalidate');
+    headers.set('CDN-Cache-Control', 'public, max-age=108000, stale-while-revalidate=3600');
+    headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=108000');
     headers.set('ETag', etag);
     headers.set('Vary', 'Accept-Encoding, If-None-Match');
     headers.set('X-Cached-By', 'Cloudflare-Worker-Firestore-v2');
     headers.set('X-Cache-Status', 'MISS');
-    headers.set('X-Cache-TTL', '300');
+    headers.set('X-Cache-TTL', '108000');
     headers.set('Access-Control-Allow-Origin', '*');
     headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, If-None-Match');

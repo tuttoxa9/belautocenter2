@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
 
   // Улучшенное кэширование для API Firestore запросов
   if (pathname.startsWith('/api/firestore')) {
-    response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, must-revalidate')
+    response.headers.set('Cache-Control', 'public, max-age=108000, stale-while-revalidate=3600, must-revalidate')
     response.headers.set('Vary', 'Accept-Encoding, If-None-Match')
     response.headers.set('Access-Control-Allow-Origin', '*')
     response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
 
   // Дифференцированное кэширование страниц
   if (pathname === '/' || pathname.startsWith('/catalog')) {
-    response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60')
+    response.headers.set('Cache-Control', 'public, max-age=108000, stale-while-revalidate=3600')
     response.headers.set('Vary', 'Accept-Encoding')
   } else if (pathname.match(/^\/(about|contacts|credit|leasing|privacy)$/)) {
     response.headers.set('Cache-Control', 'public, max-age=1800, stale-while-revalidate=300') // 30 минут
