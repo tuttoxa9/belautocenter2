@@ -310,7 +310,7 @@ export default function CreditPage() {
 
         {/* Hero Section - заголовки и описание со скелетонами */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-6 md:mb-8">
-          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-6 md:px-8 md:py-12">
+          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-6 md:px-8 md:py-12 min-h-[180px] md:min-h-[220px]">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
 
             {/* Credit Image - статичное, показываем всегда */}
@@ -327,17 +327,17 @@ export default function CreditPage() {
 
             <div className="relative z-20">
               {loading ? (
-                <>
-                  <div className="h-6 md:h-10 bg-slate-400 rounded w-64 md:w-96 mb-2 md:mb-4 animate-pulse"></div>
-                  <div className="h-4 md:h-6 bg-slate-300 rounded w-48 md:w-80 mb-2 md:mb-4 animate-pulse"></div>
-                  <div className="hidden md:block h-4 bg-slate-300 rounded w-72 animate-pulse"></div>
-                </>
+                <div className="space-y-2 md:space-y-4">
+                  <div className="h-6 md:h-10 bg-slate-400 rounded w-64 md:w-96 animate-pulse"></div>
+                  <div className="h-4 md:h-6 bg-slate-300 rounded w-48 md:w-80 animate-pulse"></div>
+                  <div className="hidden md:block h-4 bg-slate-300 rounded w-72 animate-pulse mt-2 md:mt-6"></div>
+                </div>
               ) : (
-                <>
-                  <h1 className="text-xl md:text-4xl font-bold text-white mb-2 md:mb-4 relative z-30">{settings?.title}</h1>
-                  <p className="text-sm md:text-lg md:text-xl text-slate-300 mb-2 md:mb-4 md:mb-6 relative z-30">{settings?.subtitle}</p>
-                  <p className="hidden md:block text-slate-400 leading-relaxed text-sm md:text-base relative z-30">{settings?.description}</p>
-                </>
+                <div className="space-y-2 md:space-y-4">
+                  <h1 className="text-xl md:text-4xl font-bold text-white relative z-30 leading-tight">{settings?.title}</h1>
+                  <p className="text-sm md:text-lg md:text-xl text-slate-300 relative z-30 leading-tight">{settings?.subtitle}</p>
+                  <p className="hidden md:block text-slate-400 leading-relaxed text-sm md:text-base relative z-30 mt-2 md:mt-6">{settings?.description}</p>
+                </div>
               )}
             </div>
           </div>
