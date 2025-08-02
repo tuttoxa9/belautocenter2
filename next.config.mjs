@@ -25,7 +25,6 @@ const nextConfig = {
   },
   experimental: {
     esmExternals: 'loose',
-    optimizeCss: true,
     optimizePackageImports: ['firebase', 'lucide-react', '@radix-ui/react-dialog'],
   },
   swcMinify: true,
