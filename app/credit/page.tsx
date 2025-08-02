@@ -331,12 +331,12 @@ export default function CreditPage() {
         </nav>
 
         {/* Hero Section */}
-        <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-6 md:mb-8">
-          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-8 md:px-8 md:py-12">
+        <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 overflow-visible mb-6 md:mb-8 mt-16 md:mt-20">
+          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-8 md:px-8 md:py-12 overflow-visible rounded-2xl md:rounded-3xl">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
 
             {/* Credit Image */}
-            <div className="absolute -top-8 right-0 md:-top-12 md:right-4 z-10">
+            <div className="absolute -top-20 right-0 md:-top-28 md:right-4 z-50">
               <Image
                 src="/car_credit2.png"
                 alt="Car Credit"
