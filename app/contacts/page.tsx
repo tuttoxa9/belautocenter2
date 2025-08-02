@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -83,6 +83,20 @@ export default function ContactsPage() {
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
 
+  // Мемоизируем fallback данные
+  const fallbackData = useMemo(() => ({
+    title: "Контакты",
+    subtitle: "Свяжитесь с нами любым удобным способом",
+    address: "г. Минск",
+    phone: "+375 29 123-45-67",
+    email: "info@belautocenter.by",
+    workingHours: {
+      weekdays: "Пн-Пт: 9:00 - 18:00",
+      weekends: "Сб-Вс: 10:00 - 16:00"
+    },
+    socialMedia: {}
+  }), [])
+
   useEffect(() => {
     const fetchContactsData = async () => {
       try {
@@ -137,9 +151,9 @@ export default function ContactsPage() {
     }
 
     fetchContactsData()
-  }, [])
+  }, [fallbackData])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
 
     await submitButtonState.execute(async () => {
@@ -165,7 +179,7 @@ export default function ContactsPage() {
       setContactForm({ name: '', phone: '', message: '' })
       showSuccess("Ваше сообщение успешно отправлено! Мы ответим вам в ближайшее время.")
     })
-  }
+  }, [contactForm, submitButtonState, showSuccess])
 
   if (loading) {
     return <ContactsSkeleton />

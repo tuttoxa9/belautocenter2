@@ -134,25 +134,37 @@ export async function POST(request: NextRequest) {
         }
     }
 
-    // Отправляем в Telegram
+    // Отправляем в Telegram с таймаутом
     const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`
 
-    const response = await fetch(telegramUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: 'HTML'
-      })
-    })
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 секунд таймаут
 
-    if (response.ok) {
-      return NextResponse.json({ success: true, message: 'Уведомление отправлено в Telegram' })
-    } else {
-      console.error('Failed to send Telegram message:', await response.text())
+    try {
+      const response = await fetch(telegramUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: 'HTML'
+        }),
+        signal: controller.signal
+      })
+
+      clearTimeout(timeoutId)
+
+      if (response.ok) {
+        return NextResponse.json({ success: true, message: 'Уведомление отправлено в Telegram' })
+      } else {
+        console.error('Failed to send Telegram message:', await response.text())
+        return NextResponse.json({ success: true, message: 'Заявка сохранена' })
+      }
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      console.error('Telegram request timeout or error:', fetchError)
       return NextResponse.json({ success: true, message: 'Заявка сохранена' })
     }
 

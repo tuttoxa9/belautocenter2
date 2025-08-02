@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useSettings } from '@/hooks/use-settings'
 
 interface YandexMapProps {
@@ -20,8 +20,19 @@ export default function YandexMap({ address, className }: YandexMapProps) {
   const [mapError, setMapError] = useState(false)
   const { settings, loading } = useSettings()
 
+  // Дебаунс для предотвращения частых перерендеров карты
+  const [debouncedAddress, setDebouncedAddress] = useState(address)
+
   useEffect(() => {
-    if (loading || !settings?.main?.yandexMapsApiKey || !address) {
+    const timer = setTimeout(() => {
+      setDebouncedAddress(address)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [address])
+
+  useEffect(() => {
+    if (loading || !settings?.main?.yandexMapsApiKey || !debouncedAddress) {
       return
     }
 
@@ -55,7 +66,7 @@ export default function YandexMap({ address, className }: YandexMapProps) {
 
       try {
         // Геокодирование адреса
-        window.ymaps.geocode(address).then((res: any) => {
+        window.ymaps.geocode(debouncedAddress).then((res: any) => {
           const firstGeoObject = res.geoObjects.get(0)
           const coords = firstGeoObject.geometry.getCoordinates()
 
@@ -68,8 +79,8 @@ export default function YandexMap({ address, className }: YandexMapProps) {
 
           // Добавление метки
           const placemark = new window.ymaps.Placemark(coords, {
-            balloonContent: address,
-            hintContent: address
+            balloonContent: debouncedAddress,
+            hintContent: debouncedAddress
           }, {
             preset: 'islands#redIcon'
           })
@@ -87,7 +98,7 @@ export default function YandexMap({ address, className }: YandexMapProps) {
     }
 
     loadYandexMaps()
-  }, [address, settings, loading])
+  }, [debouncedAddress, settings, loading])
 
   // Заглушка карты
   const MapPlaceholder = () => (

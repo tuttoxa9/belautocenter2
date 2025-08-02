@@ -1,11 +1,12 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { doc, getDoc, collection, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import { getCachedDocument } from "@/lib/firebase-cache"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
@@ -47,7 +48,7 @@ import CarDetailsSkeleton from "@/components/car-details-skeleton"
 import MarkdownRenderer from "@/components/markdown-renderer"
 
 // Компонент ошибки для несуществующего автомобиля
-const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => (
+const CarNotFoundComponent = React.memo(({ contactPhone }: { contactPhone: string }) => (
   <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
     <div className="text-center max-w-md mx-auto px-4">
       <div className="mb-6">
@@ -77,7 +78,9 @@ const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => (
       </Button>
     </div>
   </div>
-)
+))
+
+CarNotFoundComponent.displayName = 'CarNotFoundComponent'
 
 interface Car {
   id: string;
@@ -209,12 +212,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const loadPartnerBanks = async () => {
     try {
       setLoadingBanks(true)
-      const creditDoc = await getDoc(doc(db, "pages", "credit"))
-      if (creditDoc.exists() && creditDoc.data()?.partners) {
-        const rawData = creditDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanData = JSON.parse(JSON.stringify(rawData))
-        const partners = cleanData?.partners
+      const creditData = await getCachedDocument("pages", "credit")
+      if (creditData?.partners) {
+        const partners = creditData.partners
         // Convert partners to the format we need
         const formattedPartners = partners.map((partner: any, index: number) => ({
           id: index + 1,
@@ -248,12 +248,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const loadLeasingCompanies = async () => {
     try {
       setLoadingLeasing(true)
-      const leasingDoc = await getDoc(doc(db, "pages", "leasing"))
-      if (leasingDoc.exists() && leasingDoc.data()?.leasingCompanies) {
-        const rawData = leasingDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanData = JSON.parse(JSON.stringify(rawData))
-        const companies = cleanData?.leasingCompanies || []
+      const leasingData = await getCachedDocument("pages", "leasing")
+      if (leasingData?.leasingCompanies) {
+        const companies = leasingData.leasingCompanies || []
         // Sort leasing companies by minAdvance (ascending - lowest first)
         const sortedCompanies = companies.sort((a: any, b: any) => (a.minAdvance || 0) - (b.minAdvance || 0))
         setLeasingCompanies(sortedCompanies)
@@ -275,12 +272,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   const loadContactData = async () => {
     try {
-      const contactsDoc = await getDoc(doc(db, "pages", "contacts"))
-      if (contactsDoc.exists()) {
-        const rawData = contactsDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanData = JSON.parse(JSON.stringify(rawData))
-        setContactPhone(cleanData?.phone || "+375 29 123-45-67")
+      const contactsData = await getCachedDocument("pages", "contacts")
+      if (contactsData) {
+        setContactPhone(contactsData.phone || "+375 29 123-45-67")
       } else {
         setContactPhone("+375 29 123-45-67") // fallback phone
       }
@@ -293,15 +287,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const loadCarData = async (carId: string) => {
     try {
       setLoading(true)
-      const carDoc = await getDoc(doc(db, "cars", carId))
-      if (carDoc.exists()) {
-        const rawData = carDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanCarData = JSON.parse(JSON.stringify({ id: carDoc.id, ...rawData }))
-        setCar(cleanCarData as Car)
+      const carData = await getCachedDocument("cars", carId)
+      if (carData) {
+        setCar(carData as Car)
         setCarNotFound(false)
         // Устанавливаем значения калькулятора по умолчанию
-        const price = cleanCarData.price || 95000
+        const price = carData.price || 95000
         setCreditAmount([price * 0.8])
         setDownPayment([price * 0.2])
       } else {
@@ -318,7 +309,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }
 
-  const formatPrice = (price: number) => {
+  const formatPrice = useCallback((price: number) => {
     if (isBelarusianRubles && usdBynRate) {
       return new Intl.NumberFormat("ru-BY", {
         style: "currency",
@@ -331,7 +322,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       currency: "USD",
       minimumFractionDigits: 0,
     }).format(price)
-  }
+  }, [isBelarusianRubles, usdBynRate])
 
   const getCreditMinValue = () => {
     return isBelarusianRubles ? 3000 : 1000
@@ -379,14 +370,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }
 
-  const formatMileage = (mileage: number) => {
+  const formatMileage = useCallback((mileage: number) => {
     return new Intl.NumberFormat("ru-BY").format(mileage)
-  }
+  }, [])
 
-  const formatEngineVolume = (volume: number) => {
+  const formatEngineVolume = useCallback((volume: number) => {
     // Всегда показываем с одним знаком после запятой (3.0, 2.5, 1.6)
     return volume.toFixed(1)
-  }
+  }, [])
 
   const formatPhoneNumber = (value: string) => {
     // Удаляем все нецифровые символы кроме +
@@ -408,27 +399,27 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     return phone.length === 13 && phone.startsWith("+375")
   }
 
-  // Расчет ежемесячного платежа
-  const calculateMonthlyPayment = () => {
+  // Расчет ежемесячного платежа с мемоизацией
+  const calculateMonthlyPayment = useMemo(() => {
     if (!selectedBank) return 0
-    const principal = getCurrentCreditAmount()
+    const principal = isBelarusianRubles && usdBynRate ? creditAmount[0] : creditAmount[0]
     const rate = selectedBank.rate / 100 / 12
     const term = loanTerm[0]
     if (rate === 0) return principal / term
     const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
     return monthlyPayment
-  }
+  }, [selectedBank, creditAmount, loanTerm, isBelarusianRubles, usdBynRate])
 
-  // Расчет ежемесячного лизингового платежа
-  const calculateLeasingPayment = () => {
+  // Расчет ежемесячного лизингового платежа с мемоизацией
+  const calculateLeasingPayment = useMemo(() => {
     const carPrice = isBelarusianRubles && usdBynRate ? (car && car.price ? car.price * usdBynRate : 0) : (car && car.price ? car.price : 0)
-    const advance = isBelarusianRubles && usdBynRate ? leasingAdvance[0] : leasingAdvance[0]
+    const advance = leasingAdvance[0]
     const term = leasingTerm[0]
     const residualVal = (carPrice * residualValue[0]) / 100
 
     const leasingSum = carPrice - advance - residualVal
     return leasingSum / term
-  }
+  }, [car, leasingAdvance, leasingTerm, residualValue, isBelarusianRubles, usdBynRate])
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -553,13 +544,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     })
   }
 
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev + 1) % (car?.imageUrls?.length || 1))
-  }
+  }, [car?.imageUrls?.length])
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev - 1 + (car?.imageUrls?.length || 1)) % (car?.imageUrls?.length || 1))
-  }
+  }, [car?.imageUrls?.length])
 
   // Минимальное расстояние для свайпа
   const minSwipeDistance = 50
@@ -745,7 +736,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         alt={`${car?.make} ${car?.model}`}
                         fill
                         className="object-contain"
-                        priority
+                        priority={currentImageIndex === 0}
+                        loading={currentImageIndex === 0 ? "eager" : "lazy"}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </div>
 
@@ -829,6 +822,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           width={56}
                           height={56}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       </button>
                     ))}
