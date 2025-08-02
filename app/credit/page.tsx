@@ -356,8 +356,7 @@ export default function CreditPage() {
 
             <div className="relative z-20">
               <h1 className="text-xl md:text-4xl font-bold text-white mb-2 md:mb-4 relative z-30">{settings?.title}</h1>
-              {/* Скрываем подзаголовки на мобильном */}
-              <p className="hidden md:block text-lg md:text-xl text-slate-300 mb-4 md:mb-6 relative z-30">{settings?.subtitle}</p>
+              <p className="text-sm md:text-lg md:text-xl text-slate-300 mb-2 md:mb-4 md:mb-6 relative z-30">{settings?.subtitle}</p>
               <p className="hidden md:block text-slate-400 leading-relaxed text-sm md:text-base relative z-30">{settings?.description}</p>
             </div>
           </div>
@@ -367,28 +366,26 @@ export default function CreditPage() {
 
             {/* Banks Partners Section - переносим в начало на мобильном */}
             <div className="lg:hidden mb-4">
-              <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
-                <div className="flex flex-wrap gap-3 justify-center">
-                  {settings?.partners?.slice(0, 8).map((partner, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-center p-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group relative border border-slate-200"
-                      title={`${partner.name} - от ${partner.minRate}%`}
-                    >
-                      {partner.logoUrl && (
-                        <img
-                          src={getCachedImageUrl(partner.logoUrl)}
-                          alt={partner.name}
-                          className="h-8 w-12 object-contain"
-                        />
-                      )}
-                      {/* Tooltip on hover */}
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                        от {partner.minRate}%
-                      </div>
+              <div className="flex flex-wrap gap-4 justify-center">
+                {settings?.partners?.slice(0, 8).map((partner, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-center group relative"
+                    title={`${partner.name} - от ${partner.minRate}%`}
+                  >
+                    {partner.logoUrl && (
+                      <img
+                        src={getCachedImageUrl(partner.logoUrl)}
+                        alt={partner.name}
+                        className="h-8 w-12 object-contain hover:opacity-75 transition-opacity"
+                      />
+                    )}
+                    {/* Tooltip on hover */}
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                      от {partner.minRate}%
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
 
