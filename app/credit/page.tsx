@@ -338,7 +338,7 @@ export default function CreditPage() {
             {/* Credit Image */}
             <div className="absolute -top-16 right-0 md:-top-20 md:right-4 z-10">
               <Image
-                src="/uploads/car_credit3.png"
+                src="/car_credit3.png"
                 alt="Car Credit"
                 width={300}
                 height={300}
