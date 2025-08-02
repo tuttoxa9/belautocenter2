@@ -96,12 +96,57 @@ export default function CatalogPage() {
   const loadCars = async () => {
     try {
       setLoading(true)
+
+      // Сначала пробуем загрузить через кэшированный API
+      try {
+        const response = await fetch('/api/firestore?collection=cars', {
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'max-age=300'
+          }
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          const carsData = data.documents?.map((doc: any) => {
+            const id = doc.name.split('/').pop() || ''
+            const fields: Record<string, any> = {}
+
+            // Преобразуем Firestore поля в обычные объекты
+            for (const [key, value] of Object.entries(doc.fields || {})) {
+              if ((value as any).stringValue) {
+                fields[key] = (value as any).stringValue
+              } else if ((value as any).integerValue) {
+                fields[key] = parseInt((value as any).integerValue)
+              } else if ((value as any).doubleValue) {
+                fields[key] = parseFloat((value as any).doubleValue)
+              } else if ((value as any).booleanValue !== undefined) {
+                fields[key] = (value as any).booleanValue
+              } else if ((value as any).timestampValue) {
+                fields[key] = new Date((value as any).timestampValue)
+              } else {
+                fields[key] = value
+              }
+            }
+
+            return { id, ...fields }
+          }) || []
+
+          setCars(carsData as Car[])
+          return
+        }
+      } catch (apiError) {
+        console.warn('Кэшированный API недоступен, используем прямое подключение к Firebase:', apiError)
+      }
+
+      // Fallback: прямое подключение к Firebase
       const snapshot = await getDocs(collection(db, "cars"))
       const carsData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }))
       setCars(carsData as Car[])
+
     } catch (error) {
       console.error("Ошибка загрузки автомобилей:", error)
     } finally {

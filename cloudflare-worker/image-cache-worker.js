@@ -23,19 +23,45 @@ export default {
 async function handleFirestoreRequest(request, env, ctx) {
   const url = new URL(request.url);
 
-  // Очищаем путь от префиксов
+  // Обрабатываем CORS preflight запросы
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Cache-Control, If-None-Match',
+        'Access-Control-Max-Age': '86400'
+      }
+    });
+  }
+
+  // Очищаем путь от префиксов и извлекаем параметры
   let firestorePath = url.pathname.replace(/^\/api\/firestore\//, '').replace(/^\/firestore\//, '');
+  const collection = url.searchParams.get('collection');
+  const document = url.searchParams.get('document');
+
+  // Если путь не задан, строим его из параметров
+  if (!firestorePath && collection) {
+    firestorePath = collection;
+    if (document) {
+      firestorePath += `/${document}`;
+    }
+  }
 
   if (!firestorePath) {
-    return new Response('Missing Firestore path', { status: 400 });
+    return new Response('Missing Firestore path or collection parameter', { status: 400 });
   }
 
   // Создаем URL для Firestore REST API
   const firestoreUrl = `${FIRESTORE_BASE_URL}${firestorePath}`;
 
-  // Создаем ключ для кэша
-  const cacheKey = new Request(request.url);
+  // Создаем улучшенный ключ для кэша с учетом параметров
+  const cacheKey = new Request(`${request.url}?${url.searchParams.toString()}`);
   const cache = caches.default;
+
+  // Проверяем If-None-Match заголовок для условного кэширования
+  const ifNoneMatch = request.headers.get('if-none-match');
 
   // Проверяем кэш
   let response = await cache.match(cacheKey);
@@ -44,38 +70,76 @@ async function handleFirestoreRequest(request, env, ctx) {
     // Запрашиваем данные из Firestore
     response = await fetch(firestoreUrl, {
       headers: {
-        'Authorization': `Bearer ${env.FIREBASE_API_KEY || ''}`,
         'Content-Type': 'application/json',
-        'User-Agent': 'Cloudflare-Worker-Firestore-Cache/1.0'
+        'User-Agent': 'Cloudflare-Worker-Firestore-Cache/2.0'
+      },
+      cf: {
+        cacheTtl: 300, // 5 минут в Cloudflare cache
+        cacheEverything: true
       }
     });
 
     if (!response.ok) {
-      return response;
+      return new Response(`Firestore error: ${response.status} ${response.statusText}`, {
+        status: response.status,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'X-Cache-Status': 'ERROR'
+        }
+      });
     }
 
-    // Добавляем заголовки кэширования
-    const headers = new Headers(response.headers);
-    headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60'); // 5 минут
-    headers.set('CDN-Cache-Control', 'public, max-age=300');
-    headers.set('X-Cached-By', 'Cloudflare-Worker-Firestore');
+    // Получаем данные для создания ETag
+    const responseBody = await response.text();
+
+    // Создаем ETag на основе содержимого
+    const etag = `"${await crypto.subtle.digest('SHA-256', new TextEncoder().encode(responseBody))
+      .then(buffer => Array.from(new Uint8Array(buffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('')
+        .slice(0, 16)
+      )}"`;
+
+    // Если ETag совпадает с If-None-Match, возвращаем 304
+    if (ifNoneMatch === etag) {
+      return new Response(null, {
+        status: 304,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'ETag': etag,
+          'X-Cache-Status': 'NOT_MODIFIED'
+        }
+      });
+    }
+
+    // Добавляем улучшенные заголовки кэширования
+    const headers = new Headers();
+    headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, must-revalidate');
+    headers.set('CDN-Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=300');
+    headers.set('ETag', etag);
+    headers.set('Vary', 'Accept-Encoding, If-None-Match');
+    headers.set('X-Cached-By', 'Cloudflare-Worker-Firestore-v2');
     headers.set('X-Cache-Status', 'MISS');
+    headers.set('X-Cache-TTL', '300');
     headers.set('Access-Control-Allow-Origin', '*');
     headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, If-None-Match');
+    headers.set('Access-Control-Expose-Headers', 'ETag, X-Cache-Status, X-Cache-TTL');
+    headers.set('Content-Type', 'application/json; charset=utf-8');
 
-    response = new Response(response.body, {
+    response = new Response(responseBody, {
       status: response.status,
-      statusText: response.statusText,
       headers: headers
     });
 
-    // Сохраняем в кэш
+    // Сохраняем в кэш с увеличенным TTL
     ctx.waitUntil(cache.put(cacheKey, response.clone()));
   } else {
     // Добавляем заголовок о попадании в кэш
     const headers = new Headers(response.headers);
     headers.set('X-Cache-Status', 'HIT');
+    headers.set('Access-Control-Allow-Origin', '*');
 
     response = new Response(response.body, {
       status: response.status,

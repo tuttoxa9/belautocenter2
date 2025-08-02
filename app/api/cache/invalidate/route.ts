@@ -45,6 +45,7 @@ export async function POST(request: Request) {
     const cloudflareZoneId = process.env.CLOUDFLARE_ZONE_ID
     const cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN
 
+    // Инвалидация основного кэша Cloudflare
     if (cloudflareZoneId && cloudflareApiToken) {
       const response = await fetch(
         `https://api.cloudflare.com/client/v4/zones/${cloudflareZoneId}/purge_cache`,
@@ -62,6 +63,54 @@ export async function POST(request: Request) {
 
       if (!response.ok) {
         console.error('Failed to purge Cloudflare cache:', await response.text())
+      }
+    }
+
+    // Инвалидация кэша Firestore данных
+    const firestoreUrls = []
+    const cacheWorkerUrl = process.env.NEXT_PUBLIC_FIRESTORE_CACHE_WORKER_URL
+
+    if (cacheWorkerUrl) {
+      switch (collectionName) {
+        case 'cars':
+          firestoreUrls.push(`${cacheWorkerUrl}/api/firestore?collection=cars`)
+          if (documentId) {
+            firestoreUrls.push(`${cacheWorkerUrl}/api/firestore?collection=cars&document=${documentId}`)
+          }
+          break
+        case 'reviews':
+          firestoreUrls.push(`${cacheWorkerUrl}/api/firestore?collection=reviews`)
+          break
+        case 'stories':
+          firestoreUrls.push(`${cacheWorkerUrl}/api/firestore?collection=stories`)
+          break
+        case 'settings':
+          firestoreUrls.push(`${cacheWorkerUrl}/api/firestore?collection=settings`)
+          break
+        case 'pages':
+          firestoreUrls.push(`${cacheWorkerUrl}/api/firestore?collection=pages`)
+          break
+      }
+
+      // Очистка кэша Worker через Cloudflare API
+      if (cloudflareZoneId && cloudflareApiToken && firestoreUrls.length > 0) {
+        const firestoreResponse = await fetch(
+          `https://api.cloudflare.com/client/v4/zones/${cloudflareZoneId}/purge_cache`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${cloudflareApiToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              files: firestoreUrls
+            })
+          }
+        )
+
+        if (!firestoreResponse.ok) {
+          console.error('Failed to purge Firestore cache:', await firestoreResponse.text())
+        }
       }
     }
 

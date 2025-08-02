@@ -10,7 +10,7 @@ FIREBASE_PROJECT_ID = "belauto-5dd94"
 name = "autobel-cache-worker"
 routes = [
   { pattern = "images.belautocenter.by/*", zone_name = "belautocenter.by" },
-  { pattern = "api.belautocenter.by/firestore/*", zone_name = "belautocenter.by" }
+  { pattern = "cache.belautocenter.by/*", zone_name = "belautocenter.by" }
 ]
 
 [env.development]
