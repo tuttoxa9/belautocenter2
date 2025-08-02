@@ -609,57 +609,49 @@ export default function CreditPage() {
               </div>
             </div>
 
-            {/* Application Form - современная мобильная версия */}
+            {/* Application Form - компактная версия */}
             <div className="lg:col-span-2">
-              <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl md:rounded-3xl p-4 md:p-8 h-full shadow-lg border border-slate-200">
-                <div className="flex items-center gap-3 mb-4 md:mb-6">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <FileText className="h-5 w-5 md:h-6 md:w-6 text-white" />
-                  </div>
-                  <h2 className="text-lg md:text-2xl font-bold text-slate-900">Подать заявку</h2>
-                </div>
+              <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl md:rounded-3xl p-3 md:p-8 h-full shadow-lg border border-slate-200">
+                <h2 className="text-lg md:text-2xl font-bold text-slate-900 mb-3 md:mb-6">Подать заявку</h2>
+                <p className="text-sm text-slate-600 mb-3 md:hidden">Заполните форму и мы свяжемся с вами</p>
 
-                <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
-                  <div className="space-y-4">
-                    <div className="group">
-                      <Label htmlFor="name" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-5">
+                  <div className="space-y-3">
+                    <div>
+                      <Label htmlFor="name" className="text-sm font-medium text-slate-800 mb-1 block">
                         Ваше имя
                       </Label>
                       <Input
                         id="name"
                         value={creditForm.name}
                         onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
-                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
                         placeholder="Введите ваше имя"
                         required
                       />
                     </div>
 
-                    <div className="group">
-                      <Label htmlFor="phone" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div>
+                      <Label htmlFor="phone" className="text-sm font-medium text-slate-800 mb-1 block">
                         Номер телефона
                       </Label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
                           id="phone"
                           value={creditForm.phone}
                           onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
-                          className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl pl-10 pr-10 h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                          className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg pr-10 h-10 md:h-12 text-sm transition-all duration-200"
                           placeholder="+375XXXXXXXXX"
                           required
                         />
                         {isPhoneValid(creditForm.phone) && (
-                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-500" />
                         )}
                       </div>
                     </div>
 
-                    <div className="group">
-                      <Label htmlFor="email" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div>
+                      <Label htmlFor="email" className="text-sm font-medium text-slate-800 mb-1 block">
                         Email
                       </Label>
                       <Input
@@ -667,17 +659,16 @@ export default function CreditPage() {
                         type="email"
                         value={creditForm.email}
                         onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
-                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
                         placeholder="your@email.com"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="group">
-                      <Label htmlFor="carPrice" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                        <DollarSign className="w-3 h-3 text-blue-500" />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="carPrice" className="text-sm font-medium text-slate-800 mb-1 block">
                         Стоимость ($)
                       </Label>
                       <Input
@@ -685,14 +676,13 @@ export default function CreditPage() {
                         type="number"
                         value={creditForm.carPrice}
                         onChange={(e) => setCreditForm({ ...creditForm, carPrice: e.target.value })}
-                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
                         placeholder="50000"
                         required
                       />
                     </div>
-                    <div className="group">
-                      <Label htmlFor="downPayment" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                        <CreditCard className="w-3 h-3 text-blue-500" />
+                    <div>
+                      <Label htmlFor="downPayment" className="text-sm font-medium text-slate-800 mb-1 block">
                         Взнос ($)
                       </Label>
                       <Input
@@ -700,48 +690,46 @@ export default function CreditPage() {
                         type="number"
                         value={creditForm.downPayment}
                         onChange={(e) => setCreditForm({ ...creditForm, downPayment: e.target.value })}
-                        className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
                         placeholder="15000"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="group">
-                      <Label htmlFor="loanTerm" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                        <Award className="w-3 h-3 text-blue-500" />
-                        Срок кредита
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="loanTerm" className="text-sm font-medium text-slate-800 mb-1 block">
+                        Срок
                       </Label>
                       <Select
                         value={creditForm.loanTerm}
                         onValueChange={(value) => setCreditForm({ ...creditForm, loanTerm: value })}
                       >
-                        <SelectTrigger className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md">
-                          <SelectValue placeholder="Выберите срок" />
+                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200">
+                          <SelectValue placeholder="Месяцы" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="12">12 месяцев</SelectItem>
-                          <SelectItem value="24">24 месяца</SelectItem>
-                          <SelectItem value="36">36 месяцев</SelectItem>
-                          <SelectItem value="48">48 месяцев</SelectItem>
-                          <SelectItem value="60">60 месяцев</SelectItem>
-                          <SelectItem value="72">72 месяца</SelectItem>
-                          <SelectItem value="84">84 месяца</SelectItem>
+                          <SelectItem value="12">12 мес</SelectItem>
+                          <SelectItem value="24">24 мес</SelectItem>
+                          <SelectItem value="36">36 мес</SelectItem>
+                          <SelectItem value="48">48 мес</SelectItem>
+                          <SelectItem value="60">60 мес</SelectItem>
+                          <SelectItem value="72">72 мес</SelectItem>
+                          <SelectItem value="84">84 мес</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="group">
-                      <Label htmlFor="bank" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                        <Shield className="w-3 h-3 text-blue-500" />
-                        Предпочитаемый банк
+                    <div>
+                      <Label htmlFor="bank" className="text-sm font-medium text-slate-800 mb-1 block">
+                        Банк
                       </Label>
                       <Select
                         value={creditForm.bank}
                         onValueChange={(value) => setCreditForm({ ...creditForm, bank: value })}
                       >
-                        <SelectTrigger className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md">
-                          <SelectValue placeholder="Выберите банк" />
+                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200">
+                          <SelectValue placeholder="Любой" />
                         </SelectTrigger>
                         <SelectContent>
                           {settings?.partners?.map((partner) => (
@@ -758,41 +746,37 @@ export default function CreditPage() {
                     </div>
                   </div>
 
-                  <div className="group">
-                    <Label htmlFor="message" className="text-sm font-semibold text-slate-800 mb-2 block flex items-center gap-2">
-                      <FileText className="w-3 h-3 text-blue-500" />
+                  <div>
+                    <Label htmlFor="message" className="text-sm font-medium text-slate-800 mb-1 block">
                       Комментарий
                     </Label>
                     <Input
                       id="message"
                       value={creditForm.message}
                       onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
-                      className="bg-white border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl h-12 text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                      className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
                       placeholder="Дополнительная информация..."
                     />
                   </div>
 
                   <StatusButton
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-4 mt-6 font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 mt-4 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200"
                     state={submitButtonState.state}
-                    loadingText="Отправляем заявку..."
-                    successText="Заявка отправлена!"
-                    errorText="Ошибка отправки"
+                    loadingText="Отправляем..."
+                    successText="Отправлено!"
+                    errorText="Ошибка"
                   >
-                    <div className="flex items-center justify-center gap-2">
-                      <FileText className="h-5 w-5" />
-                      Отправить заявку на кредит
-                    </div>
+                    Отправить заявку на кредит
                   </StatusButton>
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                    <p className="text-xs text-slate-600 leading-relaxed">
+                  <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+                    <p className="text-xs text-slate-600 leading-tight">
                       Нажимая кнопку "Отправить заявку на кредит", вы соглашаетесь с{" "}
-                      <Link href="/privacy#data-processing" className="text-blue-600 hover:text-blue-800 underline font-medium">
+                      <Link href="/privacy#data-processing" className="text-blue-600 hover:text-blue-800 underline">
                         условиями обработки персональных данных
                       </Link>
-                      {" "}и даете согласие на их использование для рассмотрения вашей заявки.
+                      {" "}и даете согласие на их использование.
                     </p>
                   </div>
 
