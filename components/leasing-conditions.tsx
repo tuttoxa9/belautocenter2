@@ -1,20 +1,33 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Car, Calendar, DollarSign, CheckCircle, Clock, CreditCard, Shield, Users, FileText } from "lucide-react"
 
-interface LeasingCondition {
-  icon: string
-  title: string
-  description: string
-}
+export default function LeasingConditions() {
+  const conditions = [
+    {
+      icon: "car",
+      title: "Возраст автомобиля",
+      description: "Автомобили от 2000 года выпуска"
+    },
+    {
+      icon: "calendar",
+      title: "Срок лизинга",
+      description: "Срок лизинга до 10 лет"
+    },
+    {
+      icon: "dollar-sign",
+      title: "Валюта договора",
+      description: "Валюта: USD, EUR"
+    },
+    {
+      icon: "check-circle",
+      title: "Досрочное погашение",
+      description: "Досрочное погашение после 6 месяцев без штрафных санкций"
+    }
+  ]
 
-interface LeasingConditionsProps {
-  conditions?: LeasingCondition[]
-  additionalNote?: string
-}
+  const additionalNote = "Все дополнительные вопросы обсуждаемы с каждым клиентом индивидуально"
 
-export default function LeasingConditions({ conditions, additionalNote }: LeasingConditionsProps) {
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case "car":
@@ -40,33 +53,29 @@ export default function LeasingConditions({ conditions, additionalNote }: Leasin
     }
   }
 
-  if (!conditions || conditions.length === 0) {
-    return null
-  }
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Условия лизинга</h2>
-        <p className="text-gray-600 text-sm mb-6">
+        <h4 className="text-base md:text-lg font-semibold text-slate-900 mb-2 md:mb-3">Условия лизинга</h4>
+        <p className="text-xs md:text-sm text-slate-600 mb-3 md:mb-4">
           Основные условия получения автомобиля в лизинг
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
         {conditions.map((condition, index) => {
           const IconComponent = getIcon(condition.icon)
           return (
             <div
               key={index}
-              className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-100 hover:border-green-200 hover:bg-green-50/30 transition-all duration-200"
+              className="flex items-start space-x-3 p-2 md:p-3 bg-white rounded-lg border border-slate-100 hover:border-slate-200 hover:bg-slate-50/30 transition-all duration-200"
             >
-              <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <IconComponent className="h-4 w-4 text-green-600" />
+              <div className="w-7 h-7 md:w-8 md:h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <IconComponent className="h-3 w-3 md:h-4 md:w-4 text-blue-600" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 text-sm mb-1">{condition.title}</h3>
-                <p className="text-gray-700 text-sm leading-relaxed">
+                <h5 className="font-semibold text-slate-900 text-xs md:text-sm mb-1">{condition.title}</h5>
+                <p className="text-slate-700 text-xs md:text-sm leading-relaxed">
                   {condition.description}
                 </p>
               </div>
@@ -76,14 +85,14 @@ export default function LeasingConditions({ conditions, additionalNote }: Leasin
       </div>
 
       {additionalNote && (
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-green-100">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 md:p-4 border border-blue-100">
           <div className="flex items-start space-x-3">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-              <CheckCircle className="h-3 w-3 text-green-600" />
+            <div className="w-5 h-5 md:w-6 md:h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <CheckCircle className="h-2 w-2 md:h-3 md:w-3 text-blue-600" />
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 text-sm mb-1">Индивидуальный подход</h4>
-              <p className="text-gray-600 text-xs">
+              <h6 className="font-semibold text-slate-900 text-xs md:text-sm mb-1">Индивидуальный подход</h6>
+              <p className="text-slate-600 text-xs md:text-sm">
                 {additionalNote}
               </p>
             </div>
