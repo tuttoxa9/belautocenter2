@@ -391,33 +391,38 @@ export default function CreditPage() {
                       Калькулятор
                     </h2>
                   </button>
-                  <button
-                    onClick={() => setIsCalculatorExpanded(!isCalculatorExpanded)}
-                    className="lg:hidden bg-slate-100 hover:bg-slate-200 p-2 rounded-lg transition-all duration-200"
-                  >
-                    {isCalculatorExpanded ? (
-                      <ChevronUp className="h-5 w-5 text-slate-600" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-slate-600" />
-                    )}
-                  </button>
+                  {isMounted && (
+                    <button
+                      onClick={() => setIsCalculatorExpanded(!isCalculatorExpanded)}
+                      className="lg:hidden bg-slate-100 hover:bg-slate-200 p-2 rounded-lg transition-all duration-200"
+                    >
+                      {isCalculatorExpanded ? (
+                        <ChevronUp className="h-5 w-5 text-slate-600" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-slate-600" />
+                      )}
+                    </button>
+                  )}
                 </div>
-                <div className="hidden md:flex items-center space-x-2">
-                  <Checkbox
-                    id="currency"
-                    checked={isBelarusianRubles}
-                    onCheckedChange={handleCurrencyChange}
-                    className="data-[state=checked]:bg-slate-900"
-                  />
-                  <Label htmlFor="currency" className="text-xs md:text-sm font-medium text-slate-700 cursor-pointer">
-                    В белорусских рублях
-                  </Label>
-                </div>
+                {isMounted && (
+                  <div className="hidden md:flex items-center space-x-2">
+                    <Checkbox
+                      id="currency"
+                      checked={isBelarusianRubles}
+                      onCheckedChange={handleCurrencyChange}
+                      className="data-[state=checked]:bg-slate-900"
+                    />
+                    <Label htmlFor="currency" className="text-xs md:text-sm font-medium text-slate-700 cursor-pointer">
+                      В белорусских рублях
+                    </Label>
+                  </div>
+                )}
               </div>
 
               {/* Parameters Grid - статичный калькулятор */}
               <div className={`transition-all duration-500 ease-in-out overflow-hidden lg:max-h-screen lg:opacity-100 ${
-                isMounted && (isCalculatorExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 lg:max-h-screen lg:opacity-100')
+                !isMounted ? 'max-h-0 opacity-0 lg:max-h-screen lg:opacity-100' :
+                (isCalculatorExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 lg:max-h-screen lg:opacity-100')
               }`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6 pt-2 lg:pt-0">
 
