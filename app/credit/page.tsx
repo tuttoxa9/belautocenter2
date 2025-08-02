@@ -366,8 +366,8 @@ export default function CreditPage() {
 
             {/* Banks Partners Section - переносим в начало на мобильном */}
             <div className="lg:hidden mb-4">
-              <div className="flex flex-wrap gap-4 justify-center">
-                {settings?.partners?.slice(0, 8).map((partner, index) => (
+              <div className="flex flex-wrap gap-2 justify-center">
+                {settings?.partners?.slice(0, 6).map((partner, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-center group relative"
@@ -377,7 +377,7 @@ export default function CreditPage() {
                       <img
                         src={getCachedImageUrl(partner.logoUrl)}
                         alt={partner.name}
-                        className="h-8 w-12 object-contain hover:opacity-75 transition-opacity"
+                        className="h-6 w-9 object-contain hover:opacity-75 transition-opacity"
                       />
                     )}
                     {/* Tooltip on hover */}
@@ -608,12 +608,12 @@ export default function CreditPage() {
 
             {/* Application Form - компактная версия */}
             <div className="lg:col-span-2">
-              <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl md:rounded-3xl p-3 md:p-8 h-full shadow-lg border border-slate-200">
-                <h2 className="text-lg md:text-2xl font-bold text-slate-900 mb-3 md:mb-6">Подать заявку</h2>
+              <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl md:rounded-3xl p-3 md:p-6 h-full shadow-lg border border-slate-200">
+                <h2 className="text-lg md:text-xl font-bold text-slate-900 mb-3 md:mb-4">Подать заявку</h2>
                 <p className="text-sm text-slate-600 mb-3 md:hidden">Заполните форму и мы свяжемся с вами</p>
 
-                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-5">
-                  <div className="space-y-3">
+                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-3">
+                  <div className="space-y-3 md:space-y-2">
                     <div>
                       <Label htmlFor="name" className="text-sm font-medium text-slate-800 mb-1 block">
                         Ваше имя
@@ -622,7 +622,7 @@ export default function CreditPage() {
                         id="name"
                         value={creditForm.name}
                         onChange={(e) => setCreditForm({ ...creditForm, name: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
                         placeholder="Введите ваше имя"
                         required
                       />
@@ -637,7 +637,7 @@ export default function CreditPage() {
                           id="phone"
                           value={creditForm.phone}
                           onChange={(e) => setCreditForm({ ...creditForm, phone: formatPhoneNumber(e.target.value) })}
-                          className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg pr-10 h-10 md:h-12 text-sm transition-all duration-200"
+                          className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg pr-10 h-10 text-sm transition-all duration-200"
                           placeholder="+375XXXXXXXXX"
                           required
                         />
@@ -656,14 +656,14 @@ export default function CreditPage() {
                         type="email"
                         value={creditForm.email}
                         onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
                         placeholder="your@email.com"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3 md:gap-2">
                     <div>
                       <Label htmlFor="carPrice" className="text-sm font-medium text-slate-800 mb-1 block">
                         Стоимость ($)
@@ -673,7 +673,7 @@ export default function CreditPage() {
                         type="number"
                         value={creditForm.carPrice}
                         onChange={(e) => setCreditForm({ ...creditForm, carPrice: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
                         placeholder="50000"
                         required
                       />
@@ -687,14 +687,14 @@ export default function CreditPage() {
                         type="number"
                         value={creditForm.downPayment}
                         onChange={(e) => setCreditForm({ ...creditForm, downPayment: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
+                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
                         placeholder="15000"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3 md:gap-2">
                     <div>
                       <Label htmlFor="loanTerm" className="text-sm font-medium text-slate-800 mb-1 block">
                         Срок
@@ -703,7 +703,7 @@ export default function CreditPage() {
                         value={creditForm.loanTerm}
                         onValueChange={(value) => setCreditForm({ ...creditForm, loanTerm: value })}
                       >
-                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200">
+                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200">
                           <SelectValue placeholder="Месяцы" />
                         </SelectTrigger>
                         <SelectContent>
@@ -725,7 +725,7 @@ export default function CreditPage() {
                         value={creditForm.bank}
                         onValueChange={(value) => setCreditForm({ ...creditForm, bank: value })}
                       >
-                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200">
+                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200">
                           <SelectValue placeholder="Любой" />
                         </SelectTrigger>
                         <SelectContent>
@@ -751,14 +751,14 @@ export default function CreditPage() {
                       id="message"
                       value={creditForm.message}
                       onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
-                      className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 md:h-12 text-sm transition-all duration-200"
+                      className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
                       placeholder="Дополнительная информация..."
                     />
                   </div>
 
                   <StatusButton
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 mt-4 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 mt-3 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200"
                     state={submitButtonState.state}
                     loadingText="Отправляем..."
                     successText="Отправлено!"
