@@ -711,14 +711,14 @@ export default function CreditPage() {
                       {settings?.partners?.map((partner, index) => (
                         <div
                           key={index}
-                          className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center hover:shadow-md hover:border-slate-300 transition-all duration-200 group relative"
+                          className="w-16 h-16 bg-white rounded-xl border border-slate-200 flex items-center justify-center hover:shadow-lg hover:border-slate-300 transition-all duration-200 group relative"
                           title={`${partner.name} - от ${partner.minRate}%`}
                         >
                           {partner.logoUrl && (
                             <img
                               src={getCachedImageUrl(partner.logoUrl)}
                               alt={partner.name}
-                              className="h-6 w-7 object-contain"
+                              className="h-8 w-10 object-contain"
                             />
                           )}
                           {/* Tooltip on hover */}
@@ -743,18 +743,18 @@ export default function CreditPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {settings?.benefits?.map((benefit, index) => {
                 // Определяем иконки для каждого преимущества
-                const icons = ['💰', '⚡', '🔒', '📋', '🏆', '📞'];
+                const icons = ['💰', '⚡', '🔒', '📋', '🏆', '📞', '🚗', '⭐', '✅', '💳'];
                 const currentIcon = icons[index % icons.length];
 
                 return (
                   <div key={index} className="group p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all duration-300 border border-slate-200 hover:border-slate-300 hover:shadow-md">
                     <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center group-hover:bg-slate-800 transition-colors">
-                        <span className="text-white text-lg">{benefit.icon || currentIcon}</span>
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:from-blue-600 group-hover:to-blue-700 transition-all shadow-md">
+                        <span className="text-white text-xl">{currentIcon}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-slate-900 mb-2 text-sm leading-tight">{benefit.title}</h4>
-                        <p className="text-sm text-slate-700 leading-relaxed">{benefit.description}</p>
+                        <h4 className="font-semibold text-slate-900 mb-2 text-base leading-tight">{benefit.title}</h4>
+                        <p className="text-sm text-slate-600 leading-relaxed">{benefit.description}</p>
                       </div>
                     </div>
                   </div>
@@ -763,7 +763,7 @@ export default function CreditPage() {
             </div>
 
             <div className="mt-6 pt-6 border-t border-slate-200">
-              <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-xl p-4 text-white">
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                 <CreditConditions />
               </div>
             </div>
