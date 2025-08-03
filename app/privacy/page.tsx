@@ -41,6 +41,73 @@ export default function PrivacyPage() {
     }
   })
 
+  const sections = [
+    {
+      id: 'introduction',
+      title: 'Общие положения',
+      icon: FileText,
+      content: privacyData.sections.introduction,
+      description: 'Основные принципы и область применения',
+      gradient: 'from-blue-600 via-purple-600 to-indigo-700'
+    },
+    {
+      id: 'dataCollection',
+      title: 'Сбор данных',
+      icon: Database,
+      content: privacyData.sections.dataCollection,
+      description: 'Виды собираемой информации',
+      gradient: 'from-emerald-500 via-teal-500 to-cyan-600'
+    },
+    {
+      id: 'dataUsage',
+      title: 'Использование',
+      icon: Eye,
+      content: privacyData.sections.dataUsage,
+      description: 'Цели обработки данных',
+      gradient: 'from-amber-500 via-orange-500 to-red-500'
+    },
+    {
+      id: 'dataSecurity',
+      title: 'Безопасность',
+      icon: Lock,
+      content: privacyData.sections.dataSecurity,
+      description: 'Меры защиты информации',
+      gradient: 'from-red-600 via-pink-600 to-rose-700'
+    },
+    {
+      id: 'userRights',
+      title: 'Права пользователей',
+      icon: Users,
+      content: privacyData.sections.userRights,
+      description: 'Ваши законные права',
+      gradient: 'from-violet-600 via-purple-600 to-indigo-700'
+    },
+    {
+      id: 'cookies',
+      title: 'Cookies',
+      icon: Cookie,
+      content: privacyData.sections.cookies,
+      description: 'Использование файлов cookies',
+      gradient: 'from-yellow-500 via-amber-500 to-orange-600'
+    },
+    {
+      id: 'thirdParty',
+      title: 'Третьи лица',
+      icon: Share2,
+      content: privacyData.sections.thirdParty,
+      description: 'Передача данных партнерам',
+      gradient: 'from-teal-600 via-cyan-600 to-blue-700'
+    },
+    {
+      id: 'contact',
+      title: 'Контакты',
+      icon: Mail,
+      content: privacyData.sections.contact,
+      description: 'Обратная связь',
+      gradient: 'from-green-600 via-emerald-600 to-teal-700'
+    }
+  ]
+
   useEffect(() => {
     loadPrivacyData()
   }, [])
@@ -169,73 +236,6 @@ export default function PrivacyPage() {
       </div>
     )
   }
-
-  const sections = [
-    {
-      id: 'introduction',
-      title: 'Общие положения',
-      icon: FileText,
-      content: privacyData.sections.introduction,
-      description: 'Основные принципы и область применения',
-      gradient: 'from-blue-600 via-purple-600 to-indigo-700'
-    },
-    {
-      id: 'dataCollection',
-      title: 'Сбор данных',
-      icon: Database,
-      content: privacyData.sections.dataCollection,
-      description: 'Виды собираемой информации',
-      gradient: 'from-emerald-500 via-teal-500 to-cyan-600'
-    },
-    {
-      id: 'dataUsage',
-      title: 'Использование',
-      icon: Eye,
-      content: privacyData.sections.dataUsage,
-      description: 'Цели обработки данных',
-      gradient: 'from-amber-500 via-orange-500 to-red-500'
-    },
-    {
-      id: 'dataSecurity',
-      title: 'Безопасность',
-      icon: Lock,
-      content: privacyData.sections.dataSecurity,
-      description: 'Меры защиты информации',
-      gradient: 'from-red-600 via-pink-600 to-rose-700'
-    },
-    {
-      id: 'userRights',
-      title: 'Права пользователей',
-      icon: Users,
-      content: privacyData.sections.userRights,
-      description: 'Ваши законные права',
-      gradient: 'from-violet-600 via-purple-600 to-indigo-700'
-    },
-    {
-      id: 'cookies',
-      title: 'Cookies',
-      icon: Cookie,
-      content: privacyData.sections.cookies,
-      description: 'Использование файлов cookies',
-      gradient: 'from-yellow-500 via-amber-500 to-orange-600'
-    },
-    {
-      id: 'thirdParty',
-      title: 'Третьи лица',
-      icon: Share2,
-      content: privacyData.sections.thirdParty,
-      description: 'Передача данных партнерам',
-      gradient: 'from-teal-600 via-cyan-600 to-blue-700'
-    },
-    {
-      id: 'contact',
-      title: 'Контакты',
-      icon: Mail,
-      content: privacyData.sections.contact,
-      description: 'Обратная связь',
-      gradient: 'from-green-600 via-emerald-600 to-teal-700'
-    }
-  ]
 
   const toggleSection = (sectionId: string) => {
     setExpandedSection(expandedSection === sectionId ? null : sectionId)
