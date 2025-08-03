@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import CarCard from "@/components/car-card"
-import { Filter, SlidersHorizontal, ArrowRight } from "lucide-react"
+import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import CarCardSkeleton from "@/components/car-card-skeleton"
 import { collection, getDocs } from "firebase/firestore"
@@ -31,6 +31,8 @@ export default function CatalogPage() {
   const [cars, setCars] = useState<Car[]>([])
   const [filteredCars, setFilteredCars] = useState<Car[]>([])
   const [loading, setLoading] = useState(true)
+  const [availableMakes, setAvailableMakes] = useState<string[]>([])
+  const [availableModels, setAvailableModels] = useState<string[]>([])
   const [filters, setFilters] = useState({
     priceFrom: "",
     priceTo: "",
@@ -45,6 +47,22 @@ export default function CatalogPage() {
     driveTrain: "any",
   })
   const [sortBy, setSortBy] = useState("price-asc")
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+
+  // Динамическое обновление доступных моделей при изменении марки
+  useEffect(() => {
+    if (filters.make === "all") {
+      const allModels = [...new Set(cars.map(car => car.model))].sort()
+      setAvailableModels(allModels)
+    } else {
+      const modelsForMake = [...new Set(cars.filter(car => car.make === filters.make).map(car => car.model))].sort()
+      setAvailableModels(modelsForMake)
+      // Сбрасываем модель если она не доступна для выбранной марки
+      if (filters.model !== "all" && !modelsForMake.includes(filters.model)) {
+        setFilters(prev => ({ ...prev, model: "all" }))
+      }
+    }
+  }, [filters.make, cars])
 
   const applyFilters = useCallback(() => {
     const filtered = cars.filter((car) => {
@@ -133,6 +151,15 @@ export default function CatalogPage() {
           }) || []
 
           setCars(carsData as Car[])
+
+          // Извлекаем уникальные марки из данных
+          const uniqueMakes = [...new Set(carsData.map((car: Car) => car.make))].sort()
+          setAvailableMakes(uniqueMakes)
+
+          // Извлекаем уникальные модели из данных
+          const uniqueModels = [...new Set(carsData.map((car: Car) => car.model))].sort()
+          setAvailableModels(uniqueModels)
+
           return
         }
       } catch (apiError) {
@@ -146,6 +173,14 @@ export default function CatalogPage() {
         ...doc.data(),
       }))
       setCars(carsData as Car[])
+
+      // Извлекаем уникальные марки из данных
+      const uniqueMakes = [...new Set(carsData.map((car: Car) => car.make))].sort()
+      setAvailableMakes(uniqueMakes)
+
+      // Извлекаем уникальные модели из данных
+      const uniqueModels = [...new Set(carsData.map((car: Car) => car.model))].sort()
+      setAvailableModels(uniqueModels)
 
     } catch (error) {
       console.error("Ошибка загрузки автомобилей:", error)
@@ -170,8 +205,339 @@ export default function CatalogPage() {
     })
   }
 
+  const hasActiveFilters = () => {
+    return filters.priceFrom !== "" || filters.priceTo !== "" || filters.make !== "all" ||
+           filters.model !== "all" || filters.yearFrom !== "" || filters.yearTo !== "" ||
+           filters.mileageFrom !== "" || filters.mileageTo !== "" || filters.transmission !== "any" ||
+           filters.fuelType !== "any" || filters.driveTrain !== "any"
+  }
+
+  // Мобильные фильтры компонент
+  const MobileFilters = () => (
+    <div className="space-y-6 max-h-[70vh] overflow-y-auto px-1">
+      {/* Марка */}
+      <div className="space-y-3">
+        <Label className="text-sm font-semibold text-gray-900">Марка</Label>
+        <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+          <Select value={filters.make} onValueChange={(value) => setFilters({ ...filters, make: value })}>
+            <SelectTrigger className="border-0 bg-transparent h-12 text-base font-medium">
+              <SelectValue placeholder="Все марки" />
+            </SelectTrigger>
+            <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+              <SelectItem value="all" className="text-base py-3">Все марки</SelectItem>
+              {availableMakes.map(make => (
+                <SelectItem key={make} value={make} className="text-base py-3">{make}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Модель */}
+      <div className="space-y-3">
+        <Label className="text-sm font-semibold text-gray-900">Модель</Label>
+        <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+          <Select value={filters.model} onValueChange={(value) => setFilters({ ...filters, model: value })}>
+            <SelectTrigger className="border-0 bg-transparent h-12 text-base font-medium">
+              <SelectValue placeholder="Все модели" />
+            </SelectTrigger>
+            <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+              <SelectItem value="all" className="text-base py-3">Все модели</SelectItem>
+              {availableModels.map(model => (
+                <SelectItem key={model} value={model} className="text-base py-3">{model}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Цена */}
+      <div className="space-y-3">
+        <Label className="text-sm font-semibold text-gray-900">Цена ($)</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Input
+              type="number"
+              placeholder="От"
+              value={filters.priceFrom}
+              onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })}
+              className="border-0 bg-transparent h-12 text-base font-medium placeholder:text-gray-400"
+            />
+          </div>
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Input
+              type="number"
+              placeholder="До"
+              value={filters.priceTo}
+              onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })}
+              className="border-0 bg-transparent h-12 text-base font-medium placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Год */}
+      <div className="space-y-3">
+        <Label className="text-sm font-semibold text-gray-900">Год выпуска</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Input
+              type="number"
+              placeholder="От"
+              value={filters.yearFrom}
+              onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })}
+              className="border-0 bg-transparent h-12 text-base font-medium placeholder:text-gray-400"
+            />
+          </div>
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Input
+              type="number"
+              placeholder="До"
+              value={filters.yearTo}
+              onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })}
+              className="border-0 bg-transparent h-12 text-base font-medium placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Кнопки */}
+      <div className="flex space-x-3 pt-4">
+        <Button
+          onClick={() => {
+            applyFilters()
+            setIsFilterOpen(false)
+          }}
+          className="flex-1 h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          Применить
+        </Button>
+        <Button
+          onClick={resetFilters}
+          variant="outline"
+          className="flex-1 h-12 bg-gray-50 border-gray-300 text-gray-700 font-semibold rounded-2xl hover:bg-gray-100 transition-all duration-300"
+        >
+          <RotateCcw className="h-4 w-4 mr-2" />
+          Сбросить
+        </Button>
+      </div>
+    </div>
+  )
+
+  // Десктопные фильтры компонент
+  const DesktopFilters = () => (
+    <Card className="sticky top-24 border-0 shadow-lg bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100/50">
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg mr-3">
+              <Filter className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-gray-900 font-bold">Фильтры</span>
+          </div>
+          {hasActiveFilters() && (
+            <Button
+              onClick={resetFilters}
+              variant="ghost"
+              size="sm"
+              className="text-gray-500 hover:text-gray-700 h-8 w-8 p-0 rounded-xl"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6 p-6">
+        {/* Цена */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Цена ($)</Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+              <Input
+                type="number"
+                placeholder="От"
+                value={filters.priceFrom}
+                onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })}
+                className="border-0 bg-transparent h-11 text-sm font-medium placeholder:text-gray-400"
+              />
+            </div>
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+              <Input
+                type="number"
+                placeholder="До"
+                value={filters.priceTo}
+                onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })}
+                className="border-0 bg-transparent h-11 text-sm font-medium placeholder:text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Марка */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Марка</Label>
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Select value={filters.make} onValueChange={(value) => setFilters({ ...filters, make: value })}>
+              <SelectTrigger className="border-0 bg-transparent h-11 text-sm font-medium">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+                <SelectItem value="all">Все марки</SelectItem>
+                {availableMakes.map(make => (
+                  <SelectItem key={make} value={make}>{make}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Модель */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Модель</Label>
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Select value={filters.model} onValueChange={(value) => setFilters({ ...filters, model: value })}>
+              <SelectTrigger className="border-0 bg-transparent h-11 text-sm font-medium">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+                <SelectItem value="all">Все модели</SelectItem>
+                {availableModels.map(model => (
+                  <SelectItem key={model} value={model}>{model}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Год */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Год выпуска</Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+              <Input
+                type="number"
+                placeholder="От"
+                value={filters.yearFrom}
+                onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })}
+                className="border-0 bg-transparent h-11 text-sm font-medium placeholder:text-gray-400"
+              />
+            </div>
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+              <Input
+                type="number"
+                placeholder="До"
+                value={filters.yearTo}
+                onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })}
+                className="border-0 bg-transparent h-11 text-sm font-medium placeholder:text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Пробег */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Пробег (км)</Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+              <Input
+                type="number"
+                placeholder="От"
+                value={filters.mileageFrom}
+                onChange={(e) => setFilters({ ...filters, mileageFrom: e.target.value })}
+                className="border-0 bg-transparent h-11 text-sm font-medium placeholder:text-gray-400"
+              />
+            </div>
+            <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+              <Input
+                type="number"
+                placeholder="До"
+                value={filters.mileageTo}
+                onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })}
+                className="border-0 bg-transparent h-11 text-sm font-medium placeholder:text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Коробка передач */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Коробка передач</Label>
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Select
+              value={filters.transmission}
+              onValueChange={(value) => setFilters({ ...filters, transmission: value })}
+            >
+              <SelectTrigger className="border-0 bg-transparent h-11 text-sm font-medium">
+                <SelectValue placeholder="Любая" />
+              </SelectTrigger>
+              <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+                <SelectItem value="any">Любая</SelectItem>
+                <SelectItem value="Механика">Механика</SelectItem>
+                <SelectItem value="Автомат">Автомат</SelectItem>
+                <SelectItem value="Вариатор">Вариатор</SelectItem>
+                <SelectItem value="Робот">Робот</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Тип топлива */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Тип топлива</Label>
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Select
+              value={filters.fuelType}
+              onValueChange={(value) => setFilters({ ...filters, fuelType: value })}
+            >
+              <SelectTrigger className="border-0 bg-transparent h-11 text-sm font-medium">
+                <SelectValue placeholder="Любой" />
+              </SelectTrigger>
+              <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+                <SelectItem value="any">Любой</SelectItem>
+                <SelectItem value="Бензин">Бензин</SelectItem>
+                <SelectItem value="Дизель">Дизель</SelectItem>
+                <SelectItem value="Гибрид">Гибрид</SelectItem>
+                <SelectItem value="Электро">Электро</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Привод */}
+        <div className="space-y-3">
+          <Label className="text-sm font-semibold text-gray-900">Привод</Label>
+          <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm">
+            <Select
+              value={filters.driveTrain}
+              onValueChange={(value) => setFilters({ ...filters, driveTrain: value })}
+            >
+              <SelectTrigger className="border-0 bg-transparent h-11 text-sm font-medium">
+                <SelectValue placeholder="Любой" />
+              </SelectTrigger>
+              <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+                <SelectItem value="any">Любой</SelectItem>
+                <SelectItem value="Передний">Передний</SelectItem>
+                <SelectItem value="Задний">Задний</SelectItem>
+                <SelectItem value="Полный">Полный</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="pt-4">
+          <Button
+            onClick={applyFilters}
+            className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Применить фильтры
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50">
       <div className="container px-4 py-8">
         {/* Хлебные крошки */}
         <nav className="mb-6">
@@ -189,256 +555,31 @@ export default function CatalogPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Мобильная кнопка фильтров */}
           <div className="lg:hidden mb-6">
-            <Dialog>
+            <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button
+                  variant="outline"
+                  className="w-full h-12 bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white hover:shadow-lg rounded-2xl transition-all duration-300"
+                >
                   <Filter className="h-4 w-4 mr-2" />
                   Фильтры
+                  {hasActiveFilters() && (
+                    <span className="ml-2 w-2 h-2 bg-blue-500 rounded-full"></span>
+                  )}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-sm">
-                <DialogHeader>
-                  <DialogTitle>Фильтры</DialogTitle>
+              <DialogContent className="max-w-sm rounded-3xl border-0 bg-white/95 backdrop-blur-sm">
+                <DialogHeader className="pb-4">
+                  <DialogTitle className="text-xl font-bold text-gray-900">Фильтры поиска</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {/* Упрощенные фильтры только основные */}
-                  <div>
-                    <Label>Марка</Label>
-                    <Select value={filters.make} onValueChange={(value) => setFilters({ ...filters, make: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Все марки" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Все марки</SelectItem>
-                        <SelectItem value="BMW">BMW</SelectItem>
-                        <SelectItem value="Audi">Audi</SelectItem>
-                        <SelectItem value="Mercedes-Benz">Mercedes-Benz</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Цена от ($)</Label>
-                    <Input
-                      type="number"
-                      placeholder="0"
-                      value={filters.priceFrom}
-                      onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label>Цена до ($)</Label>
-                    <Input
-                      type="number"
-                      placeholder="0"
-                      value={filters.priceTo}
-                      onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })}
-                    />
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button onClick={applyFilters} className="flex-1">
-                      Применить
-                    </Button>
-                    <Button onClick={resetFilters} variant="outline" className="flex-1 bg-transparent">
-                      Сбросить
-                    </Button>
-                  </div>
-                </div>
+                <MobileFilters />
               </DialogContent>
             </Dialog>
           </div>
 
-          {/* Десктопные фильтры - добавить класс hidden lg:block */}
+          {/* Десктопные фильтры */}
           <div className="lg:w-80 hidden lg:block">
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Filter className="h-5 w-5 mr-2" />
-                  Фильтры
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Цена */}
-                <div>
-                  <Label className="text-sm font-medium">Цена ($)</Label>
-                  <div className="grid grid-cols-2 gap-3 mt-3">
-                    <div>
-                      <Label className="text-xs">От</Label>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        value={filters.priceFrom}
-                        onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs">До</Label>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        value={filters.priceTo}
-                        onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Марка */}
-                <div>
-                  <Label>Марка</Label>
-                  <Select value={filters.make} onValueChange={(value) => setFilters({ ...filters, make: value })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Все марки</SelectItem>
-                      <SelectItem value="BMW">BMW</SelectItem>
-                      <SelectItem value="Audi">Audi</SelectItem>
-                      <SelectItem value="Mercedes-Benz">Mercedes-Benz</SelectItem>
-                      <SelectItem value="Volkswagen">Volkswagen</SelectItem>
-                      <SelectItem value="Toyota">Toyota</SelectItem>
-                      <SelectItem value="Skoda">Skoda</SelectItem>
-                      <SelectItem value="Hyundai">Hyundai</SelectItem>
-                      <SelectItem value="Kia">Kia</SelectItem>
-                      <SelectItem value="Mazda">Mazda</SelectItem>
-                      <SelectItem value="Nissan">Nissan</SelectItem>
-                      <SelectItem value="Ford">Ford</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Модель */}
-                <div>
-                  <Label>Модель</Label>
-                  <Select value={filters.model} onValueChange={(value) => setFilters({ ...filters, model: value })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Все модели</SelectItem>
-                      <SelectItem value="X5">X5</SelectItem>
-                      <SelectItem value="X3">X3</SelectItem>
-                      <SelectItem value="3 Series">3 Series</SelectItem>
-                      <SelectItem value="5 Series">5 Series</SelectItem>
-                      <SelectItem value="A4">A4</SelectItem>
-                      <SelectItem value="A6">A6</SelectItem>
-                      <SelectItem value="Q5">Q5</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Год */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Год от</Label>
-                    <Input
-                      type="number"
-                      placeholder="2015"
-                      value={filters.yearFrom}
-                      onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label>Год до</Label>
-                    <Input
-                      type="number"
-                      placeholder="2024"
-                      value={filters.yearTo}
-                      onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                {/* Пробег */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Пробег от</Label>
-                    <Input
-                      type="number"
-                      placeholder="0"
-                      value={filters.mileageFrom}
-                      onChange={(e) => setFilters({ ...filters, mileageFrom: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label>Пробег до</Label>
-                    <Input
-                      type="number"
-                      placeholder="200000"
-                      value={filters.mileageTo}
-                      onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                {/* Коробка передач */}
-                <div>
-                  <Label>Коробка передач</Label>
-                  <Select
-                    value={filters.transmission}
-                    onValueChange={(value) => setFilters({ ...filters, transmission: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Любая" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Любая</SelectItem>
-                      <SelectItem value="Механика">Механика</SelectItem>
-                      <SelectItem value="Автомат">Автомат</SelectItem>
-                      <SelectItem value="Вариатор">Вариатор</SelectItem>
-                      <SelectItem value="Робот">Робот</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Тип топлива */}
-                <div>
-                  <Label>Тип топлива</Label>
-                  <Select
-                    value={filters.fuelType}
-                    onValueChange={(value) => setFilters({ ...filters, fuelType: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Любой" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Любой</SelectItem>
-                      <SelectItem value="Бензин">Бензин</SelectItem>
-                      <SelectItem value="Дизель">Дизель</SelectItem>
-                      <SelectItem value="Гибрид">Гибрид</SelectItem>
-                      <SelectItem value="Электро">Электро</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Привод */}
-                <div>
-                  <Label>Привод</Label>
-                  <Select
-                    value={filters.driveTrain}
-                    onValueChange={(value) => setFilters({ ...filters, driveTrain: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Любой" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Любой</SelectItem>
-                      <SelectItem value="Передний">Передний</SelectItem>
-                      <SelectItem value="Задний">Задний</SelectItem>
-                      <SelectItem value="Полный">Полный</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex space-x-2">
-                  <Button onClick={applyFilters} className="flex-1">
-                    Применить
-                  </Button>
-                  <Button onClick={resetFilters} variant="outline" className="flex-1 bg-transparent">
-                    Сбросить
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <DesktopFilters />
           </div>
 
           {/* Основная область */}
@@ -446,24 +587,28 @@ export default function CatalogPage() {
             {/* Сортировка и результаты */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Каталог автомобилей</h1>
-                <p className="text-gray-600">Найдено {filteredCars.length} автомобилей</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Каталог автомобилей</h1>
+                <p className="text-gray-600">
+                  {loading ? "Загружаем автомобили..." : `Найдено ${filteredCars.length} автомобилей`}
+                </p>
               </div>
-              <div className="flex items-center space-x-2">
-                <SlidersHorizontal className="h-4 w-4 text-gray-500" />
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
-                    <SelectItem value="price-desc">Цена: по убыванию</SelectItem>
-                    <SelectItem value="year-desc">Год: сначала новые</SelectItem>
-                    <SelectItem value="year-asc">Год: сначала старые</SelectItem>
-                    <SelectItem value="mileage-asc">Пробег: по возрастанию</SelectItem>
-                    <SelectItem value="mileage-desc">Пробег: по убыванию</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-sm p-1">
+                <div className="flex items-center space-x-2 px-3">
+                  <SlidersHorizontal className="h-4 w-4 text-gray-500" />
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-48 border-0 bg-transparent h-10 text-sm font-medium">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="border-gray-200/50 shadow-xl rounded-xl">
+                      <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
+                      <SelectItem value="price-desc">Цена: по убыванию</SelectItem>
+                      <SelectItem value="year-desc">Год: сначала новые</SelectItem>
+                      <SelectItem value="year-asc">Год: сначала старые</SelectItem>
+                      <SelectItem value="mileage-asc">Пробег: по возрастанию</SelectItem>
+                      <SelectItem value="mileage-desc">Пробег: по убыванию</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
@@ -481,12 +626,22 @@ export default function CatalogPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">
+              <div className="text-center py-16">
+                <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Filter className="h-12 w-12 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {cars.length === 0 ? "Автомобили не добавлены в каталог" : "По вашим критериям автомобили не найдены"}
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  {cars.length === 0 ? "Скоро здесь появятся новые автомобили" : "Попробуйте изменить параметры поиска"}
                 </p>
                 {cars.length > 0 && (
-                  <Button onClick={resetFilters} className="mt-4">
+                  <Button
+                    onClick={resetFilters}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-2" />
                     Сбросить фильтры
                   </Button>
                 )}
