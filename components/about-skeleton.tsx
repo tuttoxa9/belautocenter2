@@ -22,21 +22,30 @@ export default function AboutSkeleton() {
           </nav>
 
           {/* Title - Different for mobile and desktop */}
-          <div className="lg:hidden flex items-center space-x-3">
+          <div className="lg:hidden flex items-center space-x-3 h-12">
             <div className="w-12 h-12 bg-gray-200/60 rounded-2xl flex-shrink-0 animate-pulse"></div>
-            <div className="flex-1 min-w-0">
-              <div className="h-6 bg-gray-200/60 rounded w-32 mb-2 animate-pulse"></div>
-              <div className="h-4 bg-gray-200/60 rounded w-40 animate-pulse"></div>
+            <div className="flex-1 min-w-0 h-12 flex flex-col justify-center">
+              <div className="h-6 flex items-center">
+                <div className="h-5 bg-gray-200/60 rounded w-32 animate-pulse"></div>
+              </div>
+              <div className="flex items-center space-x-2 mt-1 text-xs text-gray-600 h-4">
+                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <div className="h-3 bg-gray-200/60 rounded w-40 animate-pulse"></div>
+              </div>
             </div>
           </div>
 
           {/* Desktop Title */}
-          <div className="hidden lg:flex items-start justify-between">
-            <div className="flex items-center space-x-4 animate-pulse">
+          <div className="hidden lg:flex items-start justify-between h-14">
+            <div className="flex items-center space-x-4 h-14 animate-pulse">
               <div className="w-14 h-14 bg-gray-200/60 rounded-2xl"></div>
-              <div>
-                <div className="h-8 bg-gray-200/60 rounded w-48 mb-2"></div>
-                <div className="h-5 bg-gray-200/60 rounded w-64"></div>
+              <div className="h-14 flex flex-col justify-center">
+                <div className="h-8 flex items-center">
+                  <div className="h-8 bg-gray-200/60 rounded w-48 animate-pulse"></div>
+                </div>
+                <div className="mt-2 h-5">
+                  <div className="h-5 bg-gray-200/60 rounded w-64 animate-pulse"></div>
+                </div>
               </div>
             </div>
           </div>

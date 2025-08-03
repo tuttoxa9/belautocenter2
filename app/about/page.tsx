@@ -133,14 +133,18 @@ export default function AboutPage() {
           </div>
 
           {/* Desktop Title */}
-          <div className="hidden lg:flex items-start justify-between h-14">
-            <div className="flex items-center space-x-4 h-14">
-              <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg shadow-gray-900/10 border border-gray-200/60">
-                <Building2 className="h-7 w-7 text-gray-700" />
+          <div className="hidden lg:flex items-start justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg shadow-gray-900/10 border border-gray-200/60">
+                <Building2 className="h-6 w-6 text-gray-700" />
               </div>
-              <div className="h-14 flex flex-col justify-center">
-                <h1 className="text-3xl font-semibold text-gray-900 leading-8">О компании</h1>
-                <p className="text-gray-600 mt-1 leading-5">Узнайте больше о АвтоБел Центр</p>
+              <div>
+                <div className="h-8 mb-1">
+                  <h1 className="text-3xl font-semibold text-gray-900 leading-8">О компании</h1>
+                </div>
+                <div className="h-5">
+                  <p className="text-gray-600 leading-5">Узнайте больше о АвтоБел Центр</p>
+                </div>
               </div>
             </div>
           </div>
