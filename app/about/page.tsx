@@ -103,7 +103,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-gray-200/60 shadow-sm">
+      <div className="bg-white border-b border-slate-200">
         <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-4 lg:py-6">
           {/* Breadcrumbs */}
           <nav className="mb-3 lg:mb-4">
@@ -119,13 +119,13 @@ export default function AboutPage() {
           </nav>
 
           {/* Title - Different for mobile and desktop */}
-          <div className="lg:hidden flex items-center space-x-3">
+          <div className="lg:hidden flex items-center space-x-3 h-12">
             <div className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-gray-900/10 border border-gray-200/60">
               <Building2 className="h-6 w-6 text-gray-700" />
             </div>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-semibold text-gray-900 truncate">О компании</h1>
-              <div className="flex items-center space-x-2 mt-1 text-xs text-gray-600">
+            <div className="flex-1 min-w-0 h-12 flex flex-col justify-center">
+              <h1 className="text-xl font-semibold text-gray-900 truncate leading-5">О компании</h1>
+              <div className="flex items-center space-x-2 mt-1 text-xs text-gray-600 h-4">
                 <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
                 <span>Узнайте больше о нас</span>
               </div>
@@ -133,14 +133,14 @@ export default function AboutPage() {
           </div>
 
           {/* Desktop Title */}
-          <div className="hidden lg:flex items-start justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="hidden lg:flex items-start justify-between h-14">
+            <div className="flex items-center space-x-4 h-14">
               <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg shadow-gray-900/10 border border-gray-200/60">
                 <Building2 className="h-7 w-7 text-gray-700" />
               </div>
-              <div>
-                <h1 className="text-3xl font-semibold text-gray-900">О компании</h1>
-                <p className="text-gray-600 mt-1">Узнайте больше о АвтоБел Центр</p>
+              <div className="h-14 flex flex-col justify-center">
+                <h1 className="text-3xl font-semibold text-gray-900 leading-8">О компании</h1>
+                <p className="text-gray-600 mt-1 leading-5">Узнайте больше о АвтоБел Центр</p>
               </div>
             </div>
           </div>
@@ -153,13 +153,15 @@ export default function AboutPage() {
         {/* Stats Cards Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
           {aboutData?.stats?.map((stat, index) => (
-            <Card key={index} className="border-0 bg-white/70 backdrop-blur-xl shadow-lg shadow-gray-900/5 rounded-2xl hover:shadow-xl hover:shadow-gray-900/10 transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-4 md:p-6 text-center">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100/80 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-sm">
+            <Card key={index} className="border-0 bg-white/70 backdrop-blur-xl shadow-lg shadow-gray-900/5 rounded-2xl hover:shadow-xl hover:shadow-gray-900/10 transition-all duration-300 hover:-translate-y-1 h-[120px] md:h-[140px]">
+              <CardContent className="p-4 md:p-6 text-center h-full flex flex-col justify-between">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100/80 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto shadow-sm">
                   {stat?.icon && <stat.icon className="h-5 w-5 md:h-6 md:w-6 text-gray-600" />}
                 </div>
-                <div className="text-xl md:text-2xl font-semibold text-gray-900 mb-1">{stat?.value || ''}</div>
-                <div className="text-xs md:text-sm text-gray-600 leading-tight">{stat?.label || ''}</div>
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="text-xl md:text-2xl font-semibold text-gray-900 mb-1 h-6 md:h-8 flex items-center justify-center">{stat?.value || ''}</div>
+                  <div className="text-xs md:text-sm text-gray-600 leading-tight h-8 md:h-10 flex items-center justify-center">{stat?.label || ''}</div>
+                </div>
               </CardContent>
             </Card>
           ))}
