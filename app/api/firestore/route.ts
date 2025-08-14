@@ -43,46 +43,15 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Проверяем заголовки кэша
-    const ifNoneMatch = request.headers.get('if-none-match')
-
-    // Проверяем Cloudflare Worker URL для проксирования
-    const workerUrl = process.env.NEXT_PUBLIC_FIRESTORE_CACHE_WORKER_URL
-    const shouldUseWorker = workerUrl && !url.searchParams.get('direct')
-
-    let response: Response
-
-    if (shouldUseWorker) {
-      // Перенаправляем запрос через Cloudflare Worker для кэширования
-      const workerRequestUrl = `${workerUrl}/api/firestore?${url.searchParams.toString()}`
-      response = await fetch(workerRequestUrl, {
-        headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'NextJS-Firestore-Cache/1.0',
-          ...(ifNoneMatch && { 'If-None-Match': ifNoneMatch })
-        }
-      })
-    } else {
-      // Прямой запрос к Firestore
-      response = await fetch(firestoreUrl, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-    }
+    // Прямой запрос к Firestore всегда
+    const response = await fetch(firestoreUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'NextJS-Direct-Firestore/1.0'
+      }
+    });
 
     if (!response.ok) {
-      if (response.status === 304) {
-        return new NextResponse(null, {
-          status: 304,
-          headers: {
-            'Cache-Control': `public, max-age=${CACHE_TTL}, stale-while-revalidate=${STALE_WHILE_REVALIDATE}`,
-            'X-Cache-Source': shouldUseWorker ? 'worker' : 'direct'
-          }
-        })
-      }
-
       return NextResponse.json(
         { error: `Failed to fetch from Firestore: ${response.status} ${response.statusText}` },
         { status: response.status }
@@ -94,18 +63,6 @@ export async function GET(request: NextRequest) {
     // Генерируем улучшенный ETag на основе данных и метаданных
     const dataString = JSON.stringify(data)
     const etag = `"${btoa(dataString).slice(0, 16)}"`
-
-    // Если ETag совпадает, возвращаем 304 Not Modified
-    if (ifNoneMatch === etag) {
-      return new NextResponse(null, {
-        status: 304,
-        headers: {
-          'ETag': etag,
-          'Cache-Control': `public, max-age=${CACHE_TTL}, stale-while-revalidate=${STALE_WHILE_REVALIDATE}`,
-          'X-Cache-Source': shouldUseWorker ? 'worker' : 'direct'
-        }
-      })
-    }
 
     // Подсчитываем статистику для мониторинга
     const isCollection = !documentId
@@ -119,7 +76,7 @@ export async function GET(request: NextRequest) {
         'ETag': etag,
         'Vary': 'Accept-Encoding, If-None-Match',
         'X-Cache-TTL': CACHE_TTL.toString(),
-        'X-Cache-Source': shouldUseWorker ? 'worker' : 'direct',
+        'X-Cache-Source': 'direct',
         'X-Document-Count': documentCount.toString(),
         'X-Collection-Name': collection,
         'Last-Modified': new Date().toUTCString(),
