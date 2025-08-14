@@ -1,5 +1,5 @@
 // Firebase конфигурация
-const FIREBASE_PROJECT_ID = "belauto-5dd94";
+const FIREBASE_PROJECT_ID = "belauto-f2b93";
 const FIRESTORE_BASE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/`;
 const STORAGE_BASE_URL = `https://firebasestorage.googleapis.com/v0/b/${FIREBASE_PROJECT_ID}.firebasestorage.app/o/`;
 
@@ -165,6 +165,34 @@ async function handleImageRequest(request, env, ctx) {
     return new Response('Missing file path', { status: 400 });
   }
 
+  // Проверяем, если файл существует в R2
+  try {
+    // Если у нас есть доступ к R2_BUCKET
+    if (env.R2_BUCKET) {
+      // Пытаемся получить объект из R2
+      const r2Object = await env.R2_BUCKET.get(imagePath);
+
+      if (r2Object) {
+        // Если объект найден в R2, возвращаем его
+        const headers = new Headers();
+        headers.set('Content-Type', r2Object.httpMetadata.contentType || 'image/jpeg');
+        headers.set('Cache-Control', 'public, max-age=2592000, immutable');
+        headers.set('CDN-Cache-Control', 'public, max-age=86400');
+        headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=2592000');
+        headers.set('X-Cached-By', 'Cloudflare-R2-Direct');
+        headers.set('X-Storage-Source', 'r2');
+
+        return new Response(r2Object.body, {
+          headers
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка при попытке получить файл из R2:', error);
+    // В случае ошибки продолжаем с Firebase Storage
+  }
+
+  // Если файл не найден в R2, пробуем получить из Firebase Storage
   // Firebase Storage требует кодирование слэшей
   const encodedImagePath = imagePath.replace(/\//g, '%2F');
   const firebaseStorageUrl = `${STORAGE_BASE_URL}${encodedImagePath}?alt=media`;
@@ -196,6 +224,7 @@ async function handleImageRequest(request, env, ctx) {
     headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=2592000');
     headers.set('X-Cached-By', 'Cloudflare-Worker-Images');
     headers.set('X-Cache-Status', 'MISS');
+    headers.set('X-Storage-Source', 'firebase');
 
     response = new Response(response.body, {
       status: response.status,
