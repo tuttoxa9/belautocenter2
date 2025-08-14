@@ -1,48 +1,94 @@
-# Autobel Image Cache Worker
+# Cloudflare Worker для BelAutoCenter
 
-Cloudflare Worker для кэширования изображений из Firebase Storage.
+Этот Cloudflare Worker предоставляет несколько важных функций для веб-сайта BelAutoCenter:
 
-## Развертывание
+1. Кэширование и проксирование данных из Firestore
+2. Обработка и кэширование изображений из R2 и Firebase Storage
+3. Загрузка и удаление файлов в/из Cloudflare R2
 
-1. Установите Wrangler CLI:
-```bash
-npm install -g wrangler
+## Настройка Cloudflare Workers
+
+### Предварительные требования
+
+1. Аккаунт Cloudflare с подключенным доменом
+2. Включенные Workers и R2 в вашем аккаунте Cloudflare
+3. Установленный Wrangler CLI (`npm install -g wrangler`)
+
+### Шаги настройки
+
+1. **Аутентификация в Cloudflare**:
+   ```bash
+   wrangler login
+   ```
+
+2. **Создание R2 bucket**:
+   ```bash
+   wrangler r2 bucket create belautocenter
+   ```
+
+3. **Настройка переменных окружения**:
+   - Проверьте файл `wrangler.toml` и убедитесь, что ID проекта Firebase верный
+   - При необходимости, добавьте дополнительные переменные окружения:
+     ```bash
+     wrangler secret put CUSTOM_SECRET
+     ```
+
+4. **Публикация воркера**:
+   ```bash
+   # Для разработки
+   wrangler deploy --env development
+
+   # Для продакшена
+   wrangler deploy --env production
+   ```
+
+## Функциональность
+
+### 1. Обработка Firestore запросов
+
+Worker проксирует и кэширует запросы к Firebase Firestore. Пример URL:
+```
+https://cache.belautocenter.by/api/firestore?collection=cars
 ```
 
-2. Авторизуйтесь в Cloudflare:
-```bash
-wrangler auth
+### 2. Управление изображениями
+
+Worker обрабатывает запросы к изображениям, извлекая их из Cloudflare R2 или Firebase Storage. Пример URL:
+```
+https://images.belautocenter.by/cars/my-image.jpg
 ```
 
-3. Разверните воркер:
-```bash
-wrangler deploy
+### 3. Загрузка файлов в R2
+
+Worker обрабатывает POST запросы для загрузки файлов в Cloudflare R2. Пример:
+```
+POST https://api.belautocenter.by/api/r2-upload
+Content-Type: multipart/form-data
+...
 ```
 
-## Использование
+## Мониторинг и отладка
 
-Worker принимает URL Firebase Storage в параметре `url`:
+Для мониторинга и отладки воркера используйте панель управления Cloudflare:
 
-```
-https://autobel-image-cache.your-subdomain.workers.dev?url=https://firebasestorage.googleapis.com/v0/b/your-bucket/o/image.jpg%3Falt%3Dmedia
-```
+1. Войдите в аккаунт Cloudflare
+2. Перейдите в раздел Workers & Pages
+3. Выберите свой воркер
+4. Используйте инструменты мониторинга и логирования
 
-## Кэширование
+## Интеграция с NextJS
 
-- Все изображения кэшируются на 1 год (31536000 секунд)
-- Используется Cloudflare Edge Cache для максимальной производительности
-- Заголовки кэша устанавливаются автоматически
+В вашем Next.js приложении используйте API эндпоинты для взаимодействия с воркером:
 
-## Настройка домена
+- `/api/firestore` - для данных из Firestore
+- `/api/r2-upload` - для загрузки файлов
+- `/api/r2-delete` - для удаления файлов
 
-Для использования собственного домена (например, `images.autobel.by`):
+## Производительность и кэширование
 
-1. Добавьте домен в Cloudflare DNS
-2. Обновите `wrangler.toml` с правильными routes
-3. Переразверните воркер
+Worker оптимизирован для максимальной производительности:
 
-## Мониторинг
-
-Worker добавляет заголовки:
-- `X-Cached-By: Cloudflare-Worker` - для всех ответов
-- `X-Cache-Status: HIT` - для кэшированных ответов
+- Кэширование Firestore данных на 30 часов
+- Кэширование изображений на 30 дней
+- Поддержка условных запросов с ETag
+- Stale-while-revalidate для снижения задержек
