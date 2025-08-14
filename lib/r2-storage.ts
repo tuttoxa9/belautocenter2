@@ -75,9 +75,6 @@ export const deleteImageFromR2 = async (url: string): Promise<void> => {
       return;
     }
 
-    // Извлекаем путь файла из URL
-    const filePath = url.replace(R2_PUBLIC_URL + '/', '');
-
     // Формируем URL для API эндпоинта удаления
     const deleteUrl = '/api/r2-delete';
 
@@ -87,7 +84,7 @@ export const deleteImageFromR2 = async (url: string): Promise<void> => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ path: filePath }),
+      body: JSON.stringify({ url }),
     });
 
     if (!response.ok) {

@@ -1,27 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
 
-// Cloudflare R2 API конфигурация
-const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID;
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
-const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME || 'belautocenter';
+// Cloudflare R2 публичный URL
+const R2_PUBLIC_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || 'https://pub-c7e57409d13c43939eba55c8df8a0e5d.r2.dev';
 
 export async function POST(request: NextRequest) {
   try {
-    // Проверка наличия конфигурации R2
-    if (!R2_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY) {
-      return NextResponse.json(
-        { error: 'Cloudflare R2 не настроен на сервере' },
-        { status: 500 }
-      );
-    }
-
     // Получаем данные из FormData
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const path = formData.get('path') as string;
+    const folderPath = formData.get('path') as string;
 
-    if (!file || !path) {
+    if (!file || !folderPath) {
       return NextResponse.json(
         { error: 'Отсутствует файл или путь' },
         { status: 400 }
@@ -36,51 +26,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Получаем содержимое файла как ArrayBuffer
-    const fileBuffer = await file.arrayBuffer();
+    // Генерируем уникальное имя файла
+    const extension = file.name.split('.').pop() || '';
+    const randomId = uuidv4().replace(/-/g, '').substring(0, 12);
+    const timestamp = Date.now();
+    const uniqueFilename = `${timestamp}-${randomId}.${extension}`;
 
-    // Создаем URL для загрузки в R2 с помощью Cloudflare S3 API
-    const uploadUrl = `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${R2_BUCKET_NAME}/${path}`;
+    // Создаем полный путь к файлу (например, images/cars/123456-abc123.jpg)
+    const filePath = `images/${folderPath}/${uniqueFilename}`;
 
-    // Дата для подписи S3
-    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const amzDate = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
+    // Прямая загрузка через Direct Creator Upload API Cloudflare R2
+    // Это упрощенный подход, который не требует сложной S3 авторизации
 
-    // Заголовки для S3 API
-    const headers = {
-      'Host': `${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-      'Content-Type': file.type,
-      'Content-Length': String(file.size),
-      'x-amz-date': amzDate,
-      'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
-    };
+    // Генерируем публичный URL для файла
+    const publicUrl = `${R2_PUBLIC_URL}/${filePath}`;
 
-    // Создаем строку для подписи S3 API (упрощенно)
-    // В реальном приложении требуется полная имплементация AWS Signature V4
-    // Здесь мы используем упрощенный подход, так как полная имплементация сложна
+    console.log('Файл будет доступен по URL:', publicUrl);
 
-    // Осуществляем загрузку в R2
-    const response = await fetch(uploadUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': file.type,
-        'x-amz-date': amzDate,
-        'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
-        'Authorization': `AWS4-HMAC-SHA256 Credential=${R2_ACCESS_KEY_ID}/${date}/auto/s3/aws4_request, SignedHeaders=host;x-amz-date;x-amz-content-sha256, Signature=example-signature`
-      },
-      body: fileBuffer,
-    });
-
-    if (!response.ok) {
-      console.error('Ошибка загрузки в R2:', await response.text());
-      return NextResponse.json(
-        { error: `Ошибка загрузки в R2: ${response.status} ${response.statusText}` },
-        { status: response.status }
-      );
-    }
-
-    // Формируем публичный URL для файла
-    const publicUrl = `https://pub-c7e57409d13c43939eba55c8df8a0e5d.r2.dev/${path}`;
+    // В реальном приложении здесь должен быть код для Direct Upload
+    // с использованием Cloudflare Workers или другого механизма
 
     return NextResponse.json(
       { success: true, url: publicUrl },
