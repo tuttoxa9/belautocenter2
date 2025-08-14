@@ -95,11 +95,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Устанавливаем максимальный размер для обработки
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
-};
+// Используем новый формат конфигурации для App Router
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const maxDuration = 60;
