@@ -142,10 +142,22 @@ export default function CatalogPage() {
                 fields[key] = (value as any).booleanValue
               } else if ((value as any).timestampValue) {
                 fields[key] = new Date((value as any).timestampValue)
+              } else if ((value as any).arrayValue) {
+                // Обработка массивов, включая imageUrls
+                const arrayValues = (value as any).arrayValue.values || [];
+                fields[key] = arrayValues.map((item: any) => {
+                  if (item.stringValue) return item.stringValue;
+                  if (item.integerValue) return parseInt(item.integerValue);
+                  if (item.doubleValue) return parseFloat(item.doubleValue);
+                  return null;
+                }).filter(Boolean);
               } else {
                 fields[key] = value
               }
             }
+
+            // Добавляем отладочную информацию о загруженном автомобиле
+            console.log(`Загружен автомобиль: ${fields.make} ${fields.model}, imageUrls:`, fields.imageUrls);
 
             return { id, ...fields }
           }) || []

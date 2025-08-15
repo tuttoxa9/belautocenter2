@@ -7,8 +7,12 @@ const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belauto
  * @returns URL для отображения изображения
  */
 export function getCachedImageUrl(imagePathOrUrl: string): string {
+  // Отладочная информация
+  console.log('getCachedImageUrl вызван с аргументом:', imagePathOrUrl);
+
   // Если путь не указан, возвращаем пустую строку
   if (!imagePathOrUrl) {
+    console.log('Пустой путь к изображению, возвращаем пустую строку');
     return '';
   }
 
@@ -54,7 +58,9 @@ export function getCachedImageUrl(imagePathOrUrl: string): string {
 
   // Если это относительный путь (из Firestore), формируем полный URL
   // Пример: "cars/car-id-123/photo-name.jpg" -> "https://images.belautocenter.by/cars/car-id-123/photo-name.jpg"
-  return `${IMAGE_HOST}/${imagePathOrUrl}`;
+  const result = `${IMAGE_HOST}/${imagePathOrUrl}`;
+  console.log('Сформирован URL для изображения:', result);
+  return result;
 }
 
 /**

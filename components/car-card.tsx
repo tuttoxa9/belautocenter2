@@ -34,6 +34,13 @@ export default function CarCard({ car }: CarCardProps) {
   const [shouldLoadImage, setShouldLoadImage] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
+  // Отладочная информация для проверки данных автомобиля
+  console.log(`Отрисовка карточки: ${car.make} ${car.model}`, {
+    id: car.id,
+    imageUrls: car.imageUrls,
+    firstImage: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null
+  })
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
