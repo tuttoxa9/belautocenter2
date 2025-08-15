@@ -40,14 +40,19 @@ export default function ImageUpload({ onImageUploaded, onUpload, path = 'general
       setUploading(true)
       try {
         console.log('Начало загрузки файла:', file.name, 'размер:', file.size, 'путь:', path)
-        const url = await uploadImage(file, path)
-        console.log('Файл успешно загружен, URL:', url)
-        setPreview(url)
+
+        // Загружаем изображение и получаем путь (без хоста)
+        const imagePath = await uploadImage(file, path)
+        console.log('Файл успешно загружен, путь:', imagePath)
+
+        // Сохраняем только путь к изображению, без хоста
+        setPreview(imagePath)
+
         if (onImageUploaded) {
-          onImageUploaded(url)
+          onImageUploaded(imagePath)
         }
         if (onUpload) {
-          onUpload(url)
+          onUpload(imagePath)
         }
       } catch (error) {
         console.error("Ошибка загрузки:", error)

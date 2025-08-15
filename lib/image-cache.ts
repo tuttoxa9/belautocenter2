@@ -1,67 +1,67 @@
-// Cloudflare Worker URL for image caching
-const WORKER_URL = process.env.NEXT_PUBLIC_IMAGE_CACHE_WORKER_URL || 'https://images.belautocenter.by';
-// Cloudflare R2 public URL
-const R2_PUBLIC_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || 'https://pub-c7e57409d13c43939eba55c8df8a0e5d.r2.dev';
+// Cloudflare Worker URL для доступа к изображениям
+const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
 
 /**
- * Converts Storage URL (Firebase or R2) to cached URL via Cloudflare Worker
- * @param storageUrl - Original Storage URL (Firebase or R2)
- * @returns Cached URL via Cloudflare Worker
+ * Преобразует путь к изображению или URL в полный URL для отображения
+ * @param imagePathOrUrl - Путь к изображению или полный URL
+ * @returns URL для отображения изображения
  */
-export function getCachedImageUrl(storageUrl: string): string {
-  // If no URL provided, return empty string
-  if (!storageUrl) {
+export function getCachedImageUrl(imagePathOrUrl: string): string {
+  // Если путь не указан, возвращаем пустую строку
+  if (!imagePathOrUrl) {
     return '';
   }
 
-  // If it's already a cached URL, return as is
-  if (storageUrl.includes(WORKER_URL)) {
-    return storageUrl;
-  }
-
-  // Для изображений из R2 мы можем использовать их напрямую,
-  // так как они уже оптимизированы и доступны через CDN
-  if (storageUrl.includes(R2_PUBLIC_URL)) {
-    return storageUrl;
-  }
-
-  // Если это не URL Firebase Storage, вернуть как есть
-  if (!storageUrl.includes('firebasestorage.googleapis.com') &&
-      !storageUrl.includes('firebasestorage.app')) {
-    return storageUrl;
-  }
-
-  try {
-    // Parse Firebase Storage URL and extract the path
-    const url = new URL(storageUrl);
-
-    // Extract path from Firebase Storage URL
-    // Example: /v0/b/autobel-a6390.appspot.com/o/путь%2Fк%2Fкартинке.jpg
-    const pathMatch = url.pathname.match(/\/v0\/b\/[^\/]+\/o\/(.+)/);
-
-    if (pathMatch && pathMatch[1]) {
-      // Decode the path and convert %2F back to /
-      const decodedPath = decodeURIComponent(pathMatch[1]);
-
-      // Remove any query parameters like ?alt=media
-      const cleanPath = decodedPath.split('?')[0];
-
-      // Construct new URL: https://images.belautocenter.by/images/cars/картинка.jpg
-      return `${WORKER_URL}/${cleanPath}`;
+  // Если URL уже содержит хост, возвращаем как есть
+  if (imagePathOrUrl.startsWith('http://') || imagePathOrUrl.startsWith('https://')) {
+    // Если это уже URL из нашего хоста изображений, возвращаем как есть
+    if (imagePathOrUrl.includes(IMAGE_HOST)) {
+      return imagePathOrUrl;
     }
-  } catch (error) {
-    console.warn('Failed to parse Storage URL:', storageUrl, error);
+
+    // Если это URL из Firebase Storage, извлекаем путь и преобразуем его
+    if (imagePathOrUrl.includes('firebasestorage.googleapis.com') ||
+        imagePathOrUrl.includes('firebasestorage.app')) {
+      try {
+        // Парсим URL и извлекаем путь
+        const url = new URL(imagePathOrUrl);
+
+        // Извлекаем путь из Firebase Storage URL
+        // Пример: /v0/b/autobel-a6390.appspot.com/o/путь%2Fк%2Fкартинке.jpg
+        const pathMatch = url.pathname.match(/\/v0\/b\/[^\/]+\/o\/(.+)/);
+
+        if (pathMatch && pathMatch[1]) {
+          // Декодируем путь и преобразуем %2F обратно в /
+          const decodedPath = decodeURIComponent(pathMatch[1]);
+
+          // Убираем параметры запроса вроде ?alt=media
+          const cleanPath = decodedPath.split('?')[0];
+
+          // Формируем новый URL: https://images.belautocenter.by/путь/к/картинке.jpg
+          return `${IMAGE_HOST}/${cleanPath}`;
+        }
+      } catch (error) {
+        console.warn('Не удалось разобрать Storage URL:', imagePathOrUrl, error);
+      }
+
+      // Если не удалось разобрать URL, возвращаем как есть
+      return imagePathOrUrl;
+    }
+
+    // Для других внешних URL возвращаем как есть
+    return imagePathOrUrl;
   }
 
-  // Fallback to original URL if parsing fails
-  return storageUrl;
+  // Если это относительный путь (из Firestore), формируем полный URL
+  // Пример: "cars/car-id-123/photo-name.jpg" -> "https://images.belautocenter.by/cars/car-id-123/photo-name.jpg"
+  return `${IMAGE_HOST}/${imagePathOrUrl}`;
 }
 
 /**
- * Converts array of Firebase Storage URLs to cached URLs
- * @param firebaseUrls - Array of Firebase Storage URLs
- * @returns Array of cached URLs
+ * Преобразует массив путей или URL в массив полных URL для отображения
+ * @param paths - Массив путей к изображениям или полных URL
+ * @returns Массив URL для отображения изображений
  */
-export function getCachedImageUrls(firebaseUrls: string[]): string[] {
-  return firebaseUrls.map(url => getCachedImageUrl(url));
+export function getCachedImageUrls(paths: string[]): string[] {
+  return paths.map(path => getCachedImageUrl(path));
 }
