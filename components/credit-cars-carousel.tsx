@@ -244,7 +244,7 @@ export default function CreditCarsCarousel() {
 
             return (
               <Card key={car.id} className="min-w-[280px] max-w-[280px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300">
-                <Link href={`/catalog/${car.id}`} className="block" onClick={handleCardClick}
+                <Link href={`/catalog/${car.id}`} className="block" onClick={handleCardClick}>
                   {/* Image Section */}
                   <div className="relative">
                     <div className="relative overflow-hidden bg-slate-100 h-40">
