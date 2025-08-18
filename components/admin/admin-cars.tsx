@@ -12,17 +12,20 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Car } from "lucide-react"
+import { Plus, Edit, Trash2, Car, Code } from "lucide-react"
 import ImageUpload from "@/components/admin/image-upload"
 import { useButtonState } from "@/hooks/use-button-state"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MarkdownRenderer from "@/components/markdown-renderer"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function AdminCars() {
   const [cars, setCars] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingCar, setEditingCar] = useState(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [jsonInput, setJsonInput] = useState("")
+  const [jsonError, setJsonError] = useState("")
   const cacheInvalidator = createCacheInvalidator('cars')
   const saveButtonState = useButtonState()
   const deleteButtonStates = {}
@@ -157,6 +160,49 @@ export default function AdminCars() {
       },
       features: [],
     })
+    setJsonInput("")
+    setJsonError("")
+  }
+
+  const processJsonInput = () => {
+    try {
+      // Пробуем распарсить JSON
+      const parsedData = JSON.parse(jsonInput)
+
+      // Проверка обязательных полей
+      if (!parsedData.make || !parsedData.model) {
+        setJsonError("Обязательные поля (make, model) отсутствуют в JSON")
+        return
+      }
+
+      // Преобразуем поля, если они не соответствуют ожидаемому типу
+      const processedData = {
+        ...parsedData,
+        price: parsedData.price ? parsedData.price.toString() : "",
+        mileage: parsedData.mileage ? parsedData.mileage.toString() : "",
+        engineVolume: parsedData.engineVolume ? parsedData.engineVolume.toString() : "",
+        year: parsedData.year ? parsedData.year.toString() : new Date().getFullYear().toString(),
+        imageUrls: Array.isArray(parsedData.imageUrls) && parsedData.imageUrls.length > 0
+          ? parsedData.imageUrls
+          : [""],
+        isAvailable: typeof parsedData.isAvailable === 'boolean' ? parsedData.isAvailable : true,
+        specifications: parsedData.specifications || {
+          "Двигатель": "",
+          "Разгон 0-100": "",
+          "Расход топлива": "",
+          "Привод": "",
+          "Коробка передач": "",
+          "Мощность": ""
+        },
+        features: Array.isArray(parsedData.features) ? parsedData.features : []
+      }
+
+      // Устанавливаем данные в форму
+      setCarForm(processedData)
+      setJsonError("")
+    } catch (error) {
+      setJsonError("Ошибка при обработке JSON: " + error.message)
+    }
   }
 
   const addImageUrl = () => {
@@ -225,7 +271,45 @@ export default function AdminCars() {
             <DialogHeader>
               <DialogTitle className="text-lg md:text-xl">{editingCar ? "Редактировать" : "Добавить"} автомобиль</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+            <Tabs defaultValue="form" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="form">Форма</TabsTrigger>
+                <TabsTrigger value="json">JSON</TabsTrigger>
+              </TabsList>
+              <TabsContent value="json" className="mt-2 space-y-4">
+                <div>
+                  <Label className="text-sm mb-2 block">Вставьте JSON данные автомобиля</Label>
+                  <Textarea
+                    value={jsonInput}
+                    onChange={(e) => setJsonInput(e.target.value)}
+                    className="font-mono text-xs h-64"
+                    placeholder='{\n  "make": "BMW",\n  "model": "M5 Competition",\n  "year": 2020,\n  "price": 95000,\n  "mileage": 45000,\n  "bodyType": "Седан",\n  "color": "Синий металлик",\n  "engineVolume": 4.4,\n  "fuelType": "Бензин",\n  "transmission": "Автомат",\n  "driveTrain": "Полный",\n  "isAvailable": true,\n  "imageUrls": ["cars/example1.jpg", "cars/example2.jpg"],\n  "description": "Текст описания",\n  "features": ["Адаптивная подвеска", "Карбоновые тормоза"],\n  "specifications": {\n    "Двигатель": "4.4 V8 Twin-Turbo",\n    "Мощность": "625",\n    "Разгон 0-100": "3.3"\n  }\n}'
+                  />
+                  {jsonError && (
+                    <div className="text-sm text-red-600 mt-2">{jsonError}</div>
+                  )}
+                  <div className="flex gap-2 mt-3">
+                    <Button
+                      type="button"
+                      onClick={processJsonInput}
+                      className="flex-1"
+                    >
+                      <Code className="h-4 w-4 mr-2" />
+                      Применить JSON
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setJsonInput("")}
+                      className="flex-1"
+                    >
+                      Очистить
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
+              <TabsContent value="form" className="mt-2">
+                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <Label className="text-sm">Марка</Label>
@@ -571,6 +655,8 @@ export default function AdminCars() {
                 </Button>
               </div>
             </form>
+              </TabsContent>
+            </Tabs>
           </DialogContent>
         </Dialog>
       </div>
