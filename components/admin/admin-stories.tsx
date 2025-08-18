@@ -360,6 +360,35 @@ export default function AdminStories() {
                 <div>
                   <Label htmlFor="avatarUpload" className="block mb-2">Аватарка для кружочка (необязательно)</Label>
                   <div
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      e.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+
+                      const files = e.dataTransfer.files;
+                      if (files && files[0]) {
+                        const file = files[0];
+                        if (file.type.startsWith('image/')) {
+                          setFormData(prev => ({ ...prev, avatarFile: file }));
+                        } else {
+                          alert('Пожалуйста, загрузите изображение для аватарки');
+                        }
+                      }
+                    }}
                     className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors hover:border-gray-400"
                     onClick={() => {
                       const input = document.createElement('input');
@@ -376,7 +405,7 @@ export default function AdminStories() {
                   >
                     <Upload className="h-6 w-6 mx-auto mb-2 text-gray-400" />
                     <p className="text-xs text-gray-600">
-                      Загрузите аватарку для отображения в кружочке
+                      Перетащите изображение для аватарки или нажмите для выбора
                     </p>
                   </div>
                 </div>
@@ -562,6 +591,35 @@ export default function AdminStories() {
                 </div>
               )}
               <div
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+
+                  const files = e.dataTransfer.files;
+                  if (files && files[0]) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                      setFormData(prev => ({ ...prev, avatarFile: file }));
+                    } else {
+                      alert('Пожалуйста, загрузите изображение для аватарки');
+                    }
+                  }
+                }}
                 className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors hover:border-gray-400"
                 onClick={() => {
                   const input = document.createElement('input');
@@ -578,7 +636,7 @@ export default function AdminStories() {
               >
                 <Upload className="h-6 w-6 mx-auto mb-2 text-gray-400" />
                 <p className="text-xs text-gray-600">
-                  {selectedStory?.avatarUrl ? "Загрузить новую аватарку" : "Загрузить аватарку для кружочка"}
+                  {selectedStory?.avatarUrl ? "Перетащите новую аватарку или нажмите для выбора" : "Перетащите аватарку или нажмите для выбора"}
                 </p>
               </div>
             </div>
