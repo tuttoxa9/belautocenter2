@@ -54,7 +54,7 @@ export default function Footer() {
           {/* Колонка 1: Логотип и слоган */}
           <div className="space-y-4">
             <Link href="/" className="flex justify-center md:justify-start">
-              <Image src={getCachedImageUrl("/logo.png")} alt="Логотип" width={160} height={160} className="object-contain" />
+              <Image src="/logo.png" alt="Логотип" width={160} height={160} className="object-contain" />
             </Link>
             <p className="text-gray-400 text-sm">
               Надежный партнер в выборе качественного автомобиля с пробегом в Беларуси
