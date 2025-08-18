@@ -45,9 +45,11 @@ export default function CreditCarsCarousel() {
   const loadOldestCars = async () => {
     try {
       setLoading(true)
+      console.log('Карусель: Начинаем загрузку автомобилей')
 
       // Пытаемся загрузить через API
       try {
+        console.log('Карусель: Запрос к API /api/firestore?collection=cars')
         const response = await fetch('/api/firestore?collection=cars', {
           headers: {
             'Accept': 'application/json',
@@ -55,8 +57,13 @@ export default function CreditCarsCarousel() {
           }
         })
 
+        console.log('Карусель: Ответ API получен, status:', response.status, 'ok:', response.ok)
+
         if (response.ok) {
           const data = await response.json()
+          console.log('Карусель: Данные из API:', data)
+          console.log('Карусель: Количество документов в ответе:', data.documents?.length || 0)
+
           let carsData = data.documents?.map((doc: any) => {
             const id = doc.name.split('/').pop() || ''
             const fields: Record<string, any> = {}
@@ -87,32 +94,55 @@ export default function CreditCarsCarousel() {
           }) || []
 
           // Фильтруем доступные автомобили с ценой и берем первые 10
+          console.log('Карусель: Данные до фильтрации:', carsData?.length || 0)
           carsData = carsData
-            .filter((car: CarData) => car && car.price && car.price > 0)
-            .slice(0, 10)
+            ?.filter((car: CarData) => {
+              const hasPrice = car && car.price && car.price > 0
+              if (!hasPrice && car) {
+                console.log('Карусель: Автомобиль без цены:', car.id, car.make, car.model, 'price:', car.price)
+              }
+              return hasPrice
+            })
+            .slice(0, 10) || []
 
-          console.log('Загружено автомобилей для карусели:', carsData.length)
+          console.log('Карусель: Загружено автомобилей для карусели:', carsData.length)
+          console.log('Карусель: Итоговые данные автомобилей:', carsData)
           setCars(carsData as CarData[])
+        } else {
+          console.log('Карусель: API вернул не OK статус:', response.status)
+          const errorText = await response.text()
+          console.log('Карусель: Ошибка API:', errorText)
         }
       } catch (apiError) {
-        console.warn('Кэшированный API недоступен, используем прямое подключение к Firebase:', apiError)
+        console.warn('Карусель: Кэшированный API недоступен, используем прямое подключение к Firebase:', apiError)
 
         // Fallback: прямое подключение к Firebase
+        console.log('Карусель: Используем fallback - прямое подключение к Firebase')
         const snapshot = await getDocs(collection(db, "cars"))
+        console.log('Карусель: Получено документов из Firebase:', snapshot.docs.length)
+
         const carsData = snapshot.docs
           .map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }))
-          .filter((car: CarData) => car && car.price && car.price > 0)
+          .filter((car: CarData) => {
+            const hasPrice = car && car.price && car.price > 0
+            if (!hasPrice && car) {
+              console.log('Карусель (fallback): Автомобиль без цены:', car.id, car.make, car.model, 'price:', car.price)
+            }
+            return hasPrice
+          })
           .slice(0, 10)
 
-        console.log('Загружено автомобилей для карусели (fallback):', carsData.length)
+        console.log('Карусель: Загружено автомобилей для карусели (fallback):', carsData.length)
+        console.log('Карусель: Итоговые данные автомобилей (fallback):', carsData)
         setCars(carsData as CarData[])
       }
     } catch (error) {
-      console.error("Ошибка загрузки автомобилей:", error)
+      console.error("Карусель: Ошибка загрузки автомобилей:", error)
     } finally {
+      console.log('Карусель: Загрузка завершена, loading = false')
       setLoading(false)
     }
   }
