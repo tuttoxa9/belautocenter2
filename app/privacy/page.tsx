@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
 import { Shield, FileText, Clock, CheckCircle, ArrowRight, ExternalLink, ChevronDown, ChevronUp, Database, Lock, Eye, Users, Cookie, Share2, Mail } from "lucide-react"
 import Link from "next/link"
+import MarkdownRenderer from "@/components/markdown-renderer"
 
 interface PrivacyData {
   title: string
@@ -378,29 +379,7 @@ export default function PrivacyPage() {
                                 <div className="h-4 bg-slate-200 rounded w-3/4 animate-pulse"></div>
                               </div>
                             ) : section.content ? (
-                              section.content.split('\n\n').map((paragraph, idx) => {
-                                if (paragraph.trim().startsWith('•')) {
-                                  const items = paragraph.split('\n').filter(item => item.trim().startsWith('•'))
-                                  return (
-                                    <ul key={idx} className="space-y-2 my-4 list-none">
-                                      {items.map((item, itemIdx) => (
-                                        <li key={itemIdx} className="flex items-start space-x-2">
-                                          <div className="w-1 h-1 bg-slate-400 rounded-full mt-2 flex-shrink-0" />
-                                          <span className="text-slate-700 text-sm leading-relaxed">
-                                            {item.replace('•', '').trim()}
-                                          </span>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  )
-                                } else {
-                                  return (
-                                    <p key={idx} className="text-slate-700 text-sm leading-relaxed mb-4 whitespace-pre-line">
-                                      {paragraph.trim()}
-                                    </p>
-                                  )
-                                }
-                              })
+                              <MarkdownRenderer content={section.content} className="text-sm" />
                             ) : (
                               <div className="min-h-[120px] flex items-center justify-center">
                                 <p className="text-slate-500 text-sm">Контент недоступен</p>
@@ -493,29 +472,7 @@ export default function PrivacyPage() {
                         <div className="h-5 bg-slate-200 rounded w-2/3 animate-pulse"></div>
                       </div>
                     ) : activeContent.content ? (
-                      activeContent.content.split('\n\n').map((paragraph, idx) => {
-                        if (paragraph.trim().startsWith('•')) {
-                          const items = paragraph.split('\n').filter(item => item.trim().startsWith('•'))
-                          return (
-                            <ul key={idx} className="space-y-2 my-6">
-                              {items.map((item, itemIdx) => (
-                                <li key={itemIdx} className="flex items-start space-x-3">
-                                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full mt-2.5 flex-shrink-0" />
-                                  <span className="text-slate-700 leading-relaxed">
-                                    {item.replace('•', '').trim()}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          )
-                        } else {
-                          return (
-                            <p key={idx} className="text-slate-700 leading-relaxed mb-6 whitespace-pre-line">
-                              {paragraph.trim()}
-                            </p>
-                          )
-                        }
-                      })
+                      <MarkdownRenderer content={activeContent.content} />
                     ) : (
                       <div className="min-h-[300px] flex items-center justify-center">
                         <p className="text-slate-500">Контент недоступен</p>

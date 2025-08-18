@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Save, Loader2, Shield, FileText, Clock, Eye } from "lucide-react"
 import { useButtonState } from "@/hooks/use-button-state"
+import MarkdownRenderer from "@/components/markdown-renderer"
 
 import { toast } from "@/components/ui/use-toast"
 
@@ -182,7 +183,7 @@ export default function AdminPrivacy() {
                   placeholder={`{\n  "title": "Политика конфиденциальности",\n  "lastUpdated": "18.08.2025",\n  "sections": {\n    "introduction": "",\n    "dataCollection": "",\n    "dataUsage": "",\n    "dataSecurity": "",\n    "userRights": "",\n    "cookies": "",\n    "thirdParty": "",\n    "contact": ""\n  }\n}`}
                 />
                 <p className="text-sm text-gray-500 mt-2">
-                  Формат: JSON с полями title, lastUpdated и разделами sections
+                  Формат: JSON с полями title, lastUpdated и разделами sections. Содержимое секций поддерживает синтаксис Markdown.
                 </p>
               </div>
             </CardContent>
@@ -229,9 +230,7 @@ export default function AdminPrivacy() {
                         <h3 className="font-semibold text-slate-900">{index + 1}. {sectionTitle}</h3>
                       </div>
                       {value ? (
-                        <div className="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
-                          {value}
-                        </div>
+                        <MarkdownRenderer content={value} className="text-sm" />
                       ) : (
                         <div className="text-slate-400 text-sm italic">
                           Содержимое раздела не заполнено
