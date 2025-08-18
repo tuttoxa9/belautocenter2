@@ -35,6 +35,7 @@ export default function CreditCarsCarousel() {
   const [isDragging, setIsDragging] = useState(false)
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
+  const [dragDistance, setDragDistance] = useState(0)
   const carouselRef = useRef<HTMLDivElement>(null)
   const usdBynRate = useUsdBynRate()
 
@@ -105,13 +106,15 @@ export default function CreditCarsCarousel() {
     setIsDragging(true)
     setStartX(e.pageX - carouselRef.current.offsetLeft)
     setScrollLeft(carouselRef.current.scrollLeft)
+    setDragDistance(0)
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !carouselRef.current) return
     e.preventDefault()
     const x = e.pageX - carouselRef.current.offsetLeft
-    const walk = (x - startX) * 2
+    const walk = x - startX
+    setDragDistance(Math.abs(walk))
     carouselRef.current.scrollLeft = scrollLeft - walk
   }
 
@@ -124,12 +127,14 @@ export default function CreditCarsCarousel() {
     setIsDragging(true)
     setStartX(e.touches[0].pageX - carouselRef.current.offsetLeft)
     setScrollLeft(carouselRef.current.scrollLeft)
+    setDragDistance(0)
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging || !carouselRef.current) return
     const x = e.touches[0].pageX - carouselRef.current.offsetLeft
-    const walk = (x - startX) * 2
+    const walk = x - startX
+    setDragDistance(Math.abs(walk))
     carouselRef.current.scrollLeft = scrollLeft - walk
   }
 
@@ -229,9 +234,17 @@ export default function CreditCarsCarousel() {
           {cars.map((car) => {
             const monthlyPayment = calculateMonthlyPayment(car.price)
 
+            const handleCardClick = (e: React.MouseEvent) => {
+              // Если была прокрутка (drag), не открываем ссылку
+              if (dragDistance > 5) {
+                e.preventDefault()
+                return
+              }
+            }
+
             return (
               <Card key={car.id} className="min-w-[280px] max-w-[280px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300">
-                <Link href={`/catalog/${car.id}`} className="block">
+                <Link href={`/catalog/${car.id}`} className="block" onClick={handleCardClick}
                   {/* Image Section */}
                   <div className="relative">
                     <div className="relative overflow-hidden bg-slate-100 h-40">
