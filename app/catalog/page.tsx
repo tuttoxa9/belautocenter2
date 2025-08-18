@@ -65,16 +65,36 @@ export default function CatalogPage() {
   }, [filters.make, cars])
 
   const applyFilters = useCallback(() => {
+    if (!cars || cars.length === 0) {
+      setFilteredCars([]);
+      return;
+    }
+
     const filtered = cars.filter((car) => {
+      // Добавляем проверки на null и undefined для всех полей
+      if (!car) return false;
+
+      const carPrice = car.price || 0;
+      const carYear = car.year || 0;
+      const carMileage = car.mileage || 0;
+
+      // Безопасный парсинг чисел с защитой от NaN
+      const priceFrom = filters.priceFrom ? Number.parseInt(filters.priceFrom) || 0 : 0;
+      const priceTo = filters.priceTo ? Number.parseInt(filters.priceTo) || 0 : 0;
+      const yearFrom = filters.yearFrom ? Number.parseInt(filters.yearFrom) || 0 : 0;
+      const yearTo = filters.yearTo ? Number.parseInt(filters.yearTo) || 0 : 0;
+      const mileageFrom = filters.mileageFrom ? Number.parseInt(filters.mileageFrom) || 0 : 0;
+      const mileageTo = filters.mileageTo ? Number.parseInt(filters.mileageTo) || 0 : 0;
+
       return (
-        (filters.priceFrom === "" || filters.priceFrom === "0" || (car.price && car.price >= Number.parseInt(filters.priceFrom))) &&
-        (filters.priceTo === "" || filters.priceTo === "0" || (car.price && car.price <= Number.parseInt(filters.priceTo))) &&
+        (filters.priceFrom === "" || priceFrom === 0 || carPrice >= priceFrom) &&
+        (filters.priceTo === "" || priceTo === 0 || carPrice <= priceTo) &&
         (filters.make === "all" || car.make === filters.make) &&
         (filters.model === "all" || car.model === filters.model) &&
-        (filters.yearFrom === "" || car.year >= Number.parseInt(filters.yearFrom)) &&
-        (filters.yearTo === "" || car.year <= Number.parseInt(filters.yearTo)) &&
-        (filters.mileageFrom === "" || car.mileage >= Number.parseInt(filters.mileageFrom)) &&
-        (filters.mileageTo === "" || car.mileage <= Number.parseInt(filters.mileageTo)) &&
+        (filters.yearFrom === "" || yearFrom === 0 || carYear >= yearFrom) &&
+        (filters.yearTo === "" || yearTo === 0 || carYear <= yearTo) &&
+        (filters.mileageFrom === "" || mileageFrom === 0 || carMileage >= mileageFrom) &&
+        (filters.mileageTo === "" || mileageTo === 0 || carMileage <= mileageTo) &&
         (filters.transmission === "any" || car.transmission === filters.transmission) &&
         (filters.fuelType === "any" || car.fuelType === filters.fuelType) &&
         (filters.driveTrain === "any" || car.driveTrain === filters.driveTrain)
@@ -105,6 +125,14 @@ export default function CatalogPage() {
 
   useEffect(() => {
     loadCars()
+
+    // При размонтировании компонента, очистим состояние
+    return () => {
+      setCars([])
+      setFilteredCars([])
+      setAvailableMakes([])
+      setAvailableModels([])
+    }
   }, [])
 
   useEffect(() => {
@@ -233,13 +261,14 @@ export default function CatalogPage() {
         <Select
           value={filters.make}
           onValueChange={(value) => setFilters({ ...filters, make: value })}
+          disabled={availableMakes.length === 0}
         >
           <SelectTrigger className="border border-gray-200 bg-white h-11 text-base">
             <SelectValue placeholder="Выберите марку" />
           </SelectTrigger>
           <SelectContent className="border-gray-200 shadow-lg">
             <SelectItem value="all" className="text-base py-3">Все марки</SelectItem>
-            {availableMakes.map(make => (
+            {availableMakes.length > 0 && availableMakes.map(make => (
               <SelectItem key={make} value={make} className="text-base py-3">{make}</SelectItem>
             ))}
           </SelectContent>
@@ -252,14 +281,14 @@ export default function CatalogPage() {
         <Select
           value={filters.model}
           onValueChange={(value) => setFilters({ ...filters, model: value })}
-          disabled={filters.make === "all"}
+          disabled={filters.make === "all" || availableModels.length === 0}
         >
           <SelectTrigger className="border border-gray-200 bg-white h-11 text-base">
             <SelectValue placeholder={filters.make === "all" ? "Сначала выберите марку" : "Выберите модель"} />
           </SelectTrigger>
           <SelectContent className="border-gray-200 shadow-lg">
             <SelectItem value="all" className="text-base py-3">Все модели</SelectItem>
-            {availableModels.map(model => (
+            {availableModels.length > 0 && availableModels.map(model => (
               <SelectItem key={model} value={model} className="text-base py-3">{model}</SelectItem>
             ))}
           </SelectContent>
@@ -312,7 +341,7 @@ export default function CatalogPage() {
       <div className="flex space-x-3 pt-4">
         <Button
           onClick={() => {
-            applyFilters()
+            // Не нужно явно вызывать applyFilters, т.к. это происходит автоматически через useEffect
             setIsFilterOpen(false)
           }}
           className="flex-1 h-11 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors"
@@ -320,7 +349,10 @@ export default function CatalogPage() {
           Применить
         </Button>
         <Button
-          onClick={resetFilters}
+          onClick={() => {
+            resetFilters()
+            setIsFilterOpen(false)
+          }}
           variant="outline"
           className="flex-1 h-11 bg-white border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
         >
