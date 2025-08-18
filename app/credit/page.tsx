@@ -22,6 +22,7 @@ import { doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import CreditConditions from "@/components/credit-conditions"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import CreditCarsCarousel from "@/components/credit-cars-carousel"
 
 interface CreditPageSettings {
   title: string
@@ -827,6 +828,9 @@ export default function CreditPage() {
             </div>
           </div>
         </div>
+
+        {/* Credit Cars Carousel */}
+        <CreditCarsCarousel />
 
         {/* Benefits Section - со скелетонами только для данных из БД */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
