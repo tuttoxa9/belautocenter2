@@ -48,37 +48,45 @@ import MarkdownRenderer from "@/components/markdown-renderer"
 import LazyThumbnail from "@/components/lazy-thumbnail"
 
 // Компонент ошибки для несуществующего автомобиля
-const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => (
-  <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
-    <div className="text-center max-w-md mx-auto px-4">
-      <div className="mb-6">
-        <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-slate-900 mb-4">Автомобиль не найден</h1>
-        <p className="text-slate-600 mb-6">
-          К сожалению, автомобиль с указанным ID не существует или произошла ошибка при загрузке данных.
-        </p>
-      </div>
+const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => {
+  // Используем hook из контекста для получения настроек
+  const { settings } = useSettings();
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-3">Нужна помощь?</h3>
-        <p className="text-slate-600 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
-        <div className="flex items-center justify-center space-x-2 text-blue-600">
-          <Phone className="h-5 w-5" />
-          <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-            {contactPhone}
-          </a>
+  // Получаем номер телефона из настроек, если доступен, иначе используем переданный параметр
+  const phoneNumber = settings?.main?.showroomInfo?.phone || contactPhone;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
+      <div className="text-center max-w-md mx-auto px-4">
+        <div className="mb-6">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-slate-900 mb-4">Автомобиль не найден</h1>
+          <p className="text-slate-600 mb-6">
+            К сожалению, автомобиль с указанным ID не существует или произошла ошибка при загрузке данных.
+          </p>
         </div>
-      </div>
 
-      <Button
-        onClick={() => window.location.href = '/catalog'}
-        className="w-full bg-slate-900 hover:bg-slate-800 text-white"
-      >
-        Перейти к каталогу
-      </Button>
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+          <h3 className="text-lg font-semibold text-slate-900 mb-3">Нужна помощь?</h3>
+          <p className="text-slate-600 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
+          <div className="flex items-center justify-center space-x-2 text-blue-600">
+            <Phone className="h-5 w-5" />
+            <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+              {phoneNumber}
+            </a>
+          </div>
+        </div>
+
+        <Button
+          onClick={() => window.location.href = '/catalog'}
+          className="w-full bg-slate-900 hover:bg-slate-800 text-white"
+        >
+          Перейти к каталогу
+        </Button>
+      </div>
     </div>
-  </div>
-)
+  );
+};
 
 interface Car {
   id: string;
