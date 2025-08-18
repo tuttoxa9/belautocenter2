@@ -12,8 +12,9 @@ import { Badge } from "@/components/ui/badge"
 import { Plus, Upload, Trash2, Edit, Eye, Link as LinkIcon, GripVertical } from "lucide-react"
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy, setDoc, getDoc } from "firebase/firestore"
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage"
-import { db, storage } from "@/lib/firebase"
+import { db } from "@/lib/firebase"
+import { uploadImage, deleteImage } from "@/lib/storage"
+import { getCachedImageUrl } from "@/lib/image-cache"
 
 interface Story {
   id: string
@@ -134,12 +135,8 @@ export default function AdminStories() {
   }
 
   const uploadFile = async (file: File): Promise<string> => {
-    const timestamp = Date.now()
-    const fileName = `stories/${timestamp}_${file.name}`
-    const storageRef = ref(storage, fileName)
-
-    await uploadBytes(storageRef, file)
-    return await getDownloadURL(storageRef)
+    // Загружаем файл в R2 через API
+    return await uploadImage(file, 'stories')
   }
 
   const handleSubmit = async () => {
@@ -222,6 +219,27 @@ export default function AdminStories() {
 
   const handleDelete = async (story: Story) => {
     try {
+      // Удаляем файлы из R2
+      if (story.mediaUrl) {
+        // Если URL содержит полный путь, нам нужно получить относительный путь
+        // Но функция deleteImage обрабатывает это автоматически
+        try {
+          await deleteImage(story.mediaUrl)
+        } catch (error) {
+          console.error("Ошибка удаления медиафайла:", error)
+        }
+      }
+
+      // Удаляем аватарку, если она есть
+      if (story.avatarUrl) {
+        try {
+          await deleteImage(story.avatarUrl)
+        } catch (error) {
+          console.error("Ошибка удаления аватарки:", error)
+        }
+      }
+
+      // Удаляем документ из Firestore
       await deleteDoc(doc(db, "stories", story.id))
       await cacheInvalidator.onDelete(story.id)
       loadStories()
@@ -472,13 +490,13 @@ export default function AdminStories() {
                   <div className="aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden">
                     {story.mediaType === 'image' ? (
                       <img
-                        src={story.mediaUrl}
+                        src={getCachedImageUrl(story.mediaUrl)}
                         alt={story.caption}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <video
-                        src={story.mediaUrl}
+                        src={getCachedImageUrl(story.mediaUrl)}
                         className="w-full h-full object-cover"
                         muted
                       />
@@ -585,7 +603,7 @@ export default function AdminStories() {
               {selectedStory?.avatarUrl && (
                 <div className="mb-2 flex items-center">
                   <div className="w-10 h-10 rounded-full overflow-hidden mr-2">
-                    <img src={selectedStory.avatarUrl} alt="Аватарка" className="w-full h-full object-cover" />
+                    <img src={getCachedImageUrl(selectedStory.avatarUrl)} alt="Аватарка" className="w-full h-full object-cover" />
                   </div>
                   <span className="text-xs text-gray-500">Текущая аватарка</span>
                 </div>
@@ -690,13 +708,13 @@ export default function AdminStories() {
             <div className="relative aspect-[9/16]">
               {previewStory.mediaType === 'image' ? (
                 <img
-                  src={previewStory.mediaUrl}
+                  src={getCachedImageUrl(previewStory.mediaUrl)}
                   alt={previewStory.caption}
                   className="w-full h-full object-cover"
                 />
               ) : (
                 <video
-                  src={previewStory.mediaUrl}
+                  src={getCachedImageUrl(previewStory.mediaUrl)}
                   className="w-full h-full object-cover"
                   controls
                   autoPlay
