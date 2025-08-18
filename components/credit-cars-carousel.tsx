@@ -31,12 +31,9 @@ interface CarData {
 export default function CreditCarsCarousel() {
   const [cars, setCars] = useState<CarData[]>([])
   const [loading, setLoading] = useState(true)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
-  const [startX, setStartX] = useState(0)
-  const [scrollLeft, setScrollLeft] = useState(0)
-  const [dragDistance, setDragDistance] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0)
   const carouselRef = useRef<HTMLDivElement>(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const usdBynRate = useUsdBynRate()
 
   useEffect(() => {
@@ -101,51 +98,72 @@ export default function CreditCarsCarousel() {
     return new Intl.NumberFormat("ru-BY").format(mileage)
   }
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!carouselRef.current) return
-    setIsDragging(true)
-    setStartX(e.pageX)
-    setScrollLeft(carouselRef.current.scrollLeft)
-    setDragDistance(0)
+  // Автопереключение для мобилок
+  useEffect(() => {
+    const startAutoPlay = () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+
+      // Только для мобилок
+      if (window.innerWidth < 768) {
+        intervalRef.current = setInterval(() => {
+          setActiveIndex((prev) => (prev + 1) % cars.length)
+        }, 4000)
+      }
+    }
+
+    if (cars.length > 0) {
+      startAutoPlay()
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [cars.length])
+
+  // Сброс таймера при ручном переключении
+  const resetTimer = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+    }
+
+    if (window.innerWidth < 768) {
+      intervalRef.current = setInterval(() => {
+        setActiveIndex((prev) => (prev + 1) % cars.length)
+      }, 4000)
+    }
   }
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !carouselRef.current) return
-    e.preventDefault()
-    const walk = startX - e.pageX
-    setDragDistance(Math.abs(walk))
-    carouselRef.current.scrollLeft = scrollLeft + walk
+  const goToSlide = (index: number) => {
+    setActiveIndex(index)
+    resetTimer()
   }
 
-  const handleMouseUp = () => {
-    setIsDragging(false)
+  const nextSlide = () => {
+    setActiveIndex((prev) => (prev + 1) % cars.length)
+    resetTimer()
   }
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!carouselRef.current) return
-    setIsDragging(true)
-    setStartX(e.touches[0].pageX)
-    setScrollLeft(carouselRef.current.scrollLeft)
-    setDragDistance(0)
+  const prevSlide = () => {
+    setActiveIndex((prev) => (prev - 1 + cars.length) % cars.length)
+    resetTimer()
   }
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || !carouselRef.current) return
-    const walk = startX - e.touches[0].pageX
-    setDragDistance(Math.abs(walk))
-    carouselRef.current.scrollLeft = scrollLeft + walk
-  }
+  // Прокрутка к активной карточке
+  useEffect(() => {
+    if (!carouselRef.current || cars.length === 0) return
 
-  const handleTouchEnd = () => {
-    setIsDragging(false)
-  }
+    const cardWidth = window.innerWidth >= 768 ? 280 + 16 : 240 + 12
+    const scrollPosition = activeIndex * cardWidth
 
-  const scrollToCard = (direction: 'left' | 'right') => {
-    if (!carouselRef.current) return
-    const cardWidth = window.innerWidth >= 768 ? 280 + 16 : 240 + 12 // ширина карточки + gap
-    const scrollAmount = direction === 'left' ? -cardWidth : cardWidth
-    carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
-  }
+    carouselRef.current.scrollTo({
+      left: scrollPosition,
+      behavior: 'smooth'
+    })
+  }, [activeIndex, cars.length])
 
   if (loading) {
     return (
@@ -197,15 +215,15 @@ export default function CreditCarsCarousel() {
               Популярные автомобили в кредит
             </h3>
           </div>
-          <div className="hidden md:flex gap-2">
+          <div className="flex gap-2">
             <button
-              onClick={() => scrollToCard('left')}
+              onClick={prevSlide}
               className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors"
             >
               <ArrowLeft className="h-5 w-5 text-slate-600" />
             </button>
             <button
-              onClick={() => scrollToCard('right')}
+              onClick={nextSlide}
               className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors"
             >
               <ArrowRight className="h-5 w-5 text-slate-600" />
@@ -215,34 +233,19 @@ export default function CreditCarsCarousel() {
 
         <div
           ref={carouselRef}
-          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-4 cursor-grab active:cursor-grabbing"
+          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-4"
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
             WebkitScrollbar: { display: 'none' }
           }}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
         >
-          {cars.map((car) => {
+          {cars.map((car, index) => {
             const monthlyPayment = calculateMonthlyPayment(car.price)
-
-            const handleCardClick = (e: React.MouseEvent) => {
-              // Если была прокрутка (drag), не открываем ссылку
-              if (dragDistance > 5) {
-                e.preventDefault()
-                return
-              }
-            }
 
             return (
               <Card key={car.id} className="min-w-[240px] md:min-w-[280px] max-w-[240px] md:max-w-[280px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300">
-                <Link href={`/catalog/${car.id}`} className="block" onClick={handleCardClick}>
+                <Link href={`/catalog/${car.id}`} className="block">
                   {/* Image Section */}
                   <div className="relative">
                     <div className="relative overflow-hidden bg-slate-100 h-28 md:h-40">
@@ -315,6 +318,19 @@ export default function CreditCarsCarousel() {
               </Card>
             )
           })}
+        </div>
+
+        {/* Индикаторы для мобилок */}
+        <div className="flex md:hidden justify-center gap-2 mt-4">
+          {cars.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === activeIndex ? 'bg-blue-600' : 'bg-slate-300'
+              }`}
+            />
+          ))}
         </div>
 
         <div className="mt-4 text-center">
