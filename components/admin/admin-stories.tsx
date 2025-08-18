@@ -24,6 +24,7 @@ interface Story {
   linkUrl?: string
   order: number
   createdAt: Date
+  avatarUrl?: string
 }
 
 interface StoriesSettings {
@@ -53,6 +54,7 @@ export default function AdminStories() {
     subtitle: "",
     linkUrl: "",
     file: null as File | null,
+    avatarFile: null as File | null,
   })
 
   useEffect(() => {
@@ -152,18 +154,25 @@ export default function AdminStories() {
       const mediaType = formData.file.type.startsWith('image/') ? 'image' : 'video'
       const nextOrder = stories && stories.length > 0 ? Math.max(...stories.map(s => s.order)) + 1 : 1
 
+      // Загрузка аватарки, если она выбрана
+      let avatarUrl = undefined
+      if (formData.avatarFile) {
+        avatarUrl = await uploadFile(formData.avatarFile)
+      }
+
       const docRef = await addDoc(collection(db, "stories"), {
         mediaUrl,
         mediaType,
         caption: formData.caption,
         subtitle: formData.subtitle || null,
         linkUrl: formData.linkUrl || null,
+        avatarUrl: avatarUrl || null,
         order: nextOrder,
         createdAt: new Date(),
       })
 
       await cacheInvalidator.onCreate(docRef.id)
-      setFormData({ caption: "", subtitle: "", linkUrl: "", file: null })
+      setFormData({ caption: "", subtitle: "", linkUrl: "", file: null, avatarFile: null })
       setIsAddDialogOpen(false)
       loadStories()
       alert("История добавлена!")
@@ -192,11 +201,17 @@ export default function AdminStories() {
         updateData.mediaType = mediaType
       }
 
+      // Обновление аватарки, если она выбрана
+      if (formData.avatarFile) {
+        const avatarUrl = await uploadFile(formData.avatarFile)
+        updateData.avatarUrl = avatarUrl
+      }
+
       await updateDoc(doc(db, "stories", selectedStory.id), updateData)
       await cacheInvalidator.onUpdate(selectedStory.id)
       setIsEditDialogOpen(false)
       setSelectedStory(null)
-      setFormData({ caption: "", subtitle: "", linkUrl: "", file: null })
+      setFormData({ caption: "", subtitle: "", linkUrl: "", file: null, avatarFile: null })
       loadStories()
       alert("История обновлена!")
     } catch (error) {
@@ -224,6 +239,7 @@ export default function AdminStories() {
       subtitle: story.subtitle || "",
       linkUrl: story.linkUrl || "",
       file: null,
+      avatarFile: null,
     })
     setIsEditDialogOpen(true)
   }
@@ -337,6 +353,37 @@ export default function AdminStories() {
                 {formData.file && (
                   <div className="text-sm text-green-600">
                     Выбран файл: {formData.file.name}
+                  </div>
+                )}
+
+                {/* Загрузка аватарки */}
+                <div>
+                  <Label htmlFor="avatarUpload" className="block mb-2">Аватарка для кружочка (необязательно)</Label>
+                  <div
+                    className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors hover:border-gray-400"
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) {
+                          setFormData(prev => ({ ...prev, avatarFile: file }));
+                        }
+                      };
+                      input.click();
+                    }}
+                  >
+                    <Upload className="h-6 w-6 mx-auto mb-2 text-gray-400" />
+                    <p className="text-xs text-gray-600">
+                      Загрузите аватарку для отображения в кружочке
+                    </p>
+                  </div>
+                </div>
+
+                {formData.avatarFile && (
+                  <div className="text-sm text-green-600">
+                    Выбрана аватарка: {formData.avatarFile.name}
                   </div>
                 )}
 
@@ -500,6 +547,45 @@ export default function AdminStories() {
             {formData.file && (
               <div className="text-sm text-green-600">
                 Выбран новый файл: {formData.file.name}
+              </div>
+            )}
+
+            {/* Загрузка аватарки */}
+            <div>
+              <Label htmlFor="edit-avatarUpload" className="block mb-2">Аватарка для кружочка (необязательно)</Label>
+              {selectedStory?.avatarUrl && (
+                <div className="mb-2 flex items-center">
+                  <div className="w-10 h-10 rounded-full overflow-hidden mr-2">
+                    <img src={selectedStory.avatarUrl} alt="Аватарка" className="w-full h-full object-cover" />
+                  </div>
+                  <span className="text-xs text-gray-500">Текущая аватарка</span>
+                </div>
+              )}
+              <div
+                className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors hover:border-gray-400"
+                onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                      setFormData(prev => ({ ...prev, avatarFile: file }));
+                    }
+                  };
+                  input.click();
+                }}
+              >
+                <Upload className="h-6 w-6 mx-auto mb-2 text-gray-400" />
+                <p className="text-xs text-gray-600">
+                  {selectedStory?.avatarUrl ? "Загрузить новую аватарку" : "Загрузить аватарку для кружочка"}
+                </p>
+              </div>
+            </div>
+
+            {formData.avatarFile && (
+              <div className="text-sm text-green-600">
+                Выбрана новая аватарка: {formData.avatarFile.name}
               </div>
             )}
 

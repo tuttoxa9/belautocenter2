@@ -16,6 +16,7 @@ interface Story {
   linkUrl?: string
   order: number
   createdAt: Date
+  avatarUrl?: string
 }
 
 interface StoriesSettings {
@@ -203,7 +204,7 @@ export default function Stories() {
               >
                 <div className="w-full h-full rounded-full overflow-hidden bg-white">
                   <FadeInImage
-                    src={story.mediaUrl || "/placeholder.svg"}
+                    src={story.avatarUrl || story.mediaUrl || "/placeholder.svg"}
                     alt={story.caption}
                     className="w-full h-full object-cover"
                   />
