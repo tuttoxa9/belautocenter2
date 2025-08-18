@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import Link from "next/link"
 import { Car, ArrowLeft, ArrowRight, CreditCard } from "lucide-react"
-import { collection, getDocs, orderBy, limit, query } from "firebase/firestore"
+import { collection, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
@@ -86,35 +86,28 @@ export default function CreditCarsCarousel() {
             return { id, ...fields }
           }) || []
 
-          // Сортируем по дате создания (самые старые первыми)
+          // Фильтруем доступные автомобили с ценой и берем первые 10
           carsData = carsData
-            .filter((car: CarData) => car.isAvailable !== false && car.price && car.price > 0)
-            .sort((a: CarData, b: CarData) => {
-              const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
-              const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
-              return dateA - dateB // Самые старые первыми
-            })
-            .slice(0, 10) // Берем только 10 самых старых
+            .filter((car: CarData) => car && car.price && car.price > 0)
+            .slice(0, 10)
 
+          console.log('Загружено автомобилей для карусели:', carsData.length)
           setCars(carsData as CarData[])
         }
       } catch (apiError) {
         console.warn('Кэшированный API недоступен, используем прямое подключение к Firebase:', apiError)
 
         // Fallback: прямое подключение к Firebase
-        const carsQuery = query(
-          collection(db, "cars"),
-          orderBy("createdAt", "asc"),
-          limit(10)
-        )
-        const snapshot = await getDocs(carsQuery)
+        const snapshot = await getDocs(collection(db, "cars"))
         const carsData = snapshot.docs
           .map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }))
-          .filter((car: CarData) => car.isAvailable !== false && car.price && car.price > 0)
+          .filter((car: CarData) => car && car.price && car.price > 0)
+          .slice(0, 10)
 
+        console.log('Загружено автомобилей для карусели (fallback):', carsData.length)
         setCars(carsData as CarData[])
       }
     } catch (error) {
@@ -219,7 +212,16 @@ export default function CreditCarsCarousel() {
   }
 
   if (cars.length === 0) {
-    return null
+    console.log('Карусель: автомобили не загружены, loading:', loading)
+    return (
+      <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+        <div className="p-4 md:p-8">
+          <div className="text-center text-slate-500">
+            {loading ? 'Загружаем автомобили...' : 'Автомобили не найдены'}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
