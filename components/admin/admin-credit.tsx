@@ -15,6 +15,7 @@ import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ImageUpload from "./image-upload"
 import AdminCreditConditions from "./admin-credit-conditions"
+import { sanitizePath } from "@/lib/utils"
 
 export default function AdminCredit() {
   const [loading, setLoading] = useState(true)
@@ -270,7 +271,7 @@ export default function AdminCredit() {
                       <Label className="text-white">Логотип банка</Label>
                       <ImageUpload
                         onUpload={(url) => updatePartner(index, "logoUrl", url)}
-                        path={`banks/${partner.name}`}
+                        path={`banks/${sanitizePath(partner.name)}`}
                         currentImage={partner.logoUrl}
                         className="mt-2"
                       />

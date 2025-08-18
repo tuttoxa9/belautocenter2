@@ -11,8 +11,15 @@ export const uploadImage = async (file: File, path: string): Promise<string> => 
   try {
     console.log('Начало загрузки изображения через Cloudflare Worker...')
 
-    // Генерируем уникальный путь для файла
-    const uniquePath = `${path}/${Date.now()}-${file.name}`;
+    // Генерируем уникальный путь для файла, имя файла также подвергается санитизации
+    const cleanFileName = file.name
+      .toLowerCase()
+      .replace(/[^\w\s.-]/g, '')  // Удаляем все спецсимволы кроме пробелов, точек и дефисов
+      .replace(/\s+/g, '-')       // Заменяем пробелы на дефисы
+      .replace(/-+/g, '-')        // Заменяем множественные дефисы на один
+      .trim();
+
+    const uniquePath = `${path}/${Date.now()}-${cleanFileName}`;
 
     // Создаем объект FormData
     const formData = new FormData();

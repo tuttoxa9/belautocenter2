@@ -13,6 +13,7 @@ import { useButtonState } from "@/hooks/use-button-state"
 import { StatusButton } from "@/components/ui/status-button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ImageUpload from "./image-upload"
+import { sanitizePath } from "@/lib/utils"
 
 interface LeasingBenefit {
   icon: string
@@ -476,7 +477,7 @@ export default function AdminLeasing() {
                   <ImageUpload
                     onImageUploaded={(url) => updateLeasingCompany(index, "logoUrl", url)}
                     currentImage={company.logoUrl}
-                    path="leasing/companies"
+                    path={`leasing/companies/${sanitizePath(company.name)}`}
                   />
                 </div>
                 <div>

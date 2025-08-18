@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Star, User, Image as ImageIcon, MessageSquare, Calendar, Award } from "lucide-react"
 import ImageUpload from "./image-upload"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { sanitizePath } from "@/lib/utils"
 
 interface Review {
   id: string
@@ -333,7 +334,7 @@ export default function AdminReviews() {
                   <span>Фото отзыва (опционально)</span>
                 </Label>
                 <ImageUpload
-                  path="reviews"
+                  path={`reviews/${sanitizePath(reviewForm.name)}`}
                   currentImage={reviewForm.imageUrl}
                   onImageUploaded={(url) => setReviewForm({ ...reviewForm, imageUrl: url })}
                   className="w-full"
