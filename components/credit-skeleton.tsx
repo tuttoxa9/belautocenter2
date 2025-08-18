@@ -142,9 +142,9 @@ export default function CreditSkeleton() {
         <div className="bg-white/70 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-lg shadow-gray-900/5 border-0 overflow-hidden mb-6 md:mb-8">
           <div className="p-4 md:p-8">
             <div className="flex items-center justify-between mb-4 md:mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gray-200/60 rounded-lg animate-pulse"></div>
-                <div className="h-5 md:h-6 bg-gray-200/60 rounded w-48 md:w-64 animate-pulse"></div>
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="w-6 h-6 md:w-8 md:h-8 bg-gray-200/60 rounded-lg animate-pulse"></div>
+                <div className="h-4 md:h-6 bg-gray-200/60 rounded w-36 md:w-64 animate-pulse"></div>
               </div>
               <div className="hidden md:flex gap-2">
                 <div className="w-10 h-10 bg-gray-200/60 rounded-lg animate-pulse"></div>
@@ -153,34 +153,44 @@ export default function CreditSkeleton() {
             </div>
 
             {/* Mobile optimized carousel skeleton */}
-            <div className="flex gap-4 overflow-hidden pb-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="min-w-[280px] max-w-[280px] bg-white/80 rounded-xl border border-gray-200/40 overflow-hidden animate-pulse">
-                  <div className="h-40 bg-gray-200/60 animate-pulse"></div>
-                  <div className="p-4">
-                    <div className="mb-3">
-                      <div className="h-4 bg-gray-200/60 rounded w-3/4 mb-1 animate-pulse"></div>
-                      <div className="h-5 bg-gray-200/60 rounded w-1/2 mb-1 animate-pulse"></div>
-                      <div className="h-3 bg-gray-200/60 rounded w-2/3 animate-pulse"></div>
+            <div className="flex gap-3 md:gap-4 overflow-hidden pb-4">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="min-w-[240px] md:min-w-[280px] max-w-[240px] md:max-w-[280px] bg-white/80 rounded-lg md:rounded-xl border border-gray-200/40 overflow-hidden animate-pulse">
+                  {/* Image skeleton with year badge */}
+                  <div className="h-28 md:h-40 bg-gray-200/60 animate-pulse relative">
+                    <div className="absolute top-2 right-2 w-8 h-4 md:w-10 md:h-5 bg-gray-300/60 rounded animate-pulse"></div>
+                  </div>
+
+                  {/* Content skeleton */}
+                  <div className="p-3 md:p-4">
+                    {/* Title and price */}
+                    <div className="mb-2 md:mb-3">
+                      <div className="h-3 md:h-4 bg-gray-200/60 rounded w-3/4 mb-1 animate-pulse"></div>
+                      <div className="h-4 md:h-5 bg-gray-200/60 rounded w-1/2 mb-1 animate-pulse"></div>
+                      <div className="h-2 md:h-3 bg-gray-200/60 rounded w-2/3 animate-pulse"></div>
                     </div>
-                    <div className="bg-gray-100/60 rounded-lg p-3 mb-3">
-                      <div className="h-3 bg-gray-200/60 rounded w-1/2 mb-1 animate-pulse"></div>
-                      <div className="h-5 bg-gray-200/60 rounded w-2/3 mb-1 animate-pulse"></div>
-                      <div className="h-3 bg-gray-200/60 rounded w-3/4 mb-1 animate-pulse"></div>
-                      <div className="h-3 bg-gray-200/60 rounded w-full animate-pulse"></div>
+
+                    {/* Monthly payment highlight */}
+                    <div className="bg-gray-100/60 rounded p-2 md:p-3 mb-2 md:mb-3">
+                      <div className="h-2 md:h-3 bg-gray-200/60 rounded w-2/3 mb-1 animate-pulse"></div>
+                      <div className="h-3 md:h-4 bg-gray-200/60 rounded w-1/2 mb-1 animate-pulse"></div>
+                      <div className="h-2 md:h-3 bg-gray-200/60 rounded w-3/4 mb-1 animate-pulse"></div>
+                      <div className="h-2 md:h-3 bg-gray-200/60 rounded w-full animate-pulse"></div>
                     </div>
+
+                    {/* Specs skeleton */}
                     <div className="space-y-1">
                       <div className="flex justify-between">
-                        <div className="h-3 bg-gray-200/60 rounded w-1/3 animate-pulse"></div>
-                        <div className="h-3 bg-gray-200/60 rounded w-1/4 animate-pulse"></div>
+                        <div className="h-2 md:h-3 bg-gray-200/60 rounded w-1/3 animate-pulse"></div>
+                        <div className="h-2 md:h-3 bg-gray-200/60 rounded w-1/4 animate-pulse"></div>
                       </div>
                       <div className="flex justify-between">
-                        <div className="h-3 bg-gray-200/60 rounded w-1/3 animate-pulse"></div>
-                        <div className="h-3 bg-gray-200/60 rounded w-1/4 animate-pulse"></div>
+                        <div className="h-2 md:h-3 bg-gray-200/60 rounded w-1/3 animate-pulse"></div>
+                        <div className="h-2 md:h-3 bg-gray-200/60 rounded w-1/4 animate-pulse"></div>
                       </div>
                       <div className="flex justify-between">
-                        <div className="h-3 bg-gray-200/60 rounded w-1/3 animate-pulse"></div>
-                        <div className="h-3 bg-gray-200/60 rounded w-1/4 animate-pulse"></div>
+                        <div className="h-2 md:h-3 bg-gray-200/60 rounded w-1/3 animate-pulse"></div>
+                        <div className="h-2 md:h-3 bg-gray-200/60 rounded w-1/4 animate-pulse"></div>
                       </div>
                     </div>
                   </div>
@@ -188,8 +198,8 @@ export default function CreditSkeleton() {
               ))}
             </div>
 
-            <div className="mt-4 text-center">
-              <div className="h-4 bg-gray-200/60 rounded w-40 mx-auto animate-pulse"></div>
+            <div className="mt-3 md:mt-4 text-center">
+              <div className="h-3 md:h-4 bg-gray-200/60 rounded w-32 md:w-40 mx-auto animate-pulse"></div>
             </div>
           </div>
         </div>

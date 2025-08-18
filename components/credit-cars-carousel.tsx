@@ -104,7 +104,7 @@ export default function CreditCarsCarousel() {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!carouselRef.current) return
     setIsDragging(true)
-    setStartX(e.pageX - carouselRef.current.offsetLeft)
+    setStartX(e.pageX)
     setScrollLeft(carouselRef.current.scrollLeft)
     setDragDistance(0)
   }
@@ -112,10 +112,9 @@ export default function CreditCarsCarousel() {
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !carouselRef.current) return
     e.preventDefault()
-    const x = e.pageX - carouselRef.current.offsetLeft
-    const walk = x - startX
+    const walk = startX - e.pageX
     setDragDistance(Math.abs(walk))
-    carouselRef.current.scrollLeft = scrollLeft - walk
+    carouselRef.current.scrollLeft = scrollLeft + walk
   }
 
   const handleMouseUp = () => {
@@ -125,17 +124,16 @@ export default function CreditCarsCarousel() {
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!carouselRef.current) return
     setIsDragging(true)
-    setStartX(e.touches[0].pageX - carouselRef.current.offsetLeft)
+    setStartX(e.touches[0].pageX)
     setScrollLeft(carouselRef.current.scrollLeft)
     setDragDistance(0)
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging || !carouselRef.current) return
-    const x = e.touches[0].pageX - carouselRef.current.offsetLeft
-    const walk = x - startX
+    const walk = startX - e.touches[0].pageX
     setDragDistance(Math.abs(walk))
-    carouselRef.current.scrollLeft = scrollLeft - walk
+    carouselRef.current.scrollLeft = scrollLeft + walk
   }
 
   const handleTouchEnd = () => {
@@ -144,7 +142,7 @@ export default function CreditCarsCarousel() {
 
   const scrollToCard = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return
-    const cardWidth = 280 + 16 // ширина карточки + gap
+    const cardWidth = window.innerWidth >= 768 ? 280 + 16 : 240 + 12 // ширина карточки + gap
     const scrollAmount = direction === 'left' ? -cardWidth : cardWidth
     carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
   }
@@ -159,13 +157,13 @@ export default function CreditCarsCarousel() {
               <div className="h-6 bg-slate-300 rounded w-48 animate-pulse"></div>
             </div>
           </div>
-          <div className="flex gap-4 overflow-hidden">
+          <div className="flex gap-3 md:gap-4 overflow-hidden">
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="w-72 bg-slate-100 rounded-xl p-4 animate-pulse">
-                <div className="h-40 bg-slate-200 rounded-lg mb-4"></div>
-                <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
-                <div className="h-6 bg-slate-200 rounded w-1/2 mb-2"></div>
-                <div className="h-4 bg-slate-200 rounded w-full"></div>
+              <div key={index} className="min-w-[240px] md:min-w-[280px] bg-slate-100 rounded-xl p-3 md:p-4 animate-pulse">
+                <div className="h-28 md:h-40 bg-slate-200 rounded-lg mb-3 md:mb-4"></div>
+                <div className="h-3 md:h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 md:h-6 bg-slate-200 rounded w-1/2 mb-2"></div>
+                <div className="h-3 md:h-4 bg-slate-200 rounded w-full"></div>
               </div>
             ))}
           </div>
@@ -217,7 +215,7 @@ export default function CreditCarsCarousel() {
 
         <div
           ref={carouselRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 cursor-grab active:cursor-grabbing"
+          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-4 cursor-grab active:cursor-grabbing"
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
@@ -243,17 +241,17 @@ export default function CreditCarsCarousel() {
             }
 
             return (
-              <Card key={car.id} className="min-w-[280px] max-w-[280px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300">
+              <Card key={car.id} className="min-w-[240px] md:min-w-[280px] max-w-[240px] md:max-w-[280px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300">
                 <Link href={`/catalog/${car.id}`} className="block" onClick={handleCardClick}>
                   {/* Image Section */}
                   <div className="relative">
-                    <div className="relative overflow-hidden bg-slate-100 h-40">
+                    <div className="relative overflow-hidden bg-slate-100 h-28 md:h-40">
                       <Image
                         src={getCachedImageUrl(car.imageUrls?.[0] || "/placeholder.svg?height=160&width=280")}
                         alt={`${car.make} ${car.model}`}
                         fill
                         className="object-cover group-hover:scale-105 transition-all duration-300"
-                        sizes="280px"
+                        sizes="(max-width: 768px) 240px, 280px"
                       />
                       <div className="absolute top-3 right-3">
                         <Badge variant="secondary" className="bg-black/75 text-white text-xs font-medium">
@@ -264,7 +262,7 @@ export default function CreditCarsCarousel() {
                   </div>
 
                   {/* Content Section */}
-                  <CardContent className="p-4">
+                  <CardContent className="p-3 md:p-4">
                     <div className="mb-3">
                       <h4 className="font-semibold text-slate-900 text-base leading-tight mb-1 group-hover:text-slate-700 transition-colors">
                         {car.make} {car.model}
