@@ -115,10 +115,7 @@ export default function CarCard({ car }: CarCardProps) {
               </div>
             )}
 
-            {/* Status indicator */}
-            <div className="absolute top-3 left-3">
-              <div className={`w-2 h-2 rounded-full ${car.isAvailable ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
-            </div>
+
 
             {/* Year */}
             <div className="absolute top-3 right-3">
