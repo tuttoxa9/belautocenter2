@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Button } from "@/components/ui/button"
@@ -9,8 +9,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Save, Loader2, Shield, FileText, Clock, Eye, ChevronDown, ChevronRight } from "lucide-react"
+import { Save, Loader2, Shield, FileText, Clock, Eye, ChevronDown, ChevronRight, Upload, Download } from "lucide-react"
 import { useButtonState } from "@/hooks/use-button-state"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { toast } from "@/components/ui/use-toast"
 
 interface PrivacyData {
   title: string
@@ -32,6 +34,7 @@ export default function AdminPrivacy() {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit')
   const saveButtonState = useButtonState()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [privacyData, setPrivacyData] = useState<PrivacyData>({
     title: "Политика конфиденциальности",
     lastUpdated: new Date().toLocaleDateString('ru-RU'),
@@ -97,6 +100,99 @@ export default function AdminPrivacy() {
       newExpanded.add(sectionKey)
     }
     setExpandedSections(newExpanded)
+  }
+
+  const handleImportClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
+  const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        const jsonData = JSON.parse(event.target?.result as string)
+
+        // Проверяем минимально необходимую структуру
+        if (typeof jsonData.title !== 'string') {
+          throw new Error('Отсутствует поле "title" или оно не является строкой')
+        }
+
+        // Проверяем наличие секций или создаем пустую структуру
+        const sections = {
+          introduction: jsonData.introduction || "",
+          dataCollection: jsonData.dataCollection || "",
+          dataUsage: jsonData.dataUsage || "",
+          dataSecurity: jsonData.dataSecurity || "",
+          userRights: jsonData.userRights || "",
+          cookies: jsonData.cookies || "",
+          thirdParty: jsonData.thirdParty || "",
+          contact: jsonData.contact || ""
+        }
+
+        // Обновляем состояние с данными из JSON
+        setPrivacyData({
+          title: jsonData.title,
+          lastUpdated: new Date().toLocaleDateString('ru-RU'),
+          sections
+        })
+
+        toast({
+          title: "Импорт успешен",
+          description: "Данные политики конфиденциальности загружены из JSON",
+          duration: 3000
+        })
+      } catch (error) {
+        console.error("Ошибка парсинга JSON:", error)
+        toast({
+          title: "Ошибка импорта",
+          description: error instanceof Error ? error.message : "Некорректный формат JSON",
+          variant: "destructive",
+          duration: 5000
+        })
+      } finally {
+        // Сбрасываем input для возможности повторной загрузки того же файла
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      }
+    }
+
+    reader.readAsText(file)
+  }
+
+  const handleExportJson = () => {
+    // Создаем JSON из текущих данных
+    const jsonData = {
+      title: privacyData.title,
+      ...privacyData.sections
+    }
+
+    // Преобразуем в строку с отступами для читаемости
+    const jsonString = JSON.stringify(jsonData, null, 2)
+
+    // Создаем блоб и ссылку для скачивания
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+
+    // Создаем элемент для скачивания
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `privacy-policy-${new Date().toISOString().split('T')[0]}.json`
+    a.click()
+
+    // Очищаем URL
+    URL.revokeObjectURL(url)
+
+    toast({
+      title: "Экспорт успешен",
+      description: "Данные политики конфиденциальности экспортированы в JSON",
+      duration: 3000
+    })
   }
 
   if (loading) {
@@ -184,6 +280,41 @@ export default function AdminPrivacy() {
               <span>{totalChars.toLocaleString()} символов</span>
             </div>
           </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Upload className="h-4 w-4 mr-2" />
+                Импорт JSON
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Импорт данных политики конфиденциальности</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors hover:border-gray-400" onClick={handleImportClick}>
+                  <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                  <p className="text-sm text-gray-600 mb-2">
+                    Нажмите, чтобы выбрать JSON-файл с политикой конфиденциальности
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Структура должна содержать title и sections с соответствующими полями
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileImport}
+                  className="hidden"
+                  accept=".json"
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Button variant="outline" size="sm" onClick={handleExportJson}>
+            <Download className="h-4 w-4 mr-2" />
+            Экспорт JSON
+          </Button>
           <StatusButton
             onClick={savePrivacyData}
             variant="default"
