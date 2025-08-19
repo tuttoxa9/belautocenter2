@@ -823,14 +823,18 @@ export default function CreditPage() {
                       )}
                     </div>
                   </div>
+
+                  {/* Credit Cars Carousel - теперь часть блока заявки */}
+                  <div className="mt-4 pt-4 border-t border-slate-200">
+                    <CreditCarsCarousel />
+                  </div>
                 </form>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Credit Cars Carousel */}
-        <CreditCarsCarousel />
+
 
         {/* Benefits Section - со скелетонами только для данных из БД */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
