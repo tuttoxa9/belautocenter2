@@ -127,11 +127,10 @@ export default function CreditCarsCarousel() {
 
   if (loading) {
     return (
-      <div>
-        <div>
+      <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+        <div className="p-4 md:p-8">
           <div className="flex items-center justify-between mb-4 md:mb-6">
             <div className="flex items-center gap-3">
-              <div className="h-6 bg-slate-300 rounded w-48 animate-pulse"></div>
             </div>
           </div>
           <div className="flex gap-3 md:gap-4 overflow-hidden">
@@ -152,8 +151,8 @@ export default function CreditCarsCarousel() {
   if (cars.length === 0) {
     console.log('Карусель: автомобили не загружены, loading:', loading)
     return (
-      <div>
-        <div>
+      <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+        <div className="p-4 md:p-8">
           <div className="text-center text-slate-500">
             {loading ? 'Загружаем автомобили...' : 'Автомобили не найдены'}
           </div>
@@ -163,15 +162,12 @@ export default function CreditCarsCarousel() {
   }
 
   return (
-    <div>
-      <div>
+    <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+      <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-4 md:mb-6">
           <div className="flex items-center gap-3">
-            <h3 className="text-lg md:text-2xl font-semibold text-slate-900">
-              Популярные автомобили в кредит
-            </h3>
           </div>
-          <div className="flex gap-2">
+          <div className="hidden md:flex gap-2">
             <button
               onClick={prevSlide}
               className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors"
