@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Car, Code } from "lucide-react"
+import { Plus, Edit, Trash2, Car, Code, Search } from "lucide-react"
 import ImageUpload from "@/components/admin/image-upload"
 import { useButtonState } from "@/hooks/use-button-state"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -26,6 +26,7 @@ export default function AdminCars() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [jsonInput, setJsonInput] = useState("")
   const [jsonError, setJsonError] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
   const cacheInvalidator = createCacheInvalidator('cars')
   const saveButtonState = useButtonState()
   const deleteButtonStates = {}
@@ -222,6 +223,24 @@ export default function AdminCars() {
     const newUrls = carForm.imageUrls.filter((_, i) => i !== index)
     setCarForm({ ...carForm, imageUrls: newUrls.length > 0 ? newUrls : [""] })
   }
+
+  // Фильтрация автомобилей по поисковому запросу
+  const filteredCars = cars.filter((car) => {
+    if (!searchQuery) return true
+
+    const query = searchQuery.toLowerCase()
+    return (
+      car.make?.toLowerCase().includes(query) ||
+      car.model?.toLowerCase().includes(query) ||
+      car.year?.toString().includes(query) ||
+      car.price?.toString().includes(query) ||
+      car.color?.toLowerCase().includes(query) ||
+      car.bodyType?.toLowerCase().includes(query) ||
+      car.fuelType?.toLowerCase().includes(query) ||
+      car.transmission?.toLowerCase().includes(query) ||
+      car.driveTrain?.toLowerCase().includes(query)
+    )
+  })
 
   if (loading) {
     return (
@@ -661,8 +680,30 @@ export default function AdminCars() {
         </Dialog>
       </div>
 
+      {/* Поле поиска */}
+      <div className="flex items-center space-x-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="Поиск по марке, модели, году, цене..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        {searchQuery && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSearchQuery("")}
+          >
+            Очистить
+          </Button>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {cars && cars.map((car) => (
+        {filteredCars && filteredCars.map((car) => (
           <Card key={car.id}>
             <CardContent className="p-3 md:p-4">
               <div className="flex items-start justify-between mb-2 gap-2">
@@ -693,10 +734,24 @@ export default function AdminCars() {
         ))}
       </div>
 
-      {cars.length === 0 && (
+      {cars.length === 0 && !searchQuery && (
         <div className="text-center py-12">
           <Car className="h-12 w-12 mx-auto text-gray-400 mb-4" />
           <p className="text-gray-500">Автомобили не добавлены</p>
+        </div>
+      )}
+
+      {filteredCars.length === 0 && searchQuery && cars.length > 0 && (
+        <div className="text-center py-12">
+          <Search className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-500">По запросу "{searchQuery}" ничего не найдено</p>
+          <Button
+            variant="outline"
+            className="mt-2"
+            onClick={() => setSearchQuery("")}
+          >
+            Очистить поиск
+          </Button>
         </div>
       )}
     </div>

@@ -167,31 +167,34 @@ export default function CreditCarsCarousel() {
         <div className="flex items-center justify-between mb-4 md:mb-6">
           <div className="flex items-center gap-3">
           </div>
-          <div className="hidden md:flex gap-2">
-            <button
-              onClick={prevSlide}
-              className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 text-slate-600" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors"
-            >
-              <ArrowRight className="h-5 w-5 text-slate-600" />
-            </button>
-          </div>
         </div>
 
-        <div
-          ref={carouselRef}
-          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-4"
-          style={{
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-            WebkitScrollbar: { display: 'none' }
-          }}
-        >
+        <div className="relative">
+          {/* Левая стрелочка */}
+          <button
+            onClick={prevSlide}
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 hover:bg-white shadow-lg rounded-full items-center justify-center transition-all duration-200 border border-slate-200 hover:shadow-xl"
+          >
+            <ArrowLeft className="h-5 w-5 text-slate-700" />
+          </button>
+
+          {/* Правая стрелочка */}
+          <button
+            onClick={nextSlide}
+            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 hover:bg-white shadow-lg rounded-full items-center justify-center transition-all duration-200 border border-slate-200 hover:shadow-xl"
+          >
+            <ArrowRight className="h-5 w-5 text-slate-700" />
+          </button>
+
+          <div
+            ref={carouselRef}
+            className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-4"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              WebkitScrollbar: { display: 'none' }
+            }}
+          >
           {cars.map((car, index) => {
             const monthlyPayment = calculateMonthlyPayment(car.price)
 
@@ -236,6 +239,7 @@ export default function CreditCarsCarousel() {
               </Card>
             )
           })}
+          </div>
         </div>
 
         {/* Индикаторы для мобилок */}
