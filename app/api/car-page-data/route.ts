@@ -11,112 +11,37 @@ export async function GET() {
       getDoc(doc(db, "pages", "contacts"))
     ])
 
-    // Реальные банки-партнеры Беларуси
-    const realBanks = [
-      {
-        id: 1,
-        name: "Беларусбанк",
-        logo: "https://www.belarusbank.by/assets/images/logo.svg",
-        rate: 12.5,
-        minDownPayment: 10,
-        maxTerm: 84,
-        features: ["Льготные программы", "Минимальная ставка", "Быстрое рассмотрение"],
-        color: "emerald"
-      },
-      {
-        id: 2,
-        name: "Белагропромбанк",
-        logo: "https://belapb.by/favicon.ico",
-        rate: 13.2,
-        minDownPayment: 15,
-        maxTerm: 72,
-        features: ["Автокредит без справок", "Кредит под залог авто"],
-        color: "blue"
-      },
-      {
-        id: 3,
-        name: "Приорбанк",
-        logo: "https://www.priorbank.by/favicon.ico",
-        rate: 14.1,
-        minDownPayment: 20,
-        maxTerm: 60,
-        features: ["Онлайн одобрение", "Без поручителей"],
-        color: "purple"
-      },
-      {
-        id: 4,
-        name: "БПС-Сбербанк",
-        logo: "https://www.bps-sberbank.by/favicon.ico",
-        rate: 13.8,
-        minDownPayment: 15,
-        maxTerm: 72,
-        features: ["Экспресс кредитование", "Гибкие условия"],
-        color: "red"
-      },
-      {
-        id: 5,
-        name: "Альфа-Банк",
-        logo: "https://alfabank.by/favicon.ico",
-        rate: 15.2,
-        minDownPayment: 25,
-        maxTerm: 60,
-        features: ["Быстрое решение", "Индивидуальный подход"],
-        color: "emerald"
-      }
-    ]
-
-    // Реальные лизинговые компании Беларуси
-    const realLeasingCompanies = [
-      {
-        id: 1,
-        name: "БелВЭБ Лизинг",
-        logo: "https://belveb.by/favicon.ico",
-        minAdvance: 10,
-        maxTerm: 60,
-        residualValue: 1,
-        rate: 8.5,
-        features: ["Минимальный аванс", "НДС в рассрочку", "Ускоренная амортизация"],
-        color: "blue"
-      },
-      {
-        id: 2,
-        name: "Белорусская лизинговая компания",
-        logo: "",
-        minAdvance: 15,
-        maxTerm: 48,
-        residualValue: 5,
-        rate: 9.2,
-        features: ["Государственная поддержка", "Льготные программы"],
-        color: "green"
-      },
-      {
-        id: 3,
-        name: "Промагролизинг",
-        logo: "",
-        minAdvance: 20,
-        maxTerm: 60,
-        residualValue: 10,
-        rate: 10.1,
-        features: ["Специальные программы", "Гибкие условия"],
-        color: "purple"
-      },
-      {
-        id: 4,
-        name: "БТА Лизинг",
-        logo: "",
-        minAdvance: 15,
-        maxTerm: 36,
-        residualValue: 15,
-        rate: 11.5,
-        features: ["Быстрое оформление", "Индивидуальные условия"],
-        color: "orange"
-      }
-    ]
-
     const result = {
-      banks: realBanks.sort((a, b) => a.rate - b.rate),
-      leasingCompanies: realLeasingCompanies.sort((a, b) => a.minAdvance - b.minAdvance),
+      banks: [],
+      leasingCompanies: [],
       contactPhone: "+375 29 123-45-67" // fallback
+    }
+
+    // Обработка данных банков из Firestore
+    if (creditDoc.exists() && creditDoc.data()?.partners) {
+      const rawData = creditDoc.data()
+      const cleanData = JSON.parse(JSON.stringify(rawData))
+      const partners = cleanData?.partners || []
+
+      result.banks = partners.map((partner: any, index: number) => ({
+        id: index + 1,
+        name: partner.name || "",
+        logo: partner.logoUrl || "",
+        rate: partner.minRate || 15,
+        minDownPayment: 15,
+        maxTerm: partner.maxTerm || 60,
+        features: ["Выгодные условия", "Быстрое одобрение"],
+        color: ["emerald", "blue", "purple", "red"][index % 4]
+      })).sort((a: any, b: any) => a.rate - b.rate)
+    }
+
+    // Обработка данных лизинговых компаний из Firestore
+    if (leasingDoc.exists() && leasingDoc.data()?.leasingCompanies) {
+      const rawData = leasingDoc.data()
+      const cleanData = JSON.parse(JSON.stringify(rawData))
+      const companies = cleanData?.leasingCompanies || []
+
+      result.leasingCompanies = companies.sort((a: any, b: any) => (a.minAdvance || 0) - (b.minAdvance || 0))
     }
 
     // Обработка контактных данных
