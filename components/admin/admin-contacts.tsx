@@ -58,8 +58,7 @@ export default function AdminContacts() {
     email: "info@belavto.by",
     emailNote: "Отвечаем в течение 2 часов",
     workingHours: {
-      weekdays: "Пн-Пт: 9:00-21:00",
-      weekends: "Сб-Вс: 10:00-20:00"
+      weekdays: "Пн-Пт: 9:00-21:00"
     },
     socialMedia: {
       instagram: {

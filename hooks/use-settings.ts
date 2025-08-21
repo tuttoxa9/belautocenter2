@@ -53,7 +53,7 @@ export function useSettings() {
         phone: "+375 29 123-45-67",
         email: "info@belavto.by",
         address: "г. Минск, ул. Примерная, 123",
-        workingHours: "Пн-Пт: 9:00-21:00, Сб-Вс: 10:00-20:00",
+        workingHours: "Пн-Пт: 9:00-21:00",
         socialMedia: {
           instagram: "#",
           telegram: "#",
@@ -67,8 +67,7 @@ export function useSettings() {
           address: "г. Минск, ул. Большое Стиклево 83",
           phone: "+375 29 123-45-67",
           workingHours: {
-            weekdays: "Пн-Пт: 9:00-21:00",
-            weekends: "Сб-Вс: 10:00-20:00"
+            weekdays: "Пн-Пт: 9:00-21:00"
           }
         }
       }

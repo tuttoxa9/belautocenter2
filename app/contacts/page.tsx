@@ -108,8 +108,7 @@ export default function ContactsPage() {
             phone: "+375 29 000 00 00",
             email: "info@belautocenter.by",
             workingHours: {
-              weekdays: "Пн-Пт: 9:00 - 18:00",
-              weekends: "Сб-Вс: 10:00 - 16:00"
+              weekdays: "Пн-Пт: 9:00 - 18:00"
             },
             socialMedia: {}
           }
@@ -127,8 +126,7 @@ export default function ContactsPage() {
           phone: "+375 29 000 00 00",
           email: "info@belautocenter.by",
           workingHours: {
-            weekdays: "Пн-Пт: 9:00 - 18:00",
-            weekends: "Сб-Вс: 10:00 - 16:00"
+            weekdays: "Пн-Пт: 9:00 - 18:00"
           },
           socialMedia: {}
         }
@@ -344,12 +342,7 @@ export default function ContactsPage() {
                           <span className="text-slate-600 text-right">{contactsData.workingHours.weekdays}</span>
                         </div>
                       )}
-                      {contactsData.workingHours.weekends && (
-                        <div className="flex justify-between text-xs md:text-sm h-3 md:h-4">
-                          <span className="text-slate-700 font-medium">Сб-Вс:</span>
-                          <span className="text-slate-600 text-right">{contactsData.workingHours.weekends}</span>
-                        </div>
-                      )}
+
                     </>
                   ) : null}
                 </div>

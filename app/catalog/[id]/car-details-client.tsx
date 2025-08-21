@@ -1058,7 +1058,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                   <div>
                     <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</div>
-                    <div>{settings?.main?.showroomInfo?.workingHours?.weekends || "Сб-Вс: 10:00-20:00"}</div>
                   </div>
                 </div>
               </div>
