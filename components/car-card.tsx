@@ -87,11 +87,11 @@ export default function CarCard({ car }: CarCardProps) {
   }
 
   return (
-    <Card ref={cardRef} className="overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300 h-full">
+    <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 backdrop-blur-xl shadow-lg shadow-gray-900/5 rounded-2xl h-full group transition-all duration-200">
       <Link href={`/catalog/${car.id}`} className="block h-full">
         {/* Image Section */}
         <div className="relative">
-          <div className="relative overflow-hidden bg-slate-100 h-56">
+          <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 rounded-t-2xl h-56">
             {shouldLoadImage ? (
               <>
                 {!isImageLoaded && (
@@ -127,7 +127,7 @@ export default function CarCard({ car }: CarCardProps) {
         </div>
 
         {/* Content Section */}
-        <CardContent className="p-3">
+        <CardContent className="p-3 space-y-2">
           {/* Header - более компактный */}
           <div className="mb-2">
             <h3 className="font-semibold text-slate-900 text-base leading-tight mb-1 group-hover:text-slate-700 transition-colors">

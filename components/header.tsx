@@ -245,10 +245,9 @@ export default function Header() {
           <div className="hidden lg:flex flex-col items-end text-right mr-2">
             {loading ? (
               <div className="flex flex-col items-end">
-                <div className="flex items-center">
-                  <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                  <div className="flex items-center space-x-1">
-                    <div className="w-2 h-2 border border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
+                  <div className="flex items-center justify-end">
+                    <Loader2 className="h-3 w-3 animate-spin mr-1" />
                     <span className="text-xs text-gray-600">Загрузка...</span>
                   </div>
                 </div>
@@ -258,14 +257,11 @@ export default function Header() {
               </div>
             ) : (
               <>
-                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap">
+                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
                   {phoneLoading ? (
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-end">
                       <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 border border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-                        <span>Загрузка...</span>
-                      </div>
+                      <span className="text-xs text-gray-600">Загрузка...</span>
                     </div>
                   ) : (
                     settings?.phone || "+375 XX XXX-XX-XX"
