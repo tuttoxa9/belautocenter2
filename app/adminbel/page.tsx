@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LogOut, Settings, Car, FileText, MessageSquare, Users, Building, CreditCard, Star, Shield } from "lucide-react"
+import { LogOut, Settings, Car, FileText, MessageSquare, Users, Building, CreditCard, Star, Shield, Trash2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 import AdminSettings from "@/components/admin/admin-settings"
 import AdminCars from "@/components/admin/admin-cars"
 import AdminStories from "@/components/admin/admin-stories"
@@ -24,6 +26,8 @@ export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
   const [loginError, setLoginError] = useState("")
+  const [isCachePurging, setIsCachePurging] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -47,6 +51,60 @@ export default function AdminPage() {
       await signOut(auth)
     } catch (error) {
       console.error("Ошибка выхода:", error)
+    }
+  }
+
+  const handleCachePurge = async () => {
+    // Запрашиваем подтверждение пользователя
+    const confirmed = window.confirm("Вы уверены, что хотите полностью очистить кэш сайта? Это может временно замедлить его работу.")
+    if (!confirmed) return
+
+    setIsCachePurging(true)
+
+    try {
+      // Получаем ID-токен текущего пользователя
+      const token = await auth.currentUser?.getIdToken()
+
+      if (!token) {
+        toast({
+          title: "Ошибка авторизации",
+          description: "Не удалось получить токен авторизации",
+          variant: "destructive"
+        })
+        return
+      }
+
+      // Формируем URL API на основе переменной окружения или значения по умолчанию
+      const apiHost = process.env.NEXT_PUBLIC_API_HOST || 'https://images.belautocenter.by'
+
+      // Отправляем запрос на очистку кэша
+      const response = await fetch(`${apiHost}/purge-everything`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error(`Ошибка очистки кэша: ${response.status} ${response.statusText}`)
+      }
+
+      // Показываем уведомление об успехе
+      toast({
+        title: "Кэш очищается",
+        description: "Задача по очистке кэша запущена. Изменения на сайте появятся в течение 30-60 секунд",
+        variant: "default"
+      })
+    } catch (error) {
+      console.error("Ошибка при очистке кэша:", error)
+      toast({
+        title: "Ошибка очистки кэша",
+        description: error instanceof Error ? error.message : "Неизвестная ошибка",
+        variant: "destructive"
+      })
+    } finally {
+      setIsCachePurging(false)
     }
   }
 
@@ -105,6 +163,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Toaster />
       {/* Шапка админки */}
       <header className="bg-gray-50 border-b border-gray-200 shadow-sm">
         <div className="container px-4 py-4">
@@ -120,6 +179,16 @@ export default function AdminPage() {
             </div>
             <div className="flex items-center space-x-2 md:space-x-4">
               <span className="text-xs md:text-sm text-gray-600 hidden sm:inline truncate max-w-[120px] md:max-w-none">{user.email}</span>
+              <Button
+                onClick={handleCachePurge}
+                variant="outline"
+                size="sm"
+                className="border-gray-300 text-red-600 hover:bg-red-50 bg-white flex-shrink-0"
+                disabled={isCachePurging}
+              >
+                <Trash2 className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Очистить кэш сайта</span>
+              </Button>
               <Button
                 onClick={handleLogout}
                 variant="outline"
