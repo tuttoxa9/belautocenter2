@@ -14,16 +14,15 @@ export class FirestoreCache {
 
   constructor() {
     this.baseUrl = typeof window !== 'undefined'
-      ? window.location.origin
-      : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+      ? process.env.NEXT_PUBLIC_API_HOST || window.location.origin
+      : process.env.NEXT_PUBLIC_API_HOST || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   }
 
   async getCollection(collectionName: string): Promise<any[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/firestore?collection=${collectionName}`, {
+      const response = await fetch(`${this.baseUrl}/${collectionName}`, {
         headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 'public, max-age=300'
+          'Accept': 'application/json'
         }
       });
 
@@ -74,10 +73,9 @@ export class FirestoreCache {
 
   async getDocument(collectionName: string, documentId: string): Promise<any> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/firestore?collection=${collectionName}&document=${documentId}`, {
+      const response = await fetch(`${this.baseUrl}/${collectionName}/${documentId}`, {
         headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 'public, max-age=300'
+          'Accept': 'application/json'
         }
       });
 

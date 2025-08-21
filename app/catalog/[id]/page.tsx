@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import CarDetailsClient from "./car-details-client"
 
@@ -10,16 +9,14 @@ import CarDetailsClient from "./car-details-client"
 // Функция для генерации метатегов
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   try {
-    const carDoc = await getDoc(doc(db, "cars", params.id))
+    const car = await firestoreApi.getDocument("cars", params.id)
 
-    if (!carDoc.exists()) {
+    if (!car) {
       return {
         title: "Автомобиль не найден | Белавто Центр",
         description: "Запрашиваемый автомобиль не найден в каталоге Белавто Центр"
       }
     }
-
-    const car = { id: carDoc.id, ...carDoc.data() } as any
     const carTitle = `${car.make} ${car.model} ${car.year}`
     const engineInfo = car.fuelType === "Электро" ? car.fuelType : `${car.engineVolume}л ${car.fuelType}`
     const carDescription = `${carTitle} - ${car.color}, ${car.mileage?.toLocaleString()} км, ${engineInfo}, ${car.transmission}. Цена: ${car.price?.toLocaleString()}. Кредит и лизинг в Белавто Центр, Минск.`

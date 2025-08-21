@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import AboutSkeleton from "@/components/about-skeleton"
@@ -64,10 +63,8 @@ export default function AboutPage() {
 
   const loadAboutData = async () => {
     try {
-      const aboutDoc = await getDoc(doc(db, "pages", "about"))
-      if (aboutDoc.exists()) {
-        const data = aboutDoc.data()
-
+      const data = await firestoreApi.getDocument("pages", "about")
+      if (data) {
         // Merge data with proper null checks
         setAboutData(prev => ({
           ...prev,

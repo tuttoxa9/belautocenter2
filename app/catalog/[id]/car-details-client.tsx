@@ -4,8 +4,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { doc, getDoc, collection, addDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
+import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
@@ -259,11 +259,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const loadCarData = async (carId: string) => {
     try {
       setLoading(true)
-      const carDoc = await getDoc(doc(db, "cars", carId))
-      if (carDoc.exists()) {
-        const rawData = carDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const cleanCarData = JSON.parse(JSON.stringify({ id: carDoc.id, ...rawData }))
+      const carData = await firestoreApi.getDocument("cars", carId)
+      if (carData) {
+        // Очистка данных от несериализуемых объектов
+        const cleanCarData = JSON.parse(JSON.stringify(carData))
         setCar(cleanCarData as Car)
         setCarNotFound(false)
 
@@ -409,7 +408,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await bookingButtonState.execute(async () => {
-      await addDoc(collection(db, "leads"), {
+      await firestoreApi.addDocument("leads", {
         ...bookingForm,
         carId: carId,
         carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
@@ -446,7 +445,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await callbackButtonState.execute(async () => {
-      await addDoc(collection(db, "leads"), {
+      await firestoreApi.addDocument("leads", {
         ...callbackForm,
         carId: carId,
         carInfo: `${car?.make} ${car?.model} ${car?.year}`,
@@ -483,7 +482,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
     await creditButtonState.execute(async () => {
       // Сохраняем в Firestore
-      await addDoc(collection(db, "leads"), {
+      await firestoreApi.addDocument("leads", {
         ...creditForm,
         carId: carId,
         carInfo: `${car?.make} ${car?.model} ${car?.year}`,

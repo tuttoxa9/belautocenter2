@@ -12,8 +12,7 @@ import CarCard from "@/components/car-card"
 import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import CarCardSkeleton from "@/components/car-card-skeleton"
-import { collection, getDocs } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 
 interface Car {
   id: string;
@@ -143,75 +142,8 @@ export default function CatalogPage() {
     try {
       setLoading(true)
 
-      // Сначала пробуем загрузить через кэшированный API
-      try {
-        const response = await fetch('/api/firestore?collection=cars', {
-          headers: {
-            'Accept': 'application/json',
-            'Cache-Control': 'max-age=300'
-          }
-        })
-
-        if (response.ok) {
-          const data = await response.json()
-          const carsData = data.documents?.map((doc: any) => {
-            const id = doc.name.split('/').pop() || ''
-            const fields: Record<string, any> = {}
-
-            // Преобразуем Firestore поля в обычные объекты
-            for (const [key, value] of Object.entries(doc.fields || {})) {
-              if ((value as any).stringValue) {
-                fields[key] = (value as any).stringValue
-              } else if ((value as any).integerValue) {
-                fields[key] = parseInt((value as any).integerValue)
-              } else if ((value as any).doubleValue) {
-                fields[key] = parseFloat((value as any).doubleValue)
-              } else if ((value as any).booleanValue !== undefined) {
-                fields[key] = (value as any).booleanValue
-              } else if ((value as any).timestampValue) {
-                fields[key] = new Date((value as any).timestampValue)
-              } else if ((value as any).arrayValue) {
-                // Обработка массивов, включая imageUrls
-                const arrayValues = (value as any).arrayValue.values || [];
-                fields[key] = arrayValues.map((item: any) => {
-                  if (item.stringValue) return item.stringValue;
-                  if (item.integerValue) return parseInt(item.integerValue);
-                  if (item.doubleValue) return parseFloat(item.doubleValue);
-                  return null;
-                }).filter(Boolean);
-              } else {
-                fields[key] = value
-              }
-            }
-
-            // Добавляем отладочную информацию о загруженном автомобиле
-            console.log(`Загружен автомобиль: ${fields.make} ${fields.model}, imageUrls:`, fields.imageUrls);
-
-            return { id, ...fields }
-          }) || []
-
-          setCars(carsData as Car[])
-
-          // Извлекаем уникальные марки из данных
-          const uniqueMakes = [...new Set(carsData.map((car: Car) => car.make))].sort()
-          setAvailableMakes(uniqueMakes)
-
-          // Извлекаем уникальные модели из данных
-          const uniqueModels = [...new Set(carsData.map((car: Car) => car.model))].sort()
-          setAvailableModels(uniqueModels)
-
-          return
-        }
-      } catch (apiError) {
-        console.warn('Кэшированный API недоступен, используем прямое подключение к Firebase:', apiError)
-      }
-
-      // Fallback: прямое подключение к Firebase
-      const snapshot = await getDocs(collection(db, "cars"))
-      const carsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
+      // Загружаем автомобили через новый API
+      const carsData = await firestoreApi.getCollection('cars')
       setCars(carsData as Car[])
 
       // Извлекаем уникальные марки из данных
