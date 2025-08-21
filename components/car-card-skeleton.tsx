@@ -27,7 +27,7 @@ export default function CarCardSkeleton() {
         <div className="space-y-2">
           <Skeleton className="h-5 w-32 bg-gray-200/60" />
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <div className="space-y-1">
             <Skeleton className="h-6 w-20 bg-gray-200/60" />
             <Skeleton className="h-4 w-24 bg-gray-200/60" />
           </div>
