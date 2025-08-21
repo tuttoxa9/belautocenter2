@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock } from "lucide-react"
 import { doc, getDoc, collection, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
@@ -246,23 +247,17 @@ export default function Header() {
             {loading ? (
               <div className="flex flex-col items-end">
                 <div className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
-                  <div className="flex items-center justify-end">
-                    <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                    <span className="text-xs text-gray-600">Загрузка...</span>
-                  </div>
+                  <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
                 </div>
-                <div className="text-xs text-gray-900 font-semibold">
-                  <div>{settings?.workingHours || "Пн-Пт: 9:00-21:00"}</div>
+                <div className="text-xs text-gray-900 font-semibold mt-1">
+                  <Skeleton className="h-3 w-[100px] bg-gray-200/60" />
                 </div>
               </div>
             ) : (
               <>
                 <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
                   {phoneLoading ? (
-                    <div className="flex items-center justify-end">
-                      <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      <span className="text-xs text-gray-600">Загрузка...</span>
-                    </div>
+                    <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
                   ) : (
                     settings?.phone || "+375 XX XXX-XX-XX"
                   )}
