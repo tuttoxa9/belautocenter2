@@ -795,7 +795,7 @@ export default function CreditPage() {
                   {/* Partners Section - со скелетонами для логотипов из БД */}
                   <div className="hidden lg:block mt-4 pt-4 border-t border-slate-200">
                     <h4 className="text-sm font-semibold text-slate-900 mb-3">Банки-партнеры</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-3 gap-2 justify-items-center">
                       {loading ? (
                         Array.from({ length: 6 }).map((_, index) => (
                           <div key={index} className="w-16 h-16 bg-slate-200 rounded-xl animate-pulse"></div>

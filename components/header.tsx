@@ -30,6 +30,7 @@ interface Settings {
   companyName: string
   phone: string
   workingHours: string
+  address?: string
 }
 
 export default function Header() {
@@ -217,7 +218,7 @@ export default function Header() {
                 </div>
                 <div className="flex items-center space-x-2 text-xs text-gray-600">
                   <Clock className="w-3 h-3" />
-                  <span>Пн-Пт: 9:00-21:00, Сб-Вс: 10:00-20:00</span>
+                  <span>{settings?.workingHours || "Пн-Пт: 9:00-21:00"}</span>
                 </div>
               </div>
             </div>
@@ -252,8 +253,7 @@ export default function Header() {
                   </div>
                 </div>
                 <div className="text-xs text-gray-900 font-semibold">
-                  <div>Пн-Пт: 9:00-21:00</div>
-                  <div>Сб-Вс: 10:00-20:00</div>
+                  <div>{settings?.workingHours || "Пн-Пт: 9:00-21:00"}</div>
                 </div>
               </div>
             ) : (
@@ -272,8 +272,7 @@ export default function Header() {
                   )}
                 </a>
                 <div className="text-xs text-gray-900 font-semibold">
-                  <div>Пн-Пт: 9:00-21:00</div>
-                  <div>Сб-Вс: 10:00-20:00</div>
+                  <div>{settings?.workingHours || "Пн-Пт: 9:00-21:00"}</div>
                 </div>
               </>
             )}
