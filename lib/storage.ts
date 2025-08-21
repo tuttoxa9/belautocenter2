@@ -1,4 +1,5 @@
-// Импортируем константу для хоста изображений
+// Импортируем константу для хоста изображений и аутентификацию Firebase
+import { auth } from './firebase';
 const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
 
 /**
@@ -26,9 +27,19 @@ export const uploadImage = async (file: File, path: string): Promise<string> => 
     formData.append('file', file);
     formData.append('path', uniquePath);
 
-    // Отправляем POST-запрос на эндпоинт загрузки
+    // Получаем токен аутентификации текущего пользователя
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+
+    // Формируем заголовки запроса
+    const headers: HeadersInit = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Отправляем POST-запрос на эндпоинт загрузки с заголовком авторизации
     const response = await fetch(`${IMAGE_HOST}/upload`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
@@ -65,12 +76,22 @@ export const deleteImage = async (path: string): Promise<void> => {
   try {
     console.log('Удаление изображения через Cloudflare Worker:', path);
 
+    // Получаем токен аутентификации текущего пользователя
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+
+    // Формируем заголовки запроса
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     // Отправляем POST-запрос на эндпоинт удаления
     const response = await fetch(`${IMAGE_HOST}/delete`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({ path }),
     });
 
