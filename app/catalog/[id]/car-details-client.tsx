@@ -48,12 +48,13 @@ import MarkdownRenderer from "@/components/markdown-renderer"
 import LazyThumbnail from "@/components/lazy-thumbnail"
 
 // Компонент ошибки для несуществующего автомобиля
-const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => {
+const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: string, contactPhone2?: string }) => {
   // Используем hook из контекста для получения настроек
   const { settings } = useSettings();
 
-  // Получаем номер телефона из настроек, если доступен, иначе используем переданный параметр
+  // Получаем номера телефонов из настроек, если доступны, иначе используем переданные параметры
   const phoneNumber = settings?.main?.showroomInfo?.phone || contactPhone;
+  const phoneNumber2 = settings?.main?.showroomInfo?.phone2 || contactPhone2;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
@@ -69,11 +70,21 @@ const CarNotFoundComponent = ({ contactPhone }: { contactPhone: string }) => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
           <h3 className="text-lg font-semibold text-slate-900 mb-3">Нужна помощь?</h3>
           <p className="text-slate-600 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
-          <div className="flex items-center justify-center space-x-2 text-blue-600">
-            <Phone className="h-5 w-5" />
-            <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-              {phoneNumber}
-            </a>
+          <div className="flex flex-col items-center space-y-2 text-blue-600">
+            <div className="flex items-center space-x-2">
+              <Phone className="h-5 w-5" />
+              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+                {phoneNumber}
+              </a>
+            </div>
+            {phoneNumber2 && (
+              <div className="flex items-center space-x-2">
+                <Phone className="h-5 w-5" />
+                <a href={`tel:${phoneNumber2.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+                  {phoneNumber2}
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
@@ -136,6 +147,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const router = useRouter()
   const [car, setCar] = useState<Car | null>(null)
   const [contactPhone, setContactPhone] = useState<string>("")
+  const [contactPhone2, setContactPhone2] = useState<string>("")
   const [carNotFound, setCarNotFound] = useState(false)
   const usdBynRate = useUsdBynRate()
   const [loading, setLoading] = useState(true)
@@ -242,14 +254,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         setLeasingCompanies([])
       }
 
-      // Устанавливаем контактный телефон
+      // Устанавливаем контактные телефоны
       setContactPhone(data.contactPhone || "+375 29 123-45-67")
+      setContactPhone2(data.contactPhone2 || "")
 
     } catch (error) {
       console.error("Ошибка загрузки статических данных:", error)
       setPartnerBanks([])
       setLeasingCompanies([])
       setContactPhone("+375 29 123-45-67")
+      setContactPhone2("")
     } finally {
       setLoadingBanks(false)
       setLoadingLeasing(false)
@@ -667,7 +681,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   }
 
   if (carNotFound) {
-    return <CarNotFoundComponent contactPhone={contactPhone} />
+    return <CarNotFoundComponent contactPhone={contactPhone} contactPhone2={contactPhone2} />
   }
 
   return (
@@ -1139,11 +1153,21 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </div>
 
               <div className="text-center md:text-right">
-                <div className="flex items-center justify-center md:justify-end space-x-2">
-                  <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <div className="font-medium text-base sm:text-lg">
-                    {settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}
+                <div className="flex flex-col items-center md:items-end space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <div className="font-medium text-base sm:text-lg">
+                      {settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}
+                    </div>
                   </div>
+                  {settings?.main?.showroomInfo?.phone2 && (
+                    <div className="flex items-center space-x-2">
+                      <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <div className="font-medium text-base sm:text-lg">
+                        {settings.main.showroomInfo.phone2}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -20,6 +20,7 @@ export default function AdminSettings() {
     main: {
       companyName: "Белавто Центр",
       phone: "+375 29 123-45-67",
+      phone2: "",
       email: "info@belavto.by",
       address: "г. Минск, ул. Примерная, 123",
       workingHours: "Пн-Пт: 9:00-21:00",
@@ -35,6 +36,7 @@ export default function AdminSettings() {
         companyName: "Автохаус Белавто Центр",
         address: "г. Минск, ул. Большое Стиклево 83",
         phone: "+375 29 123-45-67",
+        phone2: "",
         workingHours: {
           weekdays: "Пн-Пт: 9:00-21:00"
         }
@@ -141,7 +143,7 @@ export default function AdminSettings() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Телефон</Label>
+                  <Label>Телефон 1</Label>
                   <Input
                     value={settings.main.phone}
                     onChange={(e) =>
@@ -153,17 +155,30 @@ export default function AdminSettings() {
                   />
                 </div>
                 <div>
-                  <Label>Email</Label>
+                  <Label>Телефон 2 (опционально)</Label>
                   <Input
-                    value={settings.main.email}
+                    value={settings.main.phone2}
                     onChange={(e) =>
                       setSettings({
                         ...settings,
-                        main: { ...settings.main, email: e.target.value },
+                        main: { ...settings.main, phone2: e.target.value },
                       })
                     }
+                    placeholder="Второй номер телефона"
                   />
                 </div>
+              </div>
+              <div>
+                <Label>Email</Label>
+                <Input
+                  value={settings.main.email}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      main: { ...settings.main, email: e.target.value },
+                    })
+                  }
+                />
               </div>
               <div>
                 <Label>Адрес</Label>
@@ -326,20 +341,38 @@ export default function AdminSettings() {
                   }
                 />
               </div>
-              <div>
-                <Label>Телефон автосалона</Label>
-                <Input
-                  value={settings.main.showroomInfo.phone}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      main: {
-                        ...settings.main,
-                        showroomInfo: { ...settings.main.showroomInfo, phone: e.target.value },
-                      },
-                    })
-                  }
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Телефон автосалона 1</Label>
+                  <Input
+                    value={settings.main.showroomInfo.phone}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        main: {
+                          ...settings.main,
+                          showroomInfo: { ...settings.main.showroomInfo, phone: e.target.value },
+                        },
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Телефон автосалона 2 (опционально)</Label>
+                  <Input
+                    value={settings.main.showroomInfo.phone2}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        main: {
+                          ...settings.main,
+                          showroomInfo: { ...settings.main.showroomInfo, phone2: e.target.value },
+                        },
+                      })
+                    }
+                    placeholder="Второй номер автосалона"
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

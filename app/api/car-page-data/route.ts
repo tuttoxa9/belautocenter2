@@ -14,7 +14,8 @@ export async function GET() {
     const result = {
       banks: [],
       leasingCompanies: [],
-      contactPhone: "+375 29 123-45-67" // fallback
+      contactPhone: "+375 29 123-45-67", // fallback
+      contactPhone2: "" // fallback
     }
 
     // Обработка данных банков из Firestore
@@ -49,6 +50,7 @@ export async function GET() {
       const rawData = contactsDoc.data()
       const cleanData = JSON.parse(JSON.stringify(rawData))
       result.contactPhone = cleanData?.phone || "+375 29 123-45-67"
+      result.contactPhone2 = cleanData?.phone2 || ""
     }
 
     return NextResponse.json(result, {
@@ -64,7 +66,8 @@ export async function GET() {
         error: "Ошибка загрузки данных",
         banks: [],
         leasingCompanies: [],
-        contactPhone: "+375 29 123-45-67"
+        contactPhone: "+375 29 123-45-67",
+        contactPhone2: ""
       },
       { status: 500 }
     )

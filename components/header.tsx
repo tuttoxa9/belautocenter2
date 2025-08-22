@@ -30,6 +30,7 @@ const navigation = [
 interface Settings {
   companyName: string
   phone: string
+  phone2?: string
   workingHours: string
   address?: string
 }
@@ -193,12 +194,22 @@ export default function Header() {
                   <span className="text-sm">Загрузка контактов...</span>
                 </div>
               ) : (
-                <a
-                  href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                  className="block text-center text-white font-semibold text-base mb-3 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-                >
-                  {settings?.phone || "+375 XX XXX-XX-XX"}
-                </a>
+                <div className="space-y-2 mb-3">
+                  <a
+                    href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
+                    className="block text-center text-white font-semibold text-base p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                  >
+                    {settings?.phone || "+375 XX XXX-XX-XX"}
+                  </a>
+                  {settings?.phone2 && (
+                    <a
+                      href={`tel:${settings.phone2.replace(/\s/g, "")}`}
+                      className="block text-center text-white font-semibold text-base p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                    >
+                      {settings.phone2}
+                    </a>
+                  )}
+                </div>
               )}
 
               <Button
@@ -255,13 +266,20 @@ export default function Header() {
               </div>
             ) : (
               <>
-                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
-                  {phoneLoading ? (
-                    <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
-                  ) : (
-                    settings?.phone || "+375 XX XXX-XX-XX"
+                <div className="flex flex-col items-end space-y-1">
+                  <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap text-right">
+                    {phoneLoading ? (
+                      <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
+                    ) : (
+                      settings?.phone || "+375 XX XXX-XX-XX"
+                    )}
+                  </a>
+                  {settings?.phone2 && (
+                    <a href={`tel:${settings.phone2.replace(/\s/g, "")}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap text-right">
+                      {settings.phone2}
+                    </a>
                   )}
-                </a>
+                </div>
                 <div className="text-xs text-gray-900 font-semibold">
                   <div>{settings?.workingHours || "Пн-Пт: 9:00-21:00"}</div>
                 </div>

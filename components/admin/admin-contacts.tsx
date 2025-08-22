@@ -18,6 +18,7 @@ interface ContactsData {
   address?: string
   addressNote?: string
   phone?: string
+  phone2?: string
   phoneNote?: string
   email?: string
   emailNote?: string
@@ -54,6 +55,7 @@ export default function AdminContacts() {
     address: "г. Минск, ул. Примерная, 123",
     addressNote: "Напротив торгового центра",
     phone: "+375 29 123-45-67",
+    phone2: "",
     phoneNote: "Звонки принимаем с 9:00 до 21:00",
     email: "info@belavto.by",
     emailNote: "Отвечаем в течение 2 часов",
@@ -228,7 +230,7 @@ export default function AdminContacts() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="phone">Телефон</Label>
+                <Label htmlFor="phone">Телефон 1</Label>
                 <Input
                   id="phone"
                   value={contactsData.phone || ""}
@@ -236,7 +238,19 @@ export default function AdminContacts() {
                 />
               </div>
               <div>
-                <Label htmlFor="phoneNote">Пометка к телефону</Label>
+                <Label htmlFor="phone2">Телефон 2 (опционально)</Label>
+                <Input
+                  id="phone2"
+                  value={contactsData.phone2 || ""}
+                  onChange={(e) => updateField("phone2", e.target.value)}
+                  placeholder="Второй номер телефона"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <Label htmlFor="phoneNote">Пометка к телефонам</Label>
                 <Input
                   id="phoneNote"
                   value={contactsData.phoneNote || ""}

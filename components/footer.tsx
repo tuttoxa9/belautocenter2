@@ -11,6 +11,7 @@ import { getCachedImageUrl } from "@/lib/image-cache"
 interface Settings {
   companyName: string
   phone: string
+  phone2?: string
   email: string
   address: string
   workingHours: string
@@ -104,20 +105,30 @@ export default function Footer() {
                   <span className="text-gray-400 text-sm">{settings?.address || "Адрес не указан"}</span>
                 )}
               </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-blue-400 flex-shrink-0" />
+              <div className="flex items-start space-x-3">
+                <Phone className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
                 {loading ? (
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-gray-400 text-sm">Загрузка телефона...</span>
+                    <span className="text-gray-400 text-sm">Загрузка телефонов...</span>
                   </div>
                 ) : (
-                  <a
-                    href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
-                  >
-                    {settings?.phone || "Телефон не указан"}
-                  </a>
+                  <div className="flex flex-col space-y-1">
+                    <a
+                      href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
+                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      {settings?.phone || "Телефон не указан"}
+                    </a>
+                    {settings?.phone2 && (
+                      <a
+                        href={`tel:${settings.phone2.replace(/\s/g, "")}`}
+                        className="text-gray-400 hover:text-white transition-colors text-sm"
+                      >
+                        {settings.phone2}
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
               <div className="flex items-center space-x-3">

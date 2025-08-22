@@ -33,6 +33,7 @@ interface ContactsData {
   address?: string
   addressNote?: string
   phone?: string
+  phone2?: string
   phoneNote?: string
   email?: string
   emailNote?: string
@@ -250,17 +251,29 @@ export default function ContactsPage() {
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-between">
-                <div className="h-5 md:h-6 mb-2">
+                <div className="flex-1 mb-2">
                   {loading ? (
                     <DataSkeleton width="w-32" height="h-5 md:h-6" />
-                  ) : contactsData.phone ? (
-                    <a
-                      href={`tel:${contactsData.phone.replace(/\s/g, '')}`}
-                      className="text-slate-700 hover:text-slate-900 font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
-                    >
-                      {contactsData.phone}
-                    </a>
-                  ) : null}
+                  ) : (
+                    <div className="space-y-1">
+                      {contactsData.phone && (
+                        <a
+                          href={`tel:${contactsData.phone.replace(/\s/g, '')}`}
+                          className="text-slate-700 hover:text-slate-900 font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
+                        >
+                          {contactsData.phone}
+                        </a>
+                      )}
+                      {contactsData.phone2 && (
+                        <a
+                          href={`tel:${contactsData.phone2.replace(/\s/g, '')}`}
+                          className="text-slate-700 hover:text-slate-900 font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
+                        >
+                          {contactsData.phone2}
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="h-3 md:h-4">
                   {loading ? (
