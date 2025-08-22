@@ -8,7 +8,8 @@ import Image from "next/image"
 import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
-import { convertUsdToByn, parseFirestoreDoc, parseFirestoreCollection } from "@/lib/utils"
+import { convertUsdToByn, parseFirestoreCollection } from "@/lib/utils"
+import { parseFirestoreDoc } from "@/lib/firestore-parser"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -245,14 +246,22 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       ])
 
       // Получаем JSON из каждого ответа
-      const banksData = await banksResponse.json()
-      const leasingData = await leasingResponse.json()
-      const contactsData = await contactsResponse.json()
+      const banksRawData = await banksResponse.json()
+      const leasingRawData = await leasingResponse.json()
+      const contactsRawData = await contactsResponse.json()
 
-      // Применяем парсер для "сырых" данных от Firestore
-      const banks = parseFirestoreCollection(banksData)
-      const leasing = parseFirestoreCollection(leasingData)
-      const contacts = parseFirestoreDoc(contactsData)
+      // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
+
+      // 1. "Переводим" каждый полученный документ в понятный формат
+      const creditPageData = parseFirestoreDoc(banksRawData);
+      const leasingPageData = parseFirestoreDoc(leasingRawData);
+      const contacts = parseFirestoreDoc(contactsRawData);
+
+      // 2. Безопасно извлекаем из них массивы с партнерами
+      const banks = creditPageData.partners || [];
+      const leasingCompanies = leasingPageData.partners || [];
+
+      // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 
       // Устанавливаем данные банков
       if (banks && banks.length > 0) {
@@ -264,9 +273,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       }
 
       // Устанавливаем данные лизинговых компаний
-      if (leasing && leasing.length > 0) {
-        setLeasingCompanies(leasing)
-        setSelectedLeasingCompany(leasing[0]) // Выбираем лучшую компанию по умолчанию
+      if (leasingCompanies && leasingCompanies.length > 0) {
+        setLeasingCompanies(leasingCompanies)
+        setSelectedLeasingCompany(leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
       } else {
         console.warn("Лизинговые компании не найдены")
         setLeasingCompanies([])
