@@ -122,7 +122,7 @@ interface Car {
 }
 
 interface PartnerBank {
-  id?: number;
+  id: number;
   name: string;
   logo: string;
   rate: number;
@@ -250,18 +250,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       const leasingRawData = await leasingResponse.json()
       const contactsRawData = await contactsResponse.json()
 
-      // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
-
-      // 1. "Переводим" каждый полученный документ в понятный формат
+      // 1. Полностью парсим каждый документ
       const creditPageData = parseFirestoreDoc(banksRawData);
       const leasingPageData = parseFirestoreDoc(leasingRawData);
       const contacts = parseFirestoreDoc(contactsRawData);
 
-      // 2. Безопасно извлекаем из них массивы с партнерами
+      // 2. Извлекаем чистые данные
       const banks = creditPageData.partners || [];
       const leasingCompanies = leasingPageData.partners || [];
-
-      // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 
       // Устанавливаем данные банков
       if (banks && banks.length > 0) {
@@ -329,15 +325,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
         if (response.ok) {
           const doc = await response.json()
-          if (doc && doc.fields) {
-            const fields: Record<string, any> = {}
-            // Преобразуем Firestore поля в обычные объекты
-            for (const [key, value] of Object.entries(doc.fields || {})) {
-              fields[key] = convertFirestoreFieldValue(value)
-            }
-            const id = doc.name.split('/').pop() || carId
-            carData = { id, ...fields }
-          }
+          // Используем тот же парсер, что и для основного запроса
+          carData = parseFirestoreDoc(doc)
         }
       }
 
@@ -374,30 +363,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   }
 
   // Функция для конвертации значения поля из формата Firestore
-  const convertFirestoreFieldValue = (value: any): any => {
-    if (value.stringValue !== undefined) {
-      return value.stringValue
-    } else if (value.integerValue !== undefined) {
-      return parseInt(value.integerValue)
-    } else if (value.doubleValue !== undefined) {
-      return parseFloat(value.doubleValue)
-    } else if (value.booleanValue !== undefined) {
-      return value.booleanValue
-    } else if (value.timestampValue !== undefined) {
-      return new Date(value.timestampValue)
-    } else if (value.arrayValue !== undefined) {
-      return value.arrayValue.values?.map((v: any) => convertFirestoreFieldValue(v)) || []
-    } else if (value.mapValue !== undefined) {
-      const result: Record<string, any> = {}
-      for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
-        result[k] = convertFirestoreFieldValue(v)
-      }
-      return result
-    } else if (value.nullValue !== undefined) {
-      return null
-    }
-    return value
-  }
+  // Функция для конвертации полей удалена, теперь везде используется parseFirestoreDoc
 
   const formatPrice = (price: number) => {
     if (isBelarusianRubles && usdBynRate) {
@@ -610,7 +576,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         creditAmount: getCurrentCreditAmount(),
         downPayment: getCurrentDownPayment(),
         loanTerm: loanTerm[0],
-        selectedBank: selectedBank?.name || "",
+        selectedBank: selectedBank ? selectedBank.name : "",
         monthlyPayment: calculateMonthlyPayment(),
         currency: isBelarusianRubles ? "BYN" : "USD",
         financeType: financeType
@@ -633,7 +599,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           carPrice: formatPrice(isBelarusianRubles ? getCurrentCreditAmount() + getCurrentDownPayment() : car?.price || 0),
           downPayment: formatPrice(getCurrentDownPayment()),
           loanTerm: loanTerm[0],
-          bank: selectedBank?.name || "Не выбран",
+          bank: selectedBank ? selectedBank.name : "Не выбран",
           financeType: financeType,
           type: financeType === 'credit' ? 'credit_request' : 'leasing_request'
         })
@@ -1418,7 +1384,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <Label className="text-xs sm:text-sm">Лизинговая компания</Label>
                       {leasingCompanies.length > 0 ? (
                         <Select
-                          value={selectedLeasingCompany?.name?.toLowerCase().replace(/[\s-]/g, '')}
+                          value={selectedLeasingCompany ? selectedLeasingCompany.name.toLowerCase().replace(/[\s-]/g, '') : ''}
                           onValueChange={(value) =>
                             setSelectedLeasingCompany(leasingCompanies.find(c => c.name.toLowerCase().replace(/[\s-]/g, '') === value) || leasingCompanies[0])
                           }
@@ -1581,7 +1547,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 ) : (
                   <div className="space-y-3 sm:space-y-4 relative">
                     {/* Логотип лизинговой компании в правом верхнем углу */}
-                    {selectedLeasingCompany?.logo && (
+                    {selectedLeasingCompany && selectedLeasingCompany.logo && (
                       <div className="absolute top-0 right-8">
                         <Image
                           src={getCachedImageUrl(selectedLeasingCompany.logo)}
@@ -1848,7 +1814,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <div className="flex justify-between">
                         <span className="text-slate-600">{financeType === 'credit' ? 'Банк' : 'Компания'}:</span>
                         <span className="font-medium">
-                          {financeType === 'credit' ? selectedBank?.name : selectedLeasingCompany?.name}
+                          {financeType === 'credit'
+                            ? (selectedBank ? selectedBank.name : '')
+                            : (selectedLeasingCompany ? selectedLeasingCompany.name : '')}
                         </span>
                       </div>
                     </div>
