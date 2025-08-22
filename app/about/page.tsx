@@ -140,7 +140,7 @@ export default function AboutPage() {
                   <h1 className="text-3xl font-semibold text-gray-900 leading-8">О компании</h1>
                 </div>
                 <div className="h-5">
-                  <p className="text-gray-600 leading-5">Узнайте больше о АвтоБел Центр</p>
+                  <p className="text-gray-600 leading-5">Узнайте больше о Белавто Центр</p>
                 </div>
               </div>
             </div>
