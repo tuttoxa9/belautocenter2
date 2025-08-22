@@ -122,7 +122,7 @@ interface Car {
 }
 
 interface PartnerBank {
-  id: number;
+  id?: number;
   name: string;
   logo: string;
   rate: number;
@@ -1302,9 +1302,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <Label className="text-xs sm:text-sm">Банк</Label>
                       {partnerBanks.length > 0 ? (
                         <Select
-                          value={selectedBank?.id?.toString()}
+                          value={selectedBank?.name}
                           onValueChange={(value) =>
-                            setSelectedBank(partnerBanks.find(b => b.id === parseInt(value)) || partnerBanks[0])
+                            setSelectedBank(partnerBanks.find(b => b.name === value) || partnerBanks[0])
                           }
                         >
                           <SelectTrigger className="h-8 sm:h-10">
@@ -1329,8 +1329,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
-                            {partnerBanks.map((bank) => (
-                              <SelectItem key={bank.id} value={bank.id.toString()} className="relative pr-12">
+                            {partnerBanks.map((bank, index) => (
+                              <SelectItem key={bank.name || index} value={bank.name} className="relative pr-12">
                                 <div className="flex items-center gap-2 w-full">
                                   {bank.logo && (
                                     <Image
