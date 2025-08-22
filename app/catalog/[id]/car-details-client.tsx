@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { firestoreApi } from "@/lib/firestore-api"
+
 import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
@@ -259,7 +259,45 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const loadCarData = async (carId: string) => {
     try {
       setLoading(true)
-      const carData = await firestoreApi.getDocument("cars", carId)
+
+      // Используем прямой запрос к Cloudflare Worker
+      const apiHost = process.env.NEXT_PUBLIC_API_HOST
+      let carData = null
+
+      if (apiHost) {
+        // Запрос к Cloudflare Worker
+        const response = await fetch(`${apiHost}/cars/${carId}`)
+        if (response.ok) {
+          carData = await response.json()
+        }
+      }
+
+      // Fallback на прямой запрос к Firestore если Cloudflare Worker недоступен
+      if (!carData) {
+        const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
+
+        const response = await fetch(firestoreUrl, {
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'NextJS-Direct-Firestore/1.0'
+          }
+        })
+
+        if (response.ok) {
+          const doc = await response.json()
+          if (doc && doc.fields) {
+            const fields: Record<string, any> = {}
+            // Преобразуем Firestore поля в обычные объекты
+            for (const [key, value] of Object.entries(doc.fields || {})) {
+              fields[key] = convertFirestoreFieldValue(value)
+            }
+            const id = doc.name.split('/').pop() || carId
+            carData = { id, ...fields }
+          }
+        }
+      }
+
       if (carData) {
         // Очистка данных от несериализуемых объектов
         const cleanCarData = JSON.parse(JSON.stringify(carData))
@@ -290,6 +328,32 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Функция для конвертации значения поля из формата Firestore
+  const convertFirestoreFieldValue = (value: any): any => {
+    if (value.stringValue !== undefined) {
+      return value.stringValue
+    } else if (value.integerValue !== undefined) {
+      return parseInt(value.integerValue)
+    } else if (value.doubleValue !== undefined) {
+      return parseFloat(value.doubleValue)
+    } else if (value.booleanValue !== undefined) {
+      return value.booleanValue
+    } else if (value.timestampValue !== undefined) {
+      return new Date(value.timestampValue)
+    } else if (value.arrayValue !== undefined) {
+      return value.arrayValue.values?.map((v: any) => convertFirestoreFieldValue(v)) || []
+    } else if (value.mapValue !== undefined) {
+      const result: Record<string, any> = {}
+      for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
+        result[k] = convertFirestoreFieldValue(v)
+      }
+      return result
+    } else if (value.nullValue !== undefined) {
+      return null
+    }
+    return value
   }
 
   const formatPrice = (price: number) => {
@@ -408,7 +472,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await bookingButtonState.execute(async () => {
-      await firestoreApi.addDocument("leads", {
+      // Сохраняем данные через Firebase клиентский SDK
+      const { collection, addDoc } = await import('firebase/firestore')
+      const { db } = await import('@/lib/firebase')
+
+      await addDoc(collection(db, "leads"), {
         ...bookingForm,
         carId: carId,
         carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
@@ -445,7 +513,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await callbackButtonState.execute(async () => {
-      await firestoreApi.addDocument("leads", {
+      // Сохраняем данные через Firebase клиентский SDK
+      const { collection, addDoc } = await import('firebase/firestore')
+      const { db } = await import('@/lib/firebase')
+
+      await addDoc(collection(db, "leads"), {
         ...callbackForm,
         carId: carId,
         carInfo: `${car?.make} ${car?.model} ${car?.year}`,
@@ -481,8 +553,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await creditButtonState.execute(async () => {
-      // Сохраняем в Firestore
-      await firestoreApi.addDocument("leads", {
+      // Сохраняем данные через Firebase клиентский SDK
+      const { collection, addDoc } = await import('firebase/firestore')
+      const { db } = await import('@/lib/firebase')
+
+      await addDoc(collection(db, "leads"), {
         ...creditForm,
         carId: carId,
         carInfo: `${car?.make} ${car?.model} ${car?.year}`,

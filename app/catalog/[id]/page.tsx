@@ -1,15 +1,93 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { firestoreApi } from "@/lib/firestore-api"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import CarDetailsClient from "./car-details-client"
 
 // export const runtime = 'edge'
 
+// Функция для конвертации значения поля из формата Firestore
+function convertFieldValue(value: any): any {
+  if (value.stringValue !== undefined) {
+    return value.stringValue
+  } else if (value.integerValue !== undefined) {
+    return parseInt(value.integerValue)
+  } else if (value.doubleValue !== undefined) {
+    return parseFloat(value.doubleValue)
+  } else if (value.booleanValue !== undefined) {
+    return value.booleanValue
+  } else if (value.timestampValue !== undefined) {
+    return new Date(value.timestampValue)
+  } else if (value.arrayValue !== undefined) {
+    return value.arrayValue.values?.map((v: any) => convertFieldValue(v)) || []
+  } else if (value.mapValue !== undefined) {
+    const result: Record<string, any> = {}
+    for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
+      result[k] = convertFieldValue(v)
+    }
+    return result
+  } else if (value.nullValue !== undefined) {
+    return null
+  }
+  return value
+}
+
+// Серверная функция для загрузки автомобиля через Cloudflare Worker
+async function loadCarFromCloudflare(carId: string) {
+  try {
+    const apiHost = process.env.NEXT_PUBLIC_API_HOST
+    if (!apiHost) {
+      console.error('NEXT_PUBLIC_API_HOST is not defined, falling back to Firestore')
+      // Fallback to direct Firestore if no Cloudflare Worker
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+      const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
+
+      const response = await fetch(firestoreUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'NextJS-Direct-Firestore/1.0'
+        }
+      })
+
+      if (!response.ok) {
+        return null
+      }
+
+      const doc = await response.json()
+      if (!doc || !doc.fields) {
+        return null
+      }
+
+      const fields: Record<string, any> = {}
+      for (const [key, value] of Object.entries(doc.fields || {})) {
+        fields[key] = convertFieldValue(value)
+      }
+
+      const id = doc.name.split('/').pop() || carId
+      return { id, ...fields }
+    }
+
+    // Используем Cloudflare Worker
+    const response = await fetch(`${apiHost}/cars/${carId}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error loading car:', error)
+    return null
+  }
+}
+
 // Функция для генерации метатегов
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   try {
-    const car = await firestoreApi.getDocument("cars", params.id)
+    const car = await loadCarFromCloudflare(params.id)
 
     if (!car) {
       return {
