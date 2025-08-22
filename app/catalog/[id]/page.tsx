@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { parseFirestoreDoc } from "@/lib/utils"
 import CarDetailsClient from "./car-details-client"
 
 // export const runtime = 'edge'
@@ -77,7 +78,12 @@ async function loadCarFromCloudflare(carId: string) {
       return null
     }
 
-    return await response.json()
+    const rawData = await response.json()
+
+    // ★★★ КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Парсим данные от Cloudflare Worker ★★★
+    const carData = parseFirestoreDoc(rawData)
+
+    return carData
   } catch (error) {
     console.error('Error loading car:', error)
     return null

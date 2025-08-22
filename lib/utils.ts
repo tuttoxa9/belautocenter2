@@ -26,6 +26,34 @@ export function convertUsdToByn(usd: number, rate: number): string {
  * @param str - Исходная строка (например, название банка на кириллице)
  * @returns Очищенная строка для использования в URL
  */
+/**
+ * Функция для конвертации значения поля из формата Firestore в обычное значение
+ */
+function parseFirestoreValue(value: any): any {
+  if (value.stringValue !== undefined) return value.stringValue;
+  if (value.integerValue !== undefined) return parseInt(value.integerValue, 10);
+  if (value.doubleValue !== undefined) return value.doubleValue;
+  if (value.booleanValue !== undefined) return value.booleanValue;
+  if (value.mapValue !== undefined) return parseFirestoreDoc(value.mapValue); // Рекурсивно для вложенных объектов
+  if (value.arrayValue !== undefined) return value.arrayValue.values?.map(parseFirestoreValue) || []; // Для массивов
+  if (value.nullValue !== undefined) return null;
+  if (value.timestampValue !== undefined) return new Date(value.timestampValue);
+  return value;
+}
+
+/**
+ * Функция для конвертации всего документа Firestore в простой объект
+ */
+export function parseFirestoreDoc(doc: any): any {
+  if (!doc || !doc.fields) return {};
+
+  const result: { [key: string]: any } = {};
+  for (const key in doc.fields) {
+    result[key] = parseFirestoreValue(doc.fields[key]);
+  }
+  return result;
+}
+
 export function sanitizePath(str: string): string {
   if (!str) return '';
 

@@ -8,7 +8,7 @@ import Image from "next/image"
 import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
-import { convertUsdToByn } from "@/lib/utils"
+import { convertUsdToByn, parseFirestoreDoc } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -268,7 +268,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         // Запрос к Cloudflare Worker
         const response = await fetch(`${apiHost}/cars/${carId}`)
         if (response.ok) {
-          carData = await response.json()
+          const rawData = await response.json()
+          // ★★★ КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Парсим данные от Cloudflare Worker ★★★
+          carData = parseFirestoreDoc(rawData)
         }
       }
 
