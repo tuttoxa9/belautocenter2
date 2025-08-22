@@ -332,7 +332,14 @@ export default function AdminCars() {
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h2 className="text-xl md:text-2xl font-bold truncate">Управление автомобилями</h2>
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold truncate">Управление автомобилями</h2>
+          <div className="text-sm text-gray-500 mt-1">
+            {filteredCars.length === cars.length
+              ? `Всего автомобилей: ${cars.length}`
+              : `Показано ${filteredCars.length} из ${cars.length} автомобилей`}
+          </div>
+        </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button
@@ -738,6 +745,26 @@ export default function AdminCars() {
             </Tabs>
           </DialogContent>
         </Dialog>
+      </div>
+
+      {/* Статистика автомобилей */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+        <div className="bg-white rounded-lg shadow p-4">
+          <div className="text-sm text-gray-500">Всего автомобилей</div>
+          <div className="text-2xl font-bold mt-1">{cars.length}</div>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
+          <div className="text-sm text-gray-500">В наличии</div>
+          <div className="text-2xl font-bold mt-1 text-green-600">
+            {cars.filter(car => car.isAvailable === true).length}
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
+          <div className="text-sm text-gray-500">Проданные</div>
+          <div className="text-2xl font-bold mt-1 text-gray-500">
+            {cars.filter(car => car.isAvailable === false).length}
+          </div>
+        </div>
       </div>
 
       {/* Поле поиска, сортировка и фильтрация */}
