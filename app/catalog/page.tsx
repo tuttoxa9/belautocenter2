@@ -48,7 +48,8 @@ async function loadCarsFromFirestore(): Promise<Car[]> {
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
-      }
+      },
+      cache: 'no-store'
     })
 
     if (!response.ok) {
