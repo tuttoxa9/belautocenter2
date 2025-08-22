@@ -27,6 +27,8 @@ export default function AdminCars() {
   const [jsonInput, setJsonInput] = useState("")
   const [jsonError, setJsonError] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
+  const [sortOption, setSortOption] = useState("createdAt_desc") // По умолчанию сортировка по дате добавления (новые вначале)
+  const [filterOption, setFilterOption] = useState("all") // По умолчанию все автомобили
   const cacheInvalidator = createCacheInvalidator('cars')
   const saveButtonState = useButtonState()
   const deleteButtonStates = {}
@@ -67,7 +69,14 @@ export default function AdminCars() {
         id: doc.id,
         ...doc.data(),
       }))
-      setCars(carsData)
+      // Сортировка по умолчанию: сначала новые (по дате создания)
+      const sortedCars = [...carsData].sort((a, b) => {
+        // Используем createdAt (timestamp) для сортировки
+        const dateA = a.createdAt ? new Date(a.createdAt.seconds * 1000) : new Date(0)
+        const dateB = b.createdAt ? new Date(b.createdAt.seconds * 1000) : new Date(0)
+        return dateB - dateA // От новых к старым
+      })
+      setCars(sortedCars)
     } catch (error) {
       console.error("Ошибка загрузки автомобилей:", error)
     } finally {
@@ -224,8 +233,56 @@ export default function AdminCars() {
     setCarForm({ ...carForm, imageUrls: newUrls.length > 0 ? newUrls : [""] })
   }
 
+  // Применение сортировки
+  const applySorting = (carsToSort) => {
+    const sorted = [...carsToSort]
+
+    switch (sortOption) {
+      case "createdAt_desc": // Новые вначале (по дате добавления)
+        return sorted.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt.seconds * 1000) : new Date(0)
+          const dateB = b.createdAt ? new Date(b.createdAt.seconds * 1000) : new Date(0)
+          return dateB - dateA
+        })
+      case "createdAt_asc": // Старые вначале (по дате добавления)
+        return sorted.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt.seconds * 1000) : new Date(0)
+          const dateB = b.createdAt ? new Date(b.createdAt.seconds * 1000) : new Date(0)
+          return dateA - dateB
+        })
+      case "price_asc": // По возрастанию цены
+        return sorted.sort((a, b) => (a.price || 0) - (b.price || 0))
+      case "price_desc": // По убыванию цены
+        return sorted.sort((a, b) => (b.price || 0) - (a.price || 0))
+      case "year_desc": // Новые модели вначале (по году)
+        return sorted.sort((a, b) => (b.year || 0) - (a.year || 0))
+      case "year_asc": // Старые модели вначале (по году)
+        return sorted.sort((a, b) => (a.year || 0) - (b.year || 0))
+      case "mileage_asc": // По возрастанию пробега
+        return sorted.sort((a, b) => (a.mileage || 0) - (b.mileage || 0))
+      case "mileage_desc": // По убыванию пробега
+        return sorted.sort((a, b) => (b.mileage || 0) - (a.mileage || 0))
+      default:
+        return sorted
+    }
+  }
+
+  // Применение фильтрации
+  const applyFilters = (carsToFilter) => {
+    let filtered = [...carsToFilter]
+
+    // Фильтр по доступности
+    if (filterOption === "available") {
+      filtered = filtered.filter(car => car.isAvailable === true)
+    } else if (filterOption === "sold") {
+      filtered = filtered.filter(car => car.isAvailable === false)
+    }
+
+    return filtered
+  }
+
   // Фильтрация автомобилей по поисковому запросу
-  const filteredCars = cars.filter((car) => {
+  const filteredBySearch = cars.filter((car) => {
     if (!searchQuery) return true
 
     const query = searchQuery.toLowerCase()
@@ -241,6 +298,9 @@ export default function AdminCars() {
       car.driveTrain?.toLowerCase().includes(query)
     )
   })
+
+  // Применяем последовательно фильтрацию и сортировку
+  const filteredCars = applySorting(applyFilters(filteredBySearch))
 
   if (loading) {
     return (
@@ -680,8 +740,8 @@ export default function AdminCars() {
         </Dialog>
       </div>
 
-      {/* Поле поиска */}
-      <div className="flex items-center space-x-2">
+      {/* Поле поиска, сортировка и фильтрация */}
+      <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
@@ -690,16 +750,52 @@ export default function AdminCars() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
           />
+          {searchQuery && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7"
+            >
+              Очистить
+            </Button>
+          )}
         </div>
-        {searchQuery && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setSearchQuery("")}
-          >
-            Очистить
-          </Button>
-        )}
+
+        <div className="flex gap-2">
+          {/* Сортировка */}
+          <div className="w-48">
+            <Select value={sortOption} onValueChange={setSortOption}>
+              <SelectTrigger>
+                <SelectValue placeholder="Сортировка" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="createdAt_desc">Сначала новые</SelectItem>
+                <SelectItem value="createdAt_asc">Сначала старые</SelectItem>
+                <SelectItem value="price_asc">По возрастанию цены</SelectItem>
+                <SelectItem value="price_desc">По убыванию цены</SelectItem>
+                <SelectItem value="year_desc">Новые модели вначале</SelectItem>
+                <SelectItem value="year_asc">Старые модели вначале</SelectItem>
+                <SelectItem value="mileage_asc">По возрастанию пробега</SelectItem>
+                <SelectItem value="mileage_desc">По убыванию пробега</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Фильтрация */}
+          <div className="w-36">
+            <Select value={filterOption} onValueChange={setFilterOption}>
+              <SelectTrigger>
+                <SelectValue placeholder="Фильтр" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все</SelectItem>
+                <SelectItem value="available">В наличии</SelectItem>
+                <SelectItem value="sold">Проданные</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -741,17 +837,32 @@ export default function AdminCars() {
         </div>
       )}
 
-      {filteredCars.length === 0 && searchQuery && cars.length > 0 && (
+      {filteredCars.length === 0 && cars.length > 0 && (
         <div className="text-center py-12">
           <Search className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-500">По запросу "{searchQuery}" ничего не найдено</p>
-          <Button
-            variant="outline"
-            className="mt-2"
-            onClick={() => setSearchQuery("")}
-          >
-            Очистить поиск
-          </Button>
+          {searchQuery ? (
+            <p className="text-gray-500">По запросу "{searchQuery}" ничего не найдено</p>
+          ) : (
+            <p className="text-gray-500">Нет автомобилей, соответствующих выбранным фильтрам</p>
+          )}
+          <div className="flex gap-2 justify-center mt-2">
+            {searchQuery && (
+              <Button
+                variant="outline"
+                onClick={() => setSearchQuery("")}
+              >
+                Очистить поиск
+              </Button>
+            )}
+            {filterOption !== "all" && (
+              <Button
+                variant="outline"
+                onClick={() => setFilterOption("all")}
+              >
+                Показать все
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </div>
