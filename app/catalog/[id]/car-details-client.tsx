@@ -8,7 +8,7 @@ import Image from "next/image"
 import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
-import { convertUsdToByn, parseFirestoreDoc } from "@/lib/utils"
+import { convertUsdToByn, parseFirestoreDoc, parseFirestoreCollection } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -228,35 +228,53 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingBanks(true)
       setLoadingLeasing(true)
 
-      const response = await fetch('/api/car-page-data')
+      const apiUrl = process.env.NEXT_PUBLIC_API_HOST
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      // Определяем эндпоинты Firestore, которые будет проксировать воркер
+      const endpoints = {
+        banks: `${apiUrl}/pages/credit`,
+        leasing: `${apiUrl}/pages/leasing`,
+        contacts: `${apiUrl}/pages/contacts`
       }
 
-      const data = await response.json()
+      // Выполняем запросы параллельно для максимальной скорости
+      const [banksResponse, leasingResponse, contactsResponse] = await Promise.all([
+        fetch(endpoints.banks),
+        fetch(endpoints.leasing),
+        fetch(endpoints.contacts)
+      ])
+
+      // Получаем JSON из каждого ответа
+      const banksData = await banksResponse.json()
+      const leasingData = await leasingResponse.json()
+      const contactsData = await contactsResponse.json()
+
+      // Применяем парсер для "сырых" данных от Firestore
+      const banks = parseFirestoreCollection(banksData)
+      const leasing = parseFirestoreCollection(leasingData)
+      const contacts = parseFirestoreDoc(contactsData)
 
       // Устанавливаем данные банков
-      if (data.banks && data.banks.length > 0) {
-        setPartnerBanks(data.banks)
-        setSelectedBank(data.banks[0]) // Выбираем лучший банк по умолчанию
+      if (banks && banks.length > 0) {
+        setPartnerBanks(banks)
+        setSelectedBank(banks[0]) // Выбираем лучший банк по умолчанию
       } else {
         console.warn("Банки-партнеры не найдены")
         setPartnerBanks([])
       }
 
       // Устанавливаем данные лизинговых компаний
-      if (data.leasingCompanies && data.leasingCompanies.length > 0) {
-        setLeasingCompanies(data.leasingCompanies)
-        setSelectedLeasingCompany(data.leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
+      if (leasing && leasing.length > 0) {
+        setLeasingCompanies(leasing)
+        setSelectedLeasingCompany(leasing[0]) // Выбираем лучшую компанию по умолчанию
       } else {
         console.warn("Лизинговые компании не найдены")
         setLeasingCompanies([])
       }
 
-      // Устанавливаем контактные телефоны
-      setContactPhone(data.contactPhone || "+375 29 123-45-67")
-      setContactPhone2(data.contactPhone2 || "")
+      // Устанавливаем контактные телефоны из документа контактов
+      setContactPhone(contacts.phone || "+375 29 123-45-67")
+      setContactPhone2(contacts.phone2 || "")
 
     } catch (error) {
       console.error("Ошибка загрузки статических данных:", error)

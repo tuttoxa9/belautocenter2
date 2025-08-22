@@ -54,6 +54,25 @@ export function parseFirestoreDoc(doc: any): any {
   return result;
 }
 
+/**
+ * Функция для конвертации коллекции документов Firestore в массив простых объектов
+ */
+export function parseFirestoreCollection(collection: any): any[] {
+  if (!collection || !collection.documents || !Array.isArray(collection.documents)) {
+    return [];
+  }
+
+  return collection.documents.map((doc: any) => {
+    const parsed = parseFirestoreDoc(doc);
+    // Добавляем ID документа из пути документа
+    if (doc.name) {
+      const id = doc.name.split('/').pop();
+      return { id, ...parsed };
+    }
+    return parsed;
+  });
+}
+
 export function sanitizePath(str: string): string {
   if (!str) return '';
 
