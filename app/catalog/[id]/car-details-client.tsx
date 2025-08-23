@@ -224,6 +224,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
 
+  // Получаем хост для изображений
+  const imageHost = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
+
   const loadStaticData = async () => {
     try {
       setLoadingBanks(true)
@@ -263,9 +266,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
       // --- КОНЕЦ ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
 
-      // Сохраняем отладочные логи для проверки
+      // Расширенные отладочные логи для проверки
+      console.log("ДАННЫЕ СТРАНИЦЫ КРЕДИТОВ:", creditPageData);
+      console.log("ДАННЫЕ СТРАНИЦЫ ЛИЗИНГА:", leasingPageData);
       console.log("ПОСЛЕ ПАРСИНГА (Банки):", banks.length > 0 ? banks[0] : "Массив пуст");
       console.log("ПОСЛЕ ПАРСИНГА (Лизинг):", leasingCompanies.length > 0 ? leasingCompanies[0] : "Массив пуст");
+      console.log("БАНКИ (все):", banks);
+      console.log("ЛИЗИНГОВЫЕ КОМПАНИИ (все):", leasingCompanies);
 
       // Устанавливаем данные банков
       if (banks && banks.length > 0) {
@@ -278,10 +285,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
       // Устанавливаем данные лизинговых компаний
       if (leasingCompanies && leasingCompanies.length > 0) {
+        console.log("УСТАНОВКА ЛИЗИНГОВЫХ КОМПАНИЙ:", leasingCompanies);
+        console.log("ПЕРВАЯ ЛИЗИНГОВАЯ КОМПАНИЯ:", leasingCompanies[0]);
         setLeasingCompanies(leasingCompanies)
         setSelectedLeasingCompany(leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
       } else {
         console.warn("Лизинговые компании не найдены")
+        console.log("ДАННЫЕ ЛИЗИНГА (RAW):", leasingRawData);
+        console.log("ДАННЫЕ ЛИЗИНГА (PARSED):", leasingPageData);
         setLeasingCompanies([])
       }
 
@@ -467,13 +478,22 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const calculateMonthlyPayment = () => {
     if (!selectedBank) return 0
     const principal = getCurrentCreditAmount()
-    const rate = selectedBank.rate / 100 / 12
+
+    // Используем rate, если доступно, иначе minRate
+    const rateValue = selectedBank.rate !== undefined ? selectedBank.rate :
+                    selectedBank.minRate !== undefined ? selectedBank.minRate : 0;
+
+    const rate = rateValue / 100 / 12
     const term = loanTerm[0]
 
-    // ★★★ ДОБАВЛЕНО: Отладочный код для проверки данных перед расчетом ★★★
+    // ★★★ РАСШИРЕННЫЙ отладочный код для проверки данных перед расчетом ★★★
     console.log("ДАННЫЕ ДЛЯ КАЛЬКУЛЯТОРА:", {
         amount: principal,
+        selectedBank: selectedBank,
         rate: rate,
+        rateValue: rateValue,
+        rateField: selectedBank.rate !== undefined ? 'rate' :
+                   selectedBank.minRate !== undefined ? 'minRate' : 'отсутствует',
         term: term
     });
     // ★★★ КОНЕЦ ★★★
@@ -1300,9 +1320,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                               {selectedBank && (
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-2">
-                                    {selectedBank.logo && (
+                                    {(selectedBank.logo || selectedBank.logoUrl) && (
                                       <Image
-                                        src={getCachedImageUrl(selectedBank.logo)}
+                                        src={getCachedImageUrl(selectedBank.logo || selectedBank.logoUrl)}
                                         alt={`${selectedBank.name} логотип`}
                                         width={16}
                                         height={16}
@@ -1311,7 +1331,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                                     )}
                                     <span className="text-xs sm:text-sm truncate">{selectedBank.name}</span>
                                   </div>
-                                  <span className="text-xs font-semibold text-slate-600">{selectedBank.rate}%</span>
+                                  <span className="text-xs font-semibold text-slate-600">{selectedBank.rate || selectedBank.minRate}%</span>
                                 </div>
                               )}
                             </SelectValue>
@@ -1320,9 +1340,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             {partnerBanks.map((bank, index) => (
                               <SelectItem key={bank.name || index} value={bank.name} className="relative pr-12">
                                 <div className="flex items-center gap-2 w-full">
-                                  {bank.logo && (
+                                  {(bank.logo || bank.logoUrl) && (
                                     <Image
-                                      src={getCachedImageUrl(bank.logo)}
+                                      src={getCachedImageUrl(bank.logo || bank.logoUrl)}
                                       alt={`${bank.name} логотип`}
                                       width={16}
                                       height={16}
@@ -1331,7 +1351,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                                   )}
                                   <span className="truncate pr-6 text-xs sm:text-sm">{bank.name}</span>
                                 </div>
-                                <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-slate-600">{bank.rate}%</span>
+                                <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-slate-600">{bank.rate || bank.minRate}%</span>
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -1407,9 +1427,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       {leasingCompanies.length > 0 ? (
                         <Select
                           value={selectedLeasingCompany ? selectedLeasingCompany.name.toLowerCase().replace(/[\s-]/g, '') : ''}
-                          onValueChange={(value) =>
-                            setSelectedLeasingCompany(leasingCompanies.find(c => c.name.toLowerCase().replace(/[\s-]/g, '') === value) || leasingCompanies[0])
-                          }
+                          onValueChange={(value) => {
+                            const company = leasingCompanies.find(c => c.name.toLowerCase().replace(/[\s-]/g, '') === value) || leasingCompanies[0];
+                            setSelectedLeasingCompany(company);
+
+                            // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранной лизинговой компании ★★★
+                            console.log("ВЫБРАННАЯ ЛИЗИНГОВАЯ КОМПАНИЯ:", company);
+                            // ★★★ КОНЕЦ ★★★
+                          }}
                         >
                           <SelectTrigger className="h-8 sm:h-10">
                             <SelectValue placeholder="Выберите компанию">
@@ -1527,11 +1552,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedBank.name}</div>
                         <div className="flex items-center space-x-2 text-xs text-slate-600">
                           <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
-                          <span>Ставка: {selectedBank.rate}%</span>
+                          <span>Ставка: {selectedBank.rate || selectedBank.minRate}%</span>
                         </div>
                         <div className="flex items-center space-x-2 text-xs text-slate-600 mt-1">
                           <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
-                          <span>Макс. срок: {selectedBank.maxTerm} мес.</span>
+                          <span>Макс. срок: {selectedBank.maxTerm || selectedBank.maxLoanTerm || 60} мес.</span>
                         </div>
                       </div>
                       <Button
