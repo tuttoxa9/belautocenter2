@@ -257,6 +257,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       console.log("СЫРЫЕ ДАННЫЕ ПО ЛИЗИНГУ (ИЗМЕНЕНИЕ):", JSON.stringify(leasingRawData, null, 2));
       // ★★★ КОНЕЦ ★★★
 
+      // Дополнительный отладочный лог для анализа структуры данных лизинга
+      console.log("СТРУКТУРА ДАННЫХ ЛИЗИНГА:", {
+        hasPartnersField: leasingRawData?.fields?.partners !== undefined,
+        hasLeasingCompaniesField: leasingRawData?.fields?.leasingCompanies !== undefined,
+        availableFields: Object.keys(leasingRawData?.fields || {})
+      });
+
       // --- НАЧАЛО ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
 
       // 1. "Переводим" каждый полученный документ в понятный JS-объект
@@ -266,10 +273,17 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
       // 2. Безопасно извлекаем из них чистые массивы с партнерами
       const banks = creditPageData.partners || [];
-      const leasingCompanies = leasingPageData.partners || [];
+      // ★★★ ВОТ КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ ★★★
+      // Делаем код более гибким - сначала проверяем поле leasingCompanies, затем partners
+      const leasingCompanies = leasingPageData.leasingCompanies || leasingPageData.partners || [];
 
       // ★★★ ДОБАВЬ И ЭТОТ ЛОГ ★★★
-      console.log("ДАННЫЕ ПО ЛИЗИНГУ ПОСЛЕ ПАРСИНГА:", leasingCompanies);
+      console.log("ДАННЫЕ ПО ЛИЗИНГУ ПОСЛЕ ПАРСИНГА:", {
+        foundIn: leasingPageData.leasingCompanies ? 'leasingCompanies' : (leasingPageData.partners ? 'partners' : 'не найдено'),
+        count: leasingCompanies.length,
+        items: leasingCompanies,
+        parsedData: leasingPageData
+      });
       // ★★★ КОНЕЦ ★★★
 
       // --- КОНЕЦ ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
