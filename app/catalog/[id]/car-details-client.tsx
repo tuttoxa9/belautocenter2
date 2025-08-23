@@ -259,6 +259,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       const banks = creditPageData.partners || [];
       const leasingCompanies = leasingPageData.partners || [];
 
+      // ★★★ ДОБАВЛЕНО: Отладочный код для проверки данных после парсинга ★★★
+      console.log("ПОСЛЕ ПАРСИНГА (Банки):", banks.length > 0 ? banks[0] : "Массив пуст");
+      console.log("ПОСЛЕ ПАРСИНГА (Лизинг):", leasingCompanies.length > 0 ? leasingCompanies[0] : "Массив пуст");
+      // ★★★ КОНЕЦ ★★★
+
       // Устанавливаем данные банков
       if (banks && banks.length > 0) {
         setPartnerBanks(banks)
@@ -461,6 +466,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     const principal = getCurrentCreditAmount()
     const rate = selectedBank.rate / 100 / 12
     const term = loanTerm[0]
+
+    // ★★★ ДОБАВЛЕНО: Отладочный код для проверки данных перед расчетом ★★★
+    console.log("ДАННЫЕ ДЛЯ КАЛЬКУЛЯТОРА:", {
+        amount: principal,
+        rate: rate,
+        term: term
+    });
+    // ★★★ КОНЕЦ ★★★
+
     if (rate === 0) return principal / term
     const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
     return monthlyPayment
@@ -1269,9 +1283,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       {partnerBanks.length > 0 ? (
                         <Select
                           value={selectedBank?.name}
-                          onValueChange={(value) =>
-                            setSelectedBank(partnerBanks.find(b => b.name === value) || partnerBanks[0])
-                          }
+                          onValueChange={(value) => {
+                            const bank = partnerBanks.find(b => b.name === value) || partnerBanks[0];
+                            setSelectedBank(bank);
+
+                            // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранного банка ★★★
+                            console.log("ВЫБРАННЫЙ БАНК:", bank);
+                            // ★★★ КОНЕЦ ★★★
+                          }}
                         >
                           <SelectTrigger className="h-8 sm:h-10">
                             <SelectValue placeholder="Выберите банк">
