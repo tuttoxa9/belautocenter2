@@ -1621,8 +1621,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <Image
                           src={getCachedImageUrl(selectedLeasingCompany.logo || selectedLeasingCompany.logoUrl)}
                           alt={`${selectedLeasingCompany.name} логотип`}
-                          width={60}
-                          height={60}
+                          width={selectedLeasingCompany.name === 'А-Лизинг' ? 60 : 120}
+                          height={selectedLeasingCompany.name === 'А-Лизинг' ? 60 : 120}
                           className="object-contain rounded-lg"
                         />
                       </div>
