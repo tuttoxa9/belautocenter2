@@ -8,7 +8,7 @@ import Image from "next/image"
 import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
-import { convertUsdToByn, parseFirestoreCollection } from "@/lib/utils"
+import { convertUsdToByn } from "@/lib/utils"
 import { parseFirestoreDoc } from "@/lib/firestore-parser"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
@@ -250,19 +250,22 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       const leasingRawData = await leasingResponse.json()
       const contactsRawData = await contactsResponse.json()
 
-      // 1. Полностью парсим каждый документ
+      // --- НАЧАЛО ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
+
+      // 1. "Переводим" каждый полученный документ в понятный JS-объект
       const creditPageData = parseFirestoreDoc(banksRawData);
       const leasingPageData = parseFirestoreDoc(leasingRawData);
       const contacts = parseFirestoreDoc(contactsRawData);
 
-      // 2. Извлекаем чистые данные
+      // 2. Безопасно извлекаем из них чистые массивы с партнерами
       const banks = creditPageData.partners || [];
       const leasingCompanies = leasingPageData.partners || [];
 
-      // ★★★ ДОБАВЛЕНО: Отладочный код для проверки данных после парсинга ★★★
+      // --- КОНЕЦ ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
+
+      // Сохраняем отладочные логи для проверки
       console.log("ПОСЛЕ ПАРСИНГА (Банки):", banks.length > 0 ? banks[0] : "Массив пуст");
       console.log("ПОСЛЕ ПАРСИНГА (Лизинг):", leasingCompanies.length > 0 ? leasingCompanies[0] : "Массив пуст");
-      // ★★★ КОНЕЦ ★★★
 
       // Устанавливаем данные банков
       if (banks && banks.length > 0) {
@@ -475,7 +478,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     });
     // ★★★ КОНЕЦ ★★★
 
-    if (rate === 0) return principal / term
+    if (!rate || rate <= 0) return principal / term
     const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
     return monthlyPayment
   }

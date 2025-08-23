@@ -2,13 +2,13 @@
 
 /** Преобразует ОДНО поле из формата Firestore в обычное JS-значение. */
 function parseFirestoreValue(value: any): any {
-  if (!value) return null; // Защита от отсутствующих полей
+  if (!value) return null;
   if (value.stringValue !== undefined) return value.stringValue;
   if (value.integerValue !== undefined) return parseInt(value.integerValue, 10);
   if (value.doubleValue !== undefined) return parseFloat(value.doubleValue);
   if (value.booleanValue !== undefined) return value.booleanValue;
-  if (value.mapValue !== undefined) return parseFirestoreDoc(value.mapValue); // Рекурсия для вложенных объектов
-  if (value.arrayValue !== undefined) return (value.arrayValue.values || []).map(parseFirestoreValue); // Рекурсия для массивов
+  if (value.mapValue !== undefined) return parseFirestoreDoc(value.mapValue);
+  if (value.arrayValue !== undefined) return (value.arrayValue.values || []).map(parseFirestoreValue);
   if (value.nullValue !== undefined) return null;
   return undefined;
 }
@@ -22,7 +22,7 @@ export function parseFirestoreDoc(doc: any): any {
     result[key] = parseFirestoreValue(doc.fields[key]);
   }
 
-  // Добавляем ID документа, он нам понадобится для ключей в React
+  // Добавляем ID документа, если он есть
   if (doc.name) {
     result.id = doc.name.split('/').pop();
   }
