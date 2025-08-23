@@ -32,13 +32,24 @@ export default function CarCard({ car }: CarCardProps) {
   const usdBynRate = useUsdBynRate()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [shouldLoadImage, setShouldLoadImage] = useState(false)
+  const [dataReady, setDataReady] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
+
+  // Устанавливаем задержку перед отображением данных,
+  // чтобы избежать показа устаревших данных
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDataReady(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Отладочная информация для проверки данных автомобиля
   console.log(`Отрисовка карточки: ${car.make} ${car.model}`, {
     id: car.id,
     imageUrls: car.imageUrls,
-    firstImage: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null
+    firstImage: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null,
+    dataReady
   })
 
   useEffect(() => {
@@ -128,38 +139,66 @@ export default function CarCard({ car }: CarCardProps) {
 
         {/* Content Section */}
         <CardContent className="p-3 space-y-2">
-          {/* Header - более компактный */}
-          <div className="mb-2">
-            <h3 className="font-semibold text-slate-900 text-base leading-tight mb-1 group-hover:text-slate-700 transition-colors">
-              {car.make} {car.model}
-            </h3>
-            <div className="font-bold text-slate-900 text-lg">
-              {car?.price ? formatPrice(car.price) : 'Цена по запросу'}
-            </div>
-            {usdBynRate && car?.price && (
-              <div className="text-xs text-slate-500 font-medium">
-                ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
+          {!dataReady ? (
+            // Скелетон до готовности данных
+            <>
+              <div className="mb-2">
+                <div className="h-5 bg-slate-200 rounded w-32 animate-pulse mb-1"></div>
+                <div className="h-6 bg-slate-200 rounded w-20 animate-pulse mb-1"></div>
+                <div className="h-4 bg-slate-200 rounded w-24 animate-pulse"></div>
               </div>
-            )}
-          </div>
+              <div className="space-y-1">
+                <div className="flex justify-between">
+                  <div className="h-3 bg-slate-200 rounded w-12 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 rounded w-16 animate-pulse"></div>
+                </div>
+                <div className="flex justify-between">
+                  <div className="h-3 bg-slate-200 rounded w-16 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 rounded w-14 animate-pulse"></div>
+                </div>
+                <div className="flex justify-between">
+                  <div className="h-3 bg-slate-200 rounded w-8 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 rounded w-12 animate-pulse"></div>
+                </div>
+              </div>
+            </>
+          ) : (
+            // Реальные данные после готовности
+            <>
+              {/* Header - более компактный */}
+              <div className="mb-2">
+                <h3 className="font-semibold text-slate-900 text-base leading-tight mb-1 group-hover:text-slate-700 transition-colors">
+                  {car.make} {car.model}
+                </h3>
+                <div className="font-bold text-slate-900 text-lg">
+                  {car?.price ? formatPrice(car.price) : 'Цена по запросу'}
+                </div>
+                {usdBynRate && car?.price && (
+                  <div className="text-xs text-slate-500 font-medium">
+                    ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
+                  </div>
+                )}
+              </div>
 
-          {/* Specs - более компактные */}
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-600">Пробег</span>
-              <span className="font-medium text-slate-900">{formatMileage(car.mileage)} км</span>
-            </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-600">Двигатель</span>
-              <span className="font-medium text-slate-900">
-                {car.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car.engineVolume)} ${car.fuelType}`}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-600">КПП</span>
-              <span className="font-medium text-slate-900">{car.transmission}</span>
-            </div>
-          </div>
+              {/* Specs - более компактные */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-600">Пробег</span>
+                  <span className="font-medium text-slate-900">{formatMileage(car.mileage)} км</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-600">Двигатель</span>
+                  <span className="font-medium text-slate-900">
+                    {car.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car.engineVolume)} ${car.fuelType}`}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-600">КПП</span>
+                  <span className="font-medium text-slate-900">{car.transmission}</span>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Link>
     </Card>

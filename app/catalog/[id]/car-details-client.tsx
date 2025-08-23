@@ -51,11 +51,27 @@ import LazyThumbnail from "@/components/lazy-thumbnail"
 // Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: string, contactPhone2?: string }) => {
   // Используем hook из контекста для получения настроек
-  const { settings } = useSettings();
+  const { settings, isLoading: isSettingsLoading } = useSettings();
+  // State для отображения скелетона
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Установим задержку, чтобы сначала загрузились настройки
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Получаем номера телефонов из настроек, если доступны, иначе используем переданные параметры
-  const phoneNumber = settings?.main?.showroomInfo?.phone || contactPhone;
-  const phoneNumber2 = settings?.main?.showroomInfo?.phone2 || contactPhone2;
+  // Но только если настройки загружены
+  const phoneNumber = !isLoading && settings?.main?.showroomInfo?.phone
+    ? settings.main.showroomInfo.phone
+    : '';
+
+  const phoneNumber2 = !isLoading && settings?.main?.showroomInfo?.phone2
+    ? settings.main.showroomInfo.phone2
+    : '';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
@@ -71,22 +87,40 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
           <h3 className="text-lg font-semibold text-slate-900 mb-3">Нужна помощь?</h3>
           <p className="text-slate-600 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
-          <div className="flex flex-col items-center space-y-2 text-blue-600">
-            <div className="flex items-center space-x-2">
-              <Phone className="h-5 w-5" />
-              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-                {phoneNumber}
-              </a>
+
+          {isLoading || isSettingsLoading ? (
+            <div className="flex flex-col items-center space-y-4">
+              <div className="h-6 bg-slate-200 rounded w-32 animate-pulse"></div>
+              <div className="h-6 bg-slate-200 rounded w-32 animate-pulse"></div>
             </div>
-            {phoneNumber2 && (
-              <div className="flex items-center space-x-2">
-                <Phone className="h-5 w-5" />
-                <a href={`tel:${phoneNumber2.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-                  {phoneNumber2}
-                </a>
-              </div>
-            )}
-          </div>
+          ) : (
+            <div className="flex flex-col items-center space-y-2 text-blue-600">
+              {phoneNumber && (
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-5 w-5" />
+                  <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+                    {phoneNumber}
+                  </a>
+                </div>
+              )}
+              {phoneNumber2 && (
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-5 w-5" />
+                  <a href={`tel:${phoneNumber2.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+                    {phoneNumber2}
+                  </a>
+                </div>
+              )}
+              {!phoneNumber && !phoneNumber2 && (
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-5 w-5" />
+                  <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+                    {contactPhone}
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <Button
@@ -1187,40 +1221,62 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 sm:p-6 border-t border-slate-200/50">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center">
               <div className="text-center md:text-left">
-                <div className="font-medium text-base sm:text-lg mb-1">
-                  {settings?.main?.showroomInfo?.companyName || "Автохаус Белавто Центр"}
-                </div>
-                <div className="text-blue-100 text-xs sm:text-sm">
-                  {settings?.main?.showroomInfo?.address || "г. Минск, ул. Большое Стиклево 83"}
-                </div>
+                {loading ? (
+                  <div className="space-y-2">
+                    <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto md:mx-0 animate-pulse"></div>
+                    <div className="h-4 bg-blue-400/40 rounded w-52 mx-auto md:mx-0 animate-pulse"></div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="font-medium text-base sm:text-lg mb-1">
+                      {settings?.main?.showroomInfo?.companyName || ""}
+                    </div>
+                    <div className="text-blue-100 text-xs sm:text-sm">
+                      {settings?.main?.showroomInfo?.address || ""}
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 text-blue-100 text-xs sm:text-sm">
-                  <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <div>
-                    <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || "Пн-Пт: 9:00-21:00"}</div>
+                {loading ? (
+                  <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto animate-pulse"></div>
+                ) : (
+                  <div className="flex items-center justify-center space-x-2 text-blue-100 text-xs sm:text-sm">
+                    <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <div>
+                      <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || ""}</div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="text-center md:text-right">
-                <div className="flex flex-col items-center md:items-end space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <div className="font-medium text-base sm:text-lg">
-                      {settings?.main?.showroomInfo?.phone || "+375 29 123-45-67"}
-                    </div>
+                {loading ? (
+                  <div className="space-y-2">
+                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
+                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
                   </div>
-                  {settings?.main?.showroomInfo?.phone2 && (
-                    <div className="flex items-center space-x-2">
-                      <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <div className="font-medium text-base sm:text-lg">
-                        {settings.main.showroomInfo.phone2}
+                ) : (
+                  <div className="flex flex-col items-center md:items-end space-y-1">
+                    {settings?.main?.showroomInfo?.phone && (
+                      <div className="flex items-center space-x-2">
+                        <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <div className="font-medium text-base sm:text-lg">
+                          {settings.main.showroomInfo.phone}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                    {settings?.main?.showroomInfo?.phone2 && (
+                      <div className="flex items-center space-x-2">
+                        <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <div className="font-medium text-base sm:text-lg">
+                          {settings.main.showroomInfo.phone2}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
