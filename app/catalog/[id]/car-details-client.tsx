@@ -253,6 +253,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       const leasingRawData = await leasingResponse.json()
       const contactsRawData = await contactsResponse.json()
 
+      // ★★★ ДОБАВЬ ЭТОТ ЛОГ ★★★
+      console.log("СЫРЫЕ ДАННЫЕ ПО ЛИЗИНГУ (ИЗМЕНЕНИЕ):", JSON.stringify(leasingRawData, null, 2));
+      // ★★★ КОНЕЦ ★★★
+
       // --- НАЧАЛО ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
 
       // 1. "Переводим" каждый полученный документ в понятный JS-объект
@@ -263,6 +267,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       // 2. Безопасно извлекаем из них чистые массивы с партнерами
       const banks = creditPageData.partners || [];
       const leasingCompanies = leasingPageData.partners || [];
+
+      // ★★★ ДОБАВЬ И ЭТОТ ЛОГ ★★★
+      console.log("ДАННЫЕ ПО ЛИЗИНГУ ПОСЛЕ ПАРСИНГА:", leasingCompanies);
+      // ★★★ КОНЕЦ ★★★
 
       // --- КОНЕЦ ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
 
@@ -1503,10 +1511,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   selectedBank ? (
                     <div className="space-y-3 sm:space-y-4 relative">
                       {/* Логотип банка в правом верхнем углу */}
-                      {selectedBank.logo && (
+                      {(selectedBank.logo || selectedBank.logoUrl) && (
                         <div className="absolute top-0 right-8">
                           <Image
-                            src={getCachedImageUrl(selectedBank.logo)}
+                            src={getCachedImageUrl(selectedBank.logo || selectedBank.logoUrl)}
                             alt={`${selectedBank.name} логотип`}
                             width={60}
                             height={60}
@@ -1594,10 +1602,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 ) : (
                   <div className="space-y-3 sm:space-y-4 relative">
                     {/* Логотип лизинговой компании в правом верхнем углу */}
-                    {selectedLeasingCompany && selectedLeasingCompany.logo && (
+                    {selectedLeasingCompany && (selectedLeasingCompany.logo || selectedLeasingCompany.logoUrl) && (
                       <div className="absolute top-0 right-8">
                         <Image
-                          src={getCachedImageUrl(selectedLeasingCompany.logo)}
+                          src={getCachedImageUrl(selectedLeasingCompany.logo || selectedLeasingCompany.logoUrl)}
                           alt={`${selectedLeasingCompany.name} логотип`}
                           width={60}
                           height={60}
