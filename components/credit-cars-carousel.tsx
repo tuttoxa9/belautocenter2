@@ -29,6 +29,10 @@ interface CarData {
 }
 
 export default function CreditCarsCarousel() {
+  return <CarsCarousel />
+}
+
+export function CarsCarousel() {
   const [cars, setCars] = useState<CarData[]>([])
   const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)

@@ -21,6 +21,7 @@ import { convertUsdToByn } from "@/lib/utils"
 import { doc, getDoc, addDoc, collection } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import LeasingConditions from "@/components/leasing-conditions"
+import LeasingCarsCarousel from "@/components/leasing-cars-carousel"
 
 import { getCachedImageUrl } from "@/lib/image-cache"
 
@@ -956,6 +957,12 @@ export default function LeasingPage() {
               <div className="bg-slate-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-slate-200">
                 <LeasingConditions />
               </div>
+            </div>
+
+            {/* Карусель автомобилей */}
+            <div className="mt-4 md:mt-6">
+              <h3 className="text-lg md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Доступные автомобили</h3>
+              <LeasingCarsCarousel />
             </div>
           </div>
         </div>
