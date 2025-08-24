@@ -36,11 +36,11 @@ export default function CarCard({ car }: CarCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
 
   // Устанавливаем задержку перед отображением данных,
-  // чтобы избежать показа устаревших данных и обеспечить корректную работу скелетонов
+  // чтобы избежать показа устаревших данных
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataReady(true);
-    }, 300); // Увеличили время задержки для корректного отображения скелетонов
+    }, 100);
     return () => clearTimeout(timer);
   }, []);
 
@@ -128,11 +128,15 @@ export default function CarCard({ car }: CarCardProps) {
 
 
 
-            {/* Year */}
+            {/* Year - скелетон или данные */}
             <div className="absolute top-3 right-3">
-              <span className="bg-black/75 text-white text-xs font-medium px-2 py-1 rounded">
-                {car.year}
-              </span>
+              {!dataReady ? (
+                <div className="h-6 w-12 bg-slate-200 rounded animate-pulse"></div>
+              ) : (
+                <span className="bg-black/75 text-white text-xs font-medium px-2 py-1 rounded">
+                  {car.year}
+                </span>
+              )}
             </div>
           </div>
         </div>
