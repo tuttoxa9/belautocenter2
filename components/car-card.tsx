@@ -36,11 +36,11 @@ export default function CarCard({ car }: CarCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
 
   // Устанавливаем задержку перед отображением данных,
-  // чтобы избежать показа устаревших данных
+  // чтобы избежать показа устаревших данных и обеспечить корректную работу скелетонов
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataReady(true);
-    }, 100);
+    }, 300); // Увеличили время задержки для корректного отображения скелетонов
     return () => clearTimeout(timer);
   }, []);
 

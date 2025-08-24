@@ -912,6 +912,14 @@ export default function LeasingPage() {
           </div>
         </div>
 
+        {/* Карусель автомобилей - переместили выше преимуществ */}
+        <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden mb-6 md:mb-8">
+          <div className="p-4 md:p-8">
+            <h3 className="text-lg md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Доступные автомобили</h3>
+            <LeasingCarsCarousel />
+          </div>
+        </div>
+
         {/* Benefits Section - со скелетонами только для данных из БД */}
         <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
           <div className="p-4 md:p-8">
@@ -957,12 +965,6 @@ export default function LeasingPage() {
               <div className="bg-slate-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-slate-200">
                 <LeasingConditions />
               </div>
-            </div>
-
-            {/* Карусель автомобилей */}
-            <div className="mt-4 md:mt-6">
-              <h3 className="text-lg md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Доступные автомобили</h3>
-              <LeasingCarsCarousel />
             </div>
           </div>
         </div>
