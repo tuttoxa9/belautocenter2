@@ -215,23 +215,7 @@ export default function AdminCars() {
     }
   }
 
-  const addImageUrl = () => {
-    setCarForm({
-      ...carForm,
-      imageUrls: [...carForm.imageUrls, ""],
-    })
-  }
 
-  const updateImageUrl = (index, value) => {
-    const newUrls = [...carForm.imageUrls]
-    newUrls[index] = value
-    setCarForm({ ...carForm, imageUrls: newUrls })
-  }
-
-  const removeImageUrl = (index) => {
-    const newUrls = carForm.imageUrls.filter((_, i) => i !== index)
-    setCarForm({ ...carForm, imageUrls: newUrls.length > 0 ? newUrls : [""] })
-  }
 
   // Применение сортировки
   const applySorting = (carsToSort) => {
@@ -576,38 +560,16 @@ export default function AdminCars() {
 
               <div>
                 <Label className="text-sm">Фотографии</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                  {carForm.imageUrls.map((url, index) => (
-                    <ImageUpload
-                      key={index}
-                      currentImage={url}
-                      path="cars"
-                      onUpload={(newUrl) => updateImageUrl(index, newUrl)}
-                      className="col-span-1"
-                    />
-                  ))}
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2 mt-2">
-                  <Button type="button" variant="outline" onClick={addImageUrl} size="sm" className="text-xs">
-                    <Plus className="h-3 w-3 mr-2" />
-                    Добавить фото
-                  </Button>
-                  {carForm.imageUrls.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="text-xs"
-                      onClick={() => {
-                        const newUrls = carForm.imageUrls.slice(0, -1)
-                        setCarForm({ ...carForm, imageUrls: newUrls.length > 0 ? newUrls : [""] })
-                      }}
-                    >
-                      <Trash2 className="h-3 w-3 mr-2" />
-                      Удалить последнее
-                    </Button>
-                  )}
-                </div>
+                <ImageUpload
+                  multiple={true}
+                  currentImages={carForm.imageUrls.filter(url => url.trim() !== "")}
+                  path="cars"
+                  onMultipleUpload={(allUrls) => {
+                    // allUrls уже содержит все изображения (текущие + новые)
+                    setCarForm({ ...carForm, imageUrls: allUrls.length > 0 ? allUrls : [""] })
+                  }}
+                  className="w-full"
+                />
               </div>
 
               <div>
