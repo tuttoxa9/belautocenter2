@@ -31,9 +31,16 @@ export default function ImageUpload({ onImageUploaded, onUpload, path = 'general
         return
       }
 
-      // Проверка типа файла
-      if (!file.type.startsWith('image/')) {
-        alert("Пожалуйста, выберите файл изображения")
+      // Проверка типа файла (включая поддержку HEIC/HEIF для iPhone)
+      const allowedTypes = [
+        'image/jpeg', 'image/jpg', 'image/png', 'image/webp',
+        'image/heic', 'image/heif'
+      ];
+      const fileExtension = file.name.toLowerCase().split('.').pop();
+      const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'];
+
+      if (!file.type.startsWith('image/') && !allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension || '')) {
+        alert("Пожалуйста, выберите файл изображения (поддерживаются форматы: JPEG, PNG, WebP, HEIC, HEIF)")
         return
       }
 
@@ -67,7 +74,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, path = 'general
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".jpeg", ".jpg", ".png", ".webp"],
+      "image/*": [".jpeg", ".jpg", ".png", ".webp", ".heic", ".heif"],
     },
     maxFiles: 1,
   })
@@ -116,7 +123,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, path = 'general
               <p className="text-sm text-gray-600">
                 {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
               </p>
-              <p className="text-xs text-gray-500">PNG, JPG, WEBP до 10MB</p>
+              <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
             </div>
           )}
         </Card>
