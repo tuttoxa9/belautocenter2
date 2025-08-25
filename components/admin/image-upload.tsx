@@ -6,7 +6,7 @@ import { uploadImage } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Upload, X, Loader2 } from "lucide-react"
+import { Upload, X, Loader2, MoveUp, MoveDown } from "lucide-react"
 
 interface ImageUploadProps {
   onImageUploaded?: (url: string) => void
@@ -128,6 +128,16 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
     }
   }
 
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    const newPreviews = [...previews]
+    const [movedItem] = newPreviews.splice(fromIndex, 1)
+    newPreviews.splice(toIndex, 0, movedItem)
+    setPreviews(newPreviews)
+    if (onMultipleUpload) {
+      onMultipleUpload(newPreviews)
+    }
+  }
+
   return (
     <div className={className}>
       {multiple ? (
@@ -178,15 +188,53 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                       alt={`Preview ${index + 1}`}
                       className="w-full h-32 object-cover rounded-lg"
                     />
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      className="absolute top-1 right-1 h-6 w-6 p-0"
-                      onClick={() => removeImageFromMultiple(index)}
-                      disabled={uploading}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
+                    {/* Счетчик порядка фотографии */}
+                    <div className="absolute top-1 left-1 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {index + 1}
+                    </div>
+
+                    {/* Кнопки управления */}
+                    <div className="absolute top-1 right-1 flex flex-col gap-1">
+                      {/* Кнопка перемещения вверх */}
+                      {index > 0 && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-6 w-6 p-0"
+                          onClick={() => moveImage(index, index - 1)}
+                          disabled={uploading}
+                          title="Переместить вверх"
+                        >
+                          <MoveUp className="h-3 w-3" />
+                        </Button>
+                      )}
+
+                      {/* Кнопка перемещения вниз */}
+                      {index < previews.length - 1 && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-6 w-6 p-0"
+                          onClick={() => moveImage(index, index + 1)}
+                          disabled={uploading}
+                          title="Переместить вниз"
+                        >
+                          <MoveDown className="h-3 w-3" />
+                        </Button>
+                      )}
+
+                      {/* Кнопка удаления */}
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="h-6 w-6 p-0"
+                        onClick={() => removeImageFromMultiple(index)}
+                        disabled={uploading}
+                        title="Удалить изображение"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </Card>
                 ))}
               </div>
