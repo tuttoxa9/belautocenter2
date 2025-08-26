@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /adminbel
+Disallow: /api
+Disallow: /_next
+Disallow: /uploads
+
+User-agent: Googlebot
+Allow: /
+Disallow: /adminbel
+Disallow: /api
+
+User-agent: Yandex
+Allow: /
+Disallow: /adminbel
+Disallow: /api
+
+Sitemap: https://autobelcenter.by/sitemap.xml
+Host: autobelcenter.by
