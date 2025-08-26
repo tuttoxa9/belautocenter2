@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'google-site-verification',
-    yandex: 'a9085911ec7f5c05',
+    yandex: 'yandex-verification',
   },
   alternates: {
     canonical: 'https://belautocenter.by',
@@ -91,6 +91,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru">
+      <head>
+        <meta name="yandex-verification" content="a9085911ec7f5c05" />
+      </head>
       <body className="font-sans min-h-screen bg-white flex flex-col">
         <UsdBynRateProvider>
           <NotificationProvider>
