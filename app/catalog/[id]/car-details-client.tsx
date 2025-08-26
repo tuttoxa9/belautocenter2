@@ -217,6 +217,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState(0)
+  // Полноэкранный просмотр фотографий
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
+  const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
 
   // Button states
   const bookingButtonState = useButtonState()
@@ -901,10 +904,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 ) : (
                   <>
                     <div
-                      className="w-full h-full transition-transform duration-200 ease-out"
+                      className="w-full h-full transition-transform duration-200 ease-out cursor-pointer"
                       style={{
                         transform: isDragging ? `translateX(${dragOffset}px)` : 'translateX(0px)',
                         opacity: isDragging ? Math.max(0.7, 1 - Math.abs(dragOffset) / 200) : 1
+                      }}
+                      onClick={() => {
+                        if (!isDragging) {
+                          setFullscreenImageIndex(currentImageIndex)
+                          setIsFullscreenOpen(true)
+                        }
                       }}
                     >
                       <Image
@@ -953,12 +962,26 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     )}
 
-                    {/* Счетчик фотографий */}
-                    {car?.imageUrls && car.imageUrls.length > 1 && (
-                      <div className="absolute top-4 right-4">
-                        <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
-                          {currentImageIndex + 1}/{car.imageUrls.length}
-                        </div>
+                    {/* Счетчик фотографий и кнопка полноэкранного режима */}
+                    {car?.imageUrls && car.imageUrls.length >= 1 && (
+                      <div className="absolute top-4 right-4 flex items-center space-x-2">
+                        {car.imageUrls.length > 1 && (
+                          <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
+                            {currentImageIndex + 1}/{car.imageUrls.length}
+                          </div>
+                        )}
+                        <button
+                          onClick={() => {
+                            setFullscreenImageIndex(currentImageIndex)
+                            setIsFullscreenOpen(true)
+                          }}
+                          className="w-10 h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                          aria-label="Открыть в полноэкранном режиме"
+                        >
+                          <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                          </svg>
+                        </button>
                       </div>
                     )}
                   </>
@@ -987,6 +1010,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         alt={`${car?.make} ${car?.model} - фото ${index + 1}`}
                         isSelected={index === currentImageIndex}
                         onClick={() => setCurrentImageIndex(index)}
+                        onDoubleClick={() => {
+                          setFullscreenImageIndex(index)
+                          setIsFullscreenOpen(true)
+                        }}
                         index={index}
                       />
                     ))}
@@ -1960,6 +1987,136 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 Отправить заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}
               </StatusButton>
             </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Полноэкранная галерея */}
+        <Dialog open={isFullscreenOpen} onOpenChange={setIsFullscreenOpen}>
+          <DialogContent className="max-w-full h-full p-0 bg-black/95 border-none">
+            {car?.imageUrls && car.imageUrls.length > 0 && (
+              <div className="relative w-full h-full flex items-center justify-center">
+                {/* Кнопка закрытия */}
+                <button
+                  onClick={() => setIsFullscreenOpen(false)}
+                  className="absolute top-4 right-4 z-50 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                  aria-label="Закрыть"
+                >
+                  <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
+                {/* Основное изображение */}
+                <div
+                  className="relative w-full h-full flex items-center justify-center select-none"
+                  onTouchStart={(e) => {
+                    setTouchEnd(null)
+                    setTouchStart(e.targetTouches[0].clientX)
+                  }}
+                  onTouchMove={(e) => {
+                    if (!touchStart) return
+                    setTouchEnd(e.targetTouches[0].clientX)
+                  }}
+                  onTouchEnd={() => {
+                    if (!touchStart || !touchEnd) return
+                    const distance = touchStart - touchEnd
+                    const isLeftSwipe = distance > 50
+                    const isRightSwipe = distance < -50
+
+                    if (isLeftSwipe && car.imageUrls.length > 1) {
+                      setFullscreenImageIndex((prev) => (prev + 1) % car.imageUrls.length)
+                    }
+                    if (isRightSwipe && car.imageUrls.length > 1) {
+                      setFullscreenImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length)
+                    }
+                  }}
+                >
+                  <Image
+                    src={getCachedImageUrl(car.imageUrls[fullscreenImageIndex])}
+                    alt={`${car?.make} ${car?.model} - фото ${fullscreenImageIndex + 1}`}
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+
+                {/* Навигация */}
+                {car.imageUrls.length > 1 && (
+                  <>
+                    {/* Кнопка предыдущего изображения */}
+                    <button
+                      onClick={() => setFullscreenImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length)}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 z-40"
+                      aria-label="Предыдущее фото"
+                    >
+                      <ChevronLeft className="h-8 w-8 text-white" />
+                    </button>
+
+                    {/* Кнопка следующего изображения */}
+                    <button
+                      onClick={() => setFullscreenImageIndex((prev) => (prev + 1) % car.imageUrls.length)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 z-40"
+                      aria-label="Следующее фото"
+                    >
+                      <ChevronRight className="h-8 w-8 text-white" />
+                    </button>
+                  </>
+                )}
+
+                {/* Счетчик изображений */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-40">
+                  <div className="bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
+                    {fullscreenImageIndex + 1} из {car.imageUrls.length}
+                  </div>
+                </div>
+
+                {/* Миниатюры для десктопа */}
+                {car.imageUrls.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex space-x-2 z-40 max-w-4xl overflow-x-auto scrollbar-hide pb-1">
+                    <div className="flex space-x-2 px-2">
+                      {car.imageUrls.map((url, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setFullscreenImageIndex(index)}
+                          className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                            index === fullscreenImageIndex
+                              ? 'border-white shadow-lg scale-105'
+                              : 'border-white/30 hover:border-white/60 hover:scale-102'
+                          }`}
+                        >
+                          <Image
+                            src={getCachedImageUrl(url)}
+                            alt={`${car?.make} ${car?.model} - миниатюра ${index + 1}`}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Индикаторы точек для мобильных */}
+                {car.imageUrls.length > 1 && (
+                  <div className="absolute bottom-20 left-1/2 -translate-x-1/2 md:hidden z-40">
+                    <div className="flex space-x-2">
+                      {car.imageUrls.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setFullscreenImageIndex(index)}
+                          className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            index === fullscreenImageIndex
+                              ? 'bg-white shadow-lg scale-125'
+                              : 'bg-white/50 hover:bg-white/75'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
