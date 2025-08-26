@@ -24,6 +24,9 @@ export async function POST(request: NextRequest) {
     } = body
 
     // Получаем переменные окружения для Telegram
+    // На Vercel должны быть настроены:
+    // TELEGRAM_BOT_TOKEN = 7969988440:AAEqIdBJZVZJ-pco6otAJAkSv2XiTEsi1Z4
+    // TELEGRAM_CHAT_ID = -1002721193947
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
