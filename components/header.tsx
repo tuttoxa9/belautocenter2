@@ -65,16 +65,21 @@ export default function Header() {
 
   const handleCallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Сохраняем в Firebase (независимо от результата)
     try {
-      // Сохраняем в Firebase
       await addDoc(collection(db, "leads"), {
         ...formData,
         type: "callback",
         status: "new",
         createdAt: new Date(),
       })
+    } catch (error) {
+      console.warn('Firebase save failed:', error)
+    }
 
-      // Отправляем уведомление в Telegram
+    // Отправляем уведомление в Telegram (всегда выполняется)
+    try {
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {

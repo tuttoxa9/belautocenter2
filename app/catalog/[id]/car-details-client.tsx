@@ -577,20 +577,24 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await bookingButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK
-      const { collection, addDoc } = await import('firebase/firestore')
-      const { db } = await import('@/lib/firebase')
+      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      try {
+        const { collection, addDoc } = await import('firebase/firestore')
+        const { db } = await import('@/lib/firebase')
 
-      await addDoc(collection(db, "leads"), {
-        ...bookingForm,
-        carId: carId,
-        carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
-        type: "booking",
-        status: "new",
-        createdAt: new Date(),
-      })
+        await addDoc(collection(db, "leads"), {
+          ...bookingForm,
+          carId: carId,
+          carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
+          type: "booking",
+          status: "new",
+          createdAt: new Date(),
+        })
+      } catch (error) {
+        console.warn('Firebase save failed:', error)
+      }
 
-      // Отправляем уведомление в Telegram
+      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {
@@ -618,20 +622,24 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await callbackButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK
-      const { collection, addDoc } = await import('firebase/firestore')
-      const { db } = await import('@/lib/firebase')
+      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      try {
+        const { collection, addDoc } = await import('firebase/firestore')
+        const { db } = await import('@/lib/firebase')
 
-      await addDoc(collection(db, "leads"), {
-        ...callbackForm,
-        carId: carId,
-        carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-        type: "callback",
-        status: "new",
-        createdAt: new Date(),
-      })
+        await addDoc(collection(db, "leads"), {
+          ...callbackForm,
+          carId: carId,
+          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
+          type: "callback",
+          status: "new",
+          createdAt: new Date(),
+        })
+      } catch (error) {
+        console.warn('Firebase save failed:', error)
+      }
 
-      // Отправляем уведомление в Telegram
+      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {
@@ -658,27 +666,31 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await creditButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK
-      const { collection, addDoc } = await import('firebase/firestore')
-      const { db } = await import('@/lib/firebase')
+      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      try {
+        const { collection, addDoc } = await import('firebase/firestore')
+        const { db } = await import('@/lib/firebase')
 
-      await addDoc(collection(db, "leads"), {
-        ...creditForm,
-        carId: carId,
-        carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-        type: financeType,
-        status: "new",
-        createdAt: new Date(),
-        creditAmount: getCurrentCreditAmount(),
-        downPayment: getCurrentDownPayment(),
-        loanTerm: loanTerm[0],
-        selectedBank: selectedBank ? selectedBank.name : "",
-        monthlyPayment: calculateMonthlyPayment(),
-        currency: isBelarusianRubles ? "BYN" : "USD",
-        financeType: financeType
-      })
+        await addDoc(collection(db, "leads"), {
+          ...creditForm,
+          carId: carId,
+          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
+          type: financeType,
+          status: "new",
+          createdAt: new Date(),
+          creditAmount: getCurrentCreditAmount(),
+          downPayment: getCurrentDownPayment(),
+          loanTerm: loanTerm[0],
+          selectedBank: selectedBank ? selectedBank.name : "",
+          monthlyPayment: calculateMonthlyPayment(),
+          currency: isBelarusianRubles ? "BYN" : "USD",
+          financeType: financeType
+        })
+      } catch (error) {
+        console.warn('Firebase save failed:', error)
+      }
 
-      // Отправляем уведомление в Telegram
+      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {

@@ -256,13 +256,19 @@ export default function CreditPage() {
     e.preventDefault()
 
     await submitButtonState.execute(async () => {
-      await addDoc(collection(db, "leads"), {
-        ...creditForm,
-        type: "credit_request",
-        status: "new",
-        createdAt: new Date(),
-      })
+      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      try {
+        await addDoc(collection(db, "leads"), {
+          ...creditForm,
+          type: "credit_request",
+          status: "new",
+          createdAt: new Date(),
+        })
+      } catch (error) {
+        console.warn('Firebase save failed:', error)
+      }
 
+      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {

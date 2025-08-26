@@ -244,17 +244,23 @@ export default function LeasingPage() {
     e.preventDefault()
 
     await submitButtonState.execute(async () => {
-      await addDoc(collection(db, "leads"), {
-        ...leasingForm,
-        type: "leasing_request",
-        status: "new",
-        createdAt: new Date(),
-      })
+      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      try {
+        await addDoc(collection(db, "leads"), {
+          ...leasingForm,
+          type: "leasing_request",
+          status: "new",
+          createdAt: new Date(),
+        })
+      } catch (error) {
+        console.warn('Firebase save failed:', error)
+      }
 
       const clientName = leasingForm.clientType === "individual"
         ? leasingForm.fullName
         : leasingForm.contactPerson;
 
+      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {

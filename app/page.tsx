@@ -143,15 +143,19 @@ export default function HomePage() {
     e.preventDefault()
 
     await contactButtonState.execute(async () => {
-      // Сохраняем в Firebase
-      await addDoc(collection(db, "leads"), {
-        ...contactForm,
-        type: "car_selection",
-        status: "new",
-        createdAt: new Date(),
-      })
+      // Сохраняем в Firebase (независимо от результата)
+      try {
+        await addDoc(collection(db, "leads"), {
+          ...contactForm,
+          type: "car_selection",
+          status: "new",
+          createdAt: new Date(),
+        })
+      } catch (error) {
+        console.warn('Firebase save failed:', error)
+      }
 
-      // Отправляем уведомление в Telegram
+      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {
