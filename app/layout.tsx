@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'google-site-verification',
-    yandex: 'yandex-verification',
+    yandex: 'a9085911ec7f5c05',
   },
   alternates: {
     canonical: 'https://belautocenter.by',
