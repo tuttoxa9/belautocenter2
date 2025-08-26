@@ -7,7 +7,7 @@ import { Home, Car, CreditCard, Phone } from "lucide-react"
 const dockItems = [
   { name: "Главная", href: "/", icon: Home },
   { name: "Каталог", href: "/catalog", icon: Car },
-  { name: "Лизинг", href: "/leasing", icon: CreditCard },
+  { name: "Кредит", href: "/credit", icon: CreditCard },
   { name: "Контакты", href: "/contacts", icon: Phone },
 ]
 
