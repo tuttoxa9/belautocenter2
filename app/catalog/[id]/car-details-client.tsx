@@ -210,8 +210,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [leasingTerm, setLeasingTerm] = useState([36])
   const [residualValue, setResidualValue] = useState([20])
   const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null)
-  // Состояние для валюты
-  const [isBelarusianRubles, setIsBelarusianRubles] = useState(false)
+  // Состояние для валюты (по умолчанию - белорусские рубли)
+  const [isBelarusianRubles, setIsBelarusianRubles] = useState(true)
   // Touch events для свайпов на мобильных устройствах
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
@@ -1165,7 +1165,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
                         ) : (
                           <div className="text-sm sm:text-lg font-bold text-slate-900">
-                            {car?.price ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
+                            {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
                           </div>
                         )}
                       </div>
@@ -1175,7 +1175,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
                         ) : (
                           <div className="text-sm sm:text-lg font-bold text-slate-900">
-                            {car?.price ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес
+                            {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес
                           </div>
                         )}
                       </div>
