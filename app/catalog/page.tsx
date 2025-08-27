@@ -63,17 +63,19 @@ async function loadCarsFromFirestore(): Promise<Car[]> {
       return []
     }
 
-    return data.documents.map((doc: any) => {
-      const id = doc.name.split('/').pop() || ''
-      const fields: Record<string, any> = {}
+    return data.documents
+      .map((doc: any) => {
+        const id = doc.name.split('/').pop() || ''
+        const fields: Record<string, any> = {}
 
-      // Преобразуем Firestore поля в обычные объекты
-      for (const [key, value] of Object.entries(doc.fields || {})) {
-        fields[key] = convertFieldValue(value)
-      }
+        // Преобразуем Firestore поля в обычные объекты
+        for (const [key, value] of Object.entries(doc.fields || {})) {
+          fields[key] = convertFieldValue(value)
+        }
 
-      return { id, ...fields }
-    })
+        return { id, ...fields }
+      })
+      .filter((car: any) => car.isAvailable !== false) // Исключаем проданные автомобили из каталога
   } catch (error) {
     console.error('Error loading cars from Firestore:', error)
     return []

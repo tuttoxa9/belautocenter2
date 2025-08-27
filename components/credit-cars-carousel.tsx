@@ -59,10 +59,11 @@ export function CarsCarousel() {
         }))
         .filter((car: CarData) => {
           const hasPrice = car && car.price && car.price > 0
+          const isAvailable = car.isAvailable !== false // Исключаем проданные автомобили
           if (!hasPrice && car) {
             console.log('Карусель: Автомобиль без цены:', car.id, car.make, car.model, 'price:', car.price)
           }
-          return hasPrice
+          return hasPrice && isAvailable
         })
         .slice(0, 10)
 
