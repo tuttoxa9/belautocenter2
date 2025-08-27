@@ -882,15 +882,27 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 ) : (
                   <>
                     <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 mb-1 leading-tight">
-                      {car?.price ? formatPrice(car.price) : 'Цена по запросу'}
+                      {car?.price ? new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                        minimumFractionDigits: 0,
+                      }).format(car.price) : 'Цена по запросу'}
                     </div>
                     {usdBynRate && car?.price && (
                       <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600">
-                        ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
+                        ≈ {new Intl.NumberFormat("ru-BY", {
+                          style: "currency",
+                          currency: "BYN",
+                          minimumFractionDigits: 0,
+                        }).format(car.price * usdBynRate)}
                       </div>
                     )}
                     <div className="text-xs sm:text-sm text-slate-500 mt-1">
-                      от {car?.price ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
+                      от {car?.price ? new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                        minimumFractionDigits: 0,
+                      }).format(Math.round(car.price * 0.8 / 60)) : '0'}/мес
                     </div>
                   </>
                 )}
