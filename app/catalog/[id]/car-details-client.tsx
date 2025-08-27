@@ -787,7 +787,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 max-w-6xl">
+      <div className="container mx-auto px-1 sm:px-2 lg:px-4 py-4 sm:py-6 max-w-7xl">
         {/* Хлебные крошки */}
         <nav className="mb-4 sm:mb-6">
           <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500">
@@ -914,9 +914,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
 
             {/* Левая колонка: Галерея */}
-            <div className="lg:col-span-7 lg:border-r border-slate-200/50">
+            <div className="lg:col-span-6 lg:border-r border-slate-200/50">
               <div
-                className="relative aspect-[4/3] w-full select-none bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-2xl mx-2 sm:mx-4 my-2 sm:my-4 overflow-hidden"
+                className="relative aspect-[4/3] w-full select-none bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden"
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
@@ -1093,7 +1093,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
             </div>
 
             {/* Правая колонка: Характеристики и действия */}
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-6">
               <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
 
                 {/* Основные характеристики - компактный стиль */}
