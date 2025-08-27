@@ -23,6 +23,9 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(currentImage || null)
   const [previews, setPreviews] = useState<string[]>(currentImages || [])
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const [editingValue, setEditingValue] = useState<string>("")
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -138,6 +141,47 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
     }
   }
 
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      moveImage(draggedIndex, dropIndex)
+    }
+    setDraggedIndex(null)
+  }
+
+  const handleNumberClick = (index: number) => {
+    setEditingIndex(index)
+    setEditingValue((index + 1).toString())
+  }
+
+  const handleNumberSubmit = (currentIndex: number) => {
+    const newPosition = parseInt(editingValue) - 1
+    if (newPosition >= 0 && newPosition < previews.length && newPosition !== currentIndex) {
+      moveImage(currentIndex, newPosition)
+    }
+    setEditingIndex(null)
+    setEditingValue("")
+  }
+
+  const handleNumberKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
+    if (e.key === 'Enter') {
+      handleNumberSubmit(currentIndex)
+    } else if (e.key === 'Escape') {
+      setEditingIndex(null)
+      setEditingValue("")
+    }
+  }
+
   return (
     <div className={className}>
       {multiple ? (
@@ -170,7 +214,10 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           {previews.length > 0 && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <p className="text-sm font-medium">Загруженные изображения ({previews.length})</p>
+                <div>
+                  <p className="text-sm font-medium">Загруженные изображения ({previews.length})</p>
+                  <p className="text-xs text-gray-500">Перетащите для изменения порядка или кликните на номер</p>
+                </div>
                 <Button
                   size="sm"
                   variant="outline"
@@ -182,15 +229,42 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {previews.map((imageUrl, index) => (
-                  <Card key={index} className="relative">
+                  <Card
+                    key={index}
+                    className={`relative cursor-move transition-transform ${
+                      draggedIndex === index ? 'opacity-50 scale-95' : ''
+                    }`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
                     <img
                       src={getCachedImageUrl(imageUrl || "/placeholder.svg")}
                       alt={`Preview ${index + 1}`}
                       className="w-full h-32 object-cover rounded-lg"
                     />
                     {/* Счетчик порядка фотографии */}
-                    <div className="absolute top-1 left-1 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                      {index + 1}
+                    <div
+                      className="absolute top-1 left-1 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full cursor-pointer hover:bg-blue-700 transition-colors"
+                      onClick={() => handleNumberClick(index)}
+                      title="Нажмите для изменения позиции"
+                    >
+                      {editingIndex === index ? (
+                        <input
+                          type="number"
+                          value={editingValue}
+                          onChange={(e) => setEditingValue(e.target.value)}
+                          onBlur={() => handleNumberSubmit(index)}
+                          onKeyDown={(e) => handleNumberKeyDown(e, index)}
+                          className="w-8 bg-transparent text-white text-center text-xs outline-none"
+                          min="1"
+                          max={previews.length}
+                          autoFocus
+                        />
+                      ) : (
+                        index + 1
+                      )}
                     </div>
 
                     {/* Кнопки управления */}
