@@ -916,7 +916,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
             {/* Левая колонка: Галерея */}
             <div className="lg:col-span-7 lg:border-r border-slate-200/50">
               <div
-                className="relative aspect-[4/3] w-full select-none bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-2xl mx-4 my-4 overflow-hidden"
+                className="relative aspect-[4/3] w-full select-none bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-2xl mx-2 sm:mx-4 my-2 sm:my-4 overflow-hidden"
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
@@ -954,22 +954,22 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <>
                         <button
                           onClick={prevImage}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
                         >
-                          <ChevronLeft className="h-6 w-6 text-slate-700" />
+                          <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 text-slate-700" />
                         </button>
                         <button
                           onClick={nextImage}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
                         >
-                          <ChevronRight className="h-6 w-6 text-slate-700" />
+                          <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 text-slate-700" />
                         </button>
                       </>
                     )}
 
                     {/* Индикатор точек */}
                     {car?.imageUrls && car.imageUrls.length > 1 && (
-                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+                      <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2">
                         <div className="flex space-x-2">
                           {car.imageUrls.map((_, index) => (
                             <button
@@ -988,7 +988,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                     {/* Счетчик фотографий и кнопка полноэкранного режима */}
                     {car?.imageUrls && car.imageUrls.length >= 1 && (
-                      <div className="absolute top-4 right-4 flex items-center space-x-2">
+                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center space-x-1 sm:space-x-2">
                         {car.imageUrls.length > 1 && (
                           <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
                             {currentImageIndex + 1}/{car.imageUrls.length}
@@ -999,10 +999,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             setFullscreenImageIndex(currentImageIndex)
                             setIsFullscreenOpen(true)
                           }}
-                          className="w-10 h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                          className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
                           aria-label="Открыть в полноэкранном режиме"
                         >
-                          <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                           </svg>
                         </button>
@@ -1025,7 +1025,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 </div>
               ) : car?.imageUrls && car.imageUrls.length > 1 && (
-                <div className="p-4 bg-slate-50/50 border-b lg:border-b-0 border-slate-200/50">
+                <div className="p-2 sm:p-4 bg-slate-50/50 border-b lg:border-b-0 border-slate-200/50">
                   <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-1">
                     {car.imageUrls.map((url, index) => (
                       <LazyThumbnail
