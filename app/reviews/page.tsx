@@ -499,7 +499,7 @@ export default function ReviewsPage() {
 
         {/* Модальное окно для полного отзыва */}
         <Dialog open={!!selectedReview} onOpenChange={(open) => !open && setSelectedReview(null)}>
-          <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-hidden p-0 bg-white">
+          <DialogContent className="max-w-6xl w-full max-h-[70vh] overflow-hidden p-0 bg-white">
             {selectedReview && (
               <div className="flex flex-col lg:flex-row h-full">
                 {/* Левая часть - изображение */}
