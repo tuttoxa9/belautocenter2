@@ -4,7 +4,15 @@ import { useState, useEffect } from "react"
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, User, MessageSquare, Calendar, ArrowRight, Filter, ChevronDown } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger
+} from "@/components/ui/dialog"
+import { Star, User, MessageSquare, Calendar, ArrowRight, Filter, ChevronDown, X } from "lucide-react"
 import Link from "next/link"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
@@ -23,7 +31,7 @@ export default function ReviewsPage() {
   const [loading, setLoading] = useState(true)
   const [filteredReviews, setFilteredReviews] = useState<Review[]>([])
   const [filterRating, setFilterRating] = useState<number | null>(null)
-  const [expandedReview, setExpandedReview] = useState<string | null>(null)
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
   console.log("ReviewsPage состояние:", {
@@ -126,9 +134,7 @@ export default function ReviewsPage() {
     return distribution
   }
 
-  const toggleExpandReview = (reviewId: string) => {
-    setExpandedReview(expandedReview === reviewId ? null : reviewId)
-  }
+
 
   if (loading) {
     return (
@@ -364,7 +370,6 @@ export default function ReviewsPage() {
               <div className="space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6 lg:space-y-0">
                 {filteredReviews.map((review) => {
                   console.log("Рендерим отзыв:", review.id, review.name, review.status)
-                  const isExpanded = expandedReview === review.id
                   return (
                   <div key={review.id} className="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200/50 hover:shadow-md transition-all duration-300">
                     {/* Review Image - компактнее для мобилки */}
@@ -401,23 +406,19 @@ export default function ReviewsPage() {
                       </div>
                     )}
 
-                    {/* Review Text - улучшенное для мобилки */}
+                    {/* Review Text - с модальным окном */}
                     <div className="mb-3 sm:mb-4">
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => toggleExpandReview(review.id)}
-                      >
-                        <p className={`text-slate-700 text-sm sm:text-base leading-relaxed transition-all duration-200 ${
-                          isExpanded ? 'line-clamp-none' : 'line-clamp-3 sm:line-clamp-4'
-                        }`}>
-                          {review.text}
-                        </p>
-                        {review.text.length > 100 && (
-                          <button className="text-xs sm:text-sm text-slate-500 hover:text-slate-700 mt-2 transition-colors font-medium">
-                            {isExpanded ? 'Скрыть' : 'Читать полностью'}
-                          </button>
-                        )}
-                      </div>
+                      <p className="text-slate-700 text-sm sm:text-base leading-relaxed line-clamp-3 sm:line-clamp-4">
+                        {review.text}
+                      </p>
+                      {review.text.length > 100 && (
+                        <button
+                          onClick={() => setSelectedReview(review)}
+                          className="text-xs sm:text-sm text-slate-500 hover:text-slate-700 mt-2 transition-colors font-medium"
+                        >
+                          Читать полностью
+                        </button>
+                      )}
                     </div>
 
                     {/* Date - компактнее */}
@@ -495,6 +496,84 @@ export default function ReviewsPage() {
             </div>
           )}
         </div>
+
+        {/* Модальное окно для полного отзыва */}
+        <Dialog open={!!selectedReview} onOpenChange={(open) => !open && setSelectedReview(null)}>
+          <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-hidden p-0 bg-white">
+            {selectedReview && (
+              <div className="flex flex-col lg:flex-row h-full">
+                {/* Левая часть - изображение */}
+                <div className="w-full lg:w-1/2 bg-slate-50 flex items-center justify-center p-6 lg:p-8">
+                  {selectedReview.imageUrl ? (
+                    <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl overflow-hidden bg-white shadow-lg">
+                      <img
+                        src={getCachedImageUrl(selectedReview.imageUrl)}
+                        alt="Фото отзыва"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                      <div className="text-center space-y-3">
+                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
+                          <User className="h-8 w-8 text-slate-500" />
+                        </div>
+                        <p className="text-slate-600 font-medium">{selectedReview.name}</p>
+                        <div className="flex justify-center">
+                          {renderStars(selectedReview.rating, "md")}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Правая часть - информация и текст */}
+                <div className="w-full lg:w-1/2 p-6 lg:p-8 flex flex-col">
+                  {/* Заголовок с кнопкой закрытия */}
+                  <div className="flex items-start justify-between mb-6">
+                    <div>
+                      <DialogTitle className="text-xl lg:text-2xl font-bold text-slate-900 mb-2">
+                        Отзыв от {selectedReview.name}
+                      </DialogTitle>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex">{renderStars(selectedReview.rating, "md")}</div>
+                        <span className="text-sm text-slate-500">{selectedReview.rating}/5</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Модель автомобиля */}
+                  {selectedReview.carModel && (
+                    <div className="bg-slate-50 rounded-xl px-4 py-3 mb-6 border border-slate-200/50">
+                      <p className="text-sm text-slate-600">
+                        <span className="font-semibold text-slate-800">Автомобиль:</span> {selectedReview.carModel}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Полный текст отзыва */}
+                  <div className="flex-1 overflow-y-auto">
+                    <p className="text-slate-700 text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
+                      {selectedReview.text}
+                    </p>
+                  </div>
+
+                  {/* Дата */}
+                  <div className="flex items-center space-x-2 text-sm text-slate-500 pt-6 border-t border-slate-200/50 mt-6">
+                    <Calendar className="h-4 w-4 flex-shrink-0" />
+                    <span>
+                      Опубликовано {selectedReview.createdAt.toLocaleDateString("ru-RU", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
