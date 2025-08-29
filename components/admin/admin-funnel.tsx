@@ -148,9 +148,9 @@ export default function AdminFunnel() {
             <div>
               <Label>Главное изображение</Label>
               <ImageUpload
-                value={settings.heroImage}
-                onChange={(url) => handleInputChange('heroImage', url)}
-                bucket="funnel-images"
+                currentImage={settings.heroImage}
+                onUpload={(url) => handleInputChange('heroImage', url)}
+                path="funnel-images"
               />
             </div>
           </CardContent>

@@ -8,6 +8,7 @@ import { StatusButton } from "@/components/ui/status-button"
 import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, RotateCcw, TrendingUp } from "lucide-react"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { getCachedImageUrl } from "@/lib/image-cache"
 
 interface SaleModalProps {
   isOpen: boolean
@@ -196,8 +197,16 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
           {/* Hero Image and Text */}
           {currentStep === 1 && (
             <div className="text-center mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <Car className="h-12 w-12 text-white" />
+              <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center overflow-hidden">
+                {funnelSettings.heroImage ? (
+                  <img
+                    src={getCachedImageUrl(funnelSettings.heroImage)}
+                    alt="Hero"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Car className="h-12 w-12 text-white" />
+                )}
               </div>
               <h3 className="text-xl font-bold mb-2">{funnelSettings.heroTitle}</h3>
               <p className="text-muted-foreground text-sm">
