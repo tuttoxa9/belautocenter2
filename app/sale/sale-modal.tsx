@@ -136,7 +136,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+    <div className="fixed inset-0 z-[9999] flex items-end justify-center sm:items-center">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50"
@@ -145,10 +145,10 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
 
       {/* Modal */}
       <div className={`
-        relative bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md mx-4 mb-0 sm:mb-4
+        relative bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md mx-4 mb-16 sm:mb-4
         transform transition-all duration-300 ease-out
         ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
-        max-h-[90vh] overflow-hidden
+        max-h-[85vh] flex flex-col
       `}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
@@ -192,20 +192,12 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
+        <div className="flex-1 p-6 overflow-y-auto">
           {/* Hero Image and Text */}
           {currentStep === 1 && (
             <div className="text-center mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-white to-gray-100 rounded-full flex items-center justify-center">
-                {funnelSettings.heroImage ? (
-                  <img
-                    src={funnelSettings.heroImage}
-                    alt="Hero"
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                ) : (
-                  <Car className="h-12 w-12 text-primary" />
-                )}
+              <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <Car className="h-12 w-12 text-white" />
               </div>
               <h3 className="text-xl font-bold mb-2">{funnelSettings.heroTitle}</h3>
               <p className="text-muted-foreground text-sm">
@@ -312,45 +304,45 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
               </div>
 
               {/* Summary */}
-              <div className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 rounded-xl p-6 space-y-4 border border-slate-600">
-                <h4 className="font-semibold text-white text-lg mb-4">Ваши данные:</h4>
+              <div className="bg-white rounded-xl p-6 space-y-4">
+                <h4 className="font-semibold text-gray-900 text-lg mb-4">Ваши данные</h4>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                    <Car className="h-4 w-4 text-white" />
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                    <Car className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-slate-200 text-sm">{formData.carMake} {formData.carModel}</span>
+                  <span className="text-gray-700 text-sm font-medium">{formData.carMake} {formData.carModel}</span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
-                    <DollarSign className="h-4 w-4 text-white" />
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <DollarSign className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-slate-200 text-sm">{formData.estimatedPrice}</span>
+                  <span className="text-gray-700 text-sm font-medium">{formData.estimatedPrice}</span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0">
-                    <Phone className="h-4 w-4 text-white" />
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                    <Phone className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-slate-200 text-sm">{formData.phone}</span>
+                  <span className="text-gray-700 text-sm font-medium">{formData.phone}</span>
                 </div>
 
                 {formData.isInterestedInExchange && (
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
-                      <RotateCcw className="h-4 w-4 text-white" />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                      <RotateCcw className="h-5 w-5 text-white" />
                     </div>
-                    <span className="text-slate-200 text-sm">Интересует обмен</span>
+                    <span className="text-gray-700 text-sm font-medium">Интересует обмен</span>
                   </div>
                 )}
 
                 {formData.isInterestedInTradeIn && (
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                      <TrendingUp className="h-4 w-4 text-white" />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="h-5 w-5 text-white" />
                     </div>
-                    <span className="text-slate-200 text-sm">Интересует trade-in</span>
+                    <span className="text-gray-700 text-sm font-medium">Интересует trade-in</span>
                   </div>
                 )}
               </div>
@@ -399,7 +391,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t bg-gray-50">
+        <div className="flex-shrink-0 p-6 border-t bg-gray-50">
           {currentStep < 3 ? (
             <Button
               onClick={handleNextStep}
