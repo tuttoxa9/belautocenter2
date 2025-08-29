@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { StatusButton } from "@/components/ui/status-button"
-import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram } from "lucide-react"
+import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, RotateCcw, TrendingUp } from "lucide-react"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 
@@ -312,13 +312,47 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
               </div>
 
               {/* Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                <h4 className="font-medium">Ваши данные:</h4>
-                <p className="text-sm">🚗 {formData.carMake} {formData.carModel}</p>
-                <p className="text-sm">💰 {formData.estimatedPrice}</p>
-                <p className="text-sm">📞 {formData.phone}</p>
-                {formData.isInterestedInExchange && <p className="text-sm">🔄 Интересует обмен</p>}
-                {formData.isInterestedInTradeIn && <p className="text-sm">📈 Интересует trade-in</p>}
+              <div className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 rounded-xl p-6 space-y-4 border border-slate-600">
+                <h4 className="font-semibold text-white text-lg mb-4">Ваши данные:</h4>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                    <Car className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-slate-200 text-sm">{formData.carMake} {formData.carModel}</span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <DollarSign className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-slate-200 text-sm">{formData.estimatedPrice}</span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                    <Phone className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-slate-200 text-sm">{formData.phone}</span>
+                </div>
+
+                {formData.isInterestedInExchange && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                      <RotateCcw className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 text-sm">Интересует обмен</span>
+                  </div>
+                )}
+
+                {formData.isInterestedInTradeIn && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 text-sm">Интересует trade-in</span>
+                  </div>
+                )}
               </div>
 
               {/* Alternative contact methods */}
