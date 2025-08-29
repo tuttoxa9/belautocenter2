@@ -192,28 +192,31 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-6 overflow-y-auto">
-          {/* Hero Image and Text */}
-          {currentStep === 1 && (
-            <div className="text-center mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center overflow-hidden">
-                {funnelSettings.heroImage ? (
-                  <img
-                    src={getCachedImageUrl(funnelSettings.heroImage)}
-                    alt="Hero"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <Car className="h-12 w-12 text-white" />
-                )}
+        {/* Hero Image Section - верхняя часть модального окна */}
+        {currentStep === 1 && (
+          <div className="relative h-40 bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden">
+            {funnelSettings.heroImage ? (
+              <img
+                src={getCachedImageUrl(funnelSettings.heroImage)}
+                alt="Hero"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <Car className="h-16 w-16 text-white" />
               </div>
-              <h3 className="text-xl font-bold mb-2">{funnelSettings.heroTitle}</h3>
-              <p className="text-muted-foreground text-sm">
-                {funnelSettings.heroSubtitle}
+            )}
+            <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center p-6">
+              <h3 className="text-xl font-bold mb-2 text-white">Мы продадим ваш автомобиль быстро!</h3>
+              <p className="text-white text-sm opacity-90">
+                В БелАвто Центре доступна комиссионная продажа!
               </p>
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="flex-1 p-6 overflow-y-auto">
 
           {/* Step 1: Car Info */}
           {currentStep === 1 && (

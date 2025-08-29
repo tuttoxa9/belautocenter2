@@ -15,11 +15,11 @@ export default function SalePage() {
   const [homePageLoaded, setHomePageLoaded] = useState(false)
 
   useEffect(() => {
-    // Показываем лоадер на 1 секунду, затем модальное окно
+    // Показываем лоадер на 0.7 секунды, затем модальное окно
     const timer = setTimeout(() => {
       setIsLoading(false)
       setShowModal(true)
-    }, 1000)
+    }, 700)
 
     return () => clearTimeout(timer)
   }, [])
@@ -33,7 +33,7 @@ export default function SalePage() {
     <div className="min-h-screen relative">
       {/* Затемненный overlay когда модальное окно открыто */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" />
+        <div className="fixed inset-0 bg-black/30 z-40" />
       )}
 
       {/* Полноценная главная страница в фоне */}
@@ -56,22 +56,10 @@ export default function SalePage() {
         </React.Suspense>
       </div>
 
-      {/* Красивый лоадер */}
+      {/* Простой лоадер */}
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-sm">
-          <div className="text-center">
-            <div className="relative mb-6">
-              <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center animate-pulse">
-                <Car className="h-10 w-10 text-white" />
-              </div>
-              <div className="absolute inset-0 w-20 h-20 mx-auto rounded-full border-4 border-blue-200 animate-ping"></div>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Загружаем предложение...</h3>
-            <p className="text-gray-600">Подождите несколько секунд</p>
-            <div className="mt-4 w-40 mx-auto h-1 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-pulse" style={{width: '70%'}}></div>
-            </div>
-          </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
