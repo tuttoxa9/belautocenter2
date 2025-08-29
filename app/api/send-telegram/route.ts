@@ -127,6 +127,25 @@ export async function POST(request: NextRequest) {
         }
         break
 
+      case 'sale_funnel':
+        message = `💰 <b>Новая заявка на продажу автомобиля</b>\n\n📞 <b>Телефон:</b> ${phone}`
+        if (carMake && carModel) {
+          message += `\n🚗 <b>Автомобиль:</b> ${carMake} ${carModel}`
+        }
+        if (body.estimatedPrice) {
+          message += `\n💵 <b>Оценочная стоимость:</b> ${body.estimatedPrice}`
+        }
+        if (body.isInterestedInExchange) {
+          message += `\n🔄 <b>Интересует обмен:</b> Да`
+        }
+        if (body.isInterestedInTradeIn) {
+          message += `\n📈 <b>Интересует trade-in:</b> Да`
+        }
+        if (userMessage) {
+          message += `\n📝 <b>Дополнительно:</b> ${userMessage}`
+        }
+        break
+
       default:
         message = `📝 <b>Новая заявка</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}`
         if (email) {

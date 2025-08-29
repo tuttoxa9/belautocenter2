@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LogOut, Settings, Car, FileText, MessageSquare, Users, Building, CreditCard, Star, Shield, Trash2 } from "lucide-react"
+import { LogOut, Settings, Car, FileText, MessageSquare, Users, Building, CreditCard, Star, Shield, Trash2, Target } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import AdminSettings from "@/components/admin/admin-settings"
@@ -21,6 +21,7 @@ import AdminContacts from "@/components/admin/admin-contacts"
 import AdminReviews from "@/components/admin/admin-reviews"
 import AdminPrivacy from "@/components/admin/admin-privacy"
 import AdminLeasing from "@/components/admin/admin-leasing"
+import AdminFunnel from "@/components/admin/admin-funnel"
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -280,13 +281,20 @@ export default function AdminPage() {
                   <Building className="h-5 w-5 mb-1" />
                   <span>Лизинг</span>
                 </TabsTrigger>
+                <TabsTrigger
+                  value="funnel"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Target className="h-5 w-5 mb-1" />
+                  <span>Воронка</span>
+                </TabsTrigger>
               </TabsList>
             </div>
           </div>
 
           {/* Десктопная версия табов */}
           <div className="hidden md:block">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 bg-gray-100 border-gray-200">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-11 bg-gray-100 border-gray-200">
               <TabsTrigger
                 value="settings"
                 className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
@@ -357,6 +365,13 @@ export default function AdminPage() {
                 <Building className="h-4 w-4" />
                 <span className="hidden sm:inline">Лизинг</span>
               </TabsTrigger>
+              <TabsTrigger
+                value="funnel"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Target className="h-4 w-4" />
+                <span className="hidden sm:inline">Воронка</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -389,6 +404,9 @@ export default function AdminPage() {
           </TabsContent>
           <TabsContent value="leasing" className="mt-6">
             <AdminLeasing />
+          </TabsContent>
+          <TabsContent value="funnel" className="mt-6">
+            <AdminFunnel />
           </TabsContent>
         </Tabs>
       </div>
