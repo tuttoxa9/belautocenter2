@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, Suspense } from "react"
 import Link from "next/link"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { StatusButton } from "@/components/ui/status-button"
@@ -18,6 +18,33 @@ import { CheckCircle, Check } from "lucide-react"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import SaleModal from "./sale/sale-modal"
+
+// Компонент для обработки модального окна sale с useSearchParams
+function SaleModalHandler() {
+  const [showSaleModal, setShowSaleModal] = useState(false)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const saleParam = searchParams.get('sale')
+    if (saleParam === 'true') {
+      setShowSaleModal(true)
+      // Убираем параметр из URL без перезагрузки страницы
+      const newUrl = window.location.pathname
+      window.history.replaceState({}, '', newUrl)
+    }
+  }, [searchParams])
+
+  const handleSaleModalClose = () => {
+    setShowSaleModal(false)
+  }
+
+  return (
+    <SaleModal
+      isOpen={showSaleModal}
+      onClose={handleSaleModalClose}
+    />
+  )
+}
 
 interface HomepageSettings {
   heroTitle: string
@@ -45,9 +72,6 @@ export default function HomePage() {
   const contactButtonState = useButtonState()
   const { showSuccess } = useNotification()
   const [isMounted, setIsMounted] = useState(true)
-  const [showSaleModal, setShowSaleModal] = useState(false)
-  const searchParams = useSearchParams()
-  const router = useRouter()
 
   const [cars, setCars] = useState<Array<{
     id: string;
@@ -133,17 +157,6 @@ export default function HomePage() {
     }
   }, [loadHomepageSettings, loadFeaturedCars])
 
-  // Проверяем параметр sale=true для открытия модального окна
-  useEffect(() => {
-    const saleParam = searchParams.get('sale')
-    if (saleParam === 'true') {
-      setShowSaleModal(true)
-      // Убираем параметр из URL без перезагрузки страницы
-      const newUrl = window.location.pathname
-      window.history.replaceState({}, '', newUrl)
-    }
-  }, [searchParams])
-
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const params = new URLSearchParams()
@@ -206,10 +219,6 @@ export default function HomePage() {
 
   const isPhoneValid = (phone: string) => {
     return phone.length === 13 && phone.startsWith("+375")
-  }
-
-  const handleSaleModalClose = () => {
-    setShowSaleModal(false)
   }
 
   return (
@@ -378,10 +387,9 @@ export default function HomePage() {
       </section>
 
       {/* Модальное окно продажи автомобиля */}
-      <SaleModal
-        isOpen={showSaleModal}
-        onClose={handleSaleModalClose}
-      />
+      <Suspense fallback={null}>
+        <SaleModalHandler />
+      </Suspense>
     </div>
   )
 }
