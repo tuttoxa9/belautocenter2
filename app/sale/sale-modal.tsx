@@ -228,7 +228,6 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
                 <Input
                   value={formData.carMake}
                   onChange={(e) => handleInputChange('carMake', e.target.value)}
-                  placeholder="Например: BMW, Mercedes, Audi"
                 />
               </div>
 
@@ -239,7 +238,6 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
                 <Input
                   value={formData.carModel}
                   onChange={(e) => handleInputChange('carModel', e.target.value)}
-                  placeholder="Например: X5, E-Class, A6"
                 />
               </div>
 
@@ -250,7 +248,6 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
                 <Input
                   value={formData.estimatedPrice}
                   onChange={(e) => handleInputChange('estimatedPrice', e.target.value)}
-                  placeholder="Например: 25000 $"
                 />
               </div>
 
@@ -298,7 +295,6 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
                 <Input
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="+375 (XX) XXX-XX-XX"
                 />
               </div>
             </div>
