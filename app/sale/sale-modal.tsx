@@ -208,21 +208,17 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
 
         {/* Hero Image Section - верхняя часть модального окна */}
         {currentStep === 1 && (
-          <div className="relative h-40 bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden rounded-xl mx-6 mt-6">
-            {funnelSettings.heroImage ? (
+          <div className="relative h-40 overflow-hidden rounded-xl mx-6 mt-6">
+            {funnelSettings.heroImage && (
               <div className="relative w-full h-full">
                 <img
                   src={getCachedImageUrl(funnelSettings.heroImage)}
                   alt="Hero"
-                  className="w-full h-full object-cover rounded-xl animate-fade-in"
-                  style={{
-                    animation: 'fadeFromWhite 0.7s ease-out forwards'
+                  className="w-full h-full object-cover rounded-xl opacity-0 transition-opacity duration-500"
+                  onLoad={(e) => {
+                    e.currentTarget.style.opacity = '1'
                   }}
                 />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <Car className="h-16 w-16 text-white" />
               </div>
             )}
             <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-6 rounded-xl">

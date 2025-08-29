@@ -230,7 +230,7 @@ export default function HomePage() {
 
         <div className="relative z-30 text-center text-white max-w-4xl mx-auto px-4 pb-40 sm:pb-32 md:pb-24 lg:pb-32 xl:pb-20 hero-content">
           <h1 className="text-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 leading-tight">
-            Найди свой <span className="text-white">идеальный автомобиль</span> надежным способом
+            Поможем с приобретением и продажей автомобиля
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 md:mb-16 lg:mb-20 xl:mb-24 text-gray-100 font-medium leading-relaxed">
             {settings.heroSubtitle}
