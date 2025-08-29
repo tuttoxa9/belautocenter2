@@ -2,9 +2,8 @@
 
 import type React from "react"
 
-import { useState, useEffect, useCallback, Suspense } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { StatusButton } from "@/components/ui/status-button"
@@ -17,35 +16,6 @@ import { useNotification } from "@/components/providers/notification-provider"
 import { CheckCircle, Check } from "lucide-react"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import SaleModal from "./sale/sale-modal"
-
-// Компонент для обработки модального окна sale с useSearchParams
-function SaleModalHandler() {
-  const [showSaleModal, setShowSaleModal] = useState(false)
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    const saleParam = searchParams.get('sale')
-    if (saleParam === 'true') {
-      setShowSaleModal(true)
-      // Убираем параметр из URL без перезагрузки страницы
-      const newUrl = window.location.pathname
-      window.history.replaceState({}, '', newUrl)
-    }
-  }, [searchParams])
-
-  const handleSaleModalClose = () => {
-    setShowSaleModal(false)
-  }
-
-  return (
-    <SaleModal
-      isOpen={showSaleModal}
-      onClose={handleSaleModalClose}
-    />
-  )
-}
-
 interface HomepageSettings {
   heroTitle: string
   heroSubtitle: string
@@ -386,10 +356,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Модальное окно продажи автомобиля */}
-      <Suspense fallback={null}>
-        <SaleModalHandler />
-      </Suspense>
     </div>
   )
 }
