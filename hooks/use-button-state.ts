@@ -72,12 +72,17 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
     timeoutRefs.current.push(timeout)
   }, [errorDuration, onError])
 
+  const setLoading = useCallback(() => {
+    setState('loading')
+  }, [])
+
   return {
     state,
     execute,
     reset,
     setSuccess,
     setError,
+    setLoading,
     isLoading: state === 'loading',
     isSuccess: state === 'success',
     isError: state === 'error',

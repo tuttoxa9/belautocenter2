@@ -112,7 +112,7 @@ export default function AdminFunnel() {
             Настройте тексты и изображения для воронки продажи автомобилей
           </p>
         </div>
-        <StatusButton {...saveButtonState} onClick={handleSave}>
+        <StatusButton state={saveButtonState.state} onClick={handleSave}>
           Сохранить
         </StatusButton>
       </div>
