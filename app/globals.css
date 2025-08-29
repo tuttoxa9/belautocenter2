@@ -77,6 +77,21 @@
     display: block;
     -webkit-line-clamp: none;
   }
+
+  @keyframes fadeFromWhite {
+    0% {
+      background-color: white;
+      opacity: 1;
+    }
+    100% {
+      background-color: transparent;
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-from-white {
+    animation: fadeFromWhite 0.7s ease-out forwards;
+  }
 }
 
 @layer base {

@@ -35,6 +35,20 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
     phone: "+375"
   })
 
+  // Блокируем скролл основной страницы когда модальное окно открыто
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    // Очищаем стили при размонтировании компонента
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   const [funnelSettings, setFunnelSettings] = useState({
     heroTitle: "Продайте свой автомобиль выгодно!",
     heroSubtitle: "Заполните информацию о вашем автомобиле",
@@ -196,19 +210,24 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
         {currentStep === 1 && (
           <div className="relative h-40 bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden rounded-xl mx-6 mt-6">
             {funnelSettings.heroImage ? (
-              <img
-                src={getCachedImageUrl(funnelSettings.heroImage)}
-                alt="Hero"
-                className="w-full h-full object-cover rounded-xl"
-              />
+              <div className="relative w-full h-full">
+                <img
+                  src={getCachedImageUrl(funnelSettings.heroImage)}
+                  alt="Hero"
+                  className="w-full h-full object-cover rounded-xl animate-fade-in"
+                  style={{
+                    animation: 'fadeFromWhite 0.7s ease-out forwards'
+                  }}
+                />
+              </div>
             ) : (
               <div className="flex items-center justify-center h-full">
                 <Car className="h-16 w-16 text-white" />
               </div>
             )}
             <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-6 rounded-xl">
-              <h3 className="text-xl font-bold mb-2 text-white">Мы продадим ваш автомобиль быстро!</h3>
-              <p className="text-white text-sm opacity-90">
+              <h3 className="text-xl font-bold mb-2 text-white drop-shadow-lg">Мы продадим ваш автомобиль быстро!</h3>
+              <p className="text-white text-sm font-medium drop-shadow-md">
                 В БелАвто Центре доступна комиссионная продажа!
               </p>
             </div>

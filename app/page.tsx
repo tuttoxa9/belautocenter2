@@ -12,6 +12,7 @@ import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import SaleModal from "@/app/sale/sale-modal"
 
 import { CheckCircle, Check } from "lucide-react"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
@@ -42,6 +43,7 @@ export default function HomePage() {
   const contactButtonState = useButtonState()
   const { showSuccess } = useNotification()
   const [isMounted, setIsMounted] = useState(true)
+  const [showSaleModal, setShowSaleModal] = useState(false)
 
   const [cars, setCars] = useState<Array<{
     id: string;
@@ -234,13 +236,22 @@ export default function HomePage() {
             {settings.heroSubtitle}
           </p>
 
-          <div className="relative z-50">
+          <div className="relative z-50 flex flex-col gap-4 items-center">
             <Button
               size="lg"
               className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               asChild
             >
               <Link href="/catalog">{settings.heroButtonText}</Link>
+            </Button>
+
+            <Button
+              size="lg"
+              variant="outline"
+              className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              onClick={() => setShowSaleModal(true)}
+            >
+              Продать автомобиль
             </Button>
           </div>
         </div>
@@ -355,6 +366,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Модальное окно продажи автомобиля */}
+      <SaleModal
+        isOpen={showSaleModal}
+        onClose={() => setShowSaleModal(false)}
+      />
 
     </div>
   )
