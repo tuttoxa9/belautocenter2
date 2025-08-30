@@ -7,10 +7,16 @@ export function cn(...inputs: ClassValue[]) {
 
 export async function fetchUsdBynRate() {
   try {
-    const res = await fetch('/api/exchange-rate');
+    // Получаем курс напрямую от НБ РБ, минуя Vercel Function
+    const res = await fetch('https://api.nbrb.by/exrates/rates/431', {
+      headers: {
+        'User-Agent': 'AutoBelCenter/1.0'
+      },
+      next: { revalidate: 3600 } // Кэшируем на 1 час
+    });
     if (!res.ok) return null;
     const data = await res.json();
-    return data.rate ?? null;
+    return data.Cur_OfficialRate ?? null;
   } catch {
     return null;
   }

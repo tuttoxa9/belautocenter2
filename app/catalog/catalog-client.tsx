@@ -29,8 +29,9 @@ interface CatalogClientProps {
 }
 
 export default function CatalogClient({ initialCars }: CatalogClientProps) {
-  const [cars] = useState<Car[]>(initialCars)
+  const [cars, setCars] = useState<Car[]>(initialCars)
   const [filteredCars, setFilteredCars] = useState<Car[]>(initialCars)
+  const [loading, setLoading] = useState(initialCars.length === 0)
   const [availableMakes, setAvailableMakes] = useState<string[]>([])
   const [availableModels, setAvailableModels] = useState<string[]>([])
   const [filters, setFilters] = useState({
@@ -48,6 +49,105 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   })
   const [sortBy, setSortBy] = useState("price-asc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
+
+  // Загружаем данные на клиенте, если они не были предзагружены
+  useEffect(() => {
+    if (initialCars.length === 0) {
+      loadCarsFromCloudflare()
+    }
+  }, [initialCars.length])
+
+  const loadCarsFromCloudflare = async () => {
+    try {
+      setLoading(true)
+
+      // Пробуем загрузить через Cloudflare Worker
+      const apiHost = process.env.NEXT_PUBLIC_API_HOST
+
+      let response: Response
+
+      if (apiHost) {
+        // Используем Cloudflare Worker
+        response = await fetch(`${apiHost}/cars`, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      } else {
+        // Fallback на прямой вызов Firestore
+        const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+        response = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'NextJS-Direct-Firestore/1.0'
+          }
+        })
+      }
+
+      if (!response.ok) {
+        console.error(`Failed to fetch cars: ${response.status}`)
+        return
+      }
+
+      const data = await response.json()
+
+      let processedCars: Car[]
+
+      if (data.documents) {
+        // Формат прямого Firestore API
+        processedCars = data.documents
+          .map((doc: any) => {
+            const id = doc.name.split('/').pop() || ''
+            const fields: Record<string, any> = {}
+
+            for (const [key, value] of Object.entries(doc.fields || {})) {
+              fields[key] = convertFieldValue(value)
+            }
+
+            return { id, ...fields }
+          })
+          .filter((car: any) => car.isAvailable !== false)
+      } else if (Array.isArray(data)) {
+        // Формат Cloudflare Worker (уже обработанные данные)
+        processedCars = data.filter((car: any) => car.isAvailable !== false)
+      } else {
+        processedCars = []
+      }
+
+      setCars(processedCars)
+      setFilteredCars(processedCars)
+    } catch (error) {
+      console.error('Error loading cars:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Функция для конвертации значения поля из формата Firestore
+  const convertFieldValue = (value: any): any => {
+    if (value.stringValue !== undefined) {
+      return value.stringValue
+    } else if (value.integerValue !== undefined) {
+      return parseInt(value.integerValue)
+    } else if (value.doubleValue !== undefined) {
+      return parseFloat(value.doubleValue)
+    } else if (value.booleanValue !== undefined) {
+      return value.booleanValue
+    } else if (value.timestampValue !== undefined) {
+      return new Date(value.timestampValue)
+    } else if (value.arrayValue !== undefined) {
+      return value.arrayValue.values?.map((v: any) => convertFieldValue(v)) || []
+    } else if (value.mapValue !== undefined) {
+      const result: Record<string, any> = {}
+      for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
+        result[k] = convertFieldValue(v)
+      }
+      return result
+    } else if (value.nullValue !== undefined) {
+      return null
+    }
+    return value
+  }
 
   // Инициализация доступных марок и моделей
   useEffect(() => {
@@ -543,7 +643,20 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
             </div>
 
             {/* Сетка автомобилей */}
-            {filteredCars && filteredCars.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden animate-pulse">
+                    <div className="bg-gray-200 h-48"></div>
+                    <div className="p-4 space-y-3">
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredCars && filteredCars.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {filteredCars.map((car, index) => (
                   <CarCard key={car.id} car={car} />
