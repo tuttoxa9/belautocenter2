@@ -61,28 +61,14 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     try {
       setLoading(true)
 
-      // Пробуем загрузить через Cloudflare Worker
-      const apiHost = process.env.NEXT_PUBLIC_API_HOST
-
-      let response: Response
-
-      if (apiHost) {
-        // Используем Cloudflare Worker
-        response = await fetch(`${apiHost}/cars`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-      } else {
-        // Fallback на прямой вызов Firestore
-        const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-        response = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        })
-      }
+      // Используем прямой вызов Firestore (исключены vercel functions)
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+      const response = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'NextJS-Direct-Firestore/1.0'
+        }
+      })
 
       if (!response.ok) {
         console.error(`Failed to fetch cars: ${response.status}`)

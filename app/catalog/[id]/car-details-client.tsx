@@ -269,20 +269,37 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingBanks(true)
       setLoadingLeasing(true)
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_HOST
+      // Используем прямые запросы к Firestore (исключены vercel functions)
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+      const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages`
 
-      // Определяем эндпоинты Firestore, которые будет проксировать воркер
+      // Определяем эндпоинты Firestore напрямую
       const endpoints = {
-        banks: `${apiUrl}/pages/credit`,
-        leasing: `${apiUrl}/pages/leasing`,
-        contacts: `${apiUrl}/pages/contacts`
+        banks: `${baseUrl}/credit`,
+        leasing: `${baseUrl}/leasing`,
+        contacts: `${baseUrl}/contacts`
       }
 
       // Выполняем запросы параллельно для максимальной скорости
       const [banksResponse, leasingResponse, contactsResponse] = await Promise.all([
-        fetch(endpoints.banks),
-        fetch(endpoints.leasing),
-        fetch(endpoints.contacts)
+        fetch(endpoints.banks, {
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'NextJS-Direct-Firestore/1.0'
+          }
+        }),
+        fetch(endpoints.leasing, {
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'NextJS-Direct-Firestore/1.0'
+          }
+        }),
+        fetch(endpoints.contacts, {
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'NextJS-Direct-Firestore/1.0'
+          }
+        })
       ])
 
       // Получаем JSON из каждого ответа
@@ -375,37 +392,22 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     try {
       setLoading(true)
 
-      // Используем прямой запрос к Cloudflare Worker
-      const apiHost = process.env.NEXT_PUBLIC_API_HOST
+      // Используем прямой запрос к Firestore (исключены vercel functions)
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+      const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
+
+      const response = await fetch(firestoreUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'NextJS-Direct-Firestore/1.0'
+        }
+      })
+
       let carData = null
-
-      if (apiHost) {
-        // Запрос к Cloudflare Worker
-        const response = await fetch(`${apiHost}/cars/${carId}`)
-        if (response.ok) {
-          const rawData = await response.json()
-          // ★★★ КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Парсим данные от Cloudflare Worker ★★★
-          carData = parseFirestoreDoc(rawData)
-        }
-      }
-
-      // Fallback на прямой запрос к Firestore если Cloudflare Worker недоступен
-      if (!carData) {
-        const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
-
-        const response = await fetch(firestoreUrl, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        })
-
-        if (response.ok) {
-          const doc = await response.json()
-          // Используем тот же парсер, что и для основного запроса
-          carData = parseFirestoreDoc(doc)
-        }
+      if (response.ok) {
+        const doc = await response.json()
+        // Используем парсер для обработки данных Firestore
+        carData = parseFirestoreDoc(doc)
       }
 
       if (carData) {
