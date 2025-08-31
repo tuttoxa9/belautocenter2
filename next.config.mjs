@@ -58,7 +58,16 @@ const nextConfig = {
         ],
       },
       {
-        source: '/((?!api|_next/static|_next/image|favicon.ico|adminbel).*)',
+        source: '/catalog/:id',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400, stale-while-revalidate=3600',
+          },
+        ],
+      },
+      {
+        source: '/((?!api|_next/static|_next/image|favicon.ico|adminbel|catalog).*)',
         headers: [
           {
             key: 'Cache-Control',

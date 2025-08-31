@@ -7,6 +7,7 @@
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
 const CACHE_TTL_SECONDS = 86400; // 24 часа
+const CAR_DETAILS_CACHE_TTL = 86400; // 24 часа для деталей авто
 const GOOGLE_JWKS_URL = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com";
 
 /** Универсальный ответ в формате JSON. */
