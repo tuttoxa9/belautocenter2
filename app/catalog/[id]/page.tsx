@@ -1,6 +1,10 @@
 import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 
+// Принудительная статическая генерация
+export const dynamic = 'force-static'
+export const dynamicParams = true
+
 // Простые метатеги без серверного компонента
 export const metadata: Metadata = {
   title: "Автомобиль | Белавто Центр",
