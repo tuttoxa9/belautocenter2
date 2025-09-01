@@ -226,6 +226,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   // Полноэкранный просмотр фотографий
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
+  // Текущий индекс изображения в галерее
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   // Touch события для полноэкранного режима
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
