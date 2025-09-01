@@ -327,8 +327,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
     if (galleryScrollRef.current) {
       const containerWidth = galleryScrollRef.current.clientWidth;
-      const imageWidth = containerWidth / car.imageUrls.length;
-      const targetScrollLeft = clampedIndex * imageWidth;
+      // Каждое изображение занимает полную ширину видимой области
+      const targetScrollLeft = clampedIndex * containerWidth;
 
       galleryScrollRef.current.scrollTo({
         left: targetScrollLeft,
@@ -347,6 +347,19 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     if (!car?.imageUrls || car.imageUrls.length <= 1) return;
     const newIndex = currentImageIndex < car.imageUrls.length - 1 ? currentImageIndex + 1 : 0;
     navigateToImage(newIndex);
+  };
+
+  // Обработчик прокрутки для синхронизации индекса при ручной прокрутке
+  const handleScroll = () => {
+    if (!galleryScrollRef.current || !car?.imageUrls) return;
+
+    const containerWidth = galleryScrollRef.current.clientWidth;
+    const scrollLeft = galleryScrollRef.current.scrollLeft;
+    const newIndex = Math.round(scrollLeft / containerWidth);
+
+    if (newIndex !== currentImageIndex && newIndex >= 0 && newIndex < car.imageUrls.length) {
+      setCurrentImageIndex(newIndex);
+    }
   };
 
   const loadStaticData = async () => {
@@ -942,7 +955,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 ) : (
                   <>
                     {/* Контейнер для свободной прокрутки */}
-                    <div ref={galleryScrollRef} className="w-full h-full overflow-x-auto overflow-y-hidden scrollbar-hide">
+                    <div ref={galleryScrollRef} onScroll={handleScroll} className="w-full h-full overflow-x-auto overflow-y-hidden scrollbar-hide">
                       <div className="flex h-full" style={{ width: `${(car?.imageUrls?.length || 1) * 100}%` }}>
                         {car?.imageUrls?.map((url, index) => (
                           <div
@@ -950,6 +963,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             className="h-full flex-shrink-0 relative cursor-pointer"
                             style={{ width: `${100 / (car?.imageUrls?.length || 1)}%` }}
                             onClick={() => {
+                              setCurrentImageIndex(index)
                               setFullscreenImageIndex(index)
                               setIsFullscreenOpen(true)
                             }}
@@ -969,6 +983,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             key="placeholder"
                             className="h-full flex-shrink-0 relative cursor-pointer w-full"
                             onClick={() => {
+                              setCurrentImageIndex(0)
                               setFullscreenImageIndex(0)
                               setIsFullscreenOpen(true)
                             }}
@@ -992,7 +1007,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                         <button
                           onClick={() => {
-                            setFullscreenImageIndex(0)
+                            setFullscreenImageIndex(currentImageIndex)
                             setIsFullscreenOpen(true)
                           }}
                           className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
@@ -1022,7 +1037,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                         {/* Индикатор прокрутки */}
                         <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
-                          {car.imageUrls.length} фото
+                          {currentImageIndex + 1} из {car.imageUrls.length}
                         </div>
 
                         {/* Стрелочка вправо */}
