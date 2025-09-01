@@ -230,6 +230,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   // Полноэкранный просмотр фотографий
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
+  // Touch события для полноэкранного режима
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
   // Button states
   const bookingButtonState = useButtonState()
@@ -273,6 +276,42 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setResidualValue([20])
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
+
+  // Обработчик клавиатуры для полноэкранного режима
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isFullscreenOpen) return
+
+      switch (event.key) {
+        case 'Escape':
+          setIsFullscreenOpen(false)
+          break
+        case 'ArrowLeft':
+          event.preventDefault()
+          if (car?.imageUrls && car.imageUrls.length > 1) {
+            setFullscreenImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length)
+          }
+          break
+        case 'ArrowRight':
+          event.preventDefault()
+          if (car?.imageUrls && car.imageUrls.length > 1) {
+            setFullscreenImageIndex((prev) => (prev + 1) % car.imageUrls.length)
+          }
+          break
+      }
+    }
+
+    if (isFullscreenOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      // Запрещаем скролл страницы в полноэкранном режиме
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [isFullscreenOpen, car?.imageUrls])
 
   // Получаем хост для изображений
   const imageHost = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
@@ -723,30 +762,40 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   }
 
   const nextImage = () => {
+    if (!car?.imageUrls || car.imageUrls.length <= 1) return
+
     setCurrentImageIndex((prev) => {
-      const nextIndex = (prev + 1) % (car?.imageUrls?.length || 1)
-      // Предзагружаем следующее изображение оптимизированным способом
-      if (car?.imageUrls && car.imageUrls.length > nextIndex + 1) {
-        preloadImage(car.imageUrls[nextIndex + 1])
+      const nextIndex = (prev + 1) % car.imageUrls.length
+
+      // Предзагружаем следующее изображение для плавной прокрутки
+      const preloadIndex = (nextIndex + 1) % car.imageUrls.length
+      if (car.imageUrls[preloadIndex]) {
+        preloadImage(car.imageUrls[preloadIndex])
       }
+
       return nextIndex
     })
   }
 
   const prevImage = () => {
+    if (!car?.imageUrls || car.imageUrls.length <= 1) return
+
     setCurrentImageIndex((prev) => {
-      const prevIndex = (prev - 1 + (car?.imageUrls?.length || 1)) % (car?.imageUrls?.length || 1)
-      // Предзагружаем предыдущее изображение оптимизированным способом
-      if (car?.imageUrls && prevIndex > 0) {
-        preloadImage(car.imageUrls[prevIndex - 1])
+      const prevIndex = (prev - 1 + car.imageUrls.length) % car.imageUrls.length
+
+      // Предзагружаем предыдущее изображение для плавной прокрутки
+      const preloadIndex = (prevIndex - 1 + car.imageUrls.length) % car.imageUrls.length
+      if (car.imageUrls[preloadIndex]) {
+        preloadImage(car.imageUrls[preloadIndex])
       }
+
       return prevIndex
     })
   }
 
-  // Оптимизированные touch события с debounce для галереи
+  // Оптимизированные touch события с debounce для карусели
   const { onTouchStart, onTouchMove, onTouchEnd } = useDebouncedTouch({
-    minSwipeDistance: 50,
+    minSwipeDistance: 40, // Уменьшил для более отзывчивой карусели
     onSwipeLeft: () => {
       if (car?.imageUrls && car.imageUrls.length > 1) {
         nextImage()
@@ -757,7 +806,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         prevImage()
       }
     },
-    debounceMs: 16 // 60fps
+    debounceMs: 8 // Увеличил частоту для более плавной карусели (120fps)
   })
 
   if (carNotFound) {
@@ -894,24 +943,19 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
             {/* Левая колонка: Галерея */}
             <div className="lg:col-span-6 lg:border-r border-slate-200/50">
-              <div
-                className="relative aspect-[4/3] w-full select-none bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden"
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
-              >
+              <div className="relative aspect-[4/3] w-full select-none bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden">
                 {loading ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="w-16 h-16 bg-slate-300 rounded-full animate-pulse"></div>
                   </div>
                 ) : (
                   <>
+                    {/* Контейнер карусели */}
                     <div
-                      className="w-full h-full transition-transform duration-200 ease-out cursor-pointer"
-                      style={{
-                        transform: isDragging ? `translateX(${dragOffset}px)` : 'translateX(0px)',
-                        opacity: isDragging ? Math.max(0.7, 1 - Math.abs(dragOffset) / 200) : 1
-                      }}
+                      className="relative w-full h-full overflow-hidden cursor-pointer"
+                      onTouchStart={onTouchStart}
+                      onTouchMove={onTouchMove}
+                      onTouchEnd={onTouchEnd}
                       onClick={() => {
                         if (!isDragging) {
                           setFullscreenImageIndex(currentImageIndex)
@@ -919,15 +963,44 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         }
                       }}
                     >
-                      <Image
-                        src={getCachedImageUrl(car?.imageUrls?.[currentImageIndex] || "/placeholder.svg")}
-                        alt={`${car?.make} ${car?.model}`}
-                        fill
-                        className="object-contain"
-                        priority
-                        quality={80}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                      />
+                      {/* Слайды карусели */}
+                      <div
+                        className="flex w-full h-full transition-transform duration-500 ease-out"
+                        style={{
+                          transform: `translateX(-${currentImageIndex * 100}%)`,
+                          width: `${(car?.imageUrls?.length || 1) * 100}%`
+                        }}
+                      >
+                        {car?.imageUrls?.map((url, index) => (
+                          <div
+                            key={index}
+                            className="w-full h-full flex-shrink-0 relative"
+                            style={{ width: `${100 / (car?.imageUrls?.length || 1)}%` }}
+                          >
+                            <Image
+                              src={getCachedImageUrl(url)}
+                              alt={`${car?.make} ${car?.model} - фото ${index + 1}`}
+                              fill
+                              className="object-contain"
+                              priority={index === 0}
+                              quality={80}
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                            />
+                          </div>
+                        )) || [
+                          <div key="placeholder" className="w-full h-full flex-shrink-0 relative">
+                            <Image
+                              src="/placeholder.svg"
+                              alt={`${car?.make} ${car?.model}`}
+                              fill
+                              className="object-contain"
+                              priority
+                              quality={80}
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                            />
+                          </div>
+                        ]}
+                      </div>
                     </div>
 
                     {/* Навигация по фотографиям */}
@@ -935,13 +1008,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <>
                         <button
                           onClick={prevImage}
-                          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 z-10"
                         >
                           <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 text-slate-700" />
                         </button>
                         <button
                           onClick={nextImage}
-                          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+                          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-white/50 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 z-10"
                         >
                           <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 text-slate-700" />
                         </button>
@@ -950,7 +1023,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                     {/* Индикатор точек */}
                     {car?.imageUrls && car.imageUrls.length > 1 && (
-                      <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2">
+                      <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-10">
                         <div className="flex space-x-2">
                           {car.imageUrls.map((_, index) => (
                             <button
@@ -969,7 +1042,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
                     {/* Счетчик фотографий и кнопка полноэкранного режима */}
                     {car?.imageUrls && car.imageUrls.length >= 1 && (
-                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center space-x-1 sm:space-x-2">
+                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center space-x-1 sm:space-x-2 z-10">
                         {car.imageUrls.length > 1 && (
                           <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
                             {currentImageIndex + 1}/{car.imageUrls.length}
