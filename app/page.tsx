@@ -62,7 +62,7 @@ export default function HomePage() {
   const [loadingCars, setLoadingCars] = useState(true)
   const [settings, setSettings] = useState<HomepageSettings>({
     heroTitle: "Найди свой автомобиль надежным способом",
-    heroSubtitle: "Поможем вам с приобретением автомобиля",
+    heroSubtitle: "",
     heroButtonText: "Посмотреть каталог",
     ctaTitle: "Не нашли подходящий автомобиль?",
     ctaSubtitle: "Оставьте заявку, и мы подберем автомобиль специально для вас",
