@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge"
 
 
 import Image from "next/image"
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { useIntersectionObserverV2 } from "@/hooks/use-intersection-observer"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
 
@@ -31,61 +32,42 @@ interface CarCardProps {
 export default function CarCard({ car }: CarCardProps) {
   const usdBynRate = useUsdBynRate()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const [shouldLoadImage, setShouldLoadImage] = useState(false)
   const [dataReady, setDataReady] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
+
+  // Используем оптимизированный хук для IntersectionObserver
+  const { ref: cardRef, isIntersecting } = useIntersectionObserverV2({
+    rootMargin: '200px',
+    threshold: 0.1,
+    triggerOnce: true
+  })
 
   // Данные готовы к отображению сразу
   useEffect(() => {
     setDataReady(true);
   }, []);
 
-  // Карточка готова к отображению
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !shouldLoadImage) {
-            setShouldLoadImage(true)
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      {
-        root: null,
-        rootMargin: '200px', // Начинаем загрузку за 200px до появления для более плавной работы
-        threshold: 0.1
-      }
-    )
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current)
-    }
-
-    return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current)
-      }
-    }
-  }, [shouldLoadImage])
-
-  const formatPrice = (price: number) => {
+  // Мемоизируем тяжелые вычисления для оптимизации производительности
+  const formattedPrice = useMemo(() => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
-    }).format(price)
-  }
+    }).format(car.price)
+  }, [car.price])
 
-  const formatMileage = (mileage: number) => {
-    return new Intl.NumberFormat("ru-BY").format(mileage)
-  }
+  const formattedMileage = useMemo(() => {
+    return new Intl.NumberFormat("ru-BY").format(car.mileage)
+  }, [car.mileage])
 
-  const formatEngineVolume = (volume: number) => {
+  const formattedEngineVolume = useMemo(() => {
     // Всегда показываем с одним знаком после запятой (3.0, 2.5, 1.6)
-    return volume.toFixed(1)
-  }
+    return car.engineVolume.toFixed(1)
+  }, [car.engineVolume])
+
+  // Мемоизируем URL первого изображения
+  const primaryImageUrl = useMemo(() => {
+    return getCachedImageUrl(car.imageUrls?.[0] || '')
+  }, [car.imageUrls])
 
   return (
     <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 backdrop-blur-xl shadow-lg shadow-gray-900/5 rounded-2xl h-full group transition-all duration-200">
@@ -93,13 +75,13 @@ export default function CarCard({ car }: CarCardProps) {
         {/* Image Section */}
         <div className="relative">
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 rounded-t-2xl h-56">
-            {shouldLoadImage ? (
+            {isIntersecting ? (
               <>
                 {!isImageLoaded && (
                   <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse" />
                 )}
                 <Image
-                  src={getCachedImageUrl(car.imageUrls[0] || "/placeholder.svg?height=200&width=280")}
+                  src={primaryImageUrl || "/placeholder.svg?height=200&width=280"}
                   alt={`${car.make} ${car.model}`}
                   fill
                   quality={75}
@@ -166,7 +148,7 @@ export default function CarCard({ car }: CarCardProps) {
                   {car.make} {car.model}
                 </h3>
                 <div className="font-bold text-slate-900 text-lg">
-                  {car?.price ? formatPrice(car.price) : 'Цена по запросу'}
+                  {car?.price ? formattedPrice : 'Цена по запросу'}
                 </div>
                 {usdBynRate && car?.price && (
                   <div className="text-xs text-slate-500 font-medium">
@@ -179,12 +161,12 @@ export default function CarCard({ car }: CarCardProps) {
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-600">Пробег</span>
-                  <span className="font-medium text-slate-900">{formatMileage(car.mileage)} км</span>
+                  <span className="font-medium text-slate-900">{formattedMileage} км</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-600">Двигатель</span>
                   <span className="font-medium text-slate-900">
-                    {car.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car.engineVolume)} ${car.fuelType}`}
+                    {car.fuelType === "Электро" ? car.fuelType : `${formattedEngineVolume} ${car.fuelType}`}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">

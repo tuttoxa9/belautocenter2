@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import Image from "next/image"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { useIntersectionObserverV2 } from "@/hooks/use-intersection-observer"
 
 interface LazyThumbnailProps {
   src: string
@@ -14,43 +15,24 @@ interface LazyThumbnailProps {
 
 export default function LazyThumbnail({ src, alt, isSelected, onClick, index }: LazyThumbnailProps) {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [shouldLoad, setShouldLoad] = useState(false)
-  const imgRef = useRef<HTMLButtonElement>(null)
+  const [shouldLoad, setShouldLoad] = useState(index < 3) // Загружаем первые 3 сразу
 
+  // Используем оптимизированный хук для IntersectionObserver
+  const { ref: imgRef, isIntersecting } = useIntersectionObserverV2({
+    rootMargin: '150px',
+    threshold: 0.1,
+    triggerOnce: true
+  })
+
+  // Мемоизируем URL изображения
+  const cachedImageUrl = useMemo(() => getCachedImageUrl(src), [src])
+
+  // Устанавливаем shouldLoad при пересечении или если это первые 3 элемента
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !shouldLoad) {
-            setShouldLoad(true)
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      {
-        root: null,
-        rootMargin: '150px', // Начинаем загрузку за 150px до появления для более плавной работы
-        threshold: 0.1
-      }
-    )
-
-    if (imgRef.current) {
-      observer.observe(imgRef.current)
-    }
-
-    return () => {
-      if (imgRef.current) {
-        observer.unobserve(imgRef.current)
-      }
-    }
-  }, [shouldLoad])
-
-  // Загружаем первые 3 миниатюры сразу (для быстрого доступа)
-  useEffect(() => {
-    if (index < 3) {
+    if (isIntersecting && !shouldLoad) {
       setShouldLoad(true)
     }
-  }, [index])
+  }, [isIntersecting, shouldLoad])
 
   return (
     <button
@@ -68,7 +50,7 @@ export default function LazyThumbnail({ src, alt, isSelected, onClick, index }: 
             <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse" />
           )}
           <Image
-            src={getCachedImageUrl(src)}
+            src={cachedImageUrl}
             alt={alt}
             width={56}
             height={56}

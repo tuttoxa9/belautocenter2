@@ -47,6 +47,18 @@ import { Checkbox } from "@/components/ui/checkbox"
 import CarDetailsSkeleton from "@/components/car-details-skeleton"
 import MarkdownRenderer from "@/components/markdown-renderer"
 import LazyThumbnail from "@/components/lazy-thumbnail"
+import { useDebouncedTouch } from "@/hooks/use-debounced-touch"
+import { preloadImages, preloadImage } from "@/lib/image-preloader"
+
+// Кэш для статических данных (загружается один раз за сессию)
+let staticDataCache: {
+  banks?: any[]
+  leasingCompanies?: any[]
+  contactPhones?: { main?: string, additional?: string }
+  lastLoadTime?: number
+} = {}
+
+const CACHE_DURATION = 5 * 60 * 1000 // 5 минут
 
 // Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: string, contactPhone2?: string }) => {
@@ -212,9 +224,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null)
   // Состояние для валюты (по умолчанию - белорусские рубли)
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(true)
-  // Touch events для свайпов на мобильных устройствах
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  // Оптимизированные touch события для свайпов с debounce
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState(0)
   // Полноэкранный просмотр фотографий
@@ -236,9 +246,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     if (carId) {
       loadCarData(carId)
     }
-    // Load all static data in one request
-    loadStaticData()
   }, [carId])
+
+  // Загружаем статические данные только один раз при инициализации компонента
+  useEffect(() => {
+    loadStaticData()
+  }, [])
 
   // Сброс значений калькулятора при открытии модального окна кредита
   useEffect(() => {
@@ -266,6 +279,24 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   const loadStaticData = async () => {
     try {
+      // Проверяем кэш - если данные свежие, используем их
+      const now = Date.now()
+      if (staticDataCache.lastLoadTime &&
+          (now - staticDataCache.lastLoadTime) < CACHE_DURATION &&
+          staticDataCache.banks &&
+          staticDataCache.leasingCompanies &&
+          staticDataCache.contactPhones) {
+
+        // Используем кэшированные данные
+        setPartnerBanks(staticDataCache.banks)
+        setSelectedBank(staticDataCache.banks[0] || null)
+        setLeasingCompanies(staticDataCache.leasingCompanies)
+        setSelectedLeasingCompany(staticDataCache.leasingCompanies[0] || null)
+        setContactPhone(staticDataCache.contactPhones.main || "+375 29 123-45-67")
+        setContactPhone2(staticDataCache.contactPhones.additional || "")
+        return
+      }
+
       setLoadingBanks(true)
       setLoadingLeasing(true)
 
@@ -308,27 +339,26 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       const contactsRawData = await contactsResponse.json()
 
       // Парсим полученные данные
-
-      // --- НАЧАЛО ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
-
-      // 1. "Переводим" каждый полученный документ в понятный JS-объект
       const creditPageData = parseFirestoreDoc(banksRawData);
       const leasingPageData = parseFirestoreDoc(leasingRawData);
       const contacts = parseFirestoreDoc(contactsRawData);
 
-      // 2. Безопасно извлекаем из них чистые массивы с партнерами
+      // Безопасно извлекаем из них чистые массивы с партнерами
       const banks = creditPageData.partners || [];
-      // ★★★ ВОТ КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ ★★★
-      // Делаем код более гибким - сначала проверяем поле leasingCompanies, затем partners
       const leasingCompanies = leasingPageData.leasingCompanies || leasingPageData.partners || [];
 
-      // Данные лизинга успешно обработаны
-
-      // --- КОНЕЦ ФИНАЛЬНОГО ИСПРАВЛЕНИЯ ---
+      // Сохраняем в кэш
+      staticDataCache = {
+        banks,
+        leasingCompanies,
+        contactPhones: {
+          main: contacts.phone || "+375 29 123-45-67",
+          additional: contacts.phone2 || ""
+        },
+        lastLoadTime: now
+      }
 
       // Применяем обработанные данные
-
-      // Устанавливаем данные банков
       if (banks && banks.length > 0) {
         setPartnerBanks(banks)
         setSelectedBank(banks[0]) // Выбираем лучший банк по умолчанию
@@ -339,20 +369,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
       // Устанавливаем данные лизинговых компаний
       if (leasingCompanies && leasingCompanies.length > 0) {
-        console.log("УСТАНОВКА ЛИЗИНГОВЫХ КОМПАНИЙ:", leasingCompanies);
-        console.log("ПЕРВАЯ ЛИЗИНГОВАЯ КОМПАНИЯ:", leasingCompanies[0]);
         setLeasingCompanies(leasingCompanies)
         setSelectedLeasingCompany(leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
       } else {
         console.warn("Лизинговые компании не найдены")
-        console.log("ДАННЫЕ ЛИЗИНГА (RAW):", leasingRawData);
-        console.log("ДАННЫЕ ЛИЗИНГА (PARSED):", leasingPageData);
         setLeasingCompanies([])
       }
 
       // Устанавливаем контактные телефоны из документа контактов
-      setContactPhone(contacts.phone || "+375 29 123-45-67")
-      setContactPhone2(contacts.phone2 || "")
+      setContactPhone(staticDataCache.contactPhones.main)
+      setContactPhone2(staticDataCache.contactPhones.additional)
 
     } catch (error) {
       console.error("Ошибка загрузки статических данных:", error)
@@ -394,12 +420,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         setCar(cleanCarData as Car)
         setCarNotFound(false)
 
-        // Предзагрузка первых 3 изображений для быстрого переключения
+        // Оптимизированная предзагрузка первых 3 изображений
         if (cleanCarData.imageUrls && cleanCarData.imageUrls.length > 1) {
-          cleanCarData.imageUrls.slice(0, 3).forEach((url: string) => {
-            const img = new window.Image()
-            img.src = getCachedImageUrl(url)
-          })
+          preloadImages(cleanCarData.imageUrls.slice(0, 3))
         }
 
         // Устанавливаем значения калькулятора по умолчанию
@@ -702,10 +725,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const nextImage = () => {
     setCurrentImageIndex((prev) => {
       const nextIndex = (prev + 1) % (car?.imageUrls?.length || 1)
-      // Предзагружаем следующее изображение
+      // Предзагружаем следующее изображение оптимизированным способом
       if (car?.imageUrls && car.imageUrls.length > nextIndex + 1) {
-        const img = new window.Image()
-        img.src = getCachedImageUrl(car.imageUrls[nextIndex + 1])
+        preloadImage(car.imageUrls[nextIndex + 1])
       }
       return nextIndex
     })
@@ -714,52 +736,29 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const prevImage = () => {
     setCurrentImageIndex((prev) => {
       const prevIndex = (prev - 1 + (car?.imageUrls?.length || 1)) % (car?.imageUrls?.length || 1)
-      // Предзагружаем предыдущее изображение
+      // Предзагружаем предыдущее изображение оптимизированным способом
       if (car?.imageUrls && prevIndex > 0) {
-        const img = new window.Image()
-        img.src = getCachedImageUrl(car.imageUrls[prevIndex - 1])
+        preloadImage(car.imageUrls[prevIndex - 1])
       }
       return prevIndex
     })
   }
 
-  // Минимальное расстояние для свайпа
-  const minSwipeDistance = 50
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null)
-    setTouchStart(e.targetTouches[0].clientX)
-    setIsDragging(true)
-    setDragOffset(0)
-  }
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (!touchStart) return
-    const currentTouch = e.targetTouches[0].clientX
-    setTouchEnd(currentTouch)
-    const offset = currentTouch - touchStart
-    // Ограничиваем смещение для плавности
-    const maxOffset = 100
-    const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, offset))
-    setDragOffset(clampedOffset)
-  }
-
-  const onTouchEnd = () => {
-    setIsDragging(false)
-    setDragOffset(0)
-
-    if (!touchStart || !touchEnd) return
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > minSwipeDistance
-    const isRightSwipe = distance < -minSwipeDistance
-
-    if (isLeftSwipe && car?.imageUrls && car.imageUrls.length > 1) {
-      nextImage()
-    }
-    if (isRightSwipe && car?.imageUrls && car.imageUrls.length > 1) {
-      prevImage()
-    }
-  }
+  // Оптимизированные touch события с debounce для галереи
+  const { onTouchStart, onTouchMove, onTouchEnd } = useDebouncedTouch({
+    minSwipeDistance: 50,
+    onSwipeLeft: () => {
+      if (car?.imageUrls && car.imageUrls.length > 1) {
+        nextImage()
+      }
+    },
+    onSwipeRight: () => {
+      if (car?.imageUrls && car.imageUrls.length > 1) {
+        prevImage()
+      }
+    },
+    debounceMs: 16 // 60fps
+  })
 
   if (carNotFound) {
     return <CarNotFoundComponent contactPhone={contactPhone} contactPhone2={contactPhone2} />

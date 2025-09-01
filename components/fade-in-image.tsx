@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -29,8 +29,8 @@ export default function FadeInImage({
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
 
-  // Use cached URL for Firebase Storage images
-  const cachedSrc = getCachedImageUrl(src || fallback)
+  // Мемоизируем URL для оптимизации производительности
+  const cachedSrc = useMemo(() => getCachedImageUrl(src || fallback), [src, fallback])
 
   return (
     <div className="relative overflow-hidden">
