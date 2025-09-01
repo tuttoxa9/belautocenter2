@@ -150,12 +150,14 @@ async function handleUpload(request, env) {
     const formData = await request.formData();
     const file = formData.get('file');
     const path = formData.get('path');
+    const autoWebP = formData.get('autoWebP') === 'true'; // Получаем параметр autoWebP из FormData
+
     if (!file || !path) return error(400, 'Требуются поля "file" и "path"');
 
     // Проверяем, является ли файл изображением для конвертации
     const isImage = file.type && file.type.startsWith('image/');
     const supportedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif'];
-    const shouldConvertToWebP = isImage && supportedImageTypes.includes(file.type);
+    const shouldConvertToWebP = autoWebP && isImage && supportedImageTypes.includes(file.type);
 
     let finalPath = path;
     let finalContentType = file.type;
@@ -164,9 +166,9 @@ async function handleUpload(request, env) {
       // Меняем расширение на .webp - конвертация будет происходить при запросе изображения
       finalPath = path.replace(/\.(jpg|jpeg|png|heic|heif)$/i, '.webp');
       finalContentType = 'image/webp';
-      console.log(`Изображение будет сохранено для конвертации в WebP: ${finalPath}`);
+      console.log(`Изображение будет сохранено для конвертации в WebP: ${finalPath} (autoWebP=${autoWebP})`);
     } else {
-      console.log(`Файл сохраняется без конвертации: ${file.name} (${file.type})`);
+      console.log(`Файл сохраняется без конвертации: ${file.name} (${file.type}) (autoWebP=${autoWebP})`);
     }
 
     // Сохраняем оригинальный файл (конвертация будет происходить при запросе)
@@ -177,6 +179,7 @@ async function handleUpload(request, env) {
     return json({
       success: true,
       path: finalPath,
+      autoWebPRequested: autoWebP,
       willConvertToWebP: shouldConvertToWebP,
       originalType: file.type,
       savedAs: finalContentType
