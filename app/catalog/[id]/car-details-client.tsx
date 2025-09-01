@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
@@ -226,11 +226,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   // Полноэкранный просмотр фотографий
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
-  // Текущий индекс изображения в галерее
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
   // Touch события для полноэкранного режима
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  // Ref для контейнера прокрутки галереи
+  const galleryScrollRef = useRef<HTMLDivElement>(null)
 
   // Button states
   const bookingButtonState = useButtonState()
@@ -906,45 +907,50 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 ) : (
                   <>
-                    {/* Контейнер для одного изображения */}
-                    <div className="w-full h-full relative">
-                      {car?.imageUrls && car.imageUrls.length > 0 ? (
-                        <div
-                          className="h-full w-full relative cursor-pointer"
-                          onClick={() => {
-                            setFullscreenImageIndex(currentImageIndex)
-                            setIsFullscreenOpen(true)
-                          }}
-                        >
-                          <Image
-                            src={getCachedImageUrl(car.imageUrls[currentImageIndex])}
-                            alt={`${car?.make} ${car?.model} - фото ${currentImageIndex + 1}`}
-                            fill
-                            className="object-contain"
-                            priority={currentImageIndex === 0}
-                            quality={80}
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          className="h-full w-full relative cursor-pointer"
-                          onClick={() => {
-                            setFullscreenImageIndex(0)
-                            setIsFullscreenOpen(true)
-                          }}
-                        >
-                          <Image
-                            src="/placeholder.svg"
-                            alt={`${car?.make} ${car?.model}`}
-                            fill
-                            className="object-contain"
-                            priority
-                            quality={80}
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                          />
-                        </div>
-                      )}
+                    {/* Контейнер для свободной прокрутки */}
+                    <div ref={galleryScrollRef} className="w-full h-full overflow-x-auto overflow-y-hidden scrollbar-hide">
+                      <div className="flex h-full" style={{ width: `${(car?.imageUrls?.length || 1) * 100}%` }}>
+                        {car?.imageUrls?.map((url, index) => (
+                          <div
+                            key={index}
+                            className="h-full flex-shrink-0 relative cursor-pointer"
+                            style={{ width: `${100 / (car?.imageUrls?.length || 1)}%` }}
+                            onClick={() => {
+                              setFullscreenImageIndex(index)
+                              setIsFullscreenOpen(true)
+                            }}
+                          >
+                            <Image
+                              src={getCachedImageUrl(url)}
+                              alt={`${car?.make} ${car?.model} - фото ${index + 1}`}
+                              fill
+                              className="object-contain"
+                              priority={index === 0}
+                              quality={80}
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                            />
+                          </div>
+                        )) || [
+                          <div
+                            key="placeholder"
+                            className="h-full flex-shrink-0 relative cursor-pointer w-full"
+                            onClick={() => {
+                              setFullscreenImageIndex(0)
+                              setIsFullscreenOpen(true)
+                            }}
+                          >
+                            <Image
+                              src="/placeholder.svg"
+                              alt={`${car?.make} ${car?.model}`}
+                              fill
+                              className="object-contain"
+                              priority
+                              quality={80}
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                            />
+                          </div>
+                        ]}
+                      </div>
                     </div>
 
                     {/* Кнопка полноэкранного режима */}
@@ -952,7 +958,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                         <button
                           onClick={() => {
-                            setFullscreenImageIndex(currentImageIndex)
+                            setFullscreenImageIndex(0)
                             setIsFullscreenOpen(true)
                           }}
                           className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
@@ -965,34 +971,44 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     )}
 
-                    {/* Индикатор текущего фото и навигация */}
+                    {/* Стрелочки навигации по прокрутке */}
                     {car?.imageUrls && car.imageUrls.length > 1 && (
                       <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-3">
                         {/* Стрелочка влево */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            setCurrentImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length)
+                            if (galleryScrollRef.current) {
+                              galleryScrollRef.current.scrollBy({
+                                left: -galleryScrollRef.current.clientWidth / car.imageUrls.length,
+                                behavior: 'smooth'
+                              })
+                            }
                           }}
                           className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                          aria-label="Предыдущее фото"
+                          aria-label="Прокрутить влево"
                         >
                           <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                         </button>
 
-                        {/* Счетчик фото */}
+                        {/* Индикатор прокрутки */}
                         <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
-                          {currentImageIndex + 1} из {car.imageUrls.length}
+                          {car.imageUrls.length} фото
                         </div>
 
                         {/* Стрелочка вправо */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            setCurrentImageIndex((prev) => (prev + 1) % car.imageUrls.length)
+                            if (galleryScrollRef.current) {
+                              galleryScrollRef.current.scrollBy({
+                                left: galleryScrollRef.current.clientWidth / car.imageUrls.length,
+                                behavior: 'smooth'
+                              })
+                            }
                           }}
                           className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                          aria-label="Следующее фото"
+                          aria-label="Прокрутить вправо"
                         >
                           <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                         </button>
