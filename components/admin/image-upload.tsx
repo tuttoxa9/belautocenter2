@@ -59,7 +59,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
         if (multiple) {
           // Множественная загрузка
           console.log(`Начало загрузки ${filesToProcess.length} файлов`)
-          const uploadPromises = filesToProcess.map(file => uploadImage(file, path))
+          const uploadPromises = filesToProcess.map(file => uploadImage(file, path, true))
           const imagePaths = await Promise.all(uploadPromises)
           console.log('Все файлы успешно загружены:', imagePaths)
 
@@ -75,7 +75,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           const file = filesToProcess[0]
           console.log('Начало загрузки файла:', file.name, 'размер:', file.size, 'путь:', path)
 
-          const imagePath = await uploadImage(file, path)
+          const imagePath = await uploadImage(file, path, true)
           console.log('Файл успешно загружен, путь:', imagePath)
 
           setPreview(imagePath)
@@ -206,6 +206,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                   {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения или нажмите для выбора"}
                 </p>
                 <p className="text-xs text-gray-500">Можно выбрать несколько файлов: PNG, JPG, WEBP, HEIC, HEIF до 10MB каждый</p>
+                <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
               </div>
             )}
           </Card>
@@ -350,6 +351,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                   {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
                 </p>
                 <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
+                <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
               </div>
             )}
           </Card>
