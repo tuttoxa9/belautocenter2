@@ -226,6 +226,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   // Полноэкранный просмотр фотографий
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
+  // Состояние для текущей фотографии в галерее
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   // Touch события для полноэкранного режима
   const [touchStart, setTouchStart] = useState<number | null>(null)
@@ -247,6 +249,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   useEffect(() => {
     if (carId) {
       loadCarData(carId)
+      setCurrentImageIndex(0) // Сбрасываем индекс при загрузке нового авто
     }
   }, [carId])
 
@@ -314,6 +317,37 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   // Получаем хост для изображений
   const imageHost = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
+
+  // Функции навигации по галерее
+  const navigateToImage = (index: number) => {
+    if (!car?.imageUrls || car.imageUrls.length === 0) return;
+
+    const clampedIndex = Math.max(0, Math.min(index, car.imageUrls.length - 1));
+    setCurrentImageIndex(clampedIndex);
+
+    if (galleryScrollRef.current) {
+      const containerWidth = galleryScrollRef.current.clientWidth;
+      const imageWidth = containerWidth / car.imageUrls.length;
+      const targetScrollLeft = clampedIndex * imageWidth;
+
+      galleryScrollRef.current.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const navigatePrevious = () => {
+    if (!car?.imageUrls || car.imageUrls.length <= 1) return;
+    const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : car.imageUrls.length - 1;
+    navigateToImage(newIndex);
+  };
+
+  const navigateNext = () => {
+    if (!car?.imageUrls || car.imageUrls.length <= 1) return;
+    const newIndex = currentImageIndex < car.imageUrls.length - 1 ? currentImageIndex + 1 : 0;
+    navigateToImage(newIndex);
+  };
 
   const loadStaticData = async () => {
     try {
@@ -978,15 +1012,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            if (galleryScrollRef.current) {
-                              galleryScrollRef.current.scrollBy({
-                                left: -galleryScrollRef.current.clientWidth / car.imageUrls.length,
-                                behavior: 'smooth'
-                              })
-                            }
+                            navigatePrevious()
                           }}
                           className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                          aria-label="Прокрутить влево"
+                          aria-label="Предыдущее фото"
                         >
                           <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                         </button>
@@ -1000,15 +1029,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            if (galleryScrollRef.current) {
-                              galleryScrollRef.current.scrollBy({
-                                left: galleryScrollRef.current.clientWidth / car.imageUrls.length,
-                                behavior: 'smooth'
-                              })
-                            }
+                            navigateNext()
                           }}
                           className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                          aria-label="Прокрутить вправо"
+                          aria-label="Следующее фото"
                         >
                           <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                         </button>
