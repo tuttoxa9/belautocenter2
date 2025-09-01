@@ -35,22 +35,12 @@ export default function CarCard({ car }: CarCardProps) {
   const [dataReady, setDataReady] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
-  // Устанавливаем задержку перед отображением данных,
-  // чтобы избежать показа устаревших данных
+  // Данные готовы к отображению сразу
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDataReady(true);
-    }, 100);
-    return () => clearTimeout(timer);
+    setDataReady(true);
   }, []);
 
-  // Отладочная информация для проверки данных автомобиля
-  console.log(`Отрисовка карточки: ${car.make} ${car.model}`, {
-    id: car.id,
-    imageUrls: car.imageUrls,
-    firstImage: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null,
-    dataReady
-  })
+  // Карточка готова к отображению
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -64,7 +54,7 @@ export default function CarCard({ car }: CarCardProps) {
       },
       {
         root: null,
-        rootMargin: '100px', // Начинаем загрузку за 100px до появления
+        rootMargin: '200px', // Начинаем загрузку за 200px до появления для более плавной работы
         threshold: 0.1
       }
     )
@@ -112,6 +102,7 @@ export default function CarCard({ car }: CarCardProps) {
                   src={getCachedImageUrl(car.imageUrls[0] || "/placeholder.svg?height=200&width=280")}
                   alt={`${car.make} ${car.model}`}
                   fill
+                  quality={75}
                   className={`object-cover group-hover:scale-102 transition-all duration-300 ${
                     isImageLoaded ? 'opacity-100' : 'opacity-0'
                   }`}

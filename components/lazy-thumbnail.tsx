@@ -29,7 +29,7 @@ export default function LazyThumbnail({ src, alt, isSelected, onClick, index }: 
       },
       {
         root: null,
-        rootMargin: '50px', // Начинаем загрузку за 50px до появления
+        rootMargin: '150px', // Начинаем загрузку за 150px до появления для более плавной работы
         threshold: 0.1
       }
     )
@@ -72,6 +72,8 @@ export default function LazyThumbnail({ src, alt, isSelected, onClick, index }: 
             alt={alt}
             width={56}
             height={56}
+            quality={60}
+            sizes="56px"
             className={`w-full h-full object-cover transition-opacity duration-300 ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
