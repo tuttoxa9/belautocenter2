@@ -57,22 +57,37 @@ async function purgeCacheByUrls(env, urls = []) { if (!urls.length || !env.CLOUD
 // 4. БИЗНЕС-ЛОГИКА (R2 + FIRESTORE PROXY)
 // ====================================================================================
 
-/** Обработчик для получения файлов из R2 с кэшированием */
+/** Обработчик для получения файлов из R2 с кэшированием и автоматической конвертацией в WebP */
 async function handleGetImage(request, env, ctx) {
   const cache = caches.default;
-  const key = new Request(request.url, request);
-
-  let response = await cache.match(key);
-  if (response) {
-    console.log(`Cache HIT for: ${request.url}`);
-    return response;
-  }
-  console.log(`Cache MISS for: ${request.url}`);
-
   const url = new URL(request.url);
   const path = url.pathname.slice(1);
+
   if (!path) return error(400, "File path is missing");
 
+  // Проверяем, поддерживает ли браузер WebP
+  const acceptHeader = request.headers.get('Accept') || '';
+  const supportsWebP = acceptHeader.includes('image/webp');
+
+  // Проверяем, является ли запрашиваемый файл изображением, которое можно конвертировать в WebP
+  const isConvertibleImage = /\.(jpg|jpeg|png)$/i.test(path);
+
+  // Определяем, нужно ли конвертировать в WebP
+  const shouldConvertToWebP = supportsWebP && isConvertibleImage;
+
+  // Создаем ключ кэша с учетом WebP конвертации
+  const cacheKey = shouldConvertToWebP ?
+    new Request(request.url + '?webp=true', request) :
+    new Request(request.url, request);
+
+  let response = await cache.match(cacheKey);
+  if (response) {
+    console.log(`Cache HIT for: ${request.url} (WebP: ${shouldConvertToWebP})`);
+    return response;
+  }
+  console.log(`Cache MISS for: ${request.url} (WebP: ${shouldConvertToWebP})`);
+
+  // Получаем оригинальный файл из R2
   const object = await env.IMAGE_BUCKET.get(path);
   if (object === null) {
     return new Response('File Not Found in R2', {
@@ -87,12 +102,48 @@ async function handleGetImage(request, env, ctx) {
   headers.set('Cache-Control', `public, max-age=${2592000}`); // 30 дней для картинок
   headers.set('Access-Control-Allow-Origin', '*');
 
+  // Если нужно конвертировать в WebP, используем Cloudflare Image Resizing
+  if (shouldConvertToWebP) {
+    try {
+      console.log(`Конвертация изображения в WebP: ${path}`);
+
+      // Создаем временный URL для использования с Image Resizing
+      const imageResponse = new Response(object.body, { headers });
+      const imageUrl = `https://${url.hostname}/${path}`;
+
+      // Используем Cloudflare Image Resizing для конвертации в WebP
+      const webpResponse = await fetch(imageUrl, {
+        cf: {
+          image: {
+            format: 'webp',
+            quality: 85
+          }
+        }
+      });
+
+      if (webpResponse.ok) {
+        console.log(`Успешно конвертировано в WebP: ${path}`);
+        headers.set('Content-Type', 'image/webp');
+        headers.set('X-Converted-To-WebP', 'true');
+
+        response = new Response(webpResponse.body, { headers });
+        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        return response;
+      } else {
+        console.log(`Не удалось конвертировать в WebP, возвращаем оригинал: ${path}`);
+      }
+    } catch (conversionError) {
+      console.error(`Ошибка конвертации в WebP: ${conversionError.message}`);
+    }
+  }
+
+  // Возвращаем оригинальное изображение
   response = new Response(object.body, { headers });
-  ctx.waitUntil(cache.put(key, response.clone()));
+  ctx.waitUntil(cache.put(cacheKey, response.clone()));
   return response;
 }
 
-/** Обработчик для загрузки файлов в R2 */
+/** Обработчик для загрузки файлов в R2 с автоматической конвертацией в WebP */
 async function handleUpload(request, env) {
   if (request.method !== 'POST') return error(405, 'Method Not Allowed');
   try {
@@ -100,10 +151,36 @@ async function handleUpload(request, env) {
     const file = formData.get('file');
     const path = formData.get('path');
     if (!file || !path) return error(400, 'Требуются поля "file" и "path"');
-    await env.IMAGE_BUCKET.put(path, file.stream(), {
-      httpMetadata: { contentType: file.type },
+
+    // Проверяем, является ли файл изображением для конвертации
+    const isImage = file.type && file.type.startsWith('image/');
+    const supportedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif'];
+    const shouldConvertToWebP = isImage && supportedImageTypes.includes(file.type);
+
+    let finalPath = path;
+    let finalContentType = file.type;
+
+    if (shouldConvertToWebP) {
+      // Меняем расширение на .webp - конвертация будет происходить при запросе изображения
+      finalPath = path.replace(/\.(jpg|jpeg|png|heic|heif)$/i, '.webp');
+      finalContentType = 'image/webp';
+      console.log(`Изображение будет сохранено для конвертации в WebP: ${finalPath}`);
+    } else {
+      console.log(`Файл сохраняется без конвертации: ${file.name} (${file.type})`);
+    }
+
+    // Сохраняем оригинальный файл (конвертация будет происходить при запросе)
+    await env.IMAGE_BUCKET.put(finalPath, file.stream(), {
+      httpMetadata: { contentType: finalContentType },
     });
-    return json({ success: true, path: path });
+
+    return json({
+      success: true,
+      path: finalPath,
+      willConvertToWebP: shouldConvertToWebP,
+      originalType: file.type,
+      savedAs: finalContentType
+    });
   } catch (e) {
     return error(500, `Upload failed: ${e.message}`);
   }

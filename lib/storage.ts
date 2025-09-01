@@ -6,9 +6,10 @@ const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belauto
  * Загружает изображение на Cloudflare Worker
  * @param file - Файл для загрузки
  * @param path - Путь (папка) для хранения файла, например 'cars'
+ * @param autoWebP - Автоматически конвертировать в WebP (по умолчанию true)
  * @returns Promise<string> - Путь к файлу (без хоста), который нужно сохранить в Firestore
  */
-export const uploadImage = async (file: File, path: string): Promise<string> => {
+export const uploadImage = async (file: File, path: string, autoWebP: boolean = true): Promise<string> => {
   try {
     console.log('Начало загрузки изображения через Cloudflare Worker...')
 
@@ -26,6 +27,7 @@ export const uploadImage = async (file: File, path: string): Promise<string> => 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('path', uniquePath);
+    formData.append('autoWebP', autoWebP.toString());
 
     // Получаем токен аутентификации текущего пользователя
     const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
