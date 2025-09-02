@@ -314,9 +314,9 @@ export default function SalePage() {
 
             {/* Deal Process Column */}
             <div className="lg:col-span-1">
-              <div className="lg:sticky lg:top-8">
+              <div className="lg:sticky lg:top-24">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Как проходит сделка</h3>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {dealSteps.map((step, index) => {
                     const IconComponent = step.icon
                     const isExpanded = expandedStep === step.id
@@ -330,28 +330,28 @@ export default function SalePage() {
                         style={{ transitionDelay: `${600 + index * 50}ms` }}
                       >
                         <div
-                          className="p-4 cursor-pointer transition-colors"
+                          className="p-5 cursor-pointer transition-colors"
                           onClick={() => setExpandedStep(isExpanded ? null : step.id)}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 bg-gradient-to-r ${step.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                <span className="text-white font-bold text-sm">{step.id}</span>
+                              <div className={`w-10 h-10 bg-gradient-to-r ${step.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                <span className="text-white font-bold text-base">{step.id}</span>
                               </div>
-                              <div className="flex items-center gap-2 min-w-0 flex-1">
-                                <div className="w-6 h-6 bg-white rounded flex items-center justify-center flex-shrink-0">
-                                  <IconComponent className="h-3 w-3 text-gray-600" />
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <div className="w-8 h-8 bg-white rounded flex items-center justify-center flex-shrink-0">
+                                  <IconComponent className="h-4 w-4 text-gray-600" />
                                 </div>
-                                <h4 className="text-sm font-semibold text-gray-900 truncate">
+                                <h4 className="text-base font-semibold text-gray-900 truncate">
                                   {step.title}
                                 </h4>
                               </div>
                             </div>
                             <div className="flex-shrink-0">
                               {isExpanded ? (
-                                <ChevronUp className="h-4 w-4 text-gray-400" />
+                                <ChevronUp className="h-5 w-5 text-gray-400" />
                               ) : (
-                                <ChevronDown className="h-4 w-4 text-gray-400" />
+                                <ChevronDown className="h-5 w-5 text-gray-400" />
                               )}
                             </div>
                           </div>
@@ -360,10 +360,10 @@ export default function SalePage() {
                         <div className={`transition-all duration-300 overflow-hidden ${
                           isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                         }`}>
-                          <div className="px-4 pb-4">
-                            <div className="pl-11">
-                              <div className="bg-white rounded-lg p-3 border">
-                                <p className="text-xs text-gray-700 leading-relaxed">
+                          <div className="px-5 pb-5">
+                            <div className="pl-13">
+                              <div className="bg-white rounded-lg p-4 border">
+                                <p className="text-sm text-gray-700 leading-relaxed">
                                   {step.description}
                                 </p>
                               </div>
