@@ -242,14 +242,18 @@ export default function SalePage() {
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Выберите подходящую услугу
+              Наши услуги и процесс работы
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Мы предлагаем полный спектр услуг для покупки, продажи и обмена автомобилей
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              Полный спектр автомобильных услуг и пошаговый процесс сделки
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+            {/* Services Column */}
+            <div className="lg:col-span-2">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Выберите подходящую услугу</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {services.map((service, index) => {
               const IconComponent = service.icon
               return (
@@ -305,88 +309,80 @@ export default function SalePage() {
                 </div>
               )
             })}
-          </div>
-        </div>
-      </section>
+              </div>
+            </div>
 
-      {/* How Deal Works Section */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="container mx-auto max-w-4xl">
-          <div className={`text-center mb-12 transform transition-all duration-1000 delay-300 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Как проходит сделка
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Пошаговый процесс работы с клиентами - от первого звонка до завершения сделки
-            </p>
-          </div>
+            {/* Deal Process Column */}
+            <div className="lg:col-span-1">
+              <div className="lg:sticky lg:top-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">Как проходит сделка</h3>
+                <div className="space-y-3">
+                  {dealSteps.map((step, index) => {
+                    const IconComponent = step.icon
+                    const isExpanded = expandedStep === step.id
 
-          <div className="space-y-4">
-            {dealSteps.map((step, index) => {
-              const IconComponent = step.icon
-              const isExpanded = expandedStep === step.id
-
-              return (
-                <div
-                  key={step.id}
-                  className={`bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-700 ${
-                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                  }`}
-                  style={{ transitionDelay: `${600 + index * 100}ms` }}
-                >
-                  <div
-                    className="p-4 sm:p-6 cursor-pointer"
-                    onClick={() => setExpandedStep(isExpanded ? null : step.id)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 sm:gap-4">
-                        <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${step.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                          <span className="text-white font-bold text-sm sm:text-lg">{step.id}</span>
-                        </div>
-                        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+                    return (
+                      <div
+                        key={step.id}
+                        className={`bg-gray-50 rounded-xl border border-gray-200 overflow-hidden transform transition-all duration-700 ${
+                          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                        }`}
+                        style={{ transitionDelay: `${600 + index * 50}ms` }}
+                      >
+                        <div
+                          className="p-4 cursor-pointer transition-colors"
+                          onClick={() => setExpandedStep(isExpanded ? null : step.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 bg-gradient-to-r ${step.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                <span className="text-white font-bold text-sm">{step.id}</span>
+                              </div>
+                              <div className="flex items-center gap-2 min-w-0 flex-1">
+                                <div className="w-6 h-6 bg-white rounded flex items-center justify-center flex-shrink-0">
+                                  <IconComponent className="h-3 w-3 text-gray-600" />
+                                </div>
+                                <h4 className="text-sm font-semibold text-gray-900 truncate">
+                                  {step.title}
+                                </h4>
+                              </div>
+                            </div>
+                            <div className="flex-shrink-0">
+                              {isExpanded ? (
+                                <ChevronUp className="h-4 w-4 text-gray-400" />
+                              ) : (
+                                <ChevronDown className="h-4 w-4 text-gray-400" />
+                              )}
+                            </div>
                           </div>
-                          <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 truncate">
-                            {step.title}
-                          </h3>
                         </div>
-                      </div>
-                      <div className="flex-shrink-0">
-                        {isExpanded ? (
-                          <ChevronUp className="h-6 w-6 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="h-6 w-6 text-gray-400" />
-                        )}
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className={`transition-all duration-300 overflow-hidden ${
-                    isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                  }`}>
-                    <div className="px-4 sm:px-6 pb-6">
-                      <div className="pl-12 sm:pl-16 md:pl-20">
-                        <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
-                          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                            {step.description}
-                          </p>
+                        <div className={`transition-all duration-300 overflow-hidden ${
+                          isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                        }`}>
+                          <div className="px-4 pb-4">
+                            <div className="pl-11">
+                              <div className="bg-white rounded-lg p-3 border">
+                                <p className="text-xs text-gray-700 leading-relaxed">
+                                  {step.description}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    )
+                  })}
                 </div>
-              )
-            })}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Form Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="container mx-auto max-w-7xl">
+        {/* Contact Form Section */}
+        <section className="py-16 px-4">
+          <div className="container mx-auto max-w-7xl">
           {/* Contact Form */}
           <div className={`max-w-2xl mx-auto transform transition-all duration-1000 delay-1000 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
@@ -505,8 +501,8 @@ export default function SalePage() {
               <p className="text-gray-600 text-sm">Сопровождение на всех этапах сделки</p>
             </div>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
       </div>
     </div>
   )
