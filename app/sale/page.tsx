@@ -249,9 +249,9 @@ export default function SalePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-16">
             {/* Services Column */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Выберите подходящую услугу</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {services.map((service, index) => {
@@ -313,7 +313,7 @@ export default function SalePage() {
             </div>
 
             {/* Deal Process Column */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-2">
               <div className="lg:sticky lg:top-24">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Как проходит сделка</h3>
                 <div className="space-y-4">
@@ -342,7 +342,7 @@ export default function SalePage() {
                                 <div className="w-8 h-8 bg-white rounded flex items-center justify-center flex-shrink-0">
                                   <IconComponent className="h-4 w-4 text-gray-600" />
                                 </div>
-                                <h4 className="text-base font-semibold text-gray-900 truncate">
+                                <h4 className="text-lg font-semibold text-gray-900 truncate">
                                   {step.title}
                                 </h4>
                               </div>
@@ -363,7 +363,7 @@ export default function SalePage() {
                           <div className="px-5 pb-5">
                             <div className="pl-13">
                               <div className="bg-white rounded-lg p-4 border">
-                                <p className="text-sm text-gray-700 leading-relaxed">
+                                <p className="text-base text-gray-700 leading-relaxed">
                                   {step.description}
                                 </p>
                               </div>
