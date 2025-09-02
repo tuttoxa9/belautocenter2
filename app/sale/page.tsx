@@ -21,7 +21,14 @@ import {
   CheckCircle,
   ArrowRight,
   Star,
-  Calculator
+  Calculator,
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  FileText,
+  Handshake,
+  Settings,
+  Trophy
 } from "lucide-react"
 
 const services = [
@@ -81,6 +88,58 @@ const services = [
   }
 ]
 
+const dealSteps = [
+  {
+    id: 1,
+    title: 'Визит или звонок',
+    icon: Phone,
+    description: 'Свяжитесь с нами удобным для вас способом или приезжайте к нам в офис по адресу в Минске. Наши специалисты готовы ответить на все ваши вопросы.',
+    color: 'from-blue-500 to-blue-600'
+  },
+  {
+    id: 2,
+    title: 'Осмотр машины',
+    icon: Eye,
+    description: 'Если вы находитесь не в Минске, мы можем организовать выезд нашего специалиста к вам для осмотра автомобиля и составления договора на месте.',
+    color: 'from-green-500 to-green-600'
+  },
+  {
+    id: 3,
+    title: 'Согласование стоимости',
+    icon: DollarSign,
+    description: 'Определяем справедливую рыночную цену вашего автомобиля. В процессе оценки учитываем текущее состояние, пробег и рыночную ситуацию.',
+    color: 'from-purple-500 to-purple-600'
+  },
+  {
+    id: 4,
+    title: 'Подготовка документов',
+    icon: FileText,
+    description: 'Все документы оформляются максимально прозрачно. Составляем акт приема-передачи, а также заключаем с вами договор, где прописываем все условия для обеих сторон.',
+    color: 'from-orange-500 to-orange-600'
+  },
+  {
+    id: 5,
+    title: 'Подготовка авто',
+    icon: Settings,
+    description: 'Организуем предпродажную подготовку: чистку и полировку, устранение мелких недостатков, диагностику и устранение технических проблем.',
+    color: 'from-teal-500 to-teal-600'
+  },
+  {
+    id: 6,
+    title: 'Реализация',
+    icon: Trophy,
+    description: 'Активно занимаемся рекламой и общаемся с потенциальными покупателями. При необходимости помогаем покупателям с оформлением кредита или лизинга.',
+    color: 'from-red-500 to-red-600'
+  },
+  {
+    id: 7,
+    title: 'Завершение сделки',
+    icon: Handshake,
+    description: 'Вы (или доверенное лицо) получаете оговоренную ранее сумму на руки либо на расчетный лицевой счет.',
+    color: 'from-indigo-500 to-indigo-600'
+  }
+]
+
 export default function SalePage() {
   const [selectedService, setSelectedService] = useState('')
   const [formData, setFormData] = useState({
@@ -89,6 +148,7 @@ export default function SalePage() {
     message: ''
   })
   const [isVisible, setIsVisible] = useState(false)
+  const [expandedStep, setExpandedStep] = useState<number | null>(null)
 
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
@@ -173,9 +233,11 @@ export default function SalePage() {
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-7xl">
+      {/* Main Content with rounded top */}
+      <div className="bg-white rounded-t-[2rem] relative -mt-8 z-10">
+        {/* Services Grid */}
+        <section className="py-16 px-4">
+          <div className="container mx-auto max-w-7xl">
           <div className={`text-center mb-12 transform transition-all duration-1000 delay-300 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
@@ -187,7 +249,7 @@ export default function SalePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16">
             {services.map((service, index) => {
               const IconComponent = service.icon
               return (
@@ -244,7 +306,87 @@ export default function SalePage() {
               )
             })}
           </div>
+        </div>
+      </section>
 
+      {/* How Deal Works Section */}
+      <section className="py-16 px-4 bg-gray-50">
+        <div className="container mx-auto max-w-4xl">
+          <div className={`text-center mb-12 transform transition-all duration-1000 delay-300 ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+              Как проходит сделка
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Пошаговый процесс работы с клиентами - от первого звонка до завершения сделки
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {dealSteps.map((step, index) => {
+              const IconComponent = step.icon
+              const isExpanded = expandedStep === step.id
+
+              return (
+                <div
+                  key={step.id}
+                  className={`bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-700 ${
+                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}
+                  style={{ transitionDelay: `${600 + index * 100}ms` }}
+                >
+                  <div
+                    className="p-4 sm:p-6 cursor-pointer"
+                    onClick={() => setExpandedStep(isExpanded ? null : step.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${step.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                          <span className="text-white font-bold text-sm sm:text-lg">{step.id}</span>
+                        </div>
+                        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+                          </div>
+                          <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 truncate">
+                            {step.title}
+                          </h3>
+                        </div>
+                      </div>
+                      <div className="flex-shrink-0">
+                        {isExpanded ? (
+                          <ChevronUp className="h-6 w-6 text-gray-400" />
+                        ) : (
+                          <ChevronDown className="h-6 w-6 text-gray-400" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={`transition-all duration-300 overflow-hidden ${
+                    isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  }`}>
+                    <div className="px-4 sm:px-6 pb-6">
+                      <div className="pl-12 sm:pl-16 md:pl-20">
+                        <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
+                          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                            {step.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="container mx-auto max-w-7xl">
           {/* Contact Form */}
           <div className={`max-w-2xl mx-auto transform transition-all duration-1000 delay-1000 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
@@ -334,11 +476,12 @@ export default function SalePage() {
             </div>
           </div>
 
+
           {/* Additional Info */}
           <div className={`mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 transform transition-all duration-1000 delay-1200 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+            <div className="text-center p-6 bg-gray-50 rounded-xl border">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Clock className="h-6 w-6 text-green-600" />
               </div>
@@ -346,7 +489,7 @@ export default function SalePage() {
               <p className="text-gray-600 text-sm">Решение по заявке в течение 30 минут</p>
             </div>
 
-            <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+            <div className="text-center p-6 bg-gray-50 rounded-xl border">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Calculator className="h-6 w-6 text-blue-600" />
               </div>
@@ -354,7 +497,7 @@ export default function SalePage() {
               <p className="text-gray-600 text-sm">Индивидуальный подход к каждому клиенту</p>
             </div>
 
-            <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+            <div className="text-center p-6 bg-gray-50 rounded-xl border">
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-6 w-6 text-purple-600" />
               </div>
@@ -364,6 +507,7 @@ export default function SalePage() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   )
 }
