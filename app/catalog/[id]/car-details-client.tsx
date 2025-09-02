@@ -1116,39 +1116,59 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     Характеристики
                   </h3>
                   <div className="grid grid-cols-2 gap-2 lg:gap-3">
-                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
-                      <div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>
-                      {loading ? (
-                        <div className="h-5 lg:h-7 bg-slate-300 rounded w-20 animate-pulse"></div>
-                      ) : (
-                        <div className="text-sm lg:text-lg font-bold text-slate-900">{formatMileage(car?.mileage || 0)} км</div>
-                      )}
+                    <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                      <div className="absolute top-2 right-2 opacity-10">
+                        <Gauge className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600" />
+                      </div>
+                      <div className="relative z-10">
+                        <div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>
+                        {loading ? (
+                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-20 animate-pulse"></div>
+                        ) : (
+                          <div className="text-sm lg:text-lg font-bold text-slate-900">{formatMileage(car?.mileage || 0)} км</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
-                      <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
-                      {loading ? (
-                        <div className="h-5 lg:h-7 bg-slate-300 rounded w-16 animate-pulse"></div>
-                      ) : (
-                        <div className="text-sm lg:text-lg font-bold text-slate-900">
-                          {car?.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car?.engineVolume || 0)}л ${car?.fuelType}`}
-                        </div>
-                      )}
+                    <div className="relative bg-gradient-to-br from-green-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                      <div className="absolute top-2 right-2 opacity-10">
+                        <Fuel className="h-6 w-6 lg:h-8 lg:w-8 text-green-600" />
+                      </div>
+                      <div className="relative z-10">
+                        <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
+                        {loading ? (
+                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-16 animate-pulse"></div>
+                        ) : (
+                          <div className="text-sm lg:text-lg font-bold text-slate-900">
+                            {car?.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car?.engineVolume || 0)}л ${car?.fuelType}`}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
-                      <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>
-                      {loading ? (
-                        <div className="h-5 lg:h-7 bg-slate-300 rounded w-12 animate-pulse"></div>
-                      ) : (
-                        <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.transmission}</div>
-                      )}
+                    <div className="relative bg-gradient-to-br from-purple-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                      <div className="absolute top-2 right-2 opacity-10">
+                        <Settings className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600" />
+                      </div>
+                      <div className="relative z-10">
+                        <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>
+                        {loading ? (
+                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-12 animate-pulse"></div>
+                        ) : (
+                          <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.transmission}</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50">
-                      <div className="text-xs text-slate-500 font-medium mb-1">Привод</div>
-                      {loading ? (
-                        <div className="h-5 lg:h-7 bg-slate-300 rounded w-14 animate-pulse"></div>
-                      ) : (
-                        <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.driveTrain}</div>
-                      )}
+                    <div className="relative bg-gradient-to-br from-orange-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                      <div className="absolute top-2 right-2 opacity-10">
+                        <Car className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
+                      </div>
+                      <div className="relative z-10">
+                        <div className="text-xs text-slate-500 font-medium mb-1">Привод</div>
+                        {loading ? (
+                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-14 animate-pulse"></div>
+                        ) : (
+                          <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.driveTrain}</div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
