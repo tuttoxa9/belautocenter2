@@ -946,7 +946,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
 
             {/* Левая колонка: Галерея */}
-            <div className="lg:col-span-6 lg:border-r border-slate-200/50">
+            <div className="lg:col-span-8 lg:border-r border-slate-200/50">
               <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden">
                 {loading ? (
                   <div className="w-full h-full flex items-center justify-center">
@@ -1107,7 +1107,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
             </div>
 
             {/* Правая колонка: Характеристики и действия */}
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-4">
               <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
 
                 {/* Основные характеристики - компактный стиль */}
