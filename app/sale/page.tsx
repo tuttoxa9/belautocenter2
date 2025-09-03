@@ -149,6 +149,7 @@ export default function SalePage() {
   })
   const [isVisible, setIsVisible] = useState(false)
   const [expandedStep, setExpandedStep] = useState<number | null>(null)
+  const [activeTab, setActiveTab] = useState<'services' | 'process'>('services')
 
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
@@ -197,9 +198,9 @@ export default function SalePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50 z-10" />
+      {/* Modern Hero Section */}
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-800/85 to-slate-700/80 z-10" />
         <Image
           src="/mercedes-new-bg.jpg"
           alt="Автомобили БелАвтоЦентр"
@@ -207,303 +208,391 @@ export default function SalePage() {
           className="object-cover"
           priority
         />
-        <div className={`relative z-20 text-center text-white px-4 transform transition-all duration-1000 ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+
+        {/* Floating elements for modern design */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl z-5"></div>
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-white/5 rounded-full blur-xl z-5"></div>
+
+        <div className={`relative z-20 text-center text-white px-6 max-w-6xl mx-auto transform transition-all duration-1500 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
         }`}>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
-            Наши услуги
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 mb-8 border border-white/20">
+            <Star className="h-4 w-4 text-yellow-400" />
+            <span className="text-sm font-medium">Официальный дилер • 15+ лет на рынке</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 drop-shadow-2xl leading-tight">
+            Автомобильные
+            <span className="block bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+              услуги
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto font-light drop-shadow-md">
-            Полный спектр автомобильных услуг: от покупки до продажи
+
+          <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto font-light text-slate-200 leading-relaxed">
+            Полный спектр профессиональных услуг: лизинг, кредитование, trade-in, выкуп и комиссионная продажа автомобилей
           </p>
-          <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
-            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-              <CheckCircle className="h-5 w-5" />
-              <span>Официальный дилер</span>
+
+          <div className="flex flex-wrap justify-center gap-6 mb-12">
+            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-3 border border-white/20">
+              <CheckCircle className="h-5 w-5 text-green-400" />
+              <span className="font-medium">Быстрое оформление</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-              <Star className="h-5 w-5" />
-              <span>15+ лет опыта</span>
+            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-3 border border-white/20">
+              <Shield className="h-5 w-5 text-blue-400" />
+              <span className="font-medium">Гарантия качества</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-              <Shield className="h-5 w-5" />
-              <span>Гарантия качества</span>
+            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-3 border border-white/20">
+              <Trophy className="h-5 w-5 text-yellow-400" />
+              <span className="font-medium">Лучшие условия</span>
             </div>
           </div>
+
+          <Button
+            size="lg"
+            className="bg-white text-slate-900 hover:bg-slate-100 text-lg px-8 py-6 rounded-2xl font-semibold shadow-2xl hover:shadow-white/25 transition-all duration-300"
+            onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            Выбрать услугу
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
         </div>
       </section>
 
-      {/* Main Content with rounded top */}
-      <div className="bg-white rounded-t-[2rem] relative -mt-8 z-10">
-        {/* Services Grid */}
-        <section className="py-16 px-4">
-          <div className="container mx-auto max-w-7xl">
-          <div className={`text-center mb-12 transform transition-all duration-1000 delay-300 ${
+      {/* Modern Services Section */}
+      <section id="services" className="py-24 px-4 bg-white">
+        <div className="container mx-auto max-w-7xl">
+          {/* Section Header */}
+          <div className={`text-center mb-16 transform transition-all duration-1000 delay-300 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Наши услуги и процесс работы
+            <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-4 py-2 mb-6">
+              <Car className="h-4 w-4 text-slate-600" />
+              <span className="text-sm font-medium text-slate-700">Наши услуги</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 leading-tight">
+              Выберите подходящую
+              <span className="block text-slate-600">услугу</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              Полный спектр автомобильных услуг и пошаговый процесс сделки
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Мы предлагаем полный спектр автомобильных услуг с индивидуальным подходом к каждому клиенту
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-16">
-            {/* Services Column */}
-            <div className="lg:col-span-3">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Выберите подходящую услугу</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            {services.map((service, index) => {
-              const IconComponent = service.icon
-              return (
-                <div
-                  key={service.id}
-                  className={`bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-700 ${
-                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                  } group cursor-pointer hover:shadow-2xl hover:scale-[1.02]`}
-                  style={{ transitionDelay: `${400 + index * 100}ms` }}
-                  onClick={() => setSelectedService(service.id)}
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={service.image}
-                      alt={service.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-active:scale-105"
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-t ${service.gradient} opacity-80`} />
-                    <div className="absolute top-4 left-4">
-                      <div className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg">
-                        <IconComponent className="h-6 w-6 text-white" />
-                      </div>
-                    </div>
-                    {selectedService === service.id && (
-                      <div className="absolute top-4 right-4">
-                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                          <CheckCircle className="h-5 w-5 text-white" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {service.description}
-                    </p>
-
-                    <div className="space-y-2">
-                      {service.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-700">
-                          <div className="w-4 h-4 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
-                            <CheckCircle className="h-3 w-3 text-slate-600" />
-                          </div>
-                          <span>{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-              </div>
+          {/* Tab Navigation */}
+          <div className={`flex justify-center mb-12 transform transition-all duration-1000 delay-500 ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}>
+            <div className="bg-slate-100 rounded-2xl p-2">
+              <button
+                onClick={() => setActiveTab('services')}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                  activeTab === 'services'
+                    ? 'bg-white text-slate-900 shadow-lg'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Услуги
+              </button>
+              <button
+                onClick={() => setActiveTab('process')}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                  activeTab === 'process'
+                    ? 'bg-white text-slate-900 shadow-lg'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Процесс работы
+              </button>
             </div>
+          </div>
 
-            {/* Deal Process Column */}
-            <div className="lg:col-span-2">
-              <div className="lg:sticky lg:top-24">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Как проходит сделка</h3>
-                <div className="space-y-4">
-                  {dealSteps.map((step, index) => {
-                    const IconComponent = step.icon
-                    const isExpanded = expandedStep === step.id
+          {/* Services Grid */}
+          {activeTab === 'services' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.map((service, index) => {
+                const IconComponent = service.icon
+                const isSelected = selectedService === service.id
 
-                    return (
-                      <div
-                        key={step.id}
-                        className={`bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden transform transition-all duration-700 ${
-                          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                        } hover:shadow-lg`}
-                        style={{ transitionDelay: `${600 + index * 50}ms` }}
-                      >
-                        <div
-                          className="p-5 cursor-pointer transition-colors"
-                          onClick={() => setExpandedStep(isExpanded ? null : step.id)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-10 h-10 bg-gradient-to-r ${step.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                <span className="text-white font-bold text-base">{step.id}</span>
-                              </div>
-                              <div className="flex items-center gap-3 min-w-0 flex-1">
-                                <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-                                  <IconComponent className="h-4 w-4 text-slate-600" />
-                                </div>
-                                <h4 className="text-lg font-semibold text-gray-900 truncate">
-                                  {step.title}
-                                </h4>
-                              </div>
+                return (
+                  <div
+                    key={service.id}
+                    className={`group relative bg-white rounded-3xl border-2 overflow-hidden transform transition-all duration-700 cursor-pointer ${
+                      isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                    } ${
+                      isSelected
+                        ? 'border-slate-900 shadow-2xl scale-105'
+                        : 'border-slate-200 hover:border-slate-300 hover:shadow-xl hover:scale-102'
+                    }`}
+                    style={{ transitionDelay: `${600 + index * 100}ms` }}
+                    onClick={() => setSelectedService(service.id)}
+                  >
+                    {/* Service Image */}
+                    <div className="relative h-56 overflow-hidden">
+                      <Image
+                        src={service.image}
+                        alt={service.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className={`absolute inset-0 bg-gradient-to-t ${service.gradient} opacity-90`} />
+
+                      {/* Icon */}
+                      <div className="absolute top-6 left-6">
+                        <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-xl">
+                          <IconComponent className="h-7 w-7 text-white" />
+                        </div>
+                      </div>
+
+                      {/* Selection indicator */}
+                      {isSelected && (
+                        <div className="absolute top-6 right-6">
+                          <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-xl animate-pulse">
+                            <CheckCircle className="h-6 w-6 text-white" />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Overlay with title */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">
+                          {service.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-8">
+                      <p className="text-slate-600 mb-6 leading-relaxed">
+                        {service.description}
+                      </p>
+
+                      <div className="space-y-3">
+                        {service.features.map((feature, idx) => (
+                          <div key={idx} className="flex items-center gap-3">
+                            <div className="w-5 h-5 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
+                              <CheckCircle className="h-3 w-3 text-slate-600" />
                             </div>
-                            <div className="flex-shrink-0">
+                            <span className="text-sm text-slate-700 font-medium">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Selection button */}
+                      <div className="mt-6 pt-6 border-t border-slate-100">
+                        <div className={`text-center font-medium transition-all duration-300 ${
+                          isSelected
+                            ? 'text-green-600'
+                            : 'text-slate-400 group-hover:text-slate-600'
+                        }`}>
+                          {isSelected ? '✓ Выбрано' : 'Нажмите для выбора'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Process Steps */}
+          {activeTab === 'process' && (
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {dealSteps.map((step, index) => {
+                  const IconComponent = step.icon
+                  const isExpanded = expandedStep === step.id
+
+                  return (
+                    <div
+                      key={step.id}
+                      className={`group bg-white rounded-3xl border border-slate-200 overflow-hidden transform transition-all duration-700 ${
+                        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                      } hover:shadow-xl hover:border-slate-300`}
+                      style={{ transitionDelay: `${600 + index * 100}ms` }}
+                    >
+                      <div
+                        className="p-8 cursor-pointer"
+                        onClick={() => setExpandedStep(isExpanded ? null : step.id)}
+                      >
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className={`w-12 h-12 bg-gradient-to-r ${step.color} rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                            <span className="text-white font-bold text-lg">{step.id}</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <IconComponent className="h-5 w-5 text-slate-600" />
+                              <h4 className="text-xl font-bold text-slate-900">
+                                {step.title}
+                              </h4>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-slate-500 text-sm">Подробнее</span>
                               {isExpanded ? (
-                                <ChevronUp className="h-5 w-5 text-gray-400" />
+                                <ChevronUp className="h-5 w-5 text-slate-400" />
                               ) : (
-                                <ChevronDown className="h-5 w-5 text-gray-400" />
+                                <ChevronDown className="h-5 w-5 text-slate-400" />
                               )}
                             </div>
                           </div>
                         </div>
 
-                        <div className={`transition-all duration-300 overflow-hidden ${
+                        <div className={`transition-all duration-500 overflow-hidden ${
                           isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                         }`}>
-                          <div className="px-5 pb-5">
-                            <div className="pl-13">
-                              <div className="bg-white rounded-lg p-4 border">
-                                <p className="text-base text-gray-700 leading-relaxed">
-                                  {step.description}
-                                </p>
-                              </div>
-                            </div>
+                          <div className="pt-4 border-t border-slate-100">
+                            <p className="text-slate-600 leading-relaxed">
+                              {step.description}
+                            </p>
                           </div>
                         </div>
                       </div>
-                    )
-                  })}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Modern Contact Section */}
+      <section className="py-24 px-4 bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left side - Info */}
+            <div className={`transform transition-all duration-1000 delay-800 ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            }`}>
+              <div className="inline-flex items-center gap-2 bg-slate-200 rounded-full px-4 py-2 mb-6">
+                <Phone className="h-4 w-4 text-slate-600" />
+                <span className="text-sm font-medium text-slate-700">Свяжитесь с нами</span>
+              </div>
+
+              <h3 className="text-4xl font-bold text-slate-900 mb-6 leading-tight">
+                Готовы обсудить
+                <span className="block text-slate-600">ваши потребности?</span>
+              </h3>
+
+              <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+                Оставьте заявку и получите персональное предложение в течение 15 минут
+              </p>
+
+              {/* Benefits */}
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-slate-200 rounded-2xl flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-slate-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-900">Быстрый ответ</h4>
+                    <p className="text-slate-600 text-sm">Свяжемся в течение 15 минут</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-slate-200 rounded-2xl flex items-center justify-center">
+                    <Calculator className="h-6 w-6 text-slate-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-900">Индивидуальный расчет</h4>
+                    <p className="text-slate-600 text-sm">Персональные условия для вас</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-slate-200 rounded-2xl flex items-center justify-center">
+                    <Shield className="h-6 w-6 text-slate-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-900">Полное сопровождение</h4>
+                    <p className="text-slate-600 text-sm">Поддержка на всех этапах</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Form */}
+            <div className={`transform transition-all duration-1000 delay-1000 ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            }`}>
+              <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 p-8 lg:p-10">
+                {selectedService && (
+                  <div className="mb-8 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl border border-slate-200">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <span className="font-semibold text-slate-900">
+                        Выбранная услуга:
+                      </span>
+                    </div>
+                    <p className="text-slate-700 mt-1 ml-8">
+                      {services.find(s => s.id === selectedService)?.title}
+                    </p>
+                  </div>
+                )}
+
+                <div className="space-y-6">
+                  <div>
+                    <Label htmlFor="name" className="text-base font-semibold text-slate-900 mb-3 block">
+                      Ваше имя *
+                    </Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleFormChange('name', e.target.value)}
+                      className="h-12 text-base rounded-xl border-slate-200 focus:border-slate-400"
+                      placeholder="Введите ваше имя"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phone" className="text-base font-semibold text-slate-900 mb-3 block">
+                      Номер телефона *
+                    </Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone}
+                      onChange={(e) => handleFormChange('phone', e.target.value)}
+                      className="h-12 text-base rounded-xl border-slate-200 focus:border-slate-400"
+                      placeholder="+375 (XX) XXX-XX-XX"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="message" className="text-base font-semibold text-slate-900 mb-3 block">
+                      Комментарий (необязательно)
+                    </Label>
+                    <Textarea
+                      id="message"
+                      value={formData.message}
+                      onChange={(e) => handleFormChange('message', e.target.value)}
+                      className="text-base rounded-xl border-slate-200 focus:border-slate-400 resize-none"
+                      placeholder="Расскажите подробнее о ваших потребностях..."
+                      rows={4}
+                    />
+                  </div>
+
+                  <StatusButton
+                    {...submitButtonState}
+                    onClick={handleSubmit}
+                    disabled={!canSubmit}
+                    className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 transition-all duration-300"
+                  >
+                    Отправить заявку
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </StatusButton>
+
+                  <p className="text-center text-sm text-slate-500 leading-relaxed">
+                    Нажимая кнопку, вы соглашаетесь с{' '}
+                    <a href="/privacy" className="text-slate-700 underline hover:text-slate-900">
+                      политикой конфиденциальности
+                    </a>
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-
-        {/* Contact Form Section */}
-        <section className="py-16 px-4">
-          <div className="container mx-auto max-w-7xl">
-          {/* Contact Form */}
-          <div className={`max-w-2xl mx-auto transform transition-all duration-1000 delay-1000 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 p-8">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-slate-600 to-slate-700 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Phone className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Оставьте заявку
-                </h3>
-                <p className="text-gray-600">
-                  Мы свяжемся с вами в течение 15 минут и ответим на все вопросы
-                </p>
-              </div>
-
-              {selectedService && (
-                <div className="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 text-slate-600" />
-                    <span className="font-medium text-slate-900">
-                      Выбрана услуга: {services.find(s => s.id === selectedService)?.title}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-6">
-                <div>
-                  <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-                    Ваше имя *
-                  </Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleFormChange('name', e.target.value)}
-                    className="mt-1"
-                    placeholder="Введите ваше имя"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
-                    Номер телефона *
-                  </Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => handleFormChange('phone', e.target.value)}
-                    className="mt-1"
-                    placeholder="+375 (XX) XXX-XX-XX"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="message" className="text-sm font-medium text-gray-700">
-                    Сообщение (необязательно)
-                  </Label>
-                  <Textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={(e) => handleFormChange('message', e.target.value)}
-                    className="mt-1"
-                    placeholder="Расскажите подробнее о ваших потребностях..."
-                    rows={4}
-                  />
-                </div>
-
-                <StatusButton
-                  {...submitButtonState}
-                  onClick={handleSubmit}
-                  disabled={!canSubmit}
-                  className="w-full h-12 text-base font-medium"
-                >
-                  Отправить заявку
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </StatusButton>
-
-                <div className="text-center text-sm text-gray-500">
-                  Нажимая кнопку, вы соглашаетесь с{' '}
-                  <a href="/privacy" className="text-blue-600 underline">
-                    политикой конфиденциальности
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          {/* Additional Info */}
-          <div className={`mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 transform transition-all duration-1000 delay-1200 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            <div className="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-lg">
-              <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                <Clock className="h-6 w-6 text-slate-600" />
-              </div>
-              <h4 className="font-bold text-gray-900 mb-2">Быстрое оформление</h4>
-              <p className="text-gray-600 text-sm">Решение по заявке в течение 30 минут</p>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-lg">
-              <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                <Calculator className="h-6 w-6 text-slate-600" />
-              </div>
-              <h4 className="font-bold text-gray-900 mb-2">Выгодные условия</h4>
-              <p className="text-gray-600 text-sm">Индивидуальный подход к каждому клиенту</p>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-lg">
-              <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                <Shield className="h-6 w-6 text-slate-600" />
-              </div>
-              <h4 className="font-bold text-gray-900 mb-2">Полная поддержка</h4>
-              <p className="text-gray-600 text-sm">Сопровождение на всех этапах сделки</p>
-            </div>
-          </div>
-          </div>
-        </section>
-      </div>
     </div>
   )
 }
