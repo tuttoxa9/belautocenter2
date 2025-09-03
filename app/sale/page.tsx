@@ -218,7 +218,7 @@ export default function SalePage() {
         }`}>
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-3 md:px-4 py-2 mb-6 md:mb-8 border border-white/20 text-sm">
             <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400" />
-            <span className="text-xs md:text-sm font-medium">Официальный дилер • 15+ лет на рынке</span>
+            <span className="text-xs md:text-sm font-medium">Официальный дилер • 15+ лет опыта</span>
           </div>
 
           <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-6 md:mb-8 drop-shadow-2xl leading-tight">
@@ -262,24 +262,24 @@ export default function SalePage() {
       <section id="services" className="py-16 md:py-24 px-4 bg-white rounded-t-3xl -mt-8 relative z-10">
         <div className="container mx-auto max-w-7xl">
           {/* Section Header */}
-          <div className={`text-center mb-12 md:mb-16 transform transition-all duration-1000 delay-300 ${
+          <div className={`text-center mb-8 md:mb-12 transform transition-all duration-1000 delay-300 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 md:px-4 py-2 mb-4 md:mb-6">
+            <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 md:px-4 py-1.5 md:py-2 mb-3 md:mb-4">
               <Car className="h-3 w-3 md:h-4 md:w-4 text-slate-600" />
               <span className="text-xs md:text-sm font-medium text-slate-700">Наши услуги</span>
             </div>
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-slate-900 leading-tight">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-slate-900 leading-tight">
               Выберите подходящую
               <span className="block text-slate-600">услугу</span>
             </h2>
-            <p className="text-base md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
               Мы предлагаем полный спектр автомобильных услуг с индивидуальным подходом к каждому клиенту
             </p>
           </div>
 
           {/* Tab Navigation */}
-          <div className={`flex justify-center mb-8 md:mb-12 transform transition-all duration-1000 delay-500 ${
+          <div className={`flex justify-center mb-6 md:mb-8 transform transition-all duration-1000 delay-500 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
             <div className="bg-slate-100 rounded-xl md:rounded-2xl p-1 md:p-2">
