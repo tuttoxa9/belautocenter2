@@ -296,7 +296,9 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
           {currentStep === 2 && (
             <div className="space-y-4">
               <div className="text-center mb-6">
-                <Phone className="h-12 w-12 text-primary mx-auto mb-3" />
+                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+                  <Phone className="h-6 w-6 text-slate-600" />
+                </div>
                 <h3 className="text-xl font-bold mb-2">{funnelSettings.step2Title}</h3>
                 <p className="text-muted-foreground text-sm">
                   {funnelSettings.step2Subtitle}
@@ -319,7 +321,9 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
           {currentStep === 3 && (
             <div className="space-y-6">
               <div className="text-center">
-                <Car className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+                  <Car className="h-6 w-6 text-slate-600" />
+                </div>
                 <h3 className="text-xl font-bold mb-2">{funnelSettings.step3Title}</h3>
                 <p className="text-muted-foreground text-sm mb-6">
                   {funnelSettings.step3Subtitle}
@@ -331,21 +335,21 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
                 <h4 className="font-semibold text-gray-900 text-lg mb-4">Ваши данные</h4>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center flex-shrink-0 shadow-md">
                     <Car className="h-5 w-5 text-white" />
                   </div>
                   <span className="text-gray-700 text-sm font-medium">{formData.carMake} {formData.carModel}</span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center flex-shrink-0 shadow-md">
                     <DollarSign className="h-5 w-5 text-white" />
                   </div>
                   <span className="text-gray-700 text-sm font-medium">{formData.estimatedPrice}</span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-zinc-600 to-zinc-700 flex items-center justify-center flex-shrink-0 shadow-md">
                     <Phone className="h-5 w-5 text-white" />
                   </div>
                   <span className="text-gray-700 text-sm font-medium">{formData.phone}</span>
@@ -353,7 +357,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
 
                 {formData.isInterestedInExchange && (
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-stone-600 to-stone-700 flex items-center justify-center flex-shrink-0 shadow-md">
                       <RotateCcw className="h-5 w-5 text-white" />
                     </div>
                     <span className="text-gray-700 text-sm font-medium">Интересует обмен</span>
@@ -362,7 +366,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
 
                 {formData.isInterestedInTradeIn && (
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-neutral-600 to-neutral-700 flex items-center justify-center flex-shrink-0 shadow-md">
                       <TrendingUp className="h-5 w-5 text-white" />
                     </div>
                     <span className="text-gray-700 text-sm font-medium">Интересует trade-in</span>

@@ -39,7 +39,7 @@ const services = [
     icon: Car,
     features: ['От 10% первоначальный взнос', 'Срок до 5 лет', 'Быстрое оформление'],
     image: '/car_credit.png',
-    gradient: 'from-blue-500 to-blue-700'
+    gradient: 'from-slate-700 to-slate-800'
   },
   {
     id: 'credit',
@@ -48,7 +48,7 @@ const services = [
     icon: CreditCard,
     features: ['От 9% годовых', 'Без отказов', 'Решение за 30 минут'],
     image: '/car_credit2.png',
-    gradient: 'from-green-500 to-green-700'
+    gradient: 'from-gray-700 to-gray-800'
   },
   {
     id: 'tradein',
@@ -57,7 +57,7 @@ const services = [
     icon: RefreshCw,
     features: ['Оценка за 15 минут', 'Юридическая чистота', 'Выгодная цена'],
     image: '/car_credit3.png',
-    gradient: 'from-purple-500 to-purple-700'
+    gradient: 'from-zinc-700 to-zinc-800'
   },
   {
     id: 'buyout',
@@ -66,7 +66,7 @@ const services = [
     icon: DollarSign,
     features: ['Оценка в день обращения', 'Расчет наличными', 'Все документы'],
     image: '/mercedes-bg.jpg',
-    gradient: 'from-orange-500 to-orange-700'
+    gradient: 'from-stone-700 to-stone-800'
   },
   {
     id: 'exchange',
@@ -75,7 +75,7 @@ const services = [
     icon: TrendingUp,
     features: ['Равноценный обмен', 'Проверка истории', 'Безопасная сделка'],
     image: '/audi-bg.jpg',
-    gradient: 'from-red-500 to-red-700'
+    gradient: 'from-neutral-700 to-neutral-800'
   },
   {
     id: 'commission',
@@ -84,7 +84,7 @@ const services = [
     icon: Shield,
     features: ['Профессиональная фотосъемка', 'Размещение на площадках', 'Сопровождение сделки'],
     image: '/vwt.jpg',
-    gradient: 'from-teal-500 to-teal-700'
+    gradient: 'from-slate-600 to-slate-700'
   }
 ]
 
@@ -94,49 +94,49 @@ const dealSteps = [
     title: 'Визит или звонок',
     icon: Phone,
     description: 'Свяжитесь с нами удобным для вас способом или приезжайте к нам в офис по адресу в Минске. Наши специалисты готовы ответить на все ваши вопросы.',
-    color: 'from-blue-500 to-blue-600'
+    color: 'from-slate-600 to-slate-700'
   },
   {
     id: 2,
     title: 'Осмотр машины',
     icon: Eye,
     description: 'Если вы находитесь не в Минске, мы можем организовать выезд нашего специалиста к вам для осмотра автомобиля и составления договора на месте.',
-    color: 'from-green-500 to-green-600'
+    color: 'from-gray-600 to-gray-700'
   },
   {
     id: 3,
     title: 'Согласование стоимости',
     icon: DollarSign,
     description: 'Определяем справедливую рыночную цену вашего автомобиля. В процессе оценки учитываем текущее состояние, пробег и рыночную ситуацию.',
-    color: 'from-purple-500 to-purple-600'
+    color: 'from-zinc-600 to-zinc-700'
   },
   {
     id: 4,
     title: 'Подготовка документов',
     icon: FileText,
     description: 'Все документы оформляются максимально прозрачно. Составляем акт приема-передачи, а также заключаем с вами договор, где прописываем все условия для обеих сторон.',
-    color: 'from-orange-500 to-orange-600'
+    color: 'from-stone-600 to-stone-700'
   },
   {
     id: 5,
     title: 'Подготовка авто',
     icon: Settings,
     description: 'Организуем предпродажную подготовку: чистку и полировку, устранение мелких недостатков, диагностику и устранение технических проблем.',
-    color: 'from-teal-500 to-teal-600'
+    color: 'from-neutral-600 to-neutral-700'
   },
   {
     id: 6,
     title: 'Реализация',
     icon: Trophy,
     description: 'Активно занимаемся рекламой и общаемся с потенциальными покупателями. При необходимости помогаем покупателям с оформлением кредита или лизинга.',
-    color: 'from-red-500 to-red-600'
+    color: 'from-slate-700 to-slate-800'
   },
   {
     id: 7,
     title: 'Завершение сделки',
     icon: Handshake,
     description: 'Вы (или доверенное лицо) получаете оговоренную ранее сумму на руки либо на расчетный лицевой счет.',
-    color: 'from-indigo-500 to-indigo-600'
+    color: 'from-gray-700 to-gray-800'
   }
 ]
 
@@ -196,7 +196,7 @@ export default function SalePage() {
   const canSubmit = formData.name.trim() && formData.phone.length >= 13
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50 z-10" />
@@ -259,9 +259,9 @@ export default function SalePage() {
               return (
                 <div
                   key={service.id}
-                  className={`bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-700 ${
+                  className={`bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-700 ${
                     isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                  } group cursor-pointer`}
+                  } group cursor-pointer hover:shadow-2xl hover:scale-[1.02]`}
                   style={{ transitionDelay: `${400 + index * 100}ms` }}
                   onClick={() => setSelectedService(service.id)}
                 >
@@ -274,7 +274,7 @@ export default function SalePage() {
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t ${service.gradient} opacity-80`} />
                     <div className="absolute top-4 left-4">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg">
                         <IconComponent className="h-6 w-6 text-white" />
                       </div>
                     </div>
@@ -298,8 +298,8 @@ export default function SalePage() {
                     <div className="space-y-2">
                       {service.features.map((feature, idx) => (
                         <div key={idx} className="flex items-center gap-2 text-sm text-gray-700">
-                          <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                            <CheckCircle className="h-3 w-3 text-green-600" />
+                          <div className="w-4 h-4 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <CheckCircle className="h-3 w-3 text-slate-600" />
                           </div>
                           <span>{feature}</span>
                         </div>
@@ -324,9 +324,9 @@ export default function SalePage() {
                     return (
                       <div
                         key={step.id}
-                        className={`bg-gray-50 rounded-xl border border-gray-200 overflow-hidden transform transition-all duration-700 ${
+                        className={`bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden transform transition-all duration-700 ${
                           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                        }`}
+                        } hover:shadow-lg`}
                         style={{ transitionDelay: `${600 + index * 50}ms` }}
                       >
                         <div
@@ -339,8 +339,8 @@ export default function SalePage() {
                                 <span className="text-white font-bold text-base">{step.id}</span>
                               </div>
                               <div className="flex items-center gap-3 min-w-0 flex-1">
-                                <div className="w-8 h-8 bg-white rounded flex items-center justify-center flex-shrink-0">
-                                  <IconComponent className="h-4 w-4 text-gray-600" />
+                                <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                                  <IconComponent className="h-4 w-4 text-slate-600" />
                                 </div>
                                 <h4 className="text-lg font-semibold text-gray-900 truncate">
                                   {step.title}
@@ -387,9 +387,9 @@ export default function SalePage() {
           <div className={`max-w-2xl mx-auto transform transition-all duration-1000 delay-1000 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="bg-white rounded-2xl shadow-xl p-8">
+            <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 p-8">
               <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-slate-600 to-slate-700 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Phone className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -401,10 +401,10 @@ export default function SalePage() {
               </div>
 
               {selectedService && (
-                <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                <div className="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 text-blue-600" />
-                    <span className="font-medium text-blue-900">
+                    <CheckCircle className="h-5 w-5 text-slate-600" />
+                    <span className="font-medium text-slate-900">
                       Выбрана услуга: {services.find(s => s.id === selectedService)?.title}
                     </span>
                   </div>
@@ -477,25 +477,25 @@ export default function SalePage() {
           <div className={`mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 transform transition-all duration-1000 delay-1200 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="text-center p-6 bg-gray-50 rounded-xl border">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Clock className="h-6 w-6 text-green-600" />
+            <div className="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-lg">
+              <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <Clock className="h-6 w-6 text-slate-600" />
               </div>
               <h4 className="font-bold text-gray-900 mb-2">Быстрое оформление</h4>
               <p className="text-gray-600 text-sm">Решение по заявке в течение 30 минут</p>
             </div>
 
-            <div className="text-center p-6 bg-gray-50 rounded-xl border">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Calculator className="h-6 w-6 text-blue-600" />
+            <div className="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-lg">
+              <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <Calculator className="h-6 w-6 text-slate-600" />
               </div>
               <h4 className="font-bold text-gray-900 mb-2">Выгодные условия</h4>
               <p className="text-gray-600 text-sm">Индивидуальный подход к каждому клиенту</p>
             </div>
 
-            <div className="text-center p-6 bg-gray-50 rounded-xl border">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-6 w-6 text-purple-600" />
+            <div className="text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-lg">
+              <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <Shield className="h-6 w-6 text-slate-600" />
               </div>
               <h4 className="font-bold text-gray-900 mb-2">Полная поддержка</h4>
               <p className="text-gray-600 text-sm">Сопровождение на всех этапах сделки</p>
