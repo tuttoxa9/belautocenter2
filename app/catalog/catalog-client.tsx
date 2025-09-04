@@ -649,11 +649,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                   ) : (
                     filteredCars.length
                   )} автомобилей
-                  {!loading && displayedCars.length < filteredCars.length && (
-                    <span className="ml-2 text-blue-600">
-                      (показано {displayedCars.length})
-                    </span>
-                  )}
                 </p>
               </div>
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-1">
