@@ -79,13 +79,17 @@ export async function generateMetadata(
     // Формируем данные для метатегов
     const carTitle = `${carData.make} ${carData.model} ${carData.year} г.`
     const carPrice = carData.price ? `${new Intl.NumberFormat("en-US").format(carData.price)}` : 'Цена по запросу'
-    const carDescription = carData.description || `${carTitle} - ${carData.transmission}, ${carData.fuelType}, пробег ${carData.mileage ? new Intl.NumberFormat("ru-BY").format(carData.mileage) : 0} км. ${carPrice}.`
+    // Создаем простое описание без markdown разметки
+    const engineInfo = carData.fuelType === "Электро"
+      ? carData.fuelType
+      : `${carData.engineVolume ? carData.engineVolume.toFixed(1) : '?'}л ${carData.fuelType || 'бензин'}`
 
-    // Основное изображение автомобиля
-    const imageHost = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by'
+    const carDescription = `${carTitle} • ${carPrice} • ${carData.transmission || 'Автомат'} • ${engineInfo} • ${carData.driveTrain || 'Передний'} привод • Пробег ${carData.mileage ? new Intl.NumberFormat("ru-BY").format(carData.mileage) : 0} км • ${carData.color || 'Цвет не указан'}`
+
+    // Основное изображение автомобиля - используем прямые ссылки для социальных сетей
     const mainImage = carData.imageUrls && carData.imageUrls.length > 0
-      ? `${imageHost}${carData.imageUrls[0]}`
-      : `${imageHost}/uploads/car.jpg`
+      ? `https://belautocenter.by${carData.imageUrls[0]}`
+      : `https://belautocenter.by/uploads/car.jpg`
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://belautocenter.by'
     const carUrl = `${siteUrl}/catalog/${params.id}`
