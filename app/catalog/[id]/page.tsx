@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
+import { getCachedImageUrl } from "@/lib/image-cache"
 
 // Принудительная статическая генерация с кэшированием на сутки
 export const dynamic = 'force-static'
@@ -86,10 +87,10 @@ export async function generateMetadata(
 
     const carDescription = `${carTitle} • ${carPrice} • ${carData.transmission || 'Автомат'} • ${engineInfo} • ${carData.driveTrain || 'Передний'} привод • Пробег ${carData.mileage ? new Intl.NumberFormat("ru-BY").format(carData.mileage) : 0} км • ${carData.color || 'Цвет не указан'}`
 
-    // Основное изображение автомобиля - используем прямые ссылки для социальных сетей
+    // Основное изображение автомобиля - используем правильную функцию для формирования URL
     const mainImage = carData.imageUrls && carData.imageUrls.length > 0
-      ? `https://belautocenter.by${carData.imageUrls[0]}`
-      : `https://belautocenter.by/uploads/car.jpg`
+      ? getCachedImageUrl(carData.imageUrls[0])
+      : getCachedImageUrl('/uploads/car.jpg')
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://belautocenter.by'
     const carUrl = `${siteUrl}/catalog/${params.id}`
