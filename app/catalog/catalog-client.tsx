@@ -31,7 +31,12 @@ interface CatalogClientProps {
 export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [cars, setCars] = useState<Car[]>(initialCars)
   const [filteredCars, setFilteredCars] = useState<Car[]>(initialCars)
+  const [displayedCars, setDisplayedCars] = useState<Car[]>([]) // Новое состояние для отображаемых авто
   const [loading, setLoading] = useState(initialCars.length === 0)
+  const [loadingMore, setLoadingMore] = useState(false) // Состояние загрузки дополнительных авто
+  const [currentPage, setCurrentPage] = useState(1) // Текущая страница
+  const [carsPerPage] = useState(12) // Количество авто на странице
+  const [hasMore, setHasMore] = useState(true) // Есть ли ещё авто для загрузки
   const [availableMakes, setAvailableMakes] = useState<string[]>([])
   const [availableModels, setAvailableModels] = useState<string[]>([])
   const [filters, setFilters] = useState({
@@ -47,7 +52,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     fuelType: "any",
     driveTrain: "any",
   })
-  const [sortBy, setSortBy] = useState("price-asc")
+  const [sortBy, setSortBy] = useState("year-asc") // Изменили по умолчанию на "сначала старые"
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   // Загружаем данные на клиенте, если они не были предзагружены
@@ -162,6 +167,9 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const applyFilters = useCallback(() => {
     if (!cars || cars.length === 0) {
       setFilteredCars([]);
+      setDisplayedCars([]);
+      setCurrentPage(1);
+      setHasMore(false);
       return;
     }
 
@@ -215,12 +223,43 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           return 0
       }
     })
+
     setFilteredCars(filtered)
-  }, [cars, filters, sortBy])
+    // Сбрасываем пагинацию при применении фильтров
+    setCurrentPage(1)
+    const initialDisplayed = filtered.slice(0, carsPerPage)
+    setDisplayedCars(initialDisplayed)
+    setHasMore(filtered.length > carsPerPage)
+  }, [cars, filters, sortBy, carsPerPage])
 
   useEffect(() => {
     applyFilters()
   }, [applyFilters])
+
+  // Функция для загрузки дополнительных авто
+  const loadMoreCars = useCallback(() => {
+    if (loadingMore || !hasMore) return
+
+    setLoadingMore(true)
+
+    // Имитируем небольшую задержку для UX
+    setTimeout(() => {
+      const nextPage = currentPage + 1
+      const startIndex = currentPage * carsPerPage
+      const endIndex = startIndex + carsPerPage
+      const newCars = filteredCars.slice(startIndex, endIndex)
+
+      if (newCars.length > 0) {
+        setDisplayedCars(prev => [...prev, ...newCars])
+        setCurrentPage(nextPage)
+        setHasMore(endIndex < filteredCars.length)
+      } else {
+        setHasMore(false)
+      }
+
+      setLoadingMore(false)
+    }, 300)
+  }, [currentPage, carsPerPage, filteredCars, loadingMore, hasMore])
 
   const resetFilters = () => {
     setFilters({
@@ -606,6 +645,11 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Каталог автомобилей</h1>
                 <p className="text-gray-600">
                   Найдено {filteredCars.length} автомобилей
+                  {displayedCars.length < filteredCars.length && (
+                    <span className="ml-2 text-blue-600">
+                      (показано {displayedCars.length})
+                    </span>
+                  )}
                 </p>
               </div>
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-1">
@@ -616,10 +660,10 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+                      <SelectItem value="year-asc">Год: сначала старые</SelectItem>
+                      <SelectItem value="year-desc">Год: сначала новые</SelectItem>
                       <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
                       <SelectItem value="price-desc">Цена: по убыванию</SelectItem>
-                      <SelectItem value="year-desc">Год: сначала новые</SelectItem>
-                      <SelectItem value="year-asc">Год: сначала старые</SelectItem>
                       <SelectItem value="mileage-asc">Пробег: по возрастанию</SelectItem>
                       <SelectItem value="mileage-desc">Пробег: по убыванию</SelectItem>
                     </SelectContent>
@@ -643,10 +687,46 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                 ))}
               </div>
             ) : filteredCars && filteredCars.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {filteredCars.map((car, index) => (
-                  <CarCard key={car.id} car={car} />
-                ))}
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {displayedCars.map((car, index) => (
+                    <CarCard key={car.id} car={car} />
+                  ))}
+                </div>
+
+                {/* Кнопка "Показать ещё" */}
+                {hasMore && (
+                  <div className="flex justify-center pt-6">
+                    <button
+                      onClick={loadMoreCars}
+                      disabled={loadingMore}
+                      className="bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    >
+                      {loadingMore ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Загружаем...
+                        </>
+                      ) : (
+                        <>
+                          Показать ещё
+                          <span className="text-sm text-slate-300">
+                            ({Math.min(carsPerPage, filteredCars.length - displayedCars.length)} из {filteredCars.length - displayedCars.length})
+                          </span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {/* Информация о загруженных автомобилях */}
+                {!hasMore && displayedCars.length > 0 && displayedCars.length === filteredCars.length && (
+                  <div className="text-center pt-6">
+                    <p className="text-gray-500">
+                      Показаны все найденные автомобили ({filteredCars.length})
+                    </p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center py-16">
@@ -661,7 +741,11 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                 </p>
                 {cars.length > 0 && (
                   <Button
-                    onClick={resetFilters}
+                    onClick={() => {
+                      resetFilters()
+                      setCurrentPage(1)
+                      setHasMore(true)
+                    }}
                     className="bg-slate-900 hover:bg-slate-800 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200"
                   >
                     <RotateCcw className="h-4 w-4 mr-2" />
