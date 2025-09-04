@@ -645,7 +645,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Каталог автомобилей</h1>
                 <p className="text-gray-600">
                   Найдено {loading ? (
-                    <span className="inline-block bg-gray-200 rounded h-5 w-8 align-middle animate-pulse ml-1 mr-1"></span>
+                    <span className="inline-block bg-gray-200 rounded h-4 w-6 align-middle animate-pulse mx-2"></span>
                   ) : (
                     filteredCars.length
                   )} автомобилей
