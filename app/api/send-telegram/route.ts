@@ -24,15 +24,15 @@ export async function POST(request: NextRequest) {
     } = body
 
     // Получаем переменные окружения для Telegram
-    // На Vercel должны быть настроены:
-    // TELEGRAM_BOT_TOKEN = 7969988440:AAEqIdBJZVZJ-pco6otAJAkSv2XiTEsi1Z4
-    // TELEGRAM_CHAT_ID = -1002721193947
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-      console.log('Telegram credentials not configured')
-      return NextResponse.json({ success: true, message: 'Заявка сохранена' })
+      console.error('Telegram credentials are not configured on the server.')
+      return NextResponse.json(
+        { success: false, error: 'Ошибка сервера: не удалось отправить уведомление.' },
+        { status: 500 }
+      )
     }
 
     // Формируем сообщение в зависимости от типа заявки
@@ -174,12 +174,19 @@ export async function POST(request: NextRequest) {
     if (response.ok) {
       return NextResponse.json({ success: true, message: 'Уведомление отправлено в Telegram' })
     } else {
-      console.error('Failed to send Telegram message:', await response.text())
-      return NextResponse.json({ success: true, message: 'Заявка сохранена' })
+      const errorBody = await response.text()
+      console.error('Failed to send Telegram message:', errorBody)
+      return NextResponse.json(
+        { success: false, error: 'Ошибка сервера: не удалось отправить уведомление.' },
+        { status: 500 }
+      )
     }
 
   } catch (error) {
     console.error('Error sending Telegram notification:', error)
-    return NextResponse.json({ success: true, message: 'Заявка сохранена' })
+    return NextResponse.json(
+      { success: false, error: 'Внутренняя ошибка сервера.' },
+      { status: 500 }
+    )
   }
 }
