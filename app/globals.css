@@ -175,6 +175,7 @@
     font-family: 'Geoform', 'Roboto Custom', 'Etude Noire', 'Aviano', 'Squad', system-ui, sans-serif;
     font-feature-settings: 'kern' 1, 'liga' 1;
     zoom: 0.9;
+    overflow-x: hidden;
   }
 
   .container {
@@ -204,8 +205,8 @@
     content: '';
     position: absolute;
     top: -50px;
-    left: -100px;
-    right: -100px;
+    left: 0;
+    width: 100%;
     bottom: -100px;
     background: #0f172a; /* slate-900 */
     z-index: -1;
