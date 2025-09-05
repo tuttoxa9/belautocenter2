@@ -94,7 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="yandex-verification" content="a9085911ec7f5c05" />
       </head>
-      <body className="font-sans min-h-screen bg-white flex flex-col">
+      <body className="font-sans min-h-screen flex flex-col">
         <UsdBynRateProvider>
           <NotificationProvider>
             <Header />
