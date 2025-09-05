@@ -252,25 +252,22 @@ export default function Header() {
 
         {/* Контакты и кнопка звонка для десктопа */}
         <div className="hidden md:flex items-center space-x-4">
-          <div className="hidden lg:flex flex-col items-end text-right mr-2 w-[130px]">
-            <div className="h-5 w-[130px] flex items-center justify-end">
-              {loading ? (
+          <div className="hidden lg:flex items-center text-right mr-2">
+            {loading ? (
+              <div className="flex flex-col items-end">
                 <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
-              ) : (
-                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap text-right">
+                <Skeleton className="h-3 w-[100px] bg-gray-200/60 mt-1" />
+              </div>
+            ) : (
+              <div>
+                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap">
                   {settings?.phone || "+375 XX XXX-XX-XX"}
                 </a>
-              )}
-            </div>
-            <div className="h-4 w-[100px] flex items-center justify-end mt-1">
-              {loading ? (
-                <Skeleton className="h-3 w-[100px] bg-gray-200/60" />
-              ) : (
-                <div className="text-xs text-gray-900 font-semibold">
+                <div className="text-xs text-gray-900 font-semibold whitespace-nowrap">
                   {settings?.workingHours || "пн-вск: 9:00-21:00"}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           <Dialog open={isCallbackOpen} onOpenChange={(open) => { setIsCallbackOpen(open); if (!open) setPhoneLoading(false); }}>
