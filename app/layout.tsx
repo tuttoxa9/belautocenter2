@@ -94,11 +94,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="yandex-verification" content="a9085911ec7f5c05" />
       </head>
-      <body className="font-sans min-h-screen bg-white flex flex-col">
+      <body className="font-sans min-h-screen bg-gray-900 flex flex-col">
         <UsdBynRateProvider>
           <NotificationProvider>
             <Header />
-            <main className="flex-1 flex flex-col">
+            <main className="flex-1 flex flex-col bg-white">
               {children}
             </main>
             <Footer />
