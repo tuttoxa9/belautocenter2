@@ -206,8 +206,8 @@ export default function SalePage() {
                 </Button>
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="text-white border-slate-600 hover:bg-slate-700 hover:text-white text-base px-8 py-6 rounded-xl font-semibold"
+                  variant="outline-dark"
+                  className="text-base px-8 py-6 rounded-xl font-semibold"
                   onClick={() => document.getElementById('process')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Как это работает?
