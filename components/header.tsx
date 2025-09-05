@@ -121,13 +121,11 @@ export default function Header() {
     return phone.length === 13 && phone.startsWith("+375")
   }
 
-  const headerClasses = isSalePage
-    ? 'sticky top-0 z-50 w-full bg-slate-800'
-    : 'sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'
+  const headerClasses = 'sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'
 
-  const textClasses = isSalePage ? 'text-white' : 'text-gray-900'
-  const navLinkClasses = isSalePage ? 'text-gray-300 hover:text-yellow-400' : 'text-gray-700 hover:text-blue-600'
-  const activeNavLinkClasses = isSalePage ? 'text-yellow-400' : 'text-blue-600'
+  const textClasses = 'text-gray-900'
+  const navLinkClasses = 'text-gray-700 hover:text-blue-600'
+  const activeNavLinkClasses = 'text-blue-600'
 
 
   return (
@@ -149,7 +147,7 @@ export default function Header() {
         {/* Мобильное меню (справа) */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className={`md:hidden ${isSalePage ? 'text-white hover:bg-slate-700' : ''}`}>
+            <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
