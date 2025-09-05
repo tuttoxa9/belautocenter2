@@ -37,6 +37,7 @@ interface Settings {
 
 export default function Header() {
   const pathname = usePathname()
+  const isSalePage = pathname === '/sale'
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [formData, setFormData] = useState({ name: "", phone: "+375" })
@@ -120,8 +121,17 @@ export default function Header() {
     return phone.length === 13 && phone.startsWith("+375")
   }
 
+  const headerClasses = isSalePage
+    ? 'sticky top-0 z-50 w-full bg-slate-800'
+    : 'sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'
+
+  const textClasses = isSalePage ? 'text-white' : 'text-gray-900'
+  const navLinkClasses = isSalePage ? 'text-gray-300 hover:text-yellow-400' : 'text-gray-700 hover:text-blue-600'
+  const activeNavLinkClasses = isSalePage ? 'text-yellow-400' : 'text-blue-600'
+
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className={headerClasses}>
       <div className="container flex h-14 items-center justify-between px-4">
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
@@ -133,13 +143,13 @@ export default function Header() {
             className="h-8 w-auto sm:h-10"
             priority
           />
-          <span className="font-display font-bold text-sm sm:text-lg text-gray-900 tracking-tight">Белавто Центр</span>
+          <span className={`font-display font-bold text-sm sm:text-lg ${textClasses} tracking-tight`}>Белавто Центр</span>
         </Link>
 
         {/* Мобильное меню (справа) */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
+            <Button variant="ghost" size="icon" className={`md:hidden ${isSalePage ? 'text-white hover:bg-slate-700' : ''}`}>
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
@@ -238,8 +248,8 @@ export default function Header() {
             <Link
               key={item.name}
               href={item.href}
-              className={`text-sm font-bold tracking-wide transition-colors hover:text-blue-600 ${
-                pathname === item.href ? "text-blue-600" : "text-gray-700"
+              className={`text-sm font-bold tracking-wide transition-colors ${
+                pathname === item.href ? activeNavLinkClasses : navLinkClasses
               }`}
             >
               {item.name}
@@ -252,23 +262,23 @@ export default function Header() {
           <div className="hidden lg:flex flex-col items-end text-right mr-2">
             {loading ? (
               <div className="flex flex-col items-end">
-                <div className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
+                <div className={`text-sm font-bold ${textClasses} tracking-tight whitespace-nowrap w-[130px] text-right`}>
                   <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
                 </div>
-                <div className="text-xs text-gray-900 font-semibold mt-1">
+                <div className={`text-xs ${textClasses} font-semibold mt-1`}>
                   <Skeleton className="h-3 w-[100px] bg-gray-200/60" />
                 </div>
               </div>
             ) : (
               <>
-                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
+                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className={`text-sm font-bold ${textClasses} tracking-tight whitespace-nowrap w-[130px] text-right`}>
                   {phoneLoading ? (
                     <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
                   ) : (
                     settings?.phone || "+375 XX XXX-XX-XX"
                   )}
                 </a>
-                <div className="text-xs text-gray-900 font-semibold">
+                <div className={`text-xs ${textClasses} font-semibold`}>
                   <div>{settings?.workingHours || "пн-вск: 9:00-21:00"}</div>
                 </div>
               </>
