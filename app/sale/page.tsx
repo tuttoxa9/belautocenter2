@@ -22,8 +22,6 @@ import {
   ArrowRight,
   Star,
   Calculator,
-  ChevronDown,
-  ChevronUp,
   Eye,
   FileText,
   Handshake,
@@ -38,8 +36,6 @@ const services = [
     description: 'Выгодные условия лизинга с минимальным первоначальным взносом от 10%',
     icon: Car,
     features: ['От 10% первоначальный взнос', 'Срок до 5 лет', 'Быстрое оформление'],
-    image: '/car_credit.png',
-    gradient: 'from-slate-700 to-slate-800'
   },
   {
     id: 'credit',
@@ -47,8 +43,6 @@ const services = [
     description: 'Автокредит по минимальной ставке от 9% годовых без отказов',
     icon: CreditCard,
     features: ['От 9% годовых', 'Без отказов', 'Решение за 30 минут'],
-    image: '/car_credit2.png',
-    gradient: 'from-gray-700 to-gray-800'
   },
   {
     id: 'tradein',
@@ -56,8 +50,6 @@ const services = [
     description: 'Обмен вашего старого автомобиля на новый с доплатой',
     icon: RefreshCw,
     features: ['Оценка за 15 минут', 'Юридическая чистота', 'Выгодная цена'],
-    image: '/car_credit3.png',
-    gradient: 'from-zinc-700 to-zinc-800'
   },
   {
     id: 'buyout',
@@ -65,8 +57,6 @@ const services = [
     description: 'Быстрый выкуп вашего автомобиля по рыночной стоимости',
     icon: DollarSign,
     features: ['Оценка в день обращения', 'Расчет наличными', 'Все документы'],
-    image: '/mercedes-bg.jpg',
-    gradient: 'from-stone-700 to-stone-800'
   },
   {
     id: 'exchange',
@@ -74,8 +64,6 @@ const services = [
     description: 'Обмен автомобиля на автомобиль без денежных операций',
     icon: TrendingUp,
     features: ['Равноценный обмен', 'Проверка истории', 'Безопасная сделка'],
-    image: '/audi-bg.jpg',
-    gradient: 'from-neutral-700 to-neutral-800'
   },
   {
     id: 'commission',
@@ -83,8 +71,6 @@ const services = [
     description: 'Продадим ваш автомобиль быстро и по выгодной цене',
     icon: Shield,
     features: ['Профессиональная фотосъемка', 'Размещение на площадках', 'Сопровождение сделки'],
-    image: '/vwt.jpg',
-    gradient: 'from-slate-600 to-slate-700'
   }
 ]
 
@@ -94,49 +80,42 @@ const dealSteps = [
     title: 'Визит или звонок',
     icon: Phone,
     description: 'Свяжитесь с нами удобным для вас способом или приезжайте к нам в офис по адресу в Минске. Наши специалисты готовы ответить на все ваши вопросы.',
-    color: 'from-slate-600 to-slate-700'
   },
   {
     id: 2,
     title: 'Осмотр машины',
     icon: Eye,
     description: 'Если вы находитесь не в Минске, мы можем организовать выезд нашего специалиста к вам для осмотра автомобиля и составления договора на месте.',
-    color: 'from-gray-600 to-gray-700'
   },
   {
     id: 3,
     title: 'Согласование стоимости',
     icon: DollarSign,
     description: 'Определяем справедливую рыночную цену вашего автомобиля. В процессе оценки учитываем текущее состояние, пробег и рыночную ситуацию.',
-    color: 'from-zinc-600 to-zinc-700'
   },
   {
     id: 4,
     title: 'Подготовка документов',
     icon: FileText,
     description: 'Все документы оформляются максимально прозрачно. Составляем акт приема-передачи, а также заключаем с вами договор, где прописываем все условия для обеих сторон.',
-    color: 'from-stone-600 to-stone-700'
   },
   {
     id: 5,
     title: 'Подготовка авто',
     icon: Settings,
     description: 'Организуем предпродажную подготовку: чистку и полировку, устранение мелких недостатков, диагностику и устранение технических проблем.',
-    color: 'from-neutral-600 to-neutral-700'
   },
   {
     id: 6,
     title: 'Реализация',
     icon: Trophy,
     description: 'Активно занимаемся рекламой и общаемся с потенциальными покупателями. При необходимости помогаем покупателям с оформлением кредита или лизинга.',
-    color: 'from-slate-700 to-slate-800'
   },
   {
     id: 7,
     title: 'Завершение сделки',
     icon: Handshake,
     description: 'Вы (или доверенное лицо) получаете оговоренную ранее сумму на руки либо на расчетный лицевой счет.',
-    color: 'from-gray-700 to-gray-800'
   }
 ]
 
@@ -347,37 +326,27 @@ export default function SalePage() {
           {activeTab === 'process' && (
             <div className="max-w-3xl mx-auto">
               <div className="relative">
-                {/* Vertical line for mobile */}
-                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-700 md:hidden"></div>
+                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-700"></div>
 
-                <div className="space-y-12 md:space-y-0">
+                <div className="space-y-12">
                   {dealSteps.map((step, index) => {
                     const IconComponent = step.icon
-                    const isOdd = index % 2 !== 0
                     return (
-                      <div key={step.id} className={`relative md:grid md:grid-cols-2 md:gap-12 items-center`}>
-                        {/* Content */}
-                        <div className={`transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} ${isOdd ? 'md:col-start-2' : ''}`} style={{ transitionDelay: `${200 + index * 100}ms` }}>
-                          <div className="flex items-center gap-4 mb-2">
-                            <div className={`w-12 h-12 bg-slate-800 border-2 border-yellow-400 text-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                              <IconComponent className="h-6 w-6" />
-                            </div>
-                            <h4 className="text-lg font-bold text-white">
-                              Шаг {step.id}: {step.title}
-                            </h4>
-                          </div>
-                          <div className="pl-16 md:pl-0">
-                            <p className="text-slate-400 text-sm leading-relaxed">
-                              {step.description}
-                            </p>
+                      <div key={step.id} className={`relative flex items-start gap-6 transform transition-all duration-700 ${
+                        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                      }`} style={{ transitionDelay: `${200 + index * 100}ms` }}>
+                        <div className="relative z-10 flex flex-col items-center">
+                          <div className={`w-12 h-12 bg-slate-800 border-2 border-yellow-400 text-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                            <IconComponent className="h-6 w-6" />
                           </div>
                         </div>
-
-                        {/* Desktop Timeline Graphics */}
-                        <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-16">
-                          <svg width="100%" height="100%" viewBox="0 0 128 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isOdd ? 'scale-x-[-1]' : ''}`}>
-                            {index < dealSteps.length -1 && <path d="M0 32C32 32 32 0 64 0S96 32 128 32" stroke="#475569" strokeWidth="2"/>}
-                          </svg>
+                        <div className="flex-1 pt-1 bg-slate-800 p-6 rounded-2xl border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
+                          <h4 className="text-lg font-bold text-white mb-2">
+                            Шаг {step.id}: {step.title}
+                          </h4>
+                          <p className="text-slate-400 text-sm leading-relaxed">
+                            {step.description}
+                          </p>
                         </div>
                       </div>
                     )
