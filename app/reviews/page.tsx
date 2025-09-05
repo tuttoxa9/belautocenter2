@@ -266,7 +266,7 @@ export default function ReviewsPage() {
             <nav className="mb-3 sm:mb-4">
               <ol className="flex items-center space-x-2 text-xs sm:text-sm text-slate-500">
                 <li>
-                  <Link href="/" className="hover:text-blue-600 transition-colors">
+                  <Link href="/" className="hover:text-blue-600 transition-colors" prefetch={true}>
                     Главная
                   </Link>
                 </li>
@@ -487,6 +487,7 @@ export default function ReviewsPage() {
                 </div>
                 <Link
                   href="/contacts"
+                  prefetch={true}
                   className="inline-flex items-center justify-center space-x-2 bg-slate-900 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-colors w-full sm:w-auto text-sm sm:text-base"
                 >
                   <span>Связаться с нами</span>

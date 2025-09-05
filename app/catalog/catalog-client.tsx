@@ -598,7 +598,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <Link href="/" className="hover:text-blue-600 transition-colors">
+              <Link href="/" className="hover:text-blue-600 transition-colors" prefetch={true}>
                 Главная
               </Link>
             </li>

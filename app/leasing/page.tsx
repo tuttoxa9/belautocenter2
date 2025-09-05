@@ -314,7 +314,7 @@ export default function LeasingPage() {
         <nav className="mb-6 md:mb-8">
           <ol className="flex items-center space-x-2 text-sm text-slate-500">
             <li>
-              <Link href="/" className="hover:text-slate-900 transition-colors">
+              <Link href="/" className="hover:text-slate-900 transition-colors" prefetch={true}>
                 Главная
               </Link>
             </li>
@@ -875,7 +875,7 @@ export default function LeasingPage() {
 
                   <p className="text-xs text-slate-600 leading-tight text-center">
                     Нажимая кнопку "Отправить заявку на лизинг", вы соглашаетесь с{" "}
-                    <Link href="/privacy#data-processing" className="text-blue-600 hover:text-blue-800 underline">
+                    <Link href="/privacy#data-processing" className="text-blue-600 hover:text-blue-800 underline" prefetch={true}>
                       условиями обработки персональных данных
                     </Link>
                     {" "}и даете согласие на их использование.

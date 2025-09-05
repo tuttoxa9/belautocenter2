@@ -205,7 +205,7 @@ export function CarsCarousel() {
 
             return (
               <Card key={car.id} className="min-w-[200px] md:min-w-[220px] max-w-[200px] md:max-w-[220px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300">
-                <Link href={`/catalog/${car.id}`} className="block">
+                <Link href={`/catalog/${car.id}`} className="block" prefetch={true}>
                   {/* Image Section */}
                   <div className="relative">
                     <div className="relative overflow-hidden bg-slate-100 h-24 md:h-32">
@@ -263,6 +263,7 @@ export function CarsCarousel() {
         <div className="mt-4 text-center">
           <Link
             href="/catalog"
+            prefetch={true}
             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
           >
             Смотреть все автомобили

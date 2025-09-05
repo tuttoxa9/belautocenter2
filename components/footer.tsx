@@ -54,7 +54,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Колонка 1: Логотип и слоган */}
           <div className="space-y-4">
-            <Link href="/" className="flex justify-center md:justify-start">
+            <Link href="/" className="flex justify-center md:justify-start" prefetch={true}>
               <Image src="/logo.png" alt="Логотип" width={160} height={160} className="object-contain" />
             </Link>
             <p className="text-gray-400 text-sm">
@@ -66,25 +66,25 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Навигация</h3>
             <nav className="flex flex-col space-y-2">
-              <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm">
+              <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Главная
               </Link>
-              <Link href="/catalog" className="text-gray-400 hover:text-white transition-colors text-sm">
+              <Link href="/catalog" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Каталог
               </Link>
-              <Link href="/credit" className="text-gray-400 hover:text-white transition-colors text-sm">
+              <Link href="/credit" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Кредит
               </Link>
-              <Link href="/leasing" className="text-gray-400 hover:text-white transition-colors text-sm">
+              <Link href="/leasing" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Лизинг
               </Link>
-              <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm">
+              <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 О нас
               </Link>
-              <Link href="/contacts" className="text-gray-400 hover:text-white transition-colors text-sm">
+              <Link href="/contacts" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Контакты
               </Link>
-              <Link href="/reviews" className="text-gray-400 hover:text-white transition-colors text-sm">
+              <Link href="/reviews" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Отзывы
               </Link>
             </nav>
@@ -239,7 +239,7 @@ export default function Footer() {
                 settings?.companyName || "Компания"
               )}. Все права защищены.
             </p>
-            <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm">
+            <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
               Политика конфиденциальности
             </Link>
           </div>

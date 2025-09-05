@@ -177,7 +177,7 @@ export default function ContactsPage() {
           <nav className="mb-3 lg:mb-4">
             <ol className="flex items-center space-x-2 text-sm text-slate-500">
               <li>
-                <Link href="/" className="hover:text-blue-600 transition-colors">
+                <Link href="/" className="hover:text-blue-600 transition-colors" prefetch={true}>
                   Главная
                 </Link>
               </li>

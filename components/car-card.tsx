@@ -71,7 +71,7 @@ export default function CarCard({ car }: CarCardProps) {
 
   return (
     <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 backdrop-blur-xl shadow-lg shadow-gray-900/5 rounded-2xl h-full group transition-all duration-200">
-      <Link href={`/catalog/${car.id}`} className="block h-full">
+      <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={true}>
         {/* Image Section */}
         <div className="relative">
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 rounded-t-2xl h-56">

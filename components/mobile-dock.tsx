@@ -23,6 +23,7 @@ export default function MobileDock() {
             <Link
               key={item.name}
               href={item.href}
+              prefetch={true}
               className={`flex flex-col items-center justify-center py-3 px-2 text-xs transition-all duration-300 rounded-xl ${
                 isActive
                   ? "text-white bg-slate-900 shadow-lg shadow-slate-900/25 transform scale-105"

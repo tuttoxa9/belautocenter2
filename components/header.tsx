@@ -124,7 +124,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-14 items-center justify-between px-4">
         {/* Логотип слева на всех устройствах */}
-        <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+        <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
           <Image
             src="/logo4.png"
             alt="Белавто Центр"
@@ -177,6 +177,7 @@ export default function Header() {
                     <Link
                       key={item.name}
                       href={item.href}
+                      prefetch={true}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
                         isActive ? 'text-blue-600 bg-blue-50' : ''
@@ -238,6 +239,7 @@ export default function Header() {
             <Link
               key={item.name}
               href={item.href}
+              prefetch={true}
               className={`text-sm font-bold tracking-wide transition-colors hover:text-blue-600 ${
                 pathname === item.href ? "text-blue-600" : "text-gray-700"
               }`}
@@ -249,30 +251,25 @@ export default function Header() {
 
         {/* Контакты и кнопка звонка для десктопа */}
         <div className="hidden md:flex items-center space-x-4">
-          <div className="hidden lg:flex flex-col items-end text-right mr-2">
-            {loading ? (
-              <div className="flex flex-col items-end">
-                <div className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
-                  <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
-                </div>
-                <div className="text-xs text-gray-900 font-semibold mt-1">
-                  <Skeleton className="h-3 w-[100px] bg-gray-200/60" />
-                </div>
-              </div>
-            ) : (
-              <>
-                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
-                  {phoneLoading ? (
-                    <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
-                  ) : (
-                    settings?.phone || "+375 XX XXX-XX-XX"
-                  )}
+          <div className="hidden lg:flex flex-col items-end text-right mr-2 w-[130px]">
+            <div className="h-5 w-[130px] flex items-center justify-end">
+              {loading ? (
+                <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
+              ) : (
+                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap text-right">
+                  {settings?.phone || "+375 XX XXX-XX-XX"}
                 </a>
+              )}
+            </div>
+            <div className="h-4 w-[100px] flex items-center justify-end mt-1">
+              {loading ? (
+                <Skeleton className="h-3 w-[100px] bg-gray-200/60" />
+              ) : (
                 <div className="text-xs text-gray-900 font-semibold">
-                  <div>{settings?.workingHours || "пн-вск: 9:00-21:00"}</div>
+                  {settings?.workingHours || "пн-вск: 9:00-21:00"}
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
 
           <Dialog open={isCallbackOpen} onOpenChange={(open) => { setIsCallbackOpen(open); if (!open) setPhoneLoading(false); }}>

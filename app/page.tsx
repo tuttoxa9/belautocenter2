@@ -242,7 +242,7 @@ export default function HomePage() {
               className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               asChild
             >
-              <Link href="/catalog">{settings.heroButtonText}</Link>
+              <Link href="/catalog" prefetch={true}>{settings.heroButtonText}</Link>
             </Button>
 
             <Button
@@ -304,7 +304,7 @@ export default function HomePage() {
               className="rounded-2xl px-8 py-4 text-lg font-semibold border-2 hover:shadow-lg transition-all duration-300"
               asChild
             >
-              <Link href="/catalog">Посмотреть весь каталог</Link>
+              <Link href="/catalog" prefetch={true}>Посмотреть весь каталог</Link>
             </Button>
           </div>
         </div>

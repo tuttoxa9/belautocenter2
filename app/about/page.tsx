@@ -106,7 +106,7 @@ export default function AboutPage() {
           <nav className="mb-3 lg:mb-4">
             <ol className="flex items-center space-x-2 text-sm text-gray-500">
               <li>
-                <Link href="/" className="hover:text-gray-700 transition-colors duration-200">
+                <Link href="/" className="hover:text-gray-700 transition-colors duration-200" prefetch={true}>
                   Главная
                 </Link>
               </li>
