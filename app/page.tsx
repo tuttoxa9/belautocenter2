@@ -15,8 +15,8 @@ import { useNotification } from "@/components/providers/notification-provider"
 import SaleModal from "@/app/sale/sale-modal"
 
 import { CheckCircle, Check } from "lucide-react"
-import { collection, query, orderBy, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
+
 interface HomepageSettings {
   heroTitle: string
   heroSubtitle: string
@@ -24,8 +24,6 @@ interface HomepageSettings {
   ctaTitle: string
   ctaSubtitle: string
 }
-
-// Моковые данные удалены
 
 export default function HomePage() {
   const [searchForm, setSearchForm] = useState({
@@ -45,20 +43,7 @@ export default function HomePage() {
   const [isMounted, setIsMounted] = useState(true)
   const [showSaleModal, setShowSaleModal] = useState(false)
 
-  const [cars, setCars] = useState<Array<{
-    id: string;
-    make: string;
-    model: string;
-    year: number;
-    price: number;
-    currency: string;
-    mileage: number;
-    engineVolume: number;
-    fuelType: string;
-    transmission: string;
-    imageUrls: string[];
-    isAvailable: boolean;
-  }>>([])
+  const [cars, setCars] = useState<Array<any>>([])
   const [loadingCars, setLoadingCars] = useState(true)
   const [settings, setSettings] = useState<HomepageSettings>({
     heroTitle: "Найди свой автомобиль надежным способом",
@@ -70,9 +55,9 @@ export default function HomePage() {
 
   const loadHomepageSettings = useCallback(async () => {
     try {
-      const settingsDoc = await getDoc(doc(db, "settings", "homepage"))
-      if (settingsDoc.exists() && isMounted) {
-        const data = settingsDoc.data() as Partial<HomepageSettings>
+      const settingsDoc = await firestoreApi.getDocument("pages", "main")
+      if (settingsDoc && isMounted) {
+        const data = settingsDoc as Partial<HomepageSettings>
         setSettings((prev) => ({
           ...prev,
           ...data,
@@ -89,25 +74,19 @@ export default function HomePage() {
         setLoadingCars(true)
       }
 
-      console.log("Loading cars from Firestore...")
-      const carsQuery = query(
-        collection(db, "cars"),
-        orderBy("createdAt", "desc"),
-        limit(4)
-      )
+      console.log("Loading cars from API...")
+      const allCars = await firestoreApi.getCollection("cars")
+      console.log("Total cars loaded:", allCars.length)
 
-      const snapshot = await getDocs(carsQuery)
-      console.log("Cars snapshot size:", snapshot.size)
+      // Сортируем по дате создания (если она есть) и берем последние 4
+      const featuredCars = allCars
+        .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
+        .slice(0, 4)
 
-      const carsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
-
-      console.log("Loaded cars:", carsData)
+      console.log("Featured cars:", featuredCars)
 
       if (isMounted) {
-        setCars(carsData)
+        setCars(featuredCars)
         setLoadingCars(false)
       }
     } catch (error) {
@@ -144,32 +123,34 @@ export default function HomePage() {
     e.preventDefault()
 
     await contactButtonState.execute(async () => {
-      // Сохраняем в Firebase (независимо от результата)
+      // Сохраняем в Firebase через API
       try {
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...contactForm,
           type: "car_selection",
           status: "new",
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
+        console.warn("API save failed:", error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch('/api/send-telegram', {
-        method: 'POST',
+      await fetch("/api/send-telegram", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...contactForm,
-          type: 'car_selection'
-        })
+          type: "car_selection",
+        }),
       })
 
       setContactForm({ name: "", phone: "+375" })
-      showSuccess("Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.")
+      showSuccess(
+        "Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время."
+      )
     })
   }
 

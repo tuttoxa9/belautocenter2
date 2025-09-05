@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import { Card, CardContent } from "@/components/ui/card"
 import { Shield, FileText, Clock, CheckCircle, ArrowRight, ExternalLink, ChevronDown, ChevronUp, Database, Lock, Eye, Users, Cookie, Share2, Mail } from "lucide-react"
 import Link from "next/link"
@@ -115,9 +114,9 @@ export default function PrivacyPage() {
 
   const loadPrivacyData = async () => {
     try {
-      const privacyDoc = await getDoc(doc(db, "pages", "privacy"))
-      if (privacyDoc.exists()) {
-        setPrivacyData(privacyDoc.data() as PrivacyData)
+      const data = await firestoreApi.getDocument("pages", "privacy")
+      if (data) {
+        setPrivacyData(data as PrivacyData)
       }
     } catch (error) {
       console.error("Ошибка загрузки данных:", error)

@@ -4,8 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { MapPin, Phone, Mail, Clock, Instagram, Loader2 } from "lucide-react"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
 interface Settings {
@@ -37,9 +36,9 @@ export default function Footer() {
   const loadSettings = async () => {
     try {
       setLoading(true)
-      const settingsDoc = await getDoc(doc(db, "settings", "main"))
-      if (settingsDoc.exists()) {
-        setSettings(settingsDoc.data() as Settings)
+      const data = await firestoreApi.getDocument("settings", "main")
+      if (data) {
+        setSettings(data as Settings)
       }
     } catch (error) {
       console.error("Ошибка загрузки настроек:", error)

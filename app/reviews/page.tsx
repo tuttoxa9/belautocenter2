@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, query, where, orderBy, getDocs } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
@@ -55,52 +54,20 @@ export default function ReviewsPage() {
 
   const loadReviews = async () => {
     try {
-      // Сначала загружаем все отзывы для отладки
-      const allReviewsQuery = query(collection(db, "reviews"), orderBy("createdAt", "desc"))
-      const allSnapshot = await getDocs(allReviewsQuery)
-      console.log("Все отзывы в Firebase:", allSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })))
+      setLoading(true)
+      const allReviews = await firestoreApi.getCollection("reviews")
 
-      const reviewsQuery = query(
-        collection(db, "reviews"),
-        where("status", "==", "published"),
-        orderBy("createdAt", "desc"),
-      )
-      const snapshot = await getDocs(reviewsQuery)
-      const reviewsData = snapshot.docs.map((doc) => {
-        const data = doc.data()
-        console.log("Обрабатываем отзыв:", doc.id, data)
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt?.toDate() || new Date(),
-        }
-      }) as Review[]
+      const reviewsData = allReviews
+        .filter((review: any) => review.status === "published")
+        .map((review: any) => ({
+          ...review,
+          createdAt: review.createdAt ? new Date(review.createdAt) : new Date(),
+        }))
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
-      console.log("Отфильтрованные отзывы (published):", reviewsData)
-      setReviews(reviewsData)
+      setReviews(reviewsData as Review[])
     } catch (error) {
       console.error("Ошибка загрузки отзывов:", error)
-      // Попробуем загрузить без фильтра по статусу
-      try {
-        console.log("Пробуем загрузить без фильтра по статусу...")
-        const simpleQuery = query(collection(db, "reviews"))
-        const simpleSnapshot = await getDocs(simpleQuery)
-        const simpleReviewsData = simpleSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data().createdAt?.toDate() || new Date(),
-        })) as Review[]
-
-        console.log("Отзывы без фильтра:", simpleReviewsData)
-        // Фильтруем на клиенте
-        const publishedReviews = simpleReviewsData.filter(review => review.status === "published")
-        setReviews(publishedReviews)
-      } catch (fallbackError) {
-        console.error("Ошибка резервной загрузки:", fallbackError)
-      }
     } finally {
       setLoading(false)
     }

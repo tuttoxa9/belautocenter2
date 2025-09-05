@@ -558,16 +558,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   }
 
   const getCurrentCreditAmount = () => {
-    if (isBelarusianRubles && usdBynRate) {
-      return creditAmount[0] * usdBynRate
-    }
     return creditAmount[0]
   }
 
   const getCurrentDownPayment = () => {
-    if (isBelarusianRubles && usdBynRate) {
-      return downPayment[0] * usdBynRate
-    }
     return downPayment[0]
   }
 

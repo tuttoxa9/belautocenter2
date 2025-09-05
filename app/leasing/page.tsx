@@ -18,8 +18,7 @@ import { ChevronRight, Check, DollarSign, Zap, Shield, FileText, Award, Phone, C
 import { Checkbox } from "@/components/ui/checkbox"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
-import { doc, getDoc, addDoc, collection } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import LeasingConditions from "@/components/leasing-conditions"
 import LeasingCarsCarousel from "@/components/leasing-cars-carousel"
 
@@ -106,12 +105,11 @@ export default function LeasingPage() {
 
   const loadSettings = async () => {
     try {
-      const doc_ref = doc(db, "pages", "leasing")
-      const doc_snap = await getDoc(doc_ref)
-
-      if (doc_snap.exists()) {
-        setSettings(doc_snap.data() as LeasingPageSettings)
+      const data = await firestoreApi.getDocument("pages", "leasing")
+      if (data) {
+        setSettings(data as LeasingPageSettings)
       } else {
+        // Fallback settings
         setSettings({
           title: "Автомобиль в лизинг – выгодное решение для бизнеса",
           subtitle: "Получите автомобиль в лизинг на выгодных условиях уже сегодня",
@@ -244,27 +242,27 @@ export default function LeasingPage() {
     e.preventDefault()
 
     await submitButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...leasingForm,
           type: "leasing_request",
           status: "new",
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
+        console.warn("API save failed:", error)
       }
 
-      const clientName = leasingForm.clientType === "individual"
-        ? leasingForm.fullName
-        : leasingForm.contactPerson;
+      const clientName =
+        leasingForm.clientType === "individual"
+          ? leasingForm.fullName
+          : leasingForm.contactPerson
 
       // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch('/api/send-telegram', {
-        method: 'POST',
+      await fetch("/api/send-telegram", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: clientName,
@@ -277,7 +275,7 @@ export default function LeasingPage() {
           clientType: leasingForm.clientType,
           companyName: leasingForm.companyName,
           unp: leasingForm.unp,
-          type: 'leasing_request',
+          type: "leasing_request",
         }),
       })
 
@@ -295,7 +293,9 @@ export default function LeasingPage() {
         company: "",
         message: "",
       })
-      showSuccess("Заявка на лизинг успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.")
+      showSuccess(
+        "Заявка на лизинг успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время."
+      )
     })
   }
 
