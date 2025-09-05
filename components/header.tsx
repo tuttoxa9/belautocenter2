@@ -13,8 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock } from "lucide-react"
-import { doc, getDoc, collection, addDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
 
 const navigation = [
@@ -52,9 +51,9 @@ export default function Header() {
   const loadSettings = async () => {
     try {
       setLoading(true)
-      const settingsDoc = await getDoc(doc(db, "settings", "main"))
-      if (settingsDoc.exists()) {
-        setSettings(settingsDoc.data() as Settings)
+      const data = await firestoreApi.getDocument("settings", "main")
+      if (data) {
+        setSettings(data as Settings)
       }
     } catch (error) {
       console.error("Ошибка загрузки настроек:", error)
@@ -66,34 +65,36 @@ export default function Header() {
   const handleCallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Сохраняем в Firebase (независимо от результата)
+    // Сохраняем в Firebase через API
     try {
-      await addDoc(collection(db, "leads"), {
+      await firestoreApi.addDocument("leads", {
         ...formData,
         type: "callback",
         status: "new",
         createdAt: new Date(),
       })
     } catch (error) {
-      console.warn('Firebase save failed:', error)
+      console.warn("API save failed:", error)
     }
 
     // Отправляем уведомление в Telegram (всегда выполняется)
     try {
-      await fetch('/api/send-telegram', {
-        method: 'POST',
+      await fetch("/api/send-telegram", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...formData,
-          type: 'callback'
-        })
+          type: "callback",
+        }),
       })
 
       setIsCallbackOpen(false)
       setFormData({ name: "", phone: "+375" })
-      showSuccess("Заявка на обратный звонок отправлена! Мы свяжемся с вами в ближайшее время.")
+      showSuccess(
+        "Заявка на обратный звонок отправлена! Мы свяжемся с вами в ближайшее время."
+      )
     } catch (error) {
       console.error("Ошибка отправки заявки:", error)
       showSuccess("Произошла ошибка. Попробуйте еще раз.")

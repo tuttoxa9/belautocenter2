@@ -18,8 +18,7 @@ import { ChevronRight, Check, DollarSign, Zap, Shield, FileText, Award, Phone, C
 import { Checkbox } from "@/components/ui/checkbox"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
-import { doc, getDoc, addDoc, collection } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from "@/lib/firestore-api"
 import CreditConditions from "@/components/credit-conditions"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import CreditCarsCarousel from "@/components/credit-cars-carousel"
@@ -98,11 +97,9 @@ export default function CreditPage() {
 
   const loadSettings = async () => {
     try {
-      const doc_ref = doc(db, "pages", "credit")
-      const doc_snap = await getDoc(doc_ref)
-
-      if (doc_snap.exists()) {
-        setSettings(doc_snap.data() as CreditPageSettings)
+      const data = await firestoreApi.getDocument("pages", "credit")
+      if (data) {
+        setSettings(data as CreditPageSettings)
       } else {
         setSettings({
           title: "Автокредит на выгодных условиях",
@@ -256,27 +253,26 @@ export default function CreditPage() {
     e.preventDefault()
 
     await submitButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...creditForm,
           type: "credit_request",
           status: "new",
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
+        console.warn("API save failed:", error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch('/api/send-telegram', {
-        method: 'POST',
+      await fetch("/api/send-telegram", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...creditForm,
-          type: 'credit_request',
+          type: "credit_request",
         }),
       })
 
@@ -290,7 +286,9 @@ export default function CreditPage() {
         bank: "",
         message: "",
       })
-      showSuccess("Заявка на кредит успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.")
+      showSuccess(
+        "Заявка на кредит успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время."
+      )
     })
   }
 
