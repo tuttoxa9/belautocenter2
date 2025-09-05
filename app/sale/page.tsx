@@ -196,7 +196,7 @@ export default function SalePage() {
     <div className="min-h-screen bg-slate-900 text-white">
       {/* New Hero Section */}
       <section className="relative overflow-hidden bg-slate-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-36 md:pb-32 md:pt-48">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className={`transform transition-all duration-1000 ${
               isVisible ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
@@ -300,7 +300,7 @@ export default function SalePage() {
 
           {/* Services Grid */}
           {activeTab === 'services' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service, index) => {
                 const IconComponent = service.icon
                 const isSelected = selectedService === service.id
@@ -308,37 +308,37 @@ export default function SalePage() {
                 return (
                   <div
                     key={service.id}
-                    className={`group relative rounded-2xl border-2 overflow-hidden transform transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-yellow-400/20 hover:-translate-y-2 ${
+                    className={`relative bg-slate-800 rounded-xl border-2 transition-colors duration-300 cursor-pointer ${
                       isSelected
-                        ? 'bg-slate-700 border-yellow-400 shadow-2xl shadow-yellow-400/20'
-                        : 'bg-slate-800 border-slate-700'
+                        ? 'border-yellow-400'
+                        : 'border-slate-700 hover:border-slate-600'
                     }`}
-                    style={{ transitionDelay: `${200 + index * 100}ms` }}
+                    style={{ transitionDelay: `${100 + index * 50}ms` }}
                     onClick={() => setSelectedService(service.id)}
                   >
                     <div className="p-6 flex flex-col items-start text-left h-full">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-slate-900/50 rounded-lg flex items-center justify-center">
-                           <IconComponent className="h-6 w-6 text-yellow-400" />
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="w-10 h-10 bg-slate-700/50 rounded-md flex items-center justify-center">
+                           <IconComponent className="h-5 w-5 text-yellow-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white">
+                        <h3 className="text-lg font-semibold text-white">
                           {service.title}
                         </h3>
                       </div>
-                      <p className="text-slate-400 mb-4 text-sm min-h-[60px] flex-grow">
+                      <p className="text-slate-400 mb-4 text-sm min-h-[56px] flex-grow">
                         {service.description}
                       </p>
                       <div className="space-y-2 w-full">
                         {service.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-center gap-3">
-                            <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-                            <span className="text-sm text-slate-300">{feature}</span>
+                          <div key={idx} className="flex items-center gap-2.5">
+                            <CheckCircle className="h-4 w-4 text-yellow-400/80 flex-shrink-0" />
+                            <span className="text-xs text-slate-300">{feature}</span>
                           </div>
                         ))}
                       </div>
                        {isSelected && (
-                        <div className="absolute top-4 right-4 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                          <CheckCircle className="h-5 w-5 text-slate-900" />
+                        <div className="absolute top-3 right-3 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                          <CheckCircle className="h-4 w-4 text-slate-900" />
                         </div>
                       )}
                     </div>

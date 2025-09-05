@@ -122,13 +122,12 @@ export default function Header() {
   }
 
   const headerClasses = isSalePage
-    ? 'sticky top-0 z-50 w-full bg-slate-800'
+    ? 'sticky top-0 z-50 w-full bg-transparent'
     : 'sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60'
 
   const textClasses = isSalePage ? 'text-white' : 'text-gray-900'
   const navLinkClasses = isSalePage ? 'text-gray-300 hover:text-yellow-400' : 'text-gray-700 hover:text-blue-600'
   const activeNavLinkClasses = isSalePage ? 'text-yellow-400' : 'text-blue-600'
-
 
   return (
     <header className={headerClasses}>
