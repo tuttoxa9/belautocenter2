@@ -308,9 +308,9 @@ export default function SalePage() {
                 return (
                   <div
                     key={service.id}
-                    className={`group relative rounded-2xl border-2 overflow-hidden transform transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-yellow-400/20 hover:-translate-y-2 ${
+                    className={`group relative rounded-2xl border-2 overflow-hidden transform transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-yellow-400/10 hover:border-yellow-400/30 ${
                       isSelected
-                        ? 'bg-slate-700 border-yellow-400 shadow-2xl shadow-yellow-400/20'
+                        ? 'bg-slate-700/50 border-yellow-400 shadow-xl shadow-yellow-400/20'
                         : 'bg-slate-800 border-slate-700'
                     }`}
                     style={{ transitionDelay: `${200 + index * 100}ms` }}
@@ -318,8 +318,8 @@ export default function SalePage() {
                   >
                     <div className="p-6 flex flex-col items-start text-left h-full">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-slate-900/50 rounded-lg flex items-center justify-center">
-                           <IconComponent className="h-6 w-6 text-yellow-400" />
+                        <div className="w-12 h-12 bg-slate-900/50 rounded-lg flex items-center justify-center group-hover:bg-yellow-400/10 transition-colors">
+                          <IconComponent className="h-6 w-6 text-yellow-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white">
                           {service.title}
@@ -336,8 +336,8 @@ export default function SalePage() {
                           </div>
                         ))}
                       </div>
-                       {isSelected && (
-                        <div className="absolute top-4 right-4 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                      {isSelected && (
+                        <div className="absolute top-4 right-4 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
                           <CheckCircle className="h-5 w-5 text-slate-900" />
                         </div>
                       )}
