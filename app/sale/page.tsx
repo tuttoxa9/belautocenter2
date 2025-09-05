@@ -22,8 +22,6 @@ import {
   ArrowRight,
   Star,
   Calculator,
-  ChevronDown,
-  ChevronUp,
   Eye,
   FileText,
   Handshake,
@@ -83,8 +81,8 @@ const services = [
     description: 'Продадим ваш автомобиль быстро и по выгодной цене',
     icon: Shield,
     features: ['Профессиональная фотосъемка', 'Размещение на площадках', 'Сопровождение сделки'],
-    image: '/vwt.jpg',
-    gradient: 'from-slate-600 to-slate-700'
+    image: '/car_credit3new.png',
+    gradient: 'from-indigo-700 to-indigo-800'
   }
 ]
 
@@ -94,49 +92,42 @@ const dealSteps = [
     title: 'Визит или звонок',
     icon: Phone,
     description: 'Свяжитесь с нами удобным для вас способом или приезжайте к нам в офис по адресу в Минске. Наши специалисты готовы ответить на все ваши вопросы.',
-    color: 'from-slate-600 to-slate-700'
   },
   {
     id: 2,
     title: 'Осмотр машины',
     icon: Eye,
     description: 'Если вы находитесь не в Минске, мы можем организовать выезд нашего специалиста к вам для осмотра автомобиля и составления договора на месте.',
-    color: 'from-gray-600 to-gray-700'
   },
   {
     id: 3,
     title: 'Согласование стоимости',
     icon: DollarSign,
     description: 'Определяем справедливую рыночную цену вашего автомобиля. В процессе оценки учитываем текущее состояние, пробег и рыночную ситуацию.',
-    color: 'from-zinc-600 to-zinc-700'
   },
   {
     id: 4,
     title: 'Подготовка документов',
     icon: FileText,
     description: 'Все документы оформляются максимально прозрачно. Составляем акт приема-передачи, а также заключаем с вами договор, где прописываем все условия для обеих сторон.',
-    color: 'from-stone-600 to-stone-700'
   },
   {
     id: 5,
     title: 'Подготовка авто',
     icon: Settings,
     description: 'Организуем предпродажную подготовку: чистку и полировку, устранение мелких недостатков, диагностику и устранение технических проблем.',
-    color: 'from-neutral-600 to-neutral-700'
   },
   {
     id: 6,
     title: 'Реализация',
     icon: Trophy,
     description: 'Активно занимаемся рекламой и общаемся с потенциальными покупателями. При необходимости помогаем покупателям с оформлением кредита или лизинга.',
-    color: 'from-slate-700 to-slate-800'
   },
   {
     id: 7,
     title: 'Завершение сделки',
     icon: Handshake,
     description: 'Вы (или доверенное лицо) получаете оговоренную ранее сумму на руки либо на расчетный лицевой счет.',
-    color: 'from-gray-700 to-gray-800'
   }
 ]
 
@@ -148,7 +139,6 @@ export default function SalePage() {
     message: ''
   })
   const [isVisible, setIsVisible] = useState(false)
-  const [expandedStep, setExpandedStep] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState<'services' | 'process'>('services')
 
   const submitButtonState = useButtonState()
