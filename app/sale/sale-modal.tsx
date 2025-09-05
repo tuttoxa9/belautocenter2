@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { StatusButton } from "@/components/ui/status-button"
-import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, RotateCcw, TrendingUp } from "lucide-react"
+import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, RotateCcw, TrendingUp, CheckCircle as CheckCircleIcon } from "lucide-react"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -286,7 +286,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
             <div className="space-y-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="h-8 w-8 text-yellow-400" />
+                  <CheckCircleIcon className="h-8 w-8 text-yellow-400" />
                 </div>
                 <h3 className="text-2xl font-bold">{funnelSettings.step3Title}</h3>
                 <p className="text-slate-400">{funnelSettings.step3Subtitle}</p>

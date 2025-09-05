@@ -148,7 +148,6 @@ export default function SalePage() {
     message: ''
   })
   const [isVisible, setIsVisible] = useState(false)
-  const [expandedStep, setExpandedStep] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState<'services' | 'process'>('services')
 
   const submitButtonState = useButtonState()
@@ -309,7 +308,7 @@ export default function SalePage() {
                 return (
                   <div
                     key={service.id}
-                    className={`group relative bg-slate-800 rounded-2xl border-2 overflow-hidden transform transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-yellow-400/20 hover:-translate-y-2 ${
+                    className={`group bg-slate-800 rounded-2xl border-2 transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-yellow-400/20 hover:-translate-y-2 ${
                       isSelected
                         ? 'border-yellow-400 shadow-2xl shadow-yellow-400/20'
                         : 'border-slate-700'
@@ -317,29 +316,16 @@ export default function SalePage() {
                     style={{ transitionDelay: `${200 + index * 100}ms` }}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    <div className="relative h-56 overflow-hidden">
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute top-4 right-4">
-                        {isSelected && (
-                          <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                            <CheckCircle className="h-5 w-5 text-slate-900" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="text-xl font-bold text-white drop-shadow-lg">
+                    <div className="p-6">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center">
+                          <IconComponent className="h-6 w-6 text-yellow-400" />
+                        </div>
+                        <h3 className="text-lg font-bold text-white">
                           {service.title}
                         </h3>
                       </div>
-                    </div>
-                    <div className="p-6">
-                      <p className="text-slate-400 mb-4 text-sm min-h-[40px]">
+                      <p className="text-slate-400 mb-4 text-sm min-h-[60px]">
                         {service.description}
                       </p>
                       <div className="space-y-2">
@@ -361,28 +347,37 @@ export default function SalePage() {
           {activeTab === 'process' && (
             <div className="max-w-3xl mx-auto">
               <div className="relative">
-                {/* Vertical line */}
-                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-700"></div>
+                {/* Vertical line for mobile */}
+                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-700 md:hidden"></div>
 
-                <div className="space-y-12">
+                <div className="space-y-12 md:space-y-0">
                   {dealSteps.map((step, index) => {
                     const IconComponent = step.icon
+                    const isOdd = index % 2 !== 0
                     return (
-                      <div key={step.id} className={`relative flex items-start gap-6 transform transition-all duration-700 ${
-                        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                      }`} style={{ transitionDelay: `${200 + index * 100}ms` }}>
-                        <div className="relative z-10 flex flex-col items-center">
-                          <div className={`w-12 h-12 bg-slate-800 border-2 border-yellow-400 text-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                            <IconComponent className="h-6 w-6" />
+                      <div key={step.id} className={`relative md:grid md:grid-cols-2 md:gap-12 items-center`}>
+                        {/* Content */}
+                        <div className={`transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} ${isOdd ? 'md:col-start-2' : ''}`} style={{ transitionDelay: `${200 + index * 100}ms` }}>
+                          <div className="flex items-center gap-4 mb-2">
+                            <div className={`w-12 h-12 bg-slate-800 border-2 border-yellow-400 text-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                              <IconComponent className="h-6 w-6" />
+                            </div>
+                            <h4 className="text-lg font-bold text-white">
+                              Шаг {step.id}: {step.title}
+                            </h4>
+                          </div>
+                          <div className="pl-16 md:pl-0">
+                            <p className="text-slate-400 text-sm leading-relaxed">
+                              {step.description}
+                            </p>
                           </div>
                         </div>
-                        <div className="flex-1 pt-1 bg-slate-800 p-6 rounded-2xl border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
-                          <h4 className="text-lg font-bold text-white mb-2">
-                            Шаг {step.id}: {step.title}
-                          </h4>
-                          <p className="text-slate-400 text-sm leading-relaxed">
-                            {step.description}
-                          </p>
+
+                        {/* Desktop Timeline Graphics */}
+                        <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-16">
+                          <svg width="100%" height="100%" viewBox="0 0 128 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isOdd ? 'scale-x-[-1]' : ''}`}>
+                            {index < dealSteps.length -1 && <path d="M0 32C32 32 32 0 64 0S96 32 128 32" stroke="#475569" strokeWidth="2"/>}
+                          </svg>
                         </div>
                       </div>
                     )
@@ -391,42 +386,6 @@ export default function SalePage() {
               </div>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Why Choose Us Section */}
-      <section className="py-16 md:py-24 bg-slate-900">
-        <div className="container mx-auto max-w-7xl">
-          {/* Section Header */}
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Почему выбирают нас?</h2>
-            <p className="text-lg text-slate-400 max-w-3xl mx-auto">
-              Мы предлагаем не просто услуги, а надежное партнерство и первоклассный сервис.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-slate-800 p-8 rounded-2xl text-center border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
-              <div className="mb-4 inline-block p-4 bg-slate-700 rounded-full">
-                <DollarSign className="h-8 w-8 text-yellow-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Выгодная цена</h3>
-              <p className="text-slate-400">Мы предлагаем конкурентоспособные цены и прозрачные условия на все наши услуги.</p>
-            </div>
-            <div className="bg-slate-800 p-8 rounded-2xl text-center border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
-              <div className="mb-4 inline-block p-4 bg-slate-700 rounded-full">
-                <Shield className="h-8 w-8 text-yellow-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Гарантия надежности</h3>
-              <p className="text-slate-400">Все сделки проходят юридическую проверку, обеспечивая вашу безопасность и спокойствие.</p>
-            </div>
-            <div className="bg-slate-800 p-8 rounded-2xl text-center border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
-              <div className="mb-4 inline-block p-4 bg-slate-700 rounded-full">
-                <Clock className="h-8 w-8 text-yellow-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Экономия времени</h3>
-              <p className="text-slate-400">Мы берем на себя все этапы процесса, от оценки до оформления документов.</p>
-            </div>
-          </div>
         </div>
       </section>
 
