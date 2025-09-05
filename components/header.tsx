@@ -249,7 +249,7 @@ export default function Header() {
 
         {/* Контакты и кнопка звонка для десктопа */}
         <div className="hidden md:flex items-center space-x-4">
-          <div className="hidden lg:flex flex-col items-end text-right mr-2">
+          <div className="hidden lg:flex flex-col items-end text-right mr-2 min-h-[38px] justify-center">
             {loading ? (
               <div className="flex flex-col items-end">
                 <div className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">

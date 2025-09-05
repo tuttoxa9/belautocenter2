@@ -431,16 +431,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       const contacts = parseFirestoreDoc(contactsRawData);
 
       // Безопасно извлекаем из них чистые массивы с партнерами
-      const banks = creditPageData.partners || [];
-      const leasingCompanies = leasingPageData.leasingCompanies || leasingPageData.partners || [];
+      const banks = creditPageData?.partners || [];
+      const leasingCompanies = leasingPageData?.leasingCompanies || leasingPageData?.partners || [];
 
       // Сохраняем в кэш
       staticDataCache = {
         banks,
         leasingCompanies,
         contactPhones: {
-          main: contacts.phone || "+375 29 123-45-67",
-          additional: contacts.phone2 || ""
+          main: contacts?.phone || "+375 29 123-45-67",
+          additional: contacts?.phone2 || ""
         },
         lastLoadTime: now
       }
