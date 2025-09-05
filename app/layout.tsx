@@ -1,4 +1,7 @@
+"use client"
+
 import type React from "react"
+import { usePathname } from "next/navigation"
 import type { Metadata } from "next"
 import "./globals.css"
 import Header from "@/components/header"
@@ -89,12 +92,15 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const isSalePage = pathname === '/sale'
+
   return (
     <html lang="ru">
       <head>
         <meta name="yandex-verification" content="a9085911ec7f5c05" />
       </head>
-      <body className="font-sans min-h-screen bg-white flex flex-col">
+      <body className={`font-sans min-h-screen flex flex-col ${isSalePage ? 'bg-slate-900' : 'bg-white'}`}>
         <UsdBynRateProvider>
           <NotificationProvider>
             <Header />
