@@ -175,7 +175,7 @@ export default function SalePage() {
   const canSubmit = formData.name.trim() && formData.phone.length >= 13
 
   return (
-    <div className="min-h-screen text-white">
+    <div className="min-h-screen bg-slate-900 text-white">
       {/* New Hero Section */}
       <section className="relative overflow-hidden bg-slate-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
