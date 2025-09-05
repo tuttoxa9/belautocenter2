@@ -7,22 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
+import { Car } from '@/types/car';
 import CarCard from "@/components/car-card"
 import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-
-interface Car {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  price: number;
-  mileage: number;
-  transmission: string;
-  fuelType: string;
-  driveTrain: string;
-}
 
 interface CatalogClientProps {
   initialCars: Car[]
@@ -32,7 +20,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [cars, setCars] = useState<Car[]>(initialCars)
   const [filteredCars, setFilteredCars] = useState<Car[]>(initialCars)
   const [displayedCars, setDisplayedCars] = useState<Car[]>([]) // Новое состояние для отображаемых авто
-  const [loading, setLoading] = useState(initialCars.length === 0)
+  const [loading, setLoading] = useState(initialCars.length === 0 && typeof window !== 'undefined')
   const [loadingMore, setLoadingMore] = useState(false) // Состояние загрузки дополнительных авто
   const [currentPage, setCurrentPage] = useState(1) // Текущая страница
   const [carsPerPage] = useState(12) // Количество авто на странице
@@ -54,91 +42,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   })
   const [sortBy, setSortBy] = useState("year-asc") // Изменили по умолчанию на "сначала старые"
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-
-  // Загружаем данные на клиенте, если они не были предзагружены
-  useEffect(() => {
-    if (initialCars.length === 0) {
-      loadCarsFromCloudflare()
-    }
-  }, [initialCars.length])
-
-  const loadCarsFromCloudflare = async () => {
-    try {
-      setLoading(true)
-
-      // Используем прямой вызов Firestore (исключены vercel functions)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-      const response = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-
-      if (!response.ok) {
-        console.error(`Failed to fetch cars: ${response.status}`)
-        return
-      }
-
-      const data = await response.json()
-
-      let processedCars: Car[]
-
-      if (data.documents) {
-        // Формат прямого Firestore API
-        processedCars = data.documents
-          .map((doc: any) => {
-            const id = doc.name.split('/').pop() || ''
-            const fields: Record<string, any> = {}
-
-            for (const [key, value] of Object.entries(doc.fields || {})) {
-              fields[key] = convertFieldValue(value)
-            }
-
-            return { id, ...fields }
-          })
-          .filter((car: any) => car.isAvailable !== false)
-      } else if (Array.isArray(data)) {
-        // Формат Cloudflare Worker (уже обработанные данные)
-        processedCars = data.filter((car: any) => car.isAvailable !== false)
-      } else {
-        processedCars = []
-      }
-
-      setCars(processedCars)
-      setFilteredCars(processedCars)
-    } catch (error) {
-      console.error('Error loading cars:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Функция для конвертации значения поля из формата Firestore
-  const convertFieldValue = (value: any): any => {
-    if (value.stringValue !== undefined) {
-      return value.stringValue
-    } else if (value.integerValue !== undefined) {
-      return parseInt(value.integerValue)
-    } else if (value.doubleValue !== undefined) {
-      return parseFloat(value.doubleValue)
-    } else if (value.booleanValue !== undefined) {
-      return value.booleanValue
-    } else if (value.timestampValue !== undefined) {
-      return new Date(value.timestampValue)
-    } else if (value.arrayValue !== undefined) {
-      return value.arrayValue.values?.map((v: any) => convertFieldValue(v)) || []
-    } else if (value.mapValue !== undefined) {
-      const result: Record<string, any> = {}
-      for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
-        result[k] = convertFieldValue(v)
-      }
-      return result
-    } else if (value.nullValue !== undefined) {
-      return null
-    }
-    return value
-  }
 
   // Инициализация доступных марок и моделей
   useEffect(() => {

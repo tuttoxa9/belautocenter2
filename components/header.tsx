@@ -249,24 +249,16 @@ export default function Header() {
 
         {/* Контакты и кнопка звонка для десктопа */}
         <div className="hidden md:flex items-center space-x-4">
-          <div className="hidden lg:flex flex-col items-end text-right mr-2">
+          <div className="hidden lg:flex flex-col items-end text-right mr-2 min-h-[40px] justify-center">
             {loading ? (
               <div className="flex flex-col items-end">
-                <div className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
-                  <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
-                </div>
-                <div className="text-xs text-gray-900 font-semibold mt-1">
-                  <Skeleton className="h-3 w-[100px] bg-gray-200/60" />
-                </div>
+                <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
+                <Skeleton className="h-3 w-[100px] bg-gray-200/60 mt-1" />
               </div>
             ) : (
               <>
                 <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap w-[130px] text-right">
-                  {phoneLoading ? (
-                    <Skeleton className="h-5 w-[130px] bg-gray-200/60" />
-                  ) : (
-                    settings?.phone || "+375 XX XXX-XX-XX"
-                  )}
+                  {settings?.phone || "+375 XX XXX-XX-XX"}
                 </a>
                 <div className="text-xs text-gray-900 font-semibold">
                   <div>{settings?.workingHours || "пн-вск: 9:00-21:00"}</div>
