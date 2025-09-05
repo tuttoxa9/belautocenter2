@@ -146,12 +146,6 @@ export default function SalePage() {
 
   useEffect(() => {
     setIsVisible(true)
-
-    // Fix for footer corner color on dark pages
-    document.body.classList.add('bg-slate-900');
-    return () => {
-      document.body.classList.remove('bg-slate-900');
-    };
   }, [])
 
   const handleFormChange = (field: string, value: string) => {
@@ -193,7 +187,7 @@ export default function SalePage() {
   const canSubmit = formData.name.trim() && formData.phone.length >= 13
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-white text-gray-900">
       {/* New Hero Section */}
       <section className="relative overflow-hidden bg-slate-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
@@ -318,21 +312,21 @@ export default function SalePage() {
                   >
                     <div className="p-6 flex flex-col items-start text-left h-full">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-slate-900/50 rounded-lg flex items-center justify-center">
-                           <IconComponent className="h-6 w-6 text-yellow-400" />
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                           <IconComponent className="h-6 w-6 text-blue-600" />
                         </div>
-                        <h3 className="text-xl font-bold text-white">
+                        <h3 className="text-xl font-bold text-gray-900">
                           {service.title}
                         </h3>
                       </div>
-                      <p className="text-slate-400 mb-4 text-sm min-h-[60px] flex-grow">
+                      <p className="text-gray-600 mb-4 text-sm min-h-[60px] flex-grow">
                         {service.description}
                       </p>
                       <div className="space-y-2 w-full">
                         {service.features.map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-3">
-                            <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-                            <span className="text-sm text-slate-300">{feature}</span>
+                            <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                            <span className="text-sm text-gray-700">{feature}</span>
                           </div>
                         ))}
                       </div>
