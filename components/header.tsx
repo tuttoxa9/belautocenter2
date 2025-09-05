@@ -262,11 +262,11 @@ export default function Header() {
                 </a>
               )}
             </div>
-            <div className="h-4 w-[100px] flex items-center justify-end mt-1">
+            <div className="h-4 w-auto flex items-center justify-end mt-1">
               {loading ? (
-                <Skeleton className="h-3 w-[100px] bg-gray-200/60" />
+                <Skeleton className="h-3 w-[120px] bg-gray-200/60" />
               ) : (
-                <div className="text-xs text-gray-900 font-semibold">
+                <div className="text-xs text-gray-900 font-semibold whitespace-nowrap">
                   {settings?.workingHours || "пн-вск: 9:00-21:00"}
                 </div>
               )}
