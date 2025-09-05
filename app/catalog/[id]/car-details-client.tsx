@@ -4,6 +4,7 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import Link from "next/link"
 
 import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -135,12 +136,13 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
           )}
         </div>
 
-        <Button
-          onClick={() => window.location.href = '/catalog'}
-          className="w-full bg-slate-900 hover:bg-slate-800 text-white"
-        >
-          Перейти к каталогу
-        </Button>
+        <Link href="/catalog" className="w-full">
+          <Button
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white"
+          >
+            Перейти к каталогу
+          </Button>
+        </Link>
       </div>
     </div>
   );
@@ -824,23 +826,23 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         <nav className="mb-4 sm:mb-6">
           <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500">
             <li>
-              <button
-                onClick={() => router.push('/')}
+              <Link
+                href="/"
                 className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100"
               >
                 Главная
-              </button>
+              </Link>
             </li>
             <li>
               <ChevronRight className="h-4 w-4 text-slate-400" />
             </li>
             <li>
-              <button
-                onClick={() => router.push('/catalog')}
+              <Link
+                href="/catalog"
                 className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100"
               >
                 Каталог
-              </button>
+              </Link>
             </li>
             <li>
               <ChevronRight className="h-4 w-4 text-slate-400" />
