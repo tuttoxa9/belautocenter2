@@ -197,66 +197,77 @@ export default function SalePage() {
   const canSubmit = formData.name.trim() && formData.phone.length >= 13
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-900 text-white">
       {/* New Hero Section */}
-      <section className="py-20 md:py-32 bg-white">
-        <div className={`container mx-auto text-center px-4 md:px-6 max-w-4xl transform transition-all duration-1000 ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
-        }`}>
-          <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-4 py-2 mb-6 text-sm">
-            <Star className="h-4 w-4 text-yellow-500" />
-            <span className="font-medium text-slate-700">Официальный дилер • 15+ лет опыта</span>
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900 leading-tight">
-            Профессиональные
-            <span className="block text-primary">
-              автомобильные услуги
-            </span>
-          </h1>
-
-          <p className="text-lg md:text-xl mb-10 max-w-2xl mx-auto text-slate-600">
-            Полный спектр услуг: от лизинга и кредитования до выкупа и комиссионной продажи вашего автомобиля.
-          </p>
-
-          <div className="flex justify-center gap-4">
-            <Button
-              size="lg"
-              className="bg-slate-900 text-white hover:bg-slate-800 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Наши услуги
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Связаться с нами
-            </Button>
+      <section className="relative overflow-hidden bg-slate-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className={`transform transition-all duration-1000 ${
+              isVisible ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
+            }`}>
+              <div className="inline-flex items-center gap-2 bg-slate-700 rounded-full px-4 py-2 mb-6 text-sm">
+                <Star className="h-4 w-4 text-yellow-400" />
+                <span className="font-medium text-slate-200">Премиальные автоуслуги для вас</span>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Продайте ваш автомобиль
+                <span className="block text-yellow-400">
+                  быстро и выгодно
+                </span>
+              </h1>
+              <p className="text-lg md:text-xl mb-10 max-w-lg text-slate-300">
+                Мы предлагаем полный комплекс услуг по выкупу, обмену и комиссионной продаже автомобилей с гарантией лучшей цены и юридической чистоты.
+              </p>
+              <div className="flex items-center gap-4">
+                <Button
+                  size="lg"
+                  className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-yellow-400/30 transition-all duration-300"
+                  onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Начать продажу
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-white border-slate-600 hover:bg-slate-700 hover:text-white text-base px-8 py-6 rounded-xl font-semibold"
+                  onClick={() => document.getElementById('process')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Как это работает?
+                </Button>
+              </div>
+            </div>
+            <div className={`relative h-64 md:h-auto transform transition-all duration-1000 delay-300 ${
+              isVisible ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
+            }`}>
+              <Image
+                src="/mercedes-new-bg.jpg"
+                alt="Продажа автомобиля"
+                width={800}
+                height={600}
+                className="rounded-2xl shadow-2xl object-cover"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Modern Services Section */}
-      <section id="services" className="py-16 md:py-24 bg-slate-50/50">
+      <section id="services" className="py-16 md:py-24 bg-slate-800/50">
         <div className="container mx-auto max-w-7xl">
           {/* Section Header */}
           <div className={`text-center mb-8 md:mb-12 transform transition-all duration-1000 delay-300 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 md:px-4 py-1.5 md:py-2 mb-3 md:mb-4">
-              <Car className="h-3 w-3 md:h-4 md:w-4 text-slate-600" />
-              <span className="text-xs md:text-sm font-medium text-slate-700">Наши услуги</span>
+            <div className="inline-flex items-center gap-2 bg-slate-700 rounded-full px-4 py-2 mb-4">
+              <Car className="h-4 w-4 text-yellow-400" />
+              <span className="text-sm font-medium text-slate-200">Наши услуги</span>
             </div>
-            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-slate-900 leading-tight">
-              Выберите подходящую
-              <span className="block text-slate-600">услугу</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white leading-tight">
+              Что мы предлагаем
             </h2>
-            <p className="text-sm md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              Мы предлагаем полный спектр автомобильных услуг с индивидуальным подходом к каждому клиенту
+            <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
+              Мы предлагаем полный спектр автомобильных услуг с индивидуальным подходом к каждому клиенту, гарантируя прозрачность и высокое качество на каждом этапе.
             </p>
           </div>
 
@@ -264,13 +275,13 @@ export default function SalePage() {
           <div className={`flex justify-center mb-6 md:mb-8 transform transition-all duration-1000 delay-500 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            <div className="bg-slate-100 rounded-xl md:rounded-2xl p-1 md:p-2">
+            <div className="bg-slate-800 rounded-xl md:rounded-2xl p-1 md:p-2">
               <button
                 onClick={() => setActiveTab('services')}
                 className={`px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-medium transition-all duration-300 text-sm md:text-base ${
                   activeTab === 'services'
-                    ? 'bg-white text-slate-900 shadow-lg'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-slate-700 text-white shadow-lg'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
                 Услуги
@@ -279,8 +290,8 @@ export default function SalePage() {
                 onClick={() => setActiveTab('process')}
                 className={`px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-medium transition-all duration-300 text-sm md:text-base ${
                   activeTab === 'process'
-                    ? 'bg-white text-slate-900 shadow-lg'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-slate-700 text-white shadow-lg'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
                 Процесс работы
@@ -290,7 +301,7 @@ export default function SalePage() {
 
           {/* Services Grid */}
           {activeTab === 'services' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service, index) => {
                 const IconComponent = service.icon
                 const isSelected = selectedService === service.id
@@ -298,41 +309,47 @@ export default function SalePage() {
                 return (
                   <div
                     key={service.id}
-                    className={`group bg-white rounded-2xl border transition-all duration-300 cursor-pointer transform hover:-translate-y-1 ${
+                    className={`group relative bg-slate-800 rounded-2xl border-2 overflow-hidden transform transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-yellow-400/20 hover:-translate-y-2 ${
                       isSelected
-                        ? 'border-slate-900 shadow-2xl scale-105'
-                        : 'border-slate-200 hover:shadow-xl hover:border-slate-300'
+                        ? 'border-yellow-400 shadow-2xl shadow-yellow-400/20'
+                        : 'border-slate-700'
                     }`}
-                    style={{ transitionDelay: `${100 + index * 100}ms` }}
+                    style={{ transitionDelay: `${200 + index * 100}ms` }}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    <div className="p-6">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center">
-                          <IconComponent className="h-6 w-6 text-slate-600" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900">
+                    <div className="relative h-56 overflow-hidden">
+                      <Image
+                        src={service.image}
+                        alt={service.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                      <div className="absolute top-4 right-4">
+                        {isSelected && (
+                          <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                            <CheckCircle className="h-5 w-5 text-slate-900" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 className="text-xl font-bold text-white drop-shadow-lg">
                           {service.title}
                         </h3>
                       </div>
-                      <p className="text-slate-600 mb-4 text-sm min-h-[60px]">
+                    </div>
+                    <div className="p-6">
+                      <p className="text-slate-400 mb-4 text-sm min-h-[40px]">
                         {service.description}
                       </p>
                       <div className="space-y-2">
                         {service.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                            <span className="text-sm text-slate-700">{feature}</span>
+                          <div key={idx} className="flex items-center gap-3">
+                            <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
+                            <span className="text-sm text-slate-300">{feature}</span>
                           </div>
                         ))}
                       </div>
-                    </div>
-                    <div className={`border-t-2 text-center py-3 font-medium text-sm transition-all duration-300 rounded-b-2xl ${
-                      isSelected
-                        ? 'border-slate-900 text-slate-900 bg-slate-100'
-                        : 'border-transparent text-slate-500 group-hover:text-slate-700'
-                    }`}>
-                      {isSelected ? '✓ Выбрано' : 'Выбрать эту услугу'}
                     </div>
                   </div>
                 )
@@ -343,159 +360,131 @@ export default function SalePage() {
           {/* Process Steps */}
           {activeTab === 'process' && (
             <div className="max-w-3xl mx-auto">
-              <div className="space-y-8">
-                {dealSteps.map((step, index) => {
-                  const IconComponent = step.icon
-                  return (
-                    <div key={step.id} className={`flex items-start gap-6 transform transition-all duration-700 ${
-                      isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                    }`} style={{ transitionDelay: `${100 + index * 100}ms` }}>
-                      <div className="flex flex-col items-center">
-                        <div className={`w-12 h-12 bg-slate-800 text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                          <IconComponent className="h-6 w-6" />
+              <div className="relative">
+                {/* Vertical line */}
+                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-700"></div>
+
+                <div className="space-y-12">
+                  {dealSteps.map((step, index) => {
+                    const IconComponent = step.icon
+                    return (
+                      <div key={step.id} className={`relative flex items-start gap-6 transform transition-all duration-700 ${
+                        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                      }`} style={{ transitionDelay: `${200 + index * 100}ms` }}>
+                        <div className="relative z-10 flex flex-col items-center">
+                          <div className={`w-12 h-12 bg-slate-800 border-2 border-yellow-400 text-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                            <IconComponent className="h-6 w-6" />
+                          </div>
                         </div>
-                        {index < dealSteps.length - 1 && (
-                          <div className="w-px h-16 bg-slate-200 mt-4"></div>
-                        )}
+                        <div className="flex-1 pt-1 bg-slate-800 p-6 rounded-2xl border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
+                          <h4 className="text-lg font-bold text-white mb-2">
+                            Шаг {step.id}: {step.title}
+                          </h4>
+                          <p className="text-slate-400 text-sm leading-relaxed">
+                            {step.description}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 pt-1">
-                        <h4 className="text-lg font-bold text-slate-900 mb-1">
-                          {step.id}. {step.title}
-                        </h4>
-                        <p className="text-slate-600 text-sm leading-relaxed">
-                          {step.description}
-                        </p>
-                      </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
             </div>
           )}
         </div>
       </section>
 
+      {/* Why Choose Us Section */}
+      <section className="py-16 md:py-24 bg-slate-900">
+        <div className="container mx-auto max-w-7xl">
+          {/* Section Header */}
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Почему выбирают нас?</h2>
+            <p className="text-lg text-slate-400 max-w-3xl mx-auto">
+              Мы предлагаем не просто услуги, а надежное партнерство и первоклассный сервис.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-slate-800 p-8 rounded-2xl text-center border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
+              <div className="mb-4 inline-block p-4 bg-slate-700 rounded-full">
+                <DollarSign className="h-8 w-8 text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Выгодная цена</h3>
+              <p className="text-slate-400">Мы предлагаем конкурентоспособные цены и прозрачные условия на все наши услуги.</p>
+            </div>
+            <div className="bg-slate-800 p-8 rounded-2xl text-center border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
+              <div className="mb-4 inline-block p-4 bg-slate-700 rounded-full">
+                <Shield className="h-8 w-8 text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Гарантия надежности</h3>
+              <p className="text-slate-400">Все сделки проходят юридическую проверку, обеспечивая вашу безопасность и спокойствие.</p>
+            </div>
+            <div className="bg-slate-800 p-8 rounded-2xl text-center border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
+              <div className="mb-4 inline-block p-4 bg-slate-700 rounded-full">
+                <Clock className="h-8 w-8 text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Экономия времени</h3>
+              <p className="text-slate-400">Мы берем на себя все этапы процесса, от оценки до оформления документов.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Modern Contact Section */}
-      <section id="contact-form" className="py-16 md:py-24 bg-white">
+      <section id="contact-form" className="py-16 md:py-24 bg-slate-800/50">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* Left side - Info */}
             <div className={`transform transition-all duration-1000 delay-300 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}>
-              <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-4 py-2 mb-4">
-                <Phone className="h-4 w-4 text-slate-600" />
-                <span className="text-sm font-medium text-slate-700">Свяжитесь с нами</span>
+              <div className="inline-flex items-center gap-2 bg-slate-700 rounded-full px-4 py-2 mb-4">
+                <Phone className="h-4 w-4 text-yellow-400" />
+                <span className="text-sm font-medium text-slate-200">Свяжитесь с нами</span>
               </div>
-
-              <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 leading-tight">
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
                 Готовы обсудить ваши потребности?
               </h3>
-
-              <p className="text-lg text-slate-600 mb-6 leading-relaxed">
+              <p className="text-lg text-slate-400 mb-6 leading-relaxed">
                 Оставьте заявку, и наш менеджер свяжется с вами в течение 15 минут, чтобы предложить лучшие условия.
               </p>
-
-              {/* Benefits */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                    <Clock className="h-5 w-5 text-slate-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Быстрый ответ</h4>
-                    <p className="text-slate-600 text-sm">Свяжемся в течение 15 минут</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                    <Calculator className="h-5 w-5 text-slate-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Индивидуальный расчет</h4>
-                    <p className="text-slate-600 text-sm">Персональные условия для вас</p>
-                  </div>
-                </div>
-              </div>
             </div>
-
             {/* Right side - Form */}
             <div className={`transform transition-all duration-1000 delay-500 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}>
-              <div className="bg-slate-50/50 rounded-2xl border border-slate-200 p-6 md:p-8">
+              <div className="bg-slate-800 rounded-2xl border-2 border-slate-700 p-6 md:p-8">
                 {selectedService && (
-                  <div className="mb-6 p-3 bg-white rounded-xl border border-slate-200">
+                  <div className="mb-6 p-3 bg-slate-700 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CheckCircle className="h-5 w-5 text-yellow-400" />
                       <div>
-                        <span className="font-semibold text-slate-900 text-sm">
-                          Выбранная услуга:
-                        </span>
-                        <p className="text-slate-700 text-sm">
-                          {services.find(s => s.id === selectedService)?.title}
-                        </p>
+                        <span className="font-semibold text-white text-sm">Выбранная услуга:</span>
+                        <p className="text-slate-300 text-sm">{services.find(s => s.id === selectedService)?.title}</p>
                       </div>
                     </div>
                   </div>
                 )}
-
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="name" className="text-sm font-semibold text-slate-900 mb-2 block">
-                      Ваше имя *
-                    </Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => handleFormChange('name', e.target.value)}
-                      className="h-12 text-sm rounded-lg border-slate-300 focus:border-slate-500"
-                      placeholder="Введите ваше имя"
-                    />
+                    <Label htmlFor="name" className="text-sm font-medium text-slate-300 mb-2 block">Ваше имя *</Label>
+                    <Input id="name" value={formData.name} onChange={(e) => handleFormChange('name', e.target.value)} className="h-12 bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 rounded-lg" placeholder="Введите ваше имя" />
                   </div>
-
                   <div>
-                    <Label htmlFor="phone" className="text-sm font-semibold text-slate-900 mb-2 block">
-                      Номер телефона *
-                    </Label>
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => handleFormChange('phone', e.target.value)}
-                      className="h-12 text-sm rounded-lg border-slate-300 focus:border-slate-500"
-                      placeholder="+375 (XX) XXX-XX-XX"
-                    />
+                    <Label htmlFor="phone" className="text-sm font-medium text-slate-300 mb-2 block">Номер телефона *</Label>
+                    <Input id="phone" value={formData.phone} onChange={(e) => handleFormChange('phone', e.target.value)} className="h-12 bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 rounded-lg" placeholder="+375 (XX) XXX-XX-XX" />
                   </div>
-
                   <div>
-                    <Label htmlFor="message" className="text-sm font-semibold text-slate-900 mb-2 block">
-                      Комментарий (необязательно)
-                    </Label>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => handleFormChange('message', e.target.value)}
-                      className="text-sm rounded-lg border-slate-300 focus:border-slate-500 resize-none"
-                      placeholder="Расскажите подробнее..."
-                      rows={3}
-                    />
+                    <Label htmlFor="message" className="text-sm font-medium text-slate-300 mb-2 block">Комментарий (необязательно)</Label>
+                    <Textarea id="message" value={formData.message} onChange={(e) => handleFormChange('message', e.target.value)} className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 rounded-lg resize-none" placeholder="Расскажите подробнее..." rows={3} />
                   </div>
-
-                  <StatusButton
-                    {...submitButtonState}
-                    onClick={handleSubmit}
-                    disabled={!canSubmit}
-                    className="w-full h-12 text-base font-semibold rounded-lg bg-slate-900 hover:bg-slate-800"
-                  >
+                  <StatusButton {...submitButtonState} onClick={handleSubmit} disabled={!canSubmit} className="w-full h-12 text-base rounded-lg bg-yellow-400 text-slate-900 hover:bg-yellow-300 font-semibold">
                     Отправить заявку
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </StatusButton>
-
                   <p className="text-center text-xs text-slate-500">
                     Нажимая кнопку, вы соглашаетесь с{' '}
-                    <a href="/privacy" className="underline hover:text-slate-900">
-                      политикой конфиденциальности
-                    </a>
+                    <a href="/privacy" className="underline hover:text-white">политикой конфиденциальности</a>
                   </p>
                 </div>
               </div>
