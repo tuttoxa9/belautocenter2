@@ -62,16 +62,8 @@ function withAuth(handler) { return async (request, env, ctx) => { try { const a
 function cacheKey(request) {
   const url = new URL(request.url);
   url.hash = "";
-
-  // Создаем новый объект Headers и удаляем заголовок Authorization.
-  // Это предотвратит "пробивание" кэша уникальными токенами пользователей для публичного контента.
-  const newHeaders = new Headers(request.headers);
-  newHeaders.delete('Authorization');
-
-  return new Request(url.toString(), {
-    headers: newHeaders,
-    method: 'GET'
-  });
+  // Ключ кэша теперь зависит ТОЛЬКО от URL, все заголовки игнорируются.
+  return new Request(url.toString(), { method: 'GET' });
 }
 async function cacheGetOrSet(request, ctx, computeResponse, ttl) {
   const key = cacheKey(request);
@@ -84,7 +76,12 @@ async function cacheGetOrSet(request, ctx, computeResponse, ttl) {
   }
   const freshResponse = await computeResponse();
   if (freshResponse.ok) {
+    // Создаем новый объект Response, чтобы можно было изменять заголовки.
     const response = new Response(freshResponse.body, freshResponse);
+
+    // Удаляем заголовок Vary, чтобы Cloudflare кэшировал один ответ для всех.
+    response.headers.delete('Vary');
+
     response.headers.set("Cache-Control", `public, max-age=${ttl}`);
     response.headers.set("X-Cache-Status", "MISS");
     ctx.waitUntil(cache.put(key, response.clone()));
