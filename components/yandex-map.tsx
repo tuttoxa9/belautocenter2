@@ -40,22 +40,28 @@ const GeocodedMap = ({ address, className }: YandexMapProps) => {
   useEffect(() => {
     if (ymaps && address) {
       setLoading(true);
-      ymaps.geocode(address)
-        .then((res: any) => {
-          const firstGeoObject = res.geoObjects.get(0)
-          if (firstGeoObject) {
-            setCoordinates(firstGeoObject.geometry.getCoordinates())
-          } else {
+      (ymaps as any).load(['package.geocode']).then(() => {
+        (ymaps as any).geocode(address)
+          .then((res: any) => {
+            const firstGeoObject = res.geoObjects.get(0)
+            if (firstGeoObject) {
+              setCoordinates(firstGeoObject.geometry.getCoordinates())
+            } else {
+              setError(true)
+            }
+          })
+          .catch((err: any) => {
+            console.error('Ошибка геокодирования:', err)
             setError(true)
-          }
-        })
-        .catch((err: any) => {
-          console.error('Ошибка геокодирования:', err)
-          setError(true)
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }).catch((err: any) => {
+        console.error('Ошибка загрузки модуля гекодирования:', err);
+        setError(true);
+        setLoading(false);
+      });
     }
   }, [ymaps, address])
 
