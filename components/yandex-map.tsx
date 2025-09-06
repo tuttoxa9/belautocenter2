@@ -111,7 +111,7 @@ export default function YandexMap({ address, className }: YandexMapProps) {
 
   return (
     <div className={className}>
-      <YMaps query={{ apikey: apiKey, lang: 'ru_RU', load: 'geocode' }}>
+      <YMaps query={{ apikey: apiKey, lang: 'ru_RU', load: 'package.full' }}>
         <GeocodedMap address={address} className="w-full h-full min-h-[200px]" />
       </YMaps>
     </div>
