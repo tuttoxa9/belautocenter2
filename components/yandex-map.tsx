@@ -9,7 +9,7 @@ interface YandexMapProps {
   className?: string
 }
 
-const MapPlaceholder = ({ className, address, loading, mapError, apiKeyMissing, errorDetails }: { className?: string, address?: string, loading: boolean, mapError: boolean, apiKeyMissing: boolean, errorDetails?: string | null }) => (
+const MapPlaceholder = ({ className, address, loading, mapError, apiKeyMissing }: { className?: string, address?: string, loading: boolean, mapError: boolean, apiKeyMissing: boolean }) => (
   <div className={`${className} bg-slate-100 flex items-center justify-center border border-slate-200`}>
     <div className="text-center p-6">
       <div className="w-16 h-16 bg-slate-300 rounded-full mx-auto mb-4 flex items-center justify-center">
@@ -26,9 +26,6 @@ const MapPlaceholder = ({ className, address, loading, mapError, apiKeyMissing, 
       {address && (
         <p className="text-slate-500 text-xs mt-2">{address}</p>
       )}
-      {errorDetails && (
-        <p className="text-red-500 text-xs mt-1 font-mono bg-red-50 p-2 rounded">Детали: {errorDetails}</p>
-      )}
     </div>
   </div>
 );
@@ -39,48 +36,37 @@ const GeocodedMap = ({ address, className }: YandexMapProps) => {
   const [coordinates, setCoordinates] = useState<number[] | null>(null)
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true);
-  const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
   useEffect(() => {
     if (ymaps && address) {
       setLoading(true);
       setError(false);
-      setErrorDetails(null);
 
-      (ymaps as any).load(['package.geocode']).then(() => {
-        (ymaps as any).geocode(address)
-          .then((res: any) => {
-            const firstGeoObject = res.geoObjects.get(0)
-            if (firstGeoObject) {
-              setCoordinates(firstGeoObject.geometry.getCoordinates())
-            } else {
-              setError(true);
-              setErrorDetails("Яндекс.Карты не вернули результатов для этого адреса.");
-            }
-          })
-          .catch((err: any) => {
-            console.error('Ошибка геокодирования:', err)
+      (ymaps as any).geocode(address)
+        .then((res: any) => {
+          const firstGeoObject = res.geoObjects.get(0);
+          if (firstGeoObject) {
+            setCoordinates(firstGeoObject.geometry.getCoordinates());
+          } else {
             setError(true);
-            setErrorDetails(`Ошибка геокодирования: ${err.message || 'Неизвестная ошибка'}`);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }).catch((err: any) => {
-        console.error('Ошибка загрузки модуля гекодирования:', err);
-        setError(true);
-        setErrorDetails(`Ошибка загрузки модуля: ${err.message || 'Неизвестная ошибка'}`);
-        setLoading(false);
-      });
+          }
+        })
+        .catch((err: any) => {
+          console.error('Ошибка геокодирования:', err);
+          setError(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [ymaps, address])
 
   if (loading) {
-    return <MapPlaceholder className={className} address={address} loading={true} mapError={false} apiKeyMissing={false} errorDetails={null} />;
+    return <MapPlaceholder className={className} address={address} loading={true} mapError={false} apiKeyMissing={false} />;
   }
 
   if (error || !coordinates) {
-    return <MapPlaceholder className={className} address={address} loading={false} mapError={true} apiKeyMissing={false} errorDetails={errorDetails} />;
+    return <MapPlaceholder className={className} address={address} loading={false} mapError={true} apiKeyMissing={false} />;
   }
 
   return (
@@ -125,7 +111,7 @@ export default function YandexMap({ address, className }: YandexMapProps) {
 
   return (
     <div className={className}>
-      <YMaps query={{ apikey: apiKey, lang: 'ru_RU' }}>
+      <YMaps query={{ apikey: apiKey, lang: 'ru_RU', load: 'geocode' }}>
         <GeocodedMap address={address} className="w-full h-full min-h-[200px]" />
       </YMaps>
     </div>
