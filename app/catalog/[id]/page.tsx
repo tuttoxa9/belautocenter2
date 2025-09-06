@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { FIRESTORE_PROXY_URL } from "@/lib/firestore-client"
 
 // Принудительная статическая генерация с кэшированием на сутки
 export const dynamic = 'force-static'
@@ -48,9 +49,8 @@ export async function generateMetadata(
   { params }: { params: { id: string } }
 ): Promise<Metadata> {
   try {
-    // Загружаем данные автомобиля из Firestore
-    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${params.id}`
+    // Загружаем данные автомобиля через Cloudflare Worker
+    const firestoreUrl = `${FIRESTORE_PROXY_URL}/cars/${params.id}`
 
     const response = await fetch(firestoreUrl, {
       headers: {

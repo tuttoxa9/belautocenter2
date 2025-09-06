@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 
 import { apiClient } from "@/lib/api-client"
+import { FIRESTORE_PROXY_URL } from "@/lib/firestore-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
@@ -385,11 +386,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingBanks(true)
       setLoadingLeasing(true)
 
-      // Используем прямые запросы к Firestore (исключены vercel functions)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-      const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages`
+      // Используем запросы через Cloudflare Worker
+      const baseUrl = `${FIRESTORE_PROXY_URL}/pages`
 
-      // Определяем эндпоинты Firestore напрямую
+      // Определяем эндпоинты
       const endpoints = {
         banks: `${baseUrl}/credit`,
         leasing: `${baseUrl}/leasing`,
@@ -481,9 +481,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     try {
       setLoading(true)
 
-      // Используем прямой запрос к Firestore (исключены vercel functions)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-      const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
+      // Используем запрос через Cloudflare Worker
+      const firestoreUrl = `${FIRESTORE_PROXY_URL}/cars/${carId}`
 
       const response = await fetch(firestoreUrl, {
         headers: {
