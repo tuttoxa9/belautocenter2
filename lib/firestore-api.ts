@@ -1,17 +1,34 @@
-import { apiClient } from './api-client'
+import { ApiClient } from './api-client'
+import { FIRESTORE_PROXY_URL } from './firestore-client'
 
 export interface FirestoreDocument {
   id: string
   [key: string]: any
 }
 
+// Этот класс будет общаться с нашим Cloudflare Worker, который проксирует запросы в Firestore.
+// Он использует настроенный ApiClient.
 export class FirestoreApi {
+  private client: ApiClient
+
+  constructor() {
+    // Создаем экземпляр ApiClient, который будет указывать на наш воркер
+    this.client = new ApiClient(FIRESTORE_PROXY_URL)
+  }
+
   /**
    * Получить список документов из коллекции
    */
   async getCollection(collectionName: string): Promise<FirestoreDocument[]> {
     try {
-      const response = await apiClient.get<any>(`/${collectionName}`)
+      // Используем this.client вместо глобального apiClient
+      const response = await this.client.get<any>(`/${collectionName}`)
+
+      // Воркер может вернуть либо сырой ответ Firestore, либо уже обработанный массив.
+      // Этот код обрабатывает оба случая.
+      if (Array.isArray(response)) {
+        return response as FirestoreDocument[]
+      }
 
       if (!response.documents) {
         return []
@@ -21,7 +38,6 @@ export class FirestoreApi {
         const id = doc.name.split('/').pop() || ''
         const fields: Record<string, any> = {}
 
-        // Преобразуем Firestore поля в обычные объекты
         for (const [key, value] of Object.entries(doc.fields || {})) {
           fields[key] = this.convertFieldValue(value)
         }
@@ -39,7 +55,12 @@ export class FirestoreApi {
    */
   async getDocument(collectionName: string, documentId: string): Promise<FirestoreDocument | null> {
     try {
-      const doc = await apiClient.get<any>(`/${collectionName}/${documentId}`)
+      const doc = await this.client.get<any>(`/${collectionName}/${documentId}`)
+
+      // Обработка случая, когда воркер вернул уже готовый объект
+      if (doc && !doc.fields && doc.id) {
+        return doc
+      }
 
       if (!doc || !doc.fields) {
         return null
@@ -47,7 +68,6 @@ export class FirestoreApi {
 
       const fields: Record<string, any> = {}
 
-      // Преобразуем Firestore поля в обычные объекты
       for (const [key, value] of Object.entries(doc.fields || {})) {
         fields[key] = this.convertFieldValue(value)
       }
@@ -66,7 +86,8 @@ export class FirestoreApi {
   async addDocument(collectionName: string, data: Record<string, any>): Promise<{ id: string }> {
     try {
       const firebaseData = this.convertToFirestoreFormat(data)
-      const response = await apiClient.post<any>(`/${collectionName}`, { fields: firebaseData })
+      // Для POST-запросов на создание документа Firestore ожидает определенную структуру
+      const response = await this.client.post<any>(`/${collectionName}`, { fields: firebaseData })
       const id = response.name.split('/').pop() || ''
       return { id }
     } catch (error) {
@@ -81,8 +102,12 @@ export class FirestoreApi {
   async updateDocument(collectionName: string, documentId: string, data: Record<string, any>): Promise<void> {
     try {
       const firebaseData = this.convertToFirestoreFormat(data)
-      await apiClient.put<any>(`/${collectionName}/${documentId}`, { fields: firebaseData })
-    } catch (error) {
+      // PATCH используется для обновления документа
+      await this.client.fetch<any>(`/${collectionName}/${documentId}`, {
+        method: 'PUT',
+        body: { fields: firebaseData },
+      })
+    } catch (error)      {
       console.error(`Error updating document ${collectionName}/${documentId}:`, error)
       throw error
     }
@@ -93,7 +118,7 @@ export class FirestoreApi {
    */
   async deleteDocument(collectionName: string, documentId: string): Promise<void> {
     try {
-      await apiClient.delete<any>(`/${collectionName}/${documentId}`)
+      await this.client.delete<any>(`/${collectionName}/${documentId}`)
     } catch (error) {
       console.error(`Error deleting document ${collectionName}/${documentId}:`, error)
       throw error
@@ -132,7 +157,7 @@ export class FirestoreApi {
               }
               if (typeof item === 'boolean') return { booleanValue: item }
               if (item instanceof Date) return { timestampValue: item.toISOString() }
-              return item
+              return { stringValue: String(item) } // Default to string
             })
           }
         }
@@ -155,7 +180,7 @@ export class FirestoreApi {
     if (value.stringValue !== undefined) {
       return value.stringValue
     } else if (value.integerValue !== undefined) {
-      return parseInt(value.integerValue)
+      return parseInt(value.integerValue, 10)
     } else if (value.doubleValue !== undefined) {
       return parseFloat(value.doubleValue)
     } else if (value.booleanValue !== undefined) {

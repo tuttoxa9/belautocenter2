@@ -1,74 +1,20 @@
 import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
-import { FIRESTORE_PROXY_URL } from "@/lib/firestore-client"
+import { firestoreApi } from "@/lib/firestore-api"
 
 // Принудительная статическая генерация с кэшированием на сутки
 export const dynamic = 'force-static'
 export const dynamicParams = true
 export const revalidate = 86400 // 24 часа
 
-// Функция для парсинга данных Firestore
-const parseFirestoreDoc = (doc: any): any => {
-  if (!doc || !doc.fields) return null
-
-  const result: any = {}
-  for (const [key, value] of Object.entries(doc.fields)) {
-    result[key] = convertFieldValue(value)
-  }
-  return result
-}
-
-const convertFieldValue = (value: any): any => {
-  if (value.stringValue !== undefined) {
-    return value.stringValue
-  } else if (value.integerValue !== undefined) {
-    return parseInt(value.integerValue)
-  } else if (value.doubleValue !== undefined) {
-    return parseFloat(value.doubleValue)
-  } else if (value.booleanValue !== undefined) {
-    return value.booleanValue
-  } else if (value.timestampValue !== undefined) {
-    return new Date(value.timestampValue)
-  } else if (value.arrayValue !== undefined) {
-    return value.arrayValue.values?.map((v: any) => convertFieldValue(v)) || []
-  } else if (value.mapValue !== undefined) {
-    const result: Record<string, any> = {}
-    for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
-      result[k] = convertFieldValue(v)
-    }
-    return result
-  } else if (value.nullValue !== undefined) {
-    return null
-  }
-  return value
-}
-
 // Динамическая генерация метатегов на основе данных автомобиля
 export async function generateMetadata(
   { params }: { params: { id: string } }
 ): Promise<Metadata> {
   try {
-    // Загружаем данные автомобиля через Cloudflare Worker
-    const firestoreUrl = `${FIRESTORE_PROXY_URL}/cars/${params.id}`
-
-    const response = await fetch(firestoreUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'NextJS-Direct-Firestore/1.0'
-      }
-    })
-
-    if (!response.ok) {
-      // Если автомобиль не найден, возвращаем базовые метатеги
-      return {
-        title: "Автомобиль не найден | Белавто Центр",
-        description: "Автомобиль с указанным ID не найден в каталоге Белавто Центр"
-      }
-    }
-
-    const doc = await response.json()
-    const carData = parseFirestoreDoc(doc)
+    // Загружаем данные автомобиля через firestoreApi
+    const carData = await firestoreApi.getDocument("cars", params.id)
 
     if (!carData) {
       return {

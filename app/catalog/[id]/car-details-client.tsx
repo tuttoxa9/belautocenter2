@@ -5,12 +5,10 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
-import { apiClient } from "@/lib/api-client"
-import { FIRESTORE_PROXY_URL } from "@/lib/firestore-client"
+import { firestoreApi } from "@/lib/firestore-api"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
-import { parseFirestoreDoc } from "@/lib/firestore-parser"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -386,47 +384,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingBanks(true)
       setLoadingLeasing(true)
 
-      // Используем запросы через Cloudflare Worker
-      const baseUrl = `${FIRESTORE_PROXY_URL}/pages`
-
-      // Определяем эндпоинты
-      const endpoints = {
-        banks: `${baseUrl}/credit`,
-        leasing: `${baseUrl}/leasing`,
-        contacts: `${baseUrl}/contacts`
-      }
-
-      // Выполняем запросы параллельно для максимальной скорости
-      const [banksResponse, leasingResponse, contactsResponse] = await Promise.all([
-        fetch(endpoints.banks, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.leasing, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.contacts, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        })
+      // Используем firestoreApi для загрузки через воркер
+      const [creditPageData, leasingPageData, contacts] = await Promise.all([
+        firestoreApi.getDocument("pages", "credit"),
+        firestoreApi.getDocument("pages", "leasing"),
+        firestoreApi.getDocument("pages", "contacts"),
       ])
-
-      // Получаем JSON из каждого ответа
-      const banksRawData = await banksResponse.json()
-      const leasingRawData = await leasingResponse.json()
-      const contactsRawData = await contactsResponse.json()
-
-      // Парсим полученные данные
-      const creditPageData = parseFirestoreDoc(banksRawData);
-      const leasingPageData = parseFirestoreDoc(leasingRawData);
-      const contacts = parseFirestoreDoc(contactsRawData);
 
       // Безопасно извлекаем из них чистые массивы с партнерами
       const banks = creditPageData.partners || [];
@@ -481,22 +444,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     try {
       setLoading(true)
 
-      // Используем запрос через Cloudflare Worker
-      const firestoreUrl = `${FIRESTORE_PROXY_URL}/cars/${carId}`
-
-      const response = await fetch(firestoreUrl, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-
-      let carData = null
-      if (response.ok) {
-        const doc = await response.json()
-        // Используем парсер для обработки данных Firestore
-        carData = parseFirestoreDoc(doc)
-      }
+      // Используем firestoreApi для загрузки через воркер
+      const carData = await firestoreApi.getDocument("cars", carId)
 
       if (carData) {
         // Очистка данных от несериализуемых объектов
@@ -658,12 +607,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await bookingButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      // Сохраняем данные через firestoreApi, который работает через воркер
       try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...bookingForm,
           carId: carId,
           carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
@@ -672,7 +618,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
+        console.warn('API save via worker failed:', error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)
@@ -703,12 +649,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await callbackButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      // Сохраняем данные через firestoreApi, который работает через воркер
       try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...callbackForm,
           carId: carId,
           carInfo: `${car?.make} ${car?.model} ${car?.year}`,
@@ -717,7 +660,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
+        console.warn('API save via worker failed:', error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)
@@ -747,12 +690,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     e.preventDefault()
 
     await creditButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
+      // Сохраняем данные через firestoreApi, который работает через воркер
       try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...creditForm,
           carId: carId,
           carInfo: `${car?.make} ${car?.model} ${car?.year}`,
@@ -768,7 +708,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           financeType: financeType
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
+        console.warn('API save via worker failed:', error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)

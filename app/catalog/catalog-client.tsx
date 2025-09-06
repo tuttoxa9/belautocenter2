@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import { FIRESTORE_PROXY_URL } from "@/lib/firestore-client"
+import { firestoreApi } from "@/lib/firestore-api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -59,85 +59,23 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   // Загружаем данные на клиенте, если они не были предзагружены
   useEffect(() => {
     if (initialCars.length === 0) {
-      loadCarsFromCloudflare()
+      loadCars()
     }
   }, [initialCars.length])
 
-  const loadCarsFromCloudflare = async () => {
+  const loadCars = async () => {
     try {
       setLoading(true)
+      const allCars = await firestoreApi.getCollection("cars")
+      const availableCars = allCars.filter((car: any) => car.isAvailable !== false)
 
-      // Используем вызов через Cloudflare Worker
-      const response = await fetch(`${FIRESTORE_PROXY_URL}/cars`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-
-      if (!response.ok) {
-        console.error(`Failed to fetch cars: ${response.status}`)
-        return
-      }
-
-      const data = await response.json()
-
-      let processedCars: Car[]
-
-      if (data.documents) {
-        // Формат прямого Firestore API
-        processedCars = data.documents
-          .map((doc: any) => {
-            const id = doc.name.split('/').pop() || ''
-            const fields: Record<string, any> = {}
-
-            for (const [key, value] of Object.entries(doc.fields || {})) {
-              fields[key] = convertFieldValue(value)
-            }
-
-            return { id, ...fields }
-          })
-          .filter((car: any) => car.isAvailable !== false)
-      } else if (Array.isArray(data)) {
-        // Формат Cloudflare Worker (уже обработанные данные)
-        processedCars = data.filter((car: any) => car.isAvailable !== false)
-      } else {
-        processedCars = []
-      }
-
-      setCars(processedCars)
-      setFilteredCars(processedCars)
+      setCars(availableCars as Car[])
+      setFilteredCars(availableCars as Car[])
     } catch (error) {
       console.error('Error loading cars:', error)
     } finally {
       setLoading(false)
     }
-  }
-
-  // Функция для конвертации значения поля из формата Firestore
-  const convertFieldValue = (value: any): any => {
-    if (value.stringValue !== undefined) {
-      return value.stringValue
-    } else if (value.integerValue !== undefined) {
-      return parseInt(value.integerValue)
-    } else if (value.doubleValue !== undefined) {
-      return parseFloat(value.doubleValue)
-    } else if (value.booleanValue !== undefined) {
-      return value.booleanValue
-    } else if (value.timestampValue !== undefined) {
-      return new Date(value.timestampValue)
-    } else if (value.arrayValue !== undefined) {
-      return value.arrayValue.values?.map((v: any) => convertFieldValue(v)) || []
-    } else if (value.mapValue !== undefined) {
-      const result: Record<string, any> = {}
-      for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
-        result[k] = convertFieldValue(v)
-      }
-      return result
-    } else if (value.nullValue !== undefined) {
-      return null
-    }
-    return value
   }
 
   // Инициализация доступных марок и моделей
