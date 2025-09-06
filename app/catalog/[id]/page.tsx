@@ -26,18 +26,13 @@ export async function generateMetadata(
     // Формируем данные для метатегов
     const carTitle = `${carData.make} ${carData.model} ${carData.year} г.`
     const carPrice = carData.price ? `${new Intl.NumberFormat("en-US").format(carData.price)}` : 'Цена по запросу'
-    // Создаем простое описание без markdown разметки
     const engineInfo = carData.fuelType === "Электро"
       ? carData.fuelType
       : `${carData.engineVolume ? carData.engineVolume.toFixed(1) : '?'}л ${carData.fuelType || 'бензин'}`
-
     const carDescription = `${carTitle} • ${carPrice} • ${carData.transmission || 'Автомат'} • ${engineInfo} • ${carData.driveTrain || 'Передний'} привод • Пробег ${carData.mileage ? new Intl.NumberFormat("ru-BY").format(carData.mileage) : 0} км • ${carData.color || 'Цвет не указан'}`
-
-    // Основное изображение автомобиля - используем правильную функцию для формирования URL
     const mainImage = carData.imageUrls && carData.imageUrls.length > 0
       ? getCachedImageUrl(carData.imageUrls[0])
       : getCachedImageUrl('/uploads/car.jpg')
-
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://belautocenter.by'
     const carUrl = `${siteUrl}/catalog/${params.id}`
 
@@ -45,26 +40,15 @@ export async function generateMetadata(
       title: `${carTitle} | Белавто Центр`,
       description: carDescription,
       keywords: `${carData.make}, ${carData.model}, ${carData.year}, автомобиль, купить авто, Беларусь, Белавто Центр, ${carData.transmission}, ${carData.fuelType}`,
-
-      // Open Graph метатеги
       openGraph: {
         title: `${carTitle} - ${carPrice}`,
         description: carDescription,
         url: carUrl,
         siteName: 'Белавто Центр',
-        images: [
-          {
-            url: mainImage,
-            width: 1200,
-            height: 630,
-            alt: carTitle,
-          }
-        ],
+        images: [{ url: mainImage, width: 1200, height: 630, alt: carTitle }],
         locale: 'ru_BY',
         type: 'website',
       },
-
-      // Twitter Card метатеги
       twitter: {
         card: 'summary_large_image',
         title: `${carTitle} - ${carPrice}`,
@@ -73,14 +57,10 @@ export async function generateMetadata(
         site: '@belautocenter',
         creator: '@belautocenter',
       },
-
-      // Дополнительные метатеги
       robots: {
         index: carData.isAvailable !== false,
         follow: true,
       },
-
-      // Структурированные данные для поисковых систем
       other: {
         'product:price:amount': carData.price?.toString() || '',
         'product:price:currency': 'USD',

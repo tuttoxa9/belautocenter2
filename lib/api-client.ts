@@ -10,8 +10,8 @@ export interface ApiRequestOptions {
 export class ApiClient {
   private baseUrl: string
 
-  constructor(customBaseUrl?: string) {
-    this.baseUrl = customBaseUrl || process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:3000'
+  constructor() {
+    this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:3000'
   }
 
   async fetch<T>(
