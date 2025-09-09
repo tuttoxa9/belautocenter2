@@ -11,7 +11,11 @@ export class ApiClient {
   private baseUrl: string
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || 'https://api.belautocenter.by'
+    // Используем относительный путь по умолчанию.
+    // Это позволяет коду работать на любом домене (Vercel, localhost, production),
+    // так как запросы будут отправляться на тот же хост, с которого загружена страница.
+    // Переменная NEXT_PUBLIC_API_HOST остается для гибкости, если понадобится указать другой хост.
+    this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || ''
   }
 
   async fetch<T>(
