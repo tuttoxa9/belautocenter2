@@ -1,0 +1,40 @@
+name = "belautocenter-worker"
+main = "image-cache-worker.js"
+compatibility_date = "2025-08-14"
+
+# Переменные окружения
+[vars]
+FIREBASE_PROJECT_ID = "belauto-5dd94" # Обновите на правильный ID проекта
+
+# R2 Bucket конфигурация
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "belautocenter"
+preview_bucket_name = "belautocenter-dev" # для разработки
+
+# Конфигурация для рабочей среды
+[env.production]
+name = "belautocenter-worker-prod"
+routes = [
+  { pattern = "images.belautocenter.by/*", zone_name = "belautocenter.by" },
+  { pattern = "cache.belautocenter.by/*", zone_name = "belautocenter.by" },
+  { pattern = "api.belautocenter.by/*", zone_name = "belautocenter.by" }
+]
+
+# Конфигурация для разработки
+[env.development]
+name = "belautocenter-worker-dev"
+vars = { FIREBASE_PROJECT_ID = "belauto-5dd94" }
+
+# Конфигурация для тестирования
+[env.staging]
+name = "belautocenter-worker-staging"
+
+# Trigger на определенные события
+[triggers]
+crons = ["0 0 * * *"] # Ежедневно в полночь для очистки кэша или других задач
+
+# Настройки для локальной разработки
+[dev]
+port = 8787
+local_protocol = "http"

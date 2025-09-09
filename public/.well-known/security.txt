@@ -1,0 +1,4 @@
+Contact: mailto:admin@autobelcenter.by
+Expires: 2026-08-26T00:00:00.000Z
+Preferred-Languages: ru, en
+Canonical: https://autobelcenter.by/.well-known/security.txt
