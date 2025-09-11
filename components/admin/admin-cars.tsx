@@ -47,6 +47,7 @@ export default function AdminCars() {
     description: "",
     imageUrls: [""],
     isAvailable: true,
+    showOnHomepage: false,
     specifications: {
       "Двигатель": "",
       "Разгон 0-100": "",
@@ -127,6 +128,7 @@ export default function AdminCars() {
       imageUrls: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls : [""],
       specifications: car.specifications || {},
       features: car.features || [],
+      showOnHomepage: car.showOnHomepage || false,
     })
     setIsDialogOpen(true)
   }
@@ -160,6 +162,7 @@ export default function AdminCars() {
       description: "",
       imageUrls: [""],
       isAvailable: true,
+      showOnHomepage: false,
       specifications: {
         "Двигатель": "",
         "Разгон 0-100": "",
@@ -684,14 +687,26 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="isAvailable"
-                  checked={carForm.isAvailable}
-                  onChange={(e) => setCarForm({ ...carForm, isAvailable: e.target.checked })}
-                />
-                <Label htmlFor="isAvailable">В наличии</Label>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isAvailable"
+                    checked={carForm.isAvailable}
+                    onChange={(e) => setCarForm({ ...carForm, isAvailable: e.target.checked })}
+                  />
+                  <Label htmlFor="isAvailable">В наличии</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="showOnHomepage"
+                    checked={carForm.showOnHomepage}
+                    onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
+                  />
+                  <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
+                </div>
               </div>
 
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">

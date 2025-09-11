@@ -78,10 +78,21 @@ export default function HomePage() {
       const allCars = await firestoreApi.getCollection("cars")
       console.log("Total cars loaded:", allCars.length)
 
-      // Сортируем по дате создания (если она есть) и берем последние 4
-      const featuredCars = allCars
-        .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
-        .slice(0, 4)
+      // Сначала фильтруем авто, отмеченные для показа на главной
+      let featuredCars = allCars.filter(car => car.showOnHomepage === true)
+
+      // Если нет авто с showOnHomepage, берем последние по дате
+      if (featuredCars.length === 0) {
+        featuredCars = allCars
+          .filter(car => car.isAvailable !== false)
+          .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
+          .slice(0, 4)
+      } else {
+        // Если есть авто с showOnHomepage, сортируем их по дате и берем максимум 4
+        featuredCars = featuredCars
+          .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
+          .slice(0, 4)
+      }
 
       console.log("Featured cars:", featuredCars)
 

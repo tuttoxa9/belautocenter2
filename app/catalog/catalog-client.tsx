@@ -53,7 +53,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     fuelType: "any",
     driveTrain: "any",
   })
-  const [sortBy, setSortBy] = useState("year-asc") // Изменили по умолчанию на "сначала старые"
+  const [sortBy, setSortBy] = useState("date-desc") // По умолчанию новые объявления сначала
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   // Загружаем данные на клиенте, если они не были предзагружены
@@ -163,6 +163,10 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           return a.mileage - b.mileage
         case "mileage-desc":
           return b.mileage - a.mileage
+        case "date-desc":
+          return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
+        case "date-asc":
+          return (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0)
         default:
           return 0
       }
@@ -603,6 +607,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+                      <SelectItem value="date-desc">Новые объявления</SelectItem>
+                      <SelectItem value="date-asc">Старые объявления</SelectItem>
                       <SelectItem value="year-asc">Год: сначала старые</SelectItem>
                       <SelectItem value="year-desc">Год: сначала новые</SelectItem>
                       <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
