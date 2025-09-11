@@ -205,34 +205,48 @@ export default function SalePage() {
                 <Star className="h-4 w-4 text-yellow-400" />
                 <span className="font-medium text-slate-200">Премиальные автоуслуги для вас</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight">
                 Продайте ваш автомобиль
                 <span className="block text-yellow-400">
                   быстро и выгодно
                 </span>
               </h1>
-              <p className="text-lg md:text-xl mb-10 max-w-lg text-slate-300">
+              <p className="text-lg md:text-xl mb-6 md:mb-10 max-w-lg text-slate-300">
                 Мы предлагаем полный комплекс услуг по выкупу, обмену и комиссионной продаже автомобилей с гарантией лучшей цены и юридической чистоты.
               </p>
-              <div className="flex items-center gap-4">
-                <Button
-                  size="lg"
-                  className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-yellow-400/30 transition-all duration-300"
-                  onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  Начать продажу
-                </Button>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="bg-slate-700 text-white hover:bg-slate-600 text-base px-8 py-6 rounded-xl font-semibold"
-                  onClick={() => {
-                    setActiveTab('process');
-                    document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  Как это работает?
-                </Button>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="flex items-center gap-4">
+                  <Button
+                    size="lg"
+                    className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-yellow-400/30 transition-all duration-300"
+                    onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    Начать продажу
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="bg-slate-700 text-white hover:bg-slate-600 text-base px-8 py-6 rounded-xl font-semibold"
+                    onClick={() => {
+                      setActiveTab('process');
+                      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Как это работает?
+                  </Button>
+                </div>
+                {/* Номер телефона для мобильных устройств */}
+                <div className="sm:hidden mt-4">
+                  <div className="bg-transparent border border-slate-600/50 rounded-3xl px-6 py-3 backdrop-blur-sm">
+                    <a
+                      href="tel:+375291234567"
+                      className="text-yellow-400 font-semibold text-lg hover:text-yellow-300 transition-colors flex items-center gap-2"
+                    >
+                      <Phone className="h-5 w-5" />
+                      +375 29 123-45-67
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
             <div className={`relative h-64 md:h-auto transform transition-all duration-1000 delay-300 ${

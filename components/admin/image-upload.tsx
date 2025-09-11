@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { useDropzone } from "react-dropzone"
 import { uploadImage } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -26,6 +26,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editingValue, setEditingValue] = useState<string>("")
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -182,8 +183,45 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
     }
   }
 
+  // Обработчик вставки из буфера обмена
+  const handlePaste = useCallback(async (e: ClipboardEvent) => {
+    const items = e.clipboardData?.items
+    if (!items) return
+
+    const imageFiles: File[] = []
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile()
+        if (file) {
+          imageFiles.push(file)
+        }
+      }
+    }
+
+    if (imageFiles.length > 0) {
+      e.preventDefault()
+      await onDrop(imageFiles)
+    }
+  }, [onDrop])
+
+  // Добавляем и удаляем обработчик paste
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    container.addEventListener('paste', handlePaste)
+    // Делаем контейнер фокусируемым для получения событий paste
+    container.setAttribute('tabindex', '0')
+
+    return () => {
+      container.removeEventListener('paste', handlePaste)
+    }
+  }, [handlePaste])
+
   return (
-    <div className={className}>
+    <div ref={containerRef} className={`${className} outline-none`}>
       {multiple ? (
         <div className="space-y-4">
           {/* Область для множественной загрузки */}
@@ -203,7 +241,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               <div className="flex flex-col items-center space-y-2">
                 <Upload className="h-8 w-8 text-gray-400" />
                 <p className="text-sm text-gray-600">
-                  {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения или нажмите для выбора"}
+                  {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения, нажмите для выбора или используйте Ctrl+V"}
                 </p>
                 <p className="text-xs text-gray-500">Можно выбрать несколько файлов: PNG, JPG, WEBP, HEIC, HEIF до 10MB каждый</p>
                 <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
@@ -348,7 +386,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               <div className="flex flex-col items-center space-y-2">
                 <Upload className="h-8 w-8 text-gray-400" />
                 <p className="text-sm text-gray-600">
-                  {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
+                  {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение, нажмите для выбора или используйте Ctrl+V"}
                 </p>
                 <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
                 <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
