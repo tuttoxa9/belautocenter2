@@ -246,7 +246,7 @@ export default function SalePage() {
                     Как это работает?
                   </Button>
                 </div>
-                {/* Кнопки для десктопа - в ряд */}
+{/* Кнопки для десктопа - в ряд */}
                 <div className="hidden sm:flex items-center gap-4">
                   <Button
                     size="lg"
@@ -266,6 +266,19 @@ export default function SalePage() {
                   >
                     Как это работает?
                   </Button>
+                </div>
+
+                {/* Номер телефона для десктопа */}
+                <div className="hidden sm:block mt-4">
+                  <div className="bg-transparent border border-slate-600/50 rounded-3xl px-6 py-3 backdrop-blur-sm">
+                    <a
+                      href="tel:+375293596000"
+                      className="text-white font-semibold text-lg hover:text-gray-200 transition-colors flex items-center gap-2"
+                    >
+                      <Phone className="h-5 w-5" />
+                      +375 29 359-60-00
+                    </a>
+                  </div>
                 </div>
                 {/* Номер телефона для мобильных устройств */}
                 <div className="sm:hidden mt-4">
