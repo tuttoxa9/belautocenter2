@@ -270,12 +270,12 @@ export default function SalePage() {
 
                 {/* Номер телефона - теперь под кнопками */}
                 <div className="mt-2">
-                  <div className="bg-transparent border border-slate-600/50 rounded-3xl px-6 py-3 backdrop-blur-sm">
+                  <div className="bg-transparent border border-slate-600/50 rounded-3xl px-4 py-2 backdrop-blur-sm w-fit">
                     <a
                       href="tel:+375293596000"
-                      className="text-white font-semibold text-lg hover:text-gray-200 transition-colors flex items-center gap-2"
+                      className="text-white font-semibold text-base hover:text-gray-200 transition-colors flex items-center gap-2"
                     >
-                      <Phone className="h-5 w-5" />
+                      <Phone className="h-4 w-4" />
                       +375 29 359-60-00
                     </a>
                   </div>
