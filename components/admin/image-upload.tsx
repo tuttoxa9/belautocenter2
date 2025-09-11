@@ -257,11 +257,9 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
     }
   }, [onDrop])
 
-  // Обработчик клика по области вставки
-  const handlePasteAreaClick = useCallback(() => {
-    if (pasteAreaRef.current) {
-      pasteAreaRef.current.focus()
-    }
+  // Обработчик фокуса области вставки
+  const handlePasteAreaFocus = useCallback(() => {
+    // Просто фокусируемся без дополнительных действий
   }, [])
 
   // Добавляем и удаляем обработчик paste
@@ -312,18 +310,36 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 <p className="text-sm text-gray-600">
                   {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения или нажмите для выбора"}
                 </p>
-                <div
-                  ref={pasteAreaRef}
-                  onClick={handlePasteAreaClick}
-                  tabIndex={0}
-                  className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm text-center bg-gray-50 hover:bg-white focus:bg-white focus:border-blue-500 focus:outline-none cursor-pointer transition-colors"
-                >
-                  Нажмите сюда и используйте Ctrl+V для вставки изображений
-                </div>
                 <p className="text-xs text-gray-500">Можно выбрать несколько файлов: PNG, JPG, WEBP, HEIC, HEIF до 10MB каждый</p>
                 <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
               </div>
             )}
+          </Card>
+
+          {/* Отдельная область для вставки из буфера обмена */}
+          <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50 p-4 text-center">
+            <div className="flex flex-col items-center space-y-3">
+              <div className="text-yellow-600">
+                <svg className="h-6 w-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div
+                ref={pasteAreaRef}
+                tabIndex={0}
+                className="w-full max-w-md px-4 py-3 border border-yellow-400 rounded-lg text-sm text-center bg-white hover:bg-yellow-50 focus:bg-white focus:border-yellow-500 focus:outline-none cursor-text transition-colors"
+                onFocus={handlePasteAreaFocus}
+                onKeyDown={(e) => {
+                  // Предотвращаем любые действия кроме Ctrl+V
+                  if (!(e.ctrlKey && e.key === 'v') && !(e.metaKey && e.key === 'v')) {
+                    e.preventDefault()
+                  }
+                }}
+              >
+                📋 Нажмите сюда и используйте Ctrl+V для вставки изображений
+              </div>
+              <p className="text-xs text-yellow-700">Быстрая вставка изображений из буфера обмена</p>
+            </div>
           </Card>
 
           {/* Превью загруженных изображений */}
@@ -456,38 +472,59 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               <X className="h-4 w-4" />
             </Button>
           </Card>
-        ) : (
-          <Card
-            {...getRootProps()}
-            className={`border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
-              isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-gray-400"
-            }`}
-          >
-            <input {...getInputProps()} />
-{uploading ? (
-              <div className="flex flex-col items-center space-y-2">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                <p className="text-sm text-gray-600">Загрузка...</p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center space-y-4">
-                <Upload className="h-8 w-8 text-gray-400" />
-                <p className="text-sm text-gray-600">
-                  {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
-                </p>
+) : (
+          <div className="space-y-4">
+            {/* Область для одиночной загрузки */}
+            <Card
+              {...getRootProps()}
+              className={`border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
+                isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              <input {...getInputProps()} />
+              {uploading ? (
+                <div className="flex flex-col items-center space-y-2">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                  <p className="text-sm text-gray-600">Загрузка...</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center space-y-4">
+                  <Upload className="h-8 w-8 text-gray-400" />
+                  <p className="text-sm text-gray-600">
+                    {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
+                  </p>
+                  <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
+                  <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
+                </div>
+              )}
+            </Card>
+
+            {/* Отдельная область для вставки из буфера обмена */}
+            <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50 p-4 text-center">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="text-yellow-600">
+                  <svg className="h-6 w-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
                 <div
                   ref={pasteAreaRef}
-                  onClick={handlePasteAreaClick}
                   tabIndex={0}
-                  className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm text-center bg-gray-50 hover:bg-white focus:bg-white focus:border-blue-500 focus:outline-none cursor-pointer transition-colors"
+                  className="w-full max-w-md px-4 py-3 border border-yellow-400 rounded-lg text-sm text-center bg-white hover:bg-yellow-50 focus:bg-white focus:border-yellow-500 focus:outline-none cursor-text transition-colors"
+                  onFocus={handlePasteAreaFocus}
+                  onKeyDown={(e) => {
+                    // Предотвращаем любые действия кроме Ctrl+V
+                    if (!(e.ctrlKey && e.key === 'v') && !(e.metaKey && e.key === 'v')) {
+                      e.preventDefault()
+                    }
+                  }}
                 >
-                  Нажмите сюда и используйте Ctrl+V для вставки изображения
+                  📋 Нажмите сюда и используйте Ctrl+V для вставки изображения
                 </div>
-                <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
-                <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
+                <p className="text-xs text-yellow-700">Быстрая вставка изображения из буфера обмена</p>
               </div>
-            )}
-          </Card>
+            </Card>
+          </div>
         )
       )}
     </div>
