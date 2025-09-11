@@ -225,7 +225,29 @@ export default function SalePage() {
                 Мы предлагаем полный комплекс услуг по выкупу, обмену и комиссионной продаже автомобилей с гарантией лучшей цены и юридической чистоты.
               </p>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="flex items-center gap-4">
+                {/* Кнопки для мобильных - в колонку */}
+                <div className="flex flex-col sm:hidden w-full gap-3">
+                  <Button
+                    size="lg"
+                    className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-yellow-400/30 transition-all duration-300 w-full"
+                    onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    Начать продажу
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="bg-slate-700 text-white hover:bg-slate-600 text-base px-8 py-6 rounded-xl font-semibold w-full"
+                    onClick={() => {
+                      setActiveTab('process');
+                      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Как это работает?
+                  </Button>
+                </div>
+                {/* Кнопки для десктопа - в ряд */}
+                <div className="hidden sm:flex items-center gap-4">
                   <Button
                     size="lg"
                     className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-yellow-400/30 transition-all duration-300"
@@ -377,6 +399,25 @@ export default function SalePage() {
                               </div>
                             ))}
                           </div>
+                          {/* Кнопка выбора услуги в развернутом блоке */}
+                          <div className="mt-4 flex justify-center">
+                            <div
+                              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105"
+                              style={{
+                                backgroundColor: isSelected ? '#facc15' : '#475569',
+                                color: isSelected ? '#0f172a' : '#f8fafc'
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setSelectedService(isSelected ? '' : service.id)
+                              }}
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                              <span className="text-sm font-medium">
+                                {isSelected ? 'Услуга выбрана' : 'Выбрать услугу'}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -415,17 +456,7 @@ export default function SalePage() {
                       </div>
                     </div>
 
-                    {/* Галочка выбора для мобильных */}
-                    <div
-                      className="md:hidden absolute top-4 right-12 w-6 h-6 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all duration-200 hover:scale-110"
-                      style={{ backgroundColor: isSelected ? '#facc15' : 'transparent', border: '2px solid #facc15' }}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setSelectedService(isSelected ? '' : service.id)
-                      }}
-                    >
-                      {isSelected && <CheckCircle className="h-4 w-4 text-slate-900" />}
-                    </div>
+
                   </div>
                 )
               })}
