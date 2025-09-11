@@ -224,7 +224,7 @@ export default function SalePage() {
               <p className="text-lg md:text-xl mb-6 md:mb-10 max-w-lg text-slate-300">
                 Мы предлагаем полный комплекс услуг по выкупу, обмену и комиссионной продаже автомобилей с гарантией лучшей цены и юридической чистоты.
               </p>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="flex flex-col gap-4">
                 {/* Кнопки для мобильных - в колонку */}
                 <div className="flex flex-col sm:hidden w-full gap-3">
                   <Button
@@ -268,20 +268,8 @@ export default function SalePage() {
                   </Button>
                 </div>
 
-                {/* Номер телефона для десктопа */}
-                <div className="hidden sm:block mt-4">
-                  <div className="bg-transparent border border-slate-600/50 rounded-3xl px-6 py-3 backdrop-blur-sm">
-                    <a
-                      href="tel:+375293596000"
-                      className="text-white font-semibold text-lg hover:text-gray-200 transition-colors flex items-center gap-2"
-                    >
-                      <Phone className="h-5 w-5" />
-                      +375 29 359-60-00
-                    </a>
-                  </div>
-                </div>
-                {/* Номер телефона для мобильных устройств */}
-                <div className="sm:hidden mt-4">
+                {/* Номер телефона - теперь под кнопками */}
+                <div className="mt-2">
                   <div className="bg-transparent border border-slate-600/50 rounded-3xl px-6 py-3 backdrop-blur-sm">
                     <a
                       href="tel:+375293596000"
