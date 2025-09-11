@@ -249,11 +249,11 @@ export default function SalePage() {
                 <div className="sm:hidden mt-4">
                   <div className="bg-transparent border border-slate-600/50 rounded-3xl px-6 py-3 backdrop-blur-sm">
                     <a
-                      href="tel:+375291234567"
-                      className="text-yellow-400 font-semibold text-lg hover:text-yellow-300 transition-colors flex items-center gap-2"
+                      href="tel:+375293596000"
+                      className="text-white font-semibold text-lg hover:text-gray-200 transition-colors flex items-center gap-2"
                     >
                       <Phone className="h-5 w-5" />
-                      +375 29 123-45-67
+                      +375 29 359-60-00
                     </a>
                   </div>
                 </div>
@@ -340,11 +340,8 @@ export default function SalePage() {
                     }`}
                     style={{ transitionDelay: `${200 + index * 100}ms` }}
                     onClick={() => {
-                      setSelectedService(service.id)
-                      // На мобильных устройствах также переключаем развернутое состояние
-                      if (window.innerWidth < 768) {
-                        toggleServiceExpansion(service.id)
-                      }
+                      // Только переключаем развернутое состояние
+                      toggleServiceExpansion(service.id)
                     }}
                   >
                     {/* Мобильная версия (свернутая) */}
@@ -405,19 +402,30 @@ export default function SalePage() {
                           </div>
                         ))}
                       </div>
-                      {isSelected && (
-                        <div className="absolute top-4 right-4 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
-                          <CheckCircle className="h-5 w-5 text-slate-900" />
-                        </div>
-                      )}
+                      {/* Галочка выбора для десктопа */}
+                      <div
+                        className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all duration-200 hover:scale-110"
+                        style={{ backgroundColor: isSelected ? '#facc15' : 'transparent', border: '2px solid #facc15' }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedService(isSelected ? '' : service.id)
+                        }}
+                      >
+                        {isSelected && <CheckCircle className="h-5 w-5 text-slate-900" />}
+                      </div>
                     </div>
 
-                    {/* Индикатор выбора для мобильных */}
-                    {isSelected && (
-                      <div className="md:hidden absolute top-4 right-12 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
-                        <CheckCircle className="h-4 w-4 text-slate-900" />
-                      </div>
-                    )}
+                    {/* Галочка выбора для мобильных */}
+                    <div
+                      className="md:hidden absolute top-4 right-12 w-6 h-6 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all duration-200 hover:scale-110"
+                      style={{ backgroundColor: isSelected ? '#facc15' : 'transparent', border: '2px solid #facc15' }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedService(isSelected ? '' : service.id)
+                      }}
+                    >
+                      {isSelected && <CheckCircle className="h-4 w-4 text-slate-900" />}
+                    </div>
                   </div>
                 )
               })}

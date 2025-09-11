@@ -27,6 +27,8 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editingValue, setEditingValue] = useState<string>("")
   const containerRef = useRef<HTMLDivElement>(null)
+  const pasteInputRef = useRef<HTMLInputElement>(null)
+  const singlePasteInputRef = useRef<HTMLInputElement>(null)
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -209,14 +211,33 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
   // Добавляем и удаляем обработчик paste
   useEffect(() => {
     const container = containerRef.current
-    if (!container) return
+    const pasteInput = pasteInputRef.current
+    const singlePasteInput = singlePasteInputRef.current
 
-    container.addEventListener('paste', handlePaste)
-    // Делаем контейнер фокусируемым для получения событий paste
-    container.setAttribute('tabindex', '0')
+    if (container) {
+      container.addEventListener('paste', handlePaste)
+      // Делаем контейнер фокусируемым для получения событий paste
+      container.setAttribute('tabindex', '0')
+    }
+
+    if (pasteInput) {
+      pasteInput.addEventListener('paste', handlePaste)
+    }
+
+    if (singlePasteInput) {
+      singlePasteInput.addEventListener('paste', handlePaste)
+    }
 
     return () => {
-      container.removeEventListener('paste', handlePaste)
+      if (container) {
+        container.removeEventListener('paste', handlePaste)
+      }
+      if (pasteInput) {
+        pasteInput.removeEventListener('paste', handlePaste)
+      }
+      if (singlePasteInput) {
+        singlePasteInput.removeEventListener('paste', handlePaste)
+      }
     }
   }, [handlePaste])
 
@@ -238,11 +259,21 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 <p className="text-sm text-gray-600">Загрузка...</p>
               </div>
             ) : (
-              <div className="flex flex-col items-center space-y-2">
+              <div className="flex flex-col items-center space-y-4">
                 <Upload className="h-8 w-8 text-gray-400" />
                 <p className="text-sm text-gray-600">
-                  {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения, нажмите для выбора или используйте Ctrl+V"}
+                  {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения или нажмите для выбора"}
                 </p>
+                <div className="w-full max-w-md">
+                  <input
+                    ref={pasteInputRef}
+                    type="text"
+                    placeholder="Нажмите сюда и используйте Ctrl+V для вставки изображений"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-center bg-gray-50 focus:bg-white focus:border-blue-500 focus:outline-none"
+                    onFocus={(e) => e.target.select()}
+                    readOnly
+                  />
+                </div>
                 <p className="text-xs text-gray-500">Можно выбрать несколько файлов: PNG, JPG, WEBP, HEIC, HEIF до 10MB каждый</p>
                 <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
               </div>
@@ -383,11 +414,21 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 <p className="text-sm text-gray-600">Загрузка...</p>
               </div>
             ) : (
-              <div className="flex flex-col items-center space-y-2">
+              <div className="flex flex-col items-center space-y-4">
                 <Upload className="h-8 w-8 text-gray-400" />
                 <p className="text-sm text-gray-600">
-                  {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение, нажмите для выбора или используйте Ctrl+V"}
+                  {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
                 </p>
+                <div className="w-full max-w-md">
+                  <input
+                    ref={singlePasteInputRef}
+                    type="text"
+                    placeholder="Нажмите сюда и используйте Ctrl+V для вставки изображения"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-center bg-gray-50 focus:bg-white focus:border-blue-500 focus:outline-none"
+                    onFocus={(e) => e.target.select()}
+                    readOnly
+                  />
+                </div>
                 <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
                 <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
               </div>
