@@ -9,10 +9,22 @@ export class FirestoreApi {
   /**
    * Получить список документов из коллекции
    */
-  async getCollection(collectionName: string): Promise<FirestoreDocument[]> {
+  async getCollection(collectionName: string, forceRefresh = false): Promise<FirestoreDocument[]> {
     try {
-      console.log(`Fetching collection: ${collectionName}`)
-      const response = await apiClient.get<any>(`/${collectionName}`)
+      console.log(`Fetching collection: ${collectionName}${forceRefresh ? ' (force refresh)' : ''}`)
+
+      const headers: Record<string, string> = {};
+      if (forceRefresh) {
+        headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+        headers['Pragma'] = 'no-cache';
+        headers['Expires'] = '0';
+      }
+
+      const path = forceRefresh
+        ? `/${collectionName}?_t=${Date.now()}`
+        : `/${collectionName}`;
+
+      const response = await apiClient.get<any>(path, { headers })
 
       console.log('Raw API response:', response)
 

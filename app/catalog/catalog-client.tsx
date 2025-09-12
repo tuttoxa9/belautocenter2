@@ -63,12 +63,93 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     }
   }, [initialCars.length])
 
-  const loadCarsFromCloudflare = async () => {
+  // Функция для принудительного обновления каталога
+  const refreshCatalog = () => {
+    console.log('Принудительное обновление каталога...')
+    loadCarsFromCloudflare(true)
+  }
+
+  // Слушаем события изменения данных в админке
+  useEffect(() => {
+    const handleCarsUpdate = () => {
+      refreshCatalog()
+    }
+
+    // Слушаем события от localStorage (когда админка сохраняет изменения)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'cars_updated') {
+        refreshCatalog()
+        // Очищаем флаг после обновления
+        localStorage.removeItem('cars_updated')
+      }
+    }
+
+    // Слушаем custom события
+    window.addEventListener('carsUpdated', handleCarsUpdate)
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => {
+      window.removeEventListener('carsUpdated', handleCarsUpdate)
+      window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [])
+
+  const loadCarsFromCloudflare = async (forceRefresh = false) => {
     try {
       setLoading(true)
 
-      // Используем firestoreApi для запроса через Cloudflare Worker (с кэшированием)
-      const allCars = await firestoreApi.getCollection("cars")
+      // Если нужно принудительное обновление, добавляем заголовок Cache-Control: no-cache
+      // и timestamp для обхода кэша браузера
+      let allCars;
+      if (forceRefresh) {
+        const timestamp = Date.now();
+        const response = await fetch(`/cars?_t=${timestamp}`, {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch cars: ${response.status}`);
+        }
+
+        const data = await response.json();
+        allCars = data.documents?.map((doc: any) => {
+          const id = doc.name.split('/').pop() || '';
+          const fields: Record<string, any> = {};
+
+          // Преобразуем Firestore поля в обычные объекты
+          for (const [key, value] of Object.entries(doc.fields || {})) {
+            if (value.stringValue) {
+              fields[key] = value.stringValue;
+            } else if (value.integerValue) {
+              fields[key] = parseInt(value.integerValue);
+            } else if (value.doubleValue) {
+              fields[key] = parseFloat(value.doubleValue);
+            } else if (value.booleanValue !== undefined) {
+              fields[key] = value.booleanValue;
+            } else if (value.timestampValue) {
+              fields[key] = { seconds: new Date(value.timestampValue).getTime() / 1000 };
+            } else if (value.arrayValue) {
+              fields[key] = value.arrayValue.values?.map((v: any) => {
+                if (v.stringValue) return v.stringValue;
+                if (v.integerValue) return parseInt(v.integerValue);
+                if (v.doubleValue) return parseFloat(v.doubleValue);
+                return v;
+              }) || [];
+            } else {
+              fields[key] = value;
+            }
+          }
+
+          return { id, ...fields };
+        }) || [];
+      } else {
+        // Используем firestoreApi для запроса через Cloudflare Worker (с кэшированием)
+        allCars = await firestoreApi.getCollection("cars", forceRefresh);
+      }
 
       // Фильтруем только доступные автомобили
       const processedCars = allCars.filter((car: any) => car.isAvailable !== false)
@@ -599,25 +680,39 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                   )} автомобилей
                 </p>
               </div>
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-1">
-                <div className="flex items-center space-x-2 px-3">
-                  <SlidersHorizontal className="h-4 w-4 text-gray-500" />
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-48 border-0 bg-transparent h-9 text-sm font-medium">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="border-gray-200 shadow-lg rounded-lg">
-                      <SelectItem value="date-desc">Новые объявления</SelectItem>
-                      <SelectItem value="date-asc">Старые объявления</SelectItem>
-                      <SelectItem value="year-asc">Год: сначала старые</SelectItem>
-                      <SelectItem value="year-desc">Год: сначала новые</SelectItem>
-                      <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
-                      <SelectItem value="price-desc">Цена: по убыванию</SelectItem>
-                      <SelectItem value="mileage-asc">Пробег: по возрастанию</SelectItem>
-                      <SelectItem value="mileage-desc">Пробег: по убыванию</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="flex items-center gap-2">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-1">
+                  <div className="flex items-center space-x-2 px-3">
+                    <SlidersHorizontal className="h-4 w-4 text-gray-500" />
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="w-48 border-0 bg-transparent h-9 text-sm font-medium">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+                        <SelectItem value="date-desc">Новые объявления</SelectItem>
+                        <SelectItem value="date-asc">Старые объявления</SelectItem>
+                        <SelectItem value="year-asc">Год: сначала старые</SelectItem>
+                        <SelectItem value="year-desc">Год: сначала новые</SelectItem>
+                        <SelectItem value="price-asc">Цена: по возрастанию</SelectItem>
+                        <SelectItem value="price-desc">Цена: по убыванию</SelectItem>
+                        <SelectItem value="mileage-asc">Пробег: по возрастанию</SelectItem>
+                        <SelectItem value="mileage-desc">Пробег: по убыванию</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+
+                {/* Кнопка принудительного обновления каталога */}
+                <Button
+                  onClick={refreshCatalog}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 text-sm"
+                  disabled={loading}
+                >
+                  <RotateCcw className="h-4 w-4 mr-1" />
+                  Обновить
+                </Button>
               </div>
             </div>
 

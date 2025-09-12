@@ -18,13 +18,24 @@ export class FirestoreCache {
       : process.env.NEXT_PUBLIC_API_HOST || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   }
 
-  async getCollection(collectionName: string): Promise<any[]> {
+  async getCollection(collectionName: string, forceRefresh = false): Promise<any[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/${collectionName}`, {
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
+      const headers: Record<string, string> = {
+        'Accept': 'application/json'
+      };
+
+      // Если нужно принудительное обновление, добавляем заголовки для обхода кэша
+      if (forceRefresh) {
+        headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+        headers['Pragma'] = 'no-cache';
+        headers['Expires'] = '0';
+      }
+
+      const url = forceRefresh
+        ? `${this.baseUrl}/${collectionName}?_t=${Date.now()}`
+        : `${this.baseUrl}/${collectionName}`;
+
+      const response = await fetch(url, { headers });
 
       if (!response.ok) {
         throw new Error(`Failed to fetch ${collectionName}: ${response.status}`);

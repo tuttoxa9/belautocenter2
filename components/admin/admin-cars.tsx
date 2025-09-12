@@ -107,6 +107,10 @@ export default function AdminCars() {
         await cacheInvalidator.onCreate(docRef.id)
       }
 
+      // Уведомляем о изменении данных для обновления каталога
+      localStorage.setItem('cars_updated', Date.now().toString())
+      window.dispatchEvent(new CustomEvent('carsUpdated'))
+
       setIsDialogOpen(false)
       setEditingCar(null)
       resetForm()
@@ -138,6 +142,11 @@ export default function AdminCars() {
       try {
         await deleteDoc(doc(db, "cars", carId))
         await cacheInvalidator.onDelete(carId)
+
+        // Уведомляем о изменении данных для обновления каталога
+        localStorage.setItem('cars_updated', Date.now().toString())
+        window.dispatchEvent(new CustomEvent('carsUpdated'))
+
         loadCars()
       } catch (error) {
         console.error("Ошибка удаления:", error)
