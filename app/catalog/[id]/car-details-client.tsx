@@ -531,13 +531,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   // Функция для конвертации значения поля из формата Firestore
   // Функция для конвертации полей удалена, теперь везде используется parseFirestoreDoc
 
-  const formatPrice = (price: number) => {
-    if (isBelarusianRubles && usdBynRate) {
+  const formatPrice = (price: number, currencyType?: 'USD' | 'BYN') => {
+    if (currencyType === 'BYN' || (currencyType === undefined && isBelarusianRubles)) {
       return new Intl.NumberFormat("ru-BY", {
         style: "currency",
         currency: "BYN",
         minimumFractionDigits: 0,
-      }).format(price * usdBynRate)
+      }).format(price)
     }
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -786,8 +786,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           carModel: car && car.model ? car.model : '',
           carYear: car && car.year ? car.year : '',
           carId: carId,
-          carPrice: formatPrice(isBelarusianRubles ? getCurrentCreditAmount() + getCurrentDownPayment() : car?.price || 0),
-          downPayment: formatPrice(getCurrentDownPayment()),
+          carPrice: isBelarusianRubles
+            ? formatPrice(getCurrentCreditAmount() + getCurrentDownPayment(), 'BYN')
+            : formatPrice(car?.price || 0, 'USD'),
+          downPayment: isBelarusianRubles
+            ? formatPrice(getCurrentDownPayment(), 'BYN')
+            : formatPrice(getCurrentDownPayment() / (usdBynRate || 1), 'USD'),
           loanTerm: loanTerm[0],
           bank: selectedBank ? selectedBank.name : "Не выбран",
           financeType: financeType,
@@ -1424,7 +1428,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <Input
                           type="number"
                           value={creditAmount[0]}
-                          onChange={(e) => setCreditAmount([Number(e.target.value)])}
+                          onChange={(e) => {
+                            const newCreditAmount = Number(e.target.value)
+                            setCreditAmount([newCreditAmount])
+
+                            // Автоматически пересчитываем первый взнос
+                            const carPriceInSelectedCurrency = car?.price ?
+                              (isBelarusianRubles && usdBynRate ? car.price * usdBynRate : car.price) : 0
+                            const newDownPayment = Math.max(0, carPriceInSelectedCurrency - newCreditAmount)
+                            setDownPayment([newDownPayment])
+                          }}
                           min={getCreditMinValue()}
                           max={getCreditMaxValue()}
                           step={isBelarusianRubles ? 100 : 1000}
@@ -1438,7 +1451,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <Input
                           type="number"
                           value={downPayment[0]}
-                          onChange={(e) => setDownPayment([Number(e.target.value)])}
+                          onChange={(e) => {
+                            const newDownPayment = Number(e.target.value)
+                            setDownPayment([newDownPayment])
+
+                            // Автоматически пересчитываем сумму кредита
+                            const carPriceInSelectedCurrency = car?.price ?
+                              (isBelarusianRubles && usdBynRate ? car.price * usdBynRate : car.price) : 0
+                            const newCreditAmount = Math.max(0, carPriceInSelectedCurrency - newDownPayment)
+                            setCreditAmount([newCreditAmount])
+                          }}
                           min={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1) : 0}
                           max={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5) : 100000}
                           step={isBelarusianRubles ? 100 : 1000}
@@ -1545,7 +1567,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                         <Input
                           type="number"
                           value={leasingAdvance[0]}
-                          onChange={(e) => setLeasingAdvance([Number(e.target.value)])}
+                          onChange={(e) => {
+                            const newAdvance = Number(e.target.value)
+                            setLeasingAdvance([newAdvance])
+
+                            // Автоматически пересчитываем стоимость лизинга
+                            const carPriceInSelectedCurrency = car?.price ?
+                              (isBelarusianRubles && usdBynRate ? car.price * usdBynRate : car.price) : 0
+                            setLeasingAmount([carPriceInSelectedCurrency])
+                          }}
                           min={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.1 * usdBynRate : car.price * 0.1) : 0}
                           max={car?.price ? (isBelarusianRubles && usdBynRate ? car.price * 0.5 * usdBynRate : car.price * 0.5) : 100000}
                           step={isBelarusianRubles ? 100 : 1000}
