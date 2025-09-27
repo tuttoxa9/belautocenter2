@@ -122,7 +122,7 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-md">
       <div className="container flex h-14 items-center justify-between px-4">
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
@@ -242,7 +242,9 @@ export default function Header() {
               href={item.href}
               prefetch={true}
               className={`text-sm font-bold tracking-wide transition-colors hover:text-blue-600 ${
-                pathname === item.href ? "text-blue-600" : "text-gray-700"
+                pathname === item.href
+                  ? "bg-blue-600 text-white px-3 py-2 rounded-md"
+                  : "text-gray-700"
               }`}
             >
               {item.name}
