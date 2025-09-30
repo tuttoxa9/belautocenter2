@@ -4,11 +4,11 @@ compatibility_date = "2025-08-14"
 
 # Переменные окружения
 [vars]
-FIREBASE_PROJECT_ID = "belauto-5dd94" # Обновите на правильный ID проекта
+FIREBASE_PROJECT_ID = "belauto-f2b93" # Обновите на правильный ID проекта
 
 # R2 Bucket конфигурация
 [[r2_buckets]]
-binding = "R2_BUCKET"
+binding = "IMAGE_BUCKET"
 bucket_name = "belautocenter"
 preview_bucket_name = "belautocenter-dev" # для разработки
 
@@ -24,7 +24,7 @@ routes = [
 # Конфигурация для разработки
 [env.development]
 name = "belautocenter-worker-dev"
-vars = { FIREBASE_PROJECT_ID = "belauto-5dd94" }
+vars = { FIREBASE_PROJECT_ID = "belauto-f2b93" }
 
 # Конфигурация для тестирования
 [env.staging]
