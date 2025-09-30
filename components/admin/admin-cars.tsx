@@ -57,6 +57,8 @@ export default function AdminCars() {
       "Мощность": ""
     },
     features: [],
+    tiktok_url: "",
+    youtube_url: "",
   })
 
   useEffect(() => {
@@ -133,6 +135,8 @@ export default function AdminCars() {
       specifications: car.specifications || {},
       features: car.features || [],
       showOnHomepage: car.showOnHomepage || false,
+      tiktok_url: car.tiktok_url || "",
+      youtube_url: car.youtube_url || "",
     })
     setIsDialogOpen(true)
   }
@@ -181,6 +185,8 @@ export default function AdminCars() {
         "Мощность": ""
       },
       features: [],
+      tiktok_url: "",
+      youtube_url: "",
     })
     setJsonInput("")
     setJsonError("")
@@ -535,6 +541,25 @@ export default function AdminCars() {
                     value={carForm.color}
                     onChange={(e) => setCarForm({ ...carForm, color: e.target.value })}
                     placeholder="Черный металлик"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div>
+                  <Label>Ссылка на обзор в TikTok</Label>
+                  <Input
+                    value={carForm.tiktok_url}
+                    onChange={(e) => setCarForm({ ...carForm, tiktok_url: e.target.value })}
+                    placeholder="https://www.tiktok.com/@user/video/123"
+                  />
+                </div>
+                <div>
+                  <Label>Ссылка на обзор в YouTube</Label>
+                  <Input
+                    value={carForm.youtube_url}
+                    onChange={(e) => setCarForm({ ...carForm, youtube_url: e.target.value })}
+                    placeholder="https://www.youtube.com/watch?v=123"
                   />
                 </div>
               </div>

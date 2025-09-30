@@ -165,6 +165,8 @@ interface Car {
   isAvailable: boolean;
   features: string[];
   specifications: Record<string, string>;
+  tiktok_url?: string;
+  youtube_url?: string;
 }
 
 interface PartnerBank {
@@ -1055,7 +1057,38 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 )}
               </div>
 
-
+              {/* Видеообзоры */}
+              {(car?.tiktok_url || car?.youtube_url) && (
+                <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-200/50 lg:border-b-0 lg:border-t lg:border-slate-200/50">
+                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+                    Видеообзоры
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {car.tiktok_url && (
+                      <a
+                        href={car.tiktok_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center w-full px-4 py-3 bg-[#34C759] text-white rounded-xl font-semibold transition-colors duration-200 hover:bg-green-600"
+                      >
+                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.01-1.58-.01-3.16 0-4.75-.01-1.19-.42-2.37-1.22-3.23-1.05-1.15-2.58-1.6-4.08-1.5v4.08c.87-.01 1.73.01 2.6.02.02 1.52.57 3.04 1.69 4.13 1.11 1.08 2.65 1.57 4.16 1.72v4.05c-1.47-.05-2.94-.34-4.3-.99-.01-1.57-.01-3.14 0-4.71 0-1.23-.4-2.42-1.18-3.31-1.07-1.2-2.6-1.64-4.14-1.56v-4.04c.89.01 1.78-.01 2.66-.02Z"/></svg>
+                        <span>Обзор в Tik Tok</span>
+                      </a>
+                    )}
+                    {car.youtube_url && (
+                      <a
+                        href={car.youtube_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center w-full px-4 py-3 bg-[#34C759] text-white rounded-xl font-semibold transition-colors duration-200 hover:bg-green-600"
+                      >
+                        <svg className="w-6 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        <span>Обзор в YouTube</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Описание под галереей для десктопов */}
               <div className="hidden lg:block p-6 bg-slate-50/50 border-slate-200/50">
