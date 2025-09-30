@@ -57,7 +57,10 @@ async function purgeCacheByUrls(env, urls = []) { if (!urls.length || !env.CLOUD
 // 4. БИЗНЕС-ЛОГИКА (R2 + FIRESTORE PROXY)
 // ====================================================================================
 
-/** Обработчик для получения файлов из R2 с кэшированием и автоматической конвертацией в WebP */
+/**
+ * Обработчик для получения файлов из R2.
+ * Файлы уже должны быть в нужном формате (WebP), поэтому функция просто отдает их с кэшированием.
+ */
 async function handleGetImage(request, env, ctx) {
   const cache = caches.default;
   const url = new URL(request.url);
@@ -65,30 +68,16 @@ async function handleGetImage(request, env, ctx) {
 
   if (!path) return error(400, "File path is missing");
 
-  // Проверяем, поддерживает ли браузер WebP
-  const acceptHeader = request.headers.get('Accept') || '';
-  const supportsWebP = acceptHeader.includes('image/webp');
-
-  // Проверяем, является ли запрашиваемый файл изображением, которое можно конвертировать в WebP
-  const isConvertibleImage = /\.(jpg|jpeg|png)$/i.test(path);
-
-  // Определяем, нужно ли конвертировать в WebP
-  const shouldConvertToWebP = supportsWebP && isConvertibleImage;
-
-  // Создаем ключ кэша с учетом WebP конвертации
-  const cacheKey = shouldConvertToWebP ?
-    new Request(request.url + '?webp=true', request) :
-    new Request(request.url, request);
+  const cacheKey = new Request(request.url, request);
 
   let response = await cache.match(cacheKey);
   if (response) {
-    console.log(`Cache HIT for: ${request.url} (WebP: ${shouldConvertToWebP})`);
+    console.log(`Cache HIT for: ${request.url}`);
     return response;
   }
-  console.log(`Cache MISS for: ${request.url} (WebP: ${shouldConvertToWebP})`);
+  console.log(`Cache MISS for: ${request.url}`);
 
-  // Получаем оригинальный файл из R2
-  const object = await env.IMAGE_BUCKET.get(path);
+  const object = await env.R2_BUCKET.get(path);
   if (object === null) {
     return new Response('File Not Found in R2', {
       status: 404,
@@ -99,91 +88,79 @@ async function handleGetImage(request, env, ctx) {
   const headers = new Headers();
   object.writeHttpMetadata(headers);
   headers.set('etag', object.httpEtag);
-  headers.set('Cache-Control', `public, max-age=${2592000}`); // 30 дней для картинок
+  headers.set('Cache-Control', `public, max-age=${2592000}`); // 30 дней
   headers.set('Access-Control-Allow-Origin', '*');
 
-  // Если нужно конвертировать в WebP, используем Cloudflare Image Resizing
-  if (shouldConvertToWebP) {
-    try {
-      console.log(`Конвертация изображения в WebP: ${path}`);
-
-      // Создаем временный URL для использования с Image Resizing
-      const imageResponse = new Response(object.body, { headers });
-      const imageUrl = `https://${url.hostname}/${path}`;
-
-      // Используем Cloudflare Image Resizing для конвертации в WebP
-      const webpResponse = await fetch(imageUrl, {
-        cf: {
-          image: {
-            format: 'webp',
-            quality: 85
-          }
-        }
-      });
-
-      if (webpResponse.ok) {
-        console.log(`Успешно конвертировано в WebP: ${path}`);
-        headers.set('Content-Type', 'image/webp');
-        headers.set('X-Converted-To-WebP', 'true');
-
-        response = new Response(webpResponse.body, { headers });
-        ctx.waitUntil(cache.put(cacheKey, response.clone()));
-        return response;
-      } else {
-        console.log(`Не удалось конвертировать в WebP, возвращаем оригинал: ${path}`);
-      }
-    } catch (conversionError) {
-      console.error(`Ошибка конвертации в WebP: ${conversionError.message}`);
-    }
-  }
-
-  // Возвращаем оригинальное изображение
   response = new Response(object.body, { headers });
   ctx.waitUntil(cache.put(cacheKey, response.clone()));
   return response;
 }
 
-/** Обработчик для загрузки файлов в R2 с автоматической конвертацией в WebP */
+
+/**
+ * Обработчик для загрузки файлов в R2.
+ * Автоматически конвертирует поддерживаемые изображения в WebP при загрузке.
+ */
 async function handleUpload(request, env) {
   if (request.method !== 'POST') return error(405, 'Method Not Allowed');
   try {
     const formData = await request.formData();
     const file = formData.get('file');
-    const path = formData.get('path');
-    const autoWebP = formData.get('autoWebP') === 'true'; // Получаем параметр autoWebP из FormData
+    let path = formData.get('path');
 
     if (!file || !path) return error(400, 'Требуются поля "file" и "path"');
 
-    // Проверяем, является ли файл изображением для конвертации
-    const isImage = file.type && file.type.startsWith('image/');
-    const supportedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif'];
-    const shouldConvertToWebP = autoWebP && isImage && supportedImageTypes.includes(file.type);
+    const isConvertibleImage = /^(image\/jpeg|image\/png|image\/gif|image\/heic|image\/heif)$/.test(file.type);
 
-    let finalPath = path;
-    let finalContentType = file.type;
-
-    if (shouldConvertToWebP) {
-      // Меняем расширение на .webp - конвертация будет происходить при запросе изображения
-      finalPath = path.replace(/\.(jpg|jpeg|png|heic|heif)$/i, '.webp');
-      finalContentType = 'image/webp';
-      console.log(`Изображение будет сохранено для конвертации в WebP: ${finalPath} (autoWebP=${autoWebP})`);
-    } else {
-      console.log(`Файл сохраняется без конвертации: ${file.name} (${file.type}) (autoWebP=${autoWebP})`);
+    if (!isConvertibleImage) {
+      // Если файл не является конвертируемым изображением, загружаем его как есть.
+      await env.R2_BUCKET.put(path, file.stream(), {
+        httpMetadata: { contentType: file.type },
+      });
+      return json({ success: true, path: path, converted: false });
     }
 
-    // Сохраняем оригинальный файл (конвертация будет происходить при запросе)
-    await env.IMAGE_BUCKET.put(finalPath, file.stream(), {
-      httpMetadata: { contentType: finalContentType },
+    // 1. Загружаем оригинальный файл во временное место.
+    const tempPath = `_temp/${Date.now()}-${path.split('/').pop()}`;
+    await env.R2_BUCKET.put(tempPath, file.stream(), {
+      httpMetadata: { contentType: file.type },
     });
+
+    // 2. Формируем URL для доступа к временному файлу через воркер.
+    const workerUrl = new URL(request.url);
+    const tempFileUrl = `${workerUrl.protocol}//${workerUrl.hostname}/${tempPath}`;
+    console.log(`Конвертация файла: ${tempFileUrl}`);
+
+    // 3. Выполняем fetch-запрос к временному файлу с опцией конвертации в WebP.
+    const webpResponse = await fetch(tempFileUrl, {
+      cf: { image: { format: 'webp', quality: 85 } },
+    });
+
+    if (!webpResponse.ok) {
+      await env.R2_BUCKET.delete(tempPath); // Очистка
+      throw new Error(`Ошибка конвертации в WebP. Статус: ${webpResponse.status}`);
+    }
+
+    const webpBuffer = await webpResponse.arrayBuffer();
+
+    // 4. Определяем конечный путь с расширением .webp.
+    const finalPath = path.replace(/\.[^/.]+$/, "") + ".webp";
+
+    // 5. Сохраняем сконвертированный файл в R2.
+    await env.R2_BUCKET.put(finalPath, webpBuffer, {
+      httpMetadata: { contentType: 'image/webp' },
+    });
+
+    // 6. Удаляем временный файл.
+    await env.R2_BUCKET.delete(tempPath);
 
     return json({
       success: true,
       path: finalPath,
-      autoWebPRequested: autoWebP,
-      willConvertToWebP: shouldConvertToWebP,
-      originalType: file.type,
-      savedAs: finalContentType
+      converted: true,
+      originalType: file.type
     });
+
   } catch (e) {
     return error(500, `Upload failed: ${e.message}`);
   }
@@ -195,7 +172,8 @@ async function handleDeleteImage(request, env) {
     try {
         const { path } = await request.json();
         if (!path) return error(400, 'Требуется поле "path"');
-        await env.IMAGE_BUCKET.delete(path);
+        // Исправлено: используется правильное имя бакета R2_BUCKET
+        await env.R2_BUCKET.delete(path);
         return json({ success: true, path: path });
     } catch(e) {
         return error(400, `Invalid request: ${e.message}`);
@@ -256,7 +234,7 @@ export default {
     if (path.startsWith('/upload')) {
       return withAuth(handleUpload)(request, env, ctx);
     }
-    if (path.startsWith('/delete-image')) {
+    if (path.startsWith('/delete')) {
       return withAuth(handleDeleteImage)(request, env, ctx);
     }
 
