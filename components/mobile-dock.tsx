@@ -2,7 +2,8 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Car, CreditCard, Phone } from "lucide-react"
+import { Home, Car, CreditCard, Phone, Palette } from "lucide-react"
+import { ThemeSwitcher } from "./theme-switcher"
 
 const dockItems = [
   { name: "Главная", href: "/", icon: Home },
@@ -15,8 +16,8 @@ export default function MobileDock() {
   const pathname = usePathname()
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 bg-white/95 backdrop-blur-xl border border-slate-200/50 rounded-2xl shadow-2xl shadow-slate-900/25 md:hidden">
-      <div className="grid grid-cols-4 p-2">
+    <div className="fixed inset-x-4 bottom-4 z-50 rounded-2xl border-border/50 bg-background/95 shadow-2xl backdrop-blur-xl md:hidden">
+      <div className="grid grid-cols-5 p-2">
         {dockItems.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -24,17 +25,21 @@ export default function MobileDock() {
               key={item.name}
               href={item.href}
               prefetch={true}
-              className={`flex flex-col items-center justify-center py-3 px-2 text-xs transition-all duration-300 rounded-xl ${
+              className={`flex flex-col items-center justify-center rounded-xl px-2 py-3 text-xs transition-all duration-300 ${
                 isActive
-                  ? "text-white bg-slate-900 shadow-lg shadow-slate-900/25 transform scale-105"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? "transform scale-105 bg-primary text-primary-foreground shadow-lg"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
-              <item.icon className={`h-6 w-6 mb-1 transition-all duration-300 ${isActive ? "text-white" : "text-slate-600"}`} />
+              <item.icon className={`mb-1 h-6 w-6 transition-all duration-300 ${isActive ? "text-primary-foreground" : ""}`} />
               <span className="text-xs font-medium">{item.name}</span>
             </Link>
           )
         })}
+        <div className="flex flex-col items-center justify-center px-2 py-3 text-xs">
+            <ThemeSwitcher side="top" />
+            <span className="mt-1 text-xs font-medium text-muted-foreground">Тема</span>
+        </div>
       </div>
     </div>
   )

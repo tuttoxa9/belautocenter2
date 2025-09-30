@@ -5,6 +5,7 @@ import "./globals.css"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import MobileDock from "@/components/mobile-dock"
+import { ThemeProvider } from "@/components/theme-provider"
 import { UsdBynRateProvider } from "@/components/providers/usd-byn-rate-provider"
 import { NotificationProvider } from "@/components/providers/notification-provider"
 
@@ -91,7 +92,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <meta name="yandex-verification" content="a9085911ec7f5c05" />
       </head>
@@ -124,16 +125,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
-        <UsdBynRateProvider>
-          <NotificationProvider>
-            <Header />
-            <main className="flex-1 flex flex-col bg-white">
-              {children}
-            </main>
-            <Footer />
-            <MobileDock />
-          </NotificationProvider>
-        </UsdBynRateProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <UsdBynRateProvider>
+            <NotificationProvider>
+              <Header />
+              <main className="flex-1 flex flex-col bg-background">
+                {children}
+              </main>
+              <Footer />
+              <MobileDock />
+            </NotificationProvider>
+          </UsdBynRateProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
