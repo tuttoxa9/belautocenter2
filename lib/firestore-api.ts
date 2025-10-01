@@ -11,7 +11,7 @@ export class FirestoreApi {
    */
   async getCollection(collectionName: string, forceRefresh = false): Promise<FirestoreDocument[]> {
     try {
-      console.log(`Fetching collection: ${collectionName}${forceRefresh ? ' (force refresh)' : ''}`)
+
 
       const headers: Record<string, string> = {};
       if (forceRefresh) {
@@ -26,10 +26,10 @@ export class FirestoreApi {
 
       const response = await apiClient.get<any>(path, { headers })
 
-      console.log('Raw API response:', response)
+
 
       if (!response.documents) {
-        console.warn('No documents found in response:', response)
+
         return []
       }
 
@@ -45,10 +45,10 @@ export class FirestoreApi {
         return { id, ...fields }
       })
 
-      console.log(`Parsed ${parsedData.length} documents from ${collectionName}`)
+
       return parsedData
     } catch (error) {
-      console.error(`Error fetching collection ${collectionName}:`, error)
+
       throw error
     }
   }
@@ -74,7 +74,7 @@ export class FirestoreApi {
       const id = doc.name.split('/').pop() || documentId
       return { id, ...fields }
     } catch (error) {
-      console.error(`Error fetching document ${collectionName}/${documentId}:`, error)
+
       throw error
     }
   }
@@ -89,7 +89,7 @@ export class FirestoreApi {
       const id = response.name.split('/').pop() || ''
       return { id }
     } catch (error) {
-      console.error(`Error adding document to ${collectionName}:`, error)
+
       throw error
     }
   }
@@ -102,7 +102,7 @@ export class FirestoreApi {
       const firebaseData = this.convertToFirestoreFormat(data)
       await apiClient.put<any>(`/${collectionName}/${documentId}`, { fields: firebaseData })
     } catch (error) {
-      console.error(`Error updating document ${collectionName}/${documentId}:`, error)
+
       throw error
     }
   }
@@ -114,7 +114,7 @@ export class FirestoreApi {
     try {
       await apiClient.delete<any>(`/${collectionName}/${documentId}`)
     } catch (error) {
-      console.error(`Error deleting document ${collectionName}/${documentId}:`, error)
+
       throw error
     }
   }

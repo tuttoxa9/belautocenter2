@@ -47,7 +47,7 @@ const nextConfig = {
   },
   swcMinify: true,
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: true,
   },
   // Добавляем конфигурацию для совместимости с iOS Safari
   transpilePackages: ['firebase'],
