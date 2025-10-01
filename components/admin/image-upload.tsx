@@ -6,7 +6,16 @@ import { uploadImage } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Upload, X, Loader2, MoveUp, MoveDown } from "lucide-react"
+import { Upload, X, Loader2, MoveUp, MoveDown, HelpCircle } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 interface ImageUploadProps {
   onImageUploaded?: (url: string) => void
@@ -21,6 +30,7 @@ interface ImageUploadProps {
 
 export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUpload, path = 'general', currentImage, currentImages, className, multiple = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
+  const [autoWebP, setAutoWebP] = useState(true)
   const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set())
   const [preview, setPreview] = useState<string | null>(currentImage || null)
   const [previews, setPreviews] = useState<string[]>(currentImages || [])
@@ -75,7 +85,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           // Загружаем файлы параллельно
           filesToProcess.forEach(async (file, index) => {
             try {
-              const imagePath = await uploadImage(file, path, true)
+              const imagePath = await uploadImage(file, path, autoWebP)
               console.log('Файл успешно загружен:', imagePath)
 
               // Обновляем превью для этого конкретного файла
@@ -125,7 +135,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           console.log('Начало загрузки файла:', file.name, 'размер:', file.size, 'путь:', path)
 
           setUploading(true)
-          const imagePath = await uploadImage(file, path, true)
+          const imagePath = await uploadImage(file, path, autoWebP)
           console.log('Файл успешно загружен, путь:', imagePath)
 
           setPreview(imagePath)
@@ -144,7 +154,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
         setUploading(false)
       }
     },
-    [onImageUploaded, onUpload, onMultipleUpload, path, multiple, previews, uploadingFiles],
+    [onImageUploaded, onUpload, onMultipleUpload, path, multiple, previews, uploadingFiles, autoWebP],
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -311,10 +321,28 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                   {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения или нажмите для выбора"}
                 </p>
                 <p className="text-xs text-gray-500">Можно выбрать несколько файлов: PNG, JPG, WEBP, HEIC, HEIF до 10MB каждый</p>
-                <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
               </div>
             )}
           </Card>
+
+          {/* Настройки загрузки */}
+          <div className="flex items-center space-x-2 mt-4">
+            <Checkbox id="webp-toggle-multiple" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} />
+            <Label htmlFor="webp-toggle-multiple" className="text-sm font-medium text-gray-700">
+              Оптимизировать в WebP
+            </Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-4 w-4 text-gray-500 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>Включает автоматическую конвертацию JPG/PNG в современный формат WebP. Уменьшает размер файла до 70% без видимой потери качества. Рекомендуется для всех фотографий. Отключите для схем или логотипов, если требуется сохранить исходный формат.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+
 
           {/* Отдельная область для вставки из буфера обмена */}
           <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50 p-4 text-center">
@@ -494,10 +522,27 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                     {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
                   </p>
                   <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
-                  <p className="text-xs text-green-600">✓ Автоматическая конвертация в WebP для оптимизации</p>
                 </div>
               )}
             </Card>
+
+            {/* Настройки загрузки */}
+            <div className="flex items-center space-x-2 mt-4">
+              <Checkbox id="webp-toggle-single" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} />
+              <Label htmlFor="webp-toggle-single" className="text-sm font-medium text-gray-700">
+                Оптимизировать в WebP
+              </Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 text-gray-500 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>Включает автоматическую конвертацию JPG/PNG в современный формат WebP. Уменьшает размер файла до 70% без видимой потери качества. Рекомендуется для всех фотографий. Отключите для схем или логотипов, если требуется сохранить исходный формат.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
 
             {/* Отдельная область для вставки из буфера обмена */}
             <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50 p-4 text-center">
