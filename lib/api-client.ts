@@ -11,11 +11,18 @@ export class ApiClient {
   private baseUrl: string
 
   constructor() {
-    // Используем относительный путь по умолчанию.
-    // Это позволяет коду работать на любом домене (Vercel, localhost, production),
-    // так как запросы будут отправляться на тот же хост, с которого загружена страница.
-    // Переменная NEXT_PUBLIC_API_HOST остается для гибкости, если понадобится указать другой хост.
-    this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || ''
+    const projectId = 'belauto-5dd94'; // Найдено в scripts/seed-settings.js
+
+    // Если код выполняется на сервере (во время SSR или сборки),
+    // он должен обращаться напрямую к API Google Firestore.
+    // Это устраняет race condition с локальным воркером.
+    if (typeof window === 'undefined') {
+      this.baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
+    } else {
+      // На клиенте (в браузере) запросы должны идти через наш кэширующий воркер,
+      // поэтому используем относительный путь.
+      this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || '';
+    }
   }
 
   async fetch<T>(
