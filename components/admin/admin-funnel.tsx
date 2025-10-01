@@ -66,7 +66,6 @@ export default function AdminFunnel() {
         setSettings(prev => ({ ...prev, ...data }))
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек воронки:", error)
     } finally {
       setIsLoading(false)
     }
@@ -82,7 +81,6 @@ export default function AdminFunnel() {
       saveButtonState.setSuccess(true)
       showSuccess("Настройки воронки сохранены")
     } catch (error) {
-      console.error("Ошибка сохранения настроек:", error)
       saveButtonState.setError(true)
     }
   }

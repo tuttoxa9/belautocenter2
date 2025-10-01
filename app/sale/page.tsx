@@ -196,7 +196,6 @@ export default function SalePage() {
       }
     } catch (error) {
       submitButtonState.setError(true)
-      console.error('Ошибка отправки заявки:', error)
     }
   }
 

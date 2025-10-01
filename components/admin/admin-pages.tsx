@@ -51,7 +51,6 @@ export default function AdminPages() {
         leasing: leasingDoc.exists() ? leasingDoc.data().content || "" : "",
       })
     } catch (error) {
-      console.error("Error loading pages:", error)
     }
   }, [])
 

@@ -58,7 +58,6 @@ export default function AdminReviews() {
       })) as Review[]
       setReviews(reviewsData)
     } catch (error) {
-      console.error("Ошибка загрузки отзывов:", error)
     } finally {
       setLoading(false)
     }
@@ -87,7 +86,6 @@ export default function AdminReviews() {
       resetForm()
       loadReviews()
     } catch (error) {
-      console.error("Ошибка сохранения:", error)
       alert("Ошибка сохранения отзыва")
     }
   }
@@ -112,7 +110,6 @@ export default function AdminReviews() {
         await cacheInvalidator.onDelete(reviewId)
         loadReviews()
       } catch (error) {
-        console.error("Ошибка удаления:", error)
         alert("Ошибка удаления отзыва")
       }
     }

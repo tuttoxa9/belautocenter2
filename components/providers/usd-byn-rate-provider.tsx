@@ -47,7 +47,6 @@ async function fetchRateWithCache(): Promise<number | null> {
 
     return newRate;
   } catch (error) {
-    console.error('Failed to fetch USD/BYN rate:', error);
     return globalRate; // Возвращаем старый курс при ошибке
   }
 }
@@ -89,7 +88,6 @@ export function UsdBynRateProvider({ children }: { children: React.ReactNode }) 
           setUsdBynRate(rate);
         }
       } catch (error) {
-        console.error('Failed to fetch USD/BYN rate:', error);
         if (isMounted) {
           setUsdBynRate(null);
         }

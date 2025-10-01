@@ -132,7 +132,6 @@ export default function AdminLeasing() {
         })
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных лизинга:", error)
     } finally {
       setLoading(false)
     }
@@ -140,7 +139,6 @@ export default function AdminLeasing() {
 
   const saveLeasingData = async () => {
     await saveButtonState.execute(async () => {
-      console.log("Saving leasing data:", leasingData)
       await setDoc(doc(db, "pages", "leasing"), leasingData)
     })
   }
@@ -221,7 +219,6 @@ export default function AdminLeasing() {
       await setDoc(doc(db, "pages", "leasing"), defaultData)
       alert("Данные сброшены к значениям по умолчанию и сохранены!")
     } catch (error) {
-      console.error("Ошибка сброса данных:", error)
       alert("Ошибка при сбросе данных")
     }
   }

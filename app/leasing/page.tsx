@@ -119,7 +119,6 @@ export default function LeasingPage() {
         })
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек:", error)
     } finally {
       setLoading(false)
     }
@@ -250,7 +249,6 @@ export default function LeasingPage() {
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn("API save failed:", error)
       }
 
       const clientName =

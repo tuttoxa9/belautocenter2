@@ -20,7 +20,6 @@ export async function GET() {
       currency: data.Cur_Abbreviation
     })
   } catch (error) {
-    console.error('Error fetching exchange rate:', error)
     return NextResponse.json(
       { error: 'Failed to fetch exchange rate' },
       { status: 500 }

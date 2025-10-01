@@ -105,7 +105,6 @@ export default function AdminAbout() {
         }
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных:", error)
     } finally {
       setLoading(false)
     }

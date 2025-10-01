@@ -83,7 +83,7 @@ export default function AboutPage() {
         }))
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных:", error)
+
     } finally {
       setLoading(false)
     }

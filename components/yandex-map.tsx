@@ -44,7 +44,6 @@ export default function YandexMap({ address, className }: YandexMapProps) {
         window.ymaps.ready(initMap)
       }
       script.onerror = () => {
-        console.error('Ошибка загрузки Яндекс.Карт')
         setMapError(true)
       }
       document.head.appendChild(script)
@@ -77,11 +76,9 @@ export default function YandexMap({ address, className }: YandexMapProps) {
           map.geoObjects.add(placemark)
           setMapLoaded(true)
         }).catch((error: any) => {
-          console.error('Ошибка геокодирования:', error)
           setMapError(true)
         })
       } catch (error) {
-        console.error('Ошибка инициализации карты:', error)
         setMapError(true)
       }
     }

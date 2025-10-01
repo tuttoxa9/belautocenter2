@@ -9,7 +9,6 @@ export async function invalidateCache(params: CacheInvalidationParams): Promise<
     const apiKey = process.env.CACHE_INVALIDATION_API_KEY || process.env.NEXT_PUBLIC_CACHE_INVALIDATION_API_KEY
 
     if (!apiKey) {
-      console.warn('Cache invalidation API key not configured')
       return
     }
 
@@ -27,12 +26,9 @@ export async function invalidateCache(params: CacheInvalidationParams): Promise<
     })
 
     if (!response.ok) {
-      console.error('Failed to invalidate cache:', await response.text())
     } else {
-      console.log(`Cache invalidated for ${params.collection} (${params.action})`)
     }
   } catch (error) {
-    console.error('Cache invalidation error:', error)
   }
 }
 

@@ -74,7 +74,6 @@ export default function AdminStories() {
       })) as Story[]
       setStories(storiesData)
     } catch (error) {
-      console.error("Ошибка загрузки историй:", error)
     } finally {
       setLoading(false)
     }
@@ -87,7 +86,6 @@ export default function AdminStories() {
         setSettings(settingsDoc.data() as StoriesSettings)
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек:", error)
     }
   }
 
@@ -96,7 +94,6 @@ export default function AdminStories() {
       await setDoc(doc(db, "settings", "stories"), settings)
       alert("Настройки сохранены!")
     } catch (error) {
-      console.error("Ошибка сохранения настроек:", error)
       alert("Ошибка сохранения настроек")
     }
   }
@@ -174,7 +171,6 @@ export default function AdminStories() {
       loadStories()
       alert("История добавлена!")
     } catch (error) {
-      console.error("Ошибка добавления истории:", error)
       alert("Ошибка добавления истории")
     } finally {
       setUploading(false)
@@ -212,7 +208,6 @@ export default function AdminStories() {
       loadStories()
       alert("История обновлена!")
     } catch (error) {
-      console.error("Ошибка обновления истории:", error)
       alert("Ошибка обновления истории")
     }
   }
@@ -226,7 +221,6 @@ export default function AdminStories() {
         try {
           await deleteImage(story.mediaUrl)
         } catch (error) {
-          console.error("Ошибка удаления медиафайла:", error)
         }
       }
 
@@ -235,7 +229,6 @@ export default function AdminStories() {
         try {
           await deleteImage(story.avatarUrl)
         } catch (error) {
-          console.error("Ошибка удаления аватарки:", error)
         }
       }
 
@@ -245,7 +238,6 @@ export default function AdminStories() {
       loadStories()
       alert("История удалена!")
     } catch (error) {
-      console.error("Ошибка удаления истории:", error)
       alert("Ошибка удаления истории")
     }
   }

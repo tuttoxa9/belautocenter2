@@ -6,7 +6,6 @@ if (!admin.apps.length) {
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93',
     })
   } catch (error) {
-    console.error('Firebase admin initialization error', error)
   }
 }
 

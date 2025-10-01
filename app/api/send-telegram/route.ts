@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-      console.error('Telegram credentials are not configured on the server.')
       return NextResponse.json(
         { success: false, error: 'Ошибка сервера: не удалось отправить уведомление.' },
         { status: 500 }
@@ -175,7 +174,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, message: 'Уведомление отправлено в Telegram' })
     } else {
       const errorBody = await response.text()
-      console.error('Failed to send Telegram message:', errorBody)
       return NextResponse.json(
         { success: false, error: 'Ошибка сервера: не удалось отправить уведомление.' },
         { status: 500 }
@@ -183,7 +181,6 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error sending Telegram notification:', error)
     return NextResponse.json(
       { success: false, error: 'Внутренняя ошибка сервера.' },
       { status: 500 }

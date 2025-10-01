@@ -47,7 +47,6 @@ export function useFirestoreCollection<T = any>(
       setLastUpdated(new Date())
 
     } catch (err) {
-      console.error(`Error fetching collection ${collectionName}:`, err)
       setError(err instanceof Error ? err : new Error('Unknown error'))
     } finally {
       setLoading(false)
@@ -120,7 +119,6 @@ export function useFirestoreDocument<T = any>(
       setLastUpdated(new Date())
 
     } catch (err) {
-      console.error(`Error fetching document ${collectionName}/${documentId}:`, err)
       setError(err instanceof Error ? err : new Error('Unknown error'))
     } finally {
       setLoading(false)
@@ -170,7 +168,6 @@ export function usePrefetchFirestore() {
         await firestoreCache.getCollection(collectionName)
       }
     } catch (error) {
-      console.warn(`Failed to prefetch ${collectionName}${documentId ? `/${documentId}` : ''}:`, error)
     }
   }, [])
 

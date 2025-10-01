@@ -116,7 +116,6 @@ export default function ContactsPage() {
           setContactsData(fallbackData)
         }
       } catch (err) {
-        console.error('Ошибка загрузки данных контактов:', err)
         setError('Не удалось загрузить данные контактов')
 
         // Fallback данные при ошибке

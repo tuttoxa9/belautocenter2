@@ -31,7 +31,6 @@ export default function AdminLeads() {
       }))
       setLeads(leadsData)
     } catch (error) {
-      console.error("Ошибка загрузки заявок:", error)
     } finally {
       setLoading(false)
     }
@@ -43,7 +42,6 @@ export default function AdminLeads() {
       await cacheInvalidator.onUpdate(leadId)
       loadLeads()
     } catch (error) {
-      console.error("Ошибка обновления статуса:", error)
     }
   }
 
@@ -54,7 +52,6 @@ export default function AdminLeads() {
         await cacheInvalidator.onDelete(leadId)
         loadLeads()
       } catch (error) {
-        console.error("Ошибка удаления:", error)
       }
     }
   }

@@ -70,7 +70,6 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
       try {
         if (multiple) {
           // Множественная загрузка - каждый файл загружается независимо
-          console.log(`Начало загрузки ${filesToProcess.length} файлов`)
 
           // Добавляем временные превью с индикатором загрузки
           const tempPreviews = filesToProcess.map(() => 'loading')
@@ -86,7 +85,6 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           filesToProcess.forEach(async (file, index) => {
             try {
               const imagePath = await uploadImage(file, path, autoWebP)
-              console.log('Файл успешно загружен:', imagePath)
 
               // Обновляем превью для этого конкретного файла
               setPreviews(current => {
@@ -116,7 +114,6 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 }, 100)
               }
             } catch (error) {
-              console.error("Ошибка загрузки файла:", file.name, error)
               alert(`Ошибка загрузки ${file.name}: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
 
               // Убираем неудачную загрузку из превью
@@ -132,11 +129,9 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
         } else {
           // Одиночная загрузка
           const file = filesToProcess[0]
-          console.log('Начало загрузки файла:', file.name, 'размер:', file.size, 'путь:', path)
 
           setUploading(true)
           const imagePath = await uploadImage(file, path, autoWebP)
-          console.log('Файл успешно загружен, путь:', imagePath)
 
           setPreview(imagePath)
 
@@ -149,7 +144,6 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           setUploading(false)
         }
       } catch (error) {
-        console.error("Ошибка загрузки:", error)
         alert(`Ошибка загрузки изображения: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
         setUploading(false)
       }

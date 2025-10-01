@@ -64,7 +64,6 @@ export default function HomePage() {
         }))
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек главной страницы:", error)
     }
   }, [isMounted])
 
@@ -74,9 +73,7 @@ export default function HomePage() {
         setLoadingCars(true)
       }
 
-      console.log("Loading cars from API...")
       const allCars = await firestoreApi.getCollection("cars")
-      console.log("Total cars loaded:", allCars.length)
 
       // Сначала фильтруем авто, отмеченные для показа на главной
       let featuredCars = allCars.filter(car => car.showOnHomepage === true)
@@ -94,14 +91,12 @@ export default function HomePage() {
           .slice(0, 4)
       }
 
-      console.log("Featured cars:", featuredCars)
 
       if (isMounted) {
         setCars(featuredCars)
         setLoadingCars(false)
       }
     } catch (error) {
-      console.error("Ошибка загрузки автомобилей:", error)
       if (isMounted) {
         setLoadingCars(false)
       }
@@ -143,7 +138,6 @@ export default function HomePage() {
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn("API save failed:", error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)

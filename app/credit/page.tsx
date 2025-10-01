@@ -110,7 +110,6 @@ export default function CreditPage() {
         })
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек:", error)
     } finally {
       setLoading(false)
     }
@@ -261,7 +260,6 @@ export default function CreditPage() {
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn("API save failed:", error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)

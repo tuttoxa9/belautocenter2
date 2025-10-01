@@ -11,7 +11,6 @@ const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belauto
  */
 export const uploadImage = async (file: File, path: string, autoWebP: boolean = true): Promise<string> => {
   try {
-    console.log('Начало загрузки изображения через Cloudflare Worker...')
 
     // Генерируем уникальный путь для файла, имя файла также подвергается санитизации
     const cleanFileName = file.name
@@ -56,12 +55,10 @@ export const uploadImage = async (file: File, path: string, autoWebP: boolean = 
       throw new Error('Сервер не вернул путь к файлу');
     }
 
-    console.log('Файл успешно загружен, путь:', result.path);
 
     // Возвращаем только путь к файлу, который будет сохранен в Firestore
     return result.path;
   } catch (error) {
-    console.error("Ошибка загрузки изображения:", error);
     if (error instanceof Error) {
       throw new Error(`Ошибка загрузки изображения: ${error.message}`);
     }
@@ -76,7 +73,6 @@ export const uploadImage = async (file: File, path: string, autoWebP: boolean = 
  */
 export const deleteImage = async (path: string): Promise<void> => {
   try {
-    console.log('Удаление изображения через Cloudflare Worker:', path);
 
     // Получаем токен аутентификации текущего пользователя
     const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
@@ -101,9 +97,7 @@ export const deleteImage = async (path: string): Promise<void> => {
       throw new Error(`Ошибка удаления: ${response.status} ${response.statusText}`);
     }
 
-    console.log('Файл успешно удален:', path);
   } catch (error) {
-    console.error("Ошибка удаления изображения:", error);
     throw error;
   }
 }

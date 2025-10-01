@@ -65,7 +65,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
 
   // Функция для принудительного обновления каталога
   const refreshCatalog = () => {
-    console.log('Принудительное обновление каталога...')
     loadCarsFromCloudflare(true)
   }
 
@@ -157,7 +156,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       setCars(processedCars)
       setFilteredCars(processedCars)
     } catch (error) {
-      console.error('Error loading cars:', error)
     } finally {
       setLoading(false)
     }

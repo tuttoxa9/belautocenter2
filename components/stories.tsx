@@ -44,20 +44,17 @@ export default function Stories() {
         setSettings(settingsDoc.data() as StoriesSettings)
       }
     } catch (error) {
-      console.error("Error loading stories settings:", error)
     }
   }, [])
 
   const loadStories = useCallback(async () => {
     try {
-      console.log("Loading stories from Firestore...")
       const storiesQuery = query(
         collection(db, "stories"),
         orderBy("order", "asc")
       )
 
       const snapshot = await getDocs(storiesQuery)
-      console.log("Stories snapshot size:", snapshot.size)
 
       const storiesData = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -65,10 +62,8 @@ export default function Stories() {
         createdAt: doc.data().createdAt?.toDate() || new Date()
       })) as Story[]
 
-      console.log("Loaded stories:", storiesData)
       setStories(storiesData)
     } catch (error) {
-      console.error("Error loading stories:", error)
     } finally {
       setLoading(false)
     }
@@ -113,7 +108,6 @@ export default function Stories() {
   }, [selectedStory, isPlaying, handleNext, stories.length])
 
   const handleStoryClick = (index: number) => {
-    console.log('Story clicked:', index, stories[index]?.id)
 
     // Сначала принудительно закрываем диалог если он открыт
     if (selectedStory !== null) {
@@ -153,7 +147,6 @@ export default function Stories() {
   }
 
   const handleClose = () => {
-    console.log('Closing stories dialog')
     setSelectedStory(null)
     setCurrentIndex(0)
     setProgress(0)

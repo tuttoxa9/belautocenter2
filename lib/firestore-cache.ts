@@ -77,7 +77,6 @@ export class FirestoreCache {
       }) || [];
 
     } catch (error) {
-      console.error(`Error fetching collection ${collectionName}:`, error);
       throw error;
     }
   }
@@ -127,7 +126,6 @@ export class FirestoreCache {
       return { id, ...fields };
 
     } catch (error) {
-      console.error(`Error fetching document ${collectionName}/${documentId}:`, error);
       throw error;
     }
   }

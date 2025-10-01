@@ -100,7 +100,6 @@ export function useSettings() {
         })
       }
     } catch (err) {
-      console.error("Ошибка загрузки настроек:", err)
       setError("Ошибка загрузки настроек")
     } finally {
       setLoading(false)

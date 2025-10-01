@@ -94,7 +94,6 @@ export default function AdminContacts() {
         setContactsData(data)
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных контактов:", error)
     } finally {
       setLoading(false)
     }
@@ -105,7 +104,6 @@ export default function AdminContacts() {
       await setDoc(doc(db, "pages", "contacts"), contactsData)
       saveButtonState.setSuccess()
     } catch (error) {
-      console.error("Ошибка сохранения:", error)
       saveButtonState.setError()
     }
   }

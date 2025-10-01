@@ -450,7 +450,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         setPartnerBanks(banks)
         setSelectedBank(banks[0]) // Выбираем лучший банк по умолчанию
       } else {
-        console.warn("Банки-партнеры не найдены")
         setPartnerBanks([])
       }
 
@@ -459,7 +458,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         setLeasingCompanies(leasingCompanies)
         setSelectedLeasingCompany(leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
       } else {
-        console.warn("Лизинговые компании не найдены")
         setLeasingCompanies([])
       }
 
@@ -468,7 +466,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setContactPhone2(staticDataCache.contactPhones.additional)
 
     } catch (error) {
-      console.error("Ошибка загрузки статических данных:", error)
       setPartnerBanks([])
       setLeasingCompanies([])
       setContactPhone("+375 29 123-45-67")
@@ -517,12 +514,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         setCreditAmount([price * 0.8])
         setDownPayment([price * 0.2])
       } else {
-        console.error("Автомобиль не найден")
         setCarNotFound(true)
         setCar(null)
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных автомобиля:", error)
       setCarNotFound(true)
       setCar(null)
     } finally {
@@ -630,7 +625,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     const term = loanTerm[0]
 
     // ★★★ РАСШИРЕННЫЙ отладочный код для проверки данных перед расчетом ★★★
-    console.log("ДАННЫЕ ДЛЯ КАЛЬКУЛЯТОРА:", {
         amount: principal,
         selectedBank: selectedBank,
         rate: rate,
@@ -675,7 +669,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)
@@ -720,7 +713,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           createdAt: new Date(),
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)
@@ -771,7 +763,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           financeType: financeType
         })
       } catch (error) {
-        console.warn('Firebase save failed:', error)
       }
 
       // Отправляем уведомление в Telegram (всегда выполняется)
@@ -1523,7 +1514,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             setSelectedBank(bank);
 
                             // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранного банка ★★★
-                            console.log("ВЫБРАННЫЙ БАНК:", bank);
                             // ★★★ КОНЕЦ ★★★
                           }}
                         >
@@ -1652,7 +1642,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                             setSelectedLeasingCompany(company);
 
                             // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранной лизинговой компании ★★★
-                            console.log("ВЫБРАННАЯ ЛИЗИНГОВАЯ КОМПАНИЯ:", company);
                             // ★★★ КОНЕЦ ★★★
                           }}
                         >

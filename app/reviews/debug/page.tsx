@@ -27,25 +27,20 @@ export default function ReviewsDebugPage() {
 
   const loadAllReviews = async () => {
     try {
-      console.log("Загружаем все отзывы для диагностики...")
 
       // Простой запрос без сортировки
       let snapshot = await getDocs(collection(db, "reviews"))
-      console.log("Простой запрос - количество документов:", snapshot.docs.length)
 
       // С сортировкой
       try {
         const sortedQuery = query(collection(db, "reviews"), orderBy("createdAt", "desc"))
         snapshot = await getDocs(sortedQuery)
-        console.log("Запрос с сортировкой - количество документов:", snapshot.docs.length)
       } catch (sortError) {
-        console.error("Ошибка сортировки:", sortError)
         setError("Ошибка сортировки: " + sortError.message)
       }
 
       const reviewsData = snapshot.docs.map((doc) => {
         const data = doc.data()
-        console.log("Документ:", doc.id, data)
         return {
           id: doc.id,
           ...data,
@@ -53,10 +48,8 @@ export default function ReviewsDebugPage() {
         }
       }) as Review[]
 
-      console.log("Все загруженные отзывы:", reviewsData)
       setAllReviews(reviewsData)
     } catch (error: any) {
-      console.error("Ошибка загрузки отзывов:", error)
       setError("Ошибка загрузки: " + error.message)
     } finally {
       setLoading(false)

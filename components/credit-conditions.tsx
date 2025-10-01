@@ -87,7 +87,6 @@ export default function CreditConditions() {
         }
       }
     } catch (error) {
-      console.error("Ошибка загрузки условий кредита:", error)
     } finally {
       setLoading(false)
     }

@@ -60,7 +60,6 @@ export default function AdminPrivacy() {
         setPrivacyData(privacyDoc.data() as PrivacyData)
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных:", error)
     } finally {
       setLoading(false)
     }
@@ -76,7 +75,6 @@ export default function AdminPrivacy() {
       setPrivacyData(updatedData)
       saveButtonState.setSuccess()
     } catch (error) {
-      console.error("Ошибка сохранения:", error)
       saveButtonState.setError()
     }
   }

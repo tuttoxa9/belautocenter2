@@ -41,7 +41,6 @@ export default function Footer() {
         setSettings(data as Settings)
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек:", error)
     } finally {
       setLoading(false)
     }

@@ -97,7 +97,6 @@ export default function LeasingCalculator() {
         setData(defaultData)
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных калькулятора:", error)
     } finally {
       setLoading(false)
     }

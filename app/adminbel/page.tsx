@@ -51,7 +51,7 @@ export default function AdminPage() {
     try {
       await signOut(auth)
     } catch (error) {
-      console.error("Ошибка выхода:", error)
+
     }
   }
 
@@ -98,7 +98,7 @@ export default function AdminPage() {
         variant: "default"
       })
     } catch (error) {
-      console.error("Ошибка при очистке кэша:", error)
+
       toast({
         title: "Ошибка очистки кэша",
         description: error instanceof Error ? error.message : "Неизвестная ошибка",

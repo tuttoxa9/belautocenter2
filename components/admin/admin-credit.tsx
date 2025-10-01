@@ -75,7 +75,6 @@ export default function AdminCredit() {
         setCreditData(creditDoc.data())
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных:", error)
     } finally {
       setLoading(false)
     }

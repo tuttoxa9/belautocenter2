@@ -146,7 +146,6 @@ export async function generateMetadata(
       }
     }
   } catch (error) {
-    console.error('Error generating metadata:', error)
     return {
       title: "Автомобиль | Белавто Центр",
       description: "Подробная информация об автомобиле в каталоге Белавто Центр"

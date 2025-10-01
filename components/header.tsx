@@ -56,7 +56,6 @@ export default function Header() {
         setSettings(data as Settings)
       }
     } catch (error) {
-      console.error("Ошибка загрузки настроек:", error)
     } finally {
       setLoading(false)
     }
@@ -74,7 +73,6 @@ export default function Header() {
         createdAt: new Date(),
       })
     } catch (error) {
-      console.warn("API save failed:", error)
     }
 
     // Отправляем уведомление в Telegram (всегда выполняется)
@@ -96,7 +94,6 @@ export default function Header() {
         "Заявка на обратный звонок отправлена! Мы свяжемся с вами в ближайшее время."
       )
     } catch (error) {
-      console.error("Ошибка отправки заявки:", error)
       showSuccess("Произошла ошибка. Попробуйте еще раз.")
     }
   }

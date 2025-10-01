@@ -33,7 +33,6 @@ export default function ReviewsPage() {
   const [selectedReview, setSelectedReview] = useState<Review | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
-  console.log("ReviewsPage состояние:", {
     reviewsCount: reviews.length,
     filteredCount: filteredReviews.length,
     loading,
@@ -67,7 +66,6 @@ export default function ReviewsPage() {
 
       setReviews(reviewsData as Review[])
     } catch (error) {
-      console.error("Ошибка загрузки отзывов:", error)
     } finally {
       setLoading(false)
     }
@@ -332,11 +330,9 @@ export default function ReviewsPage() {
 
           {/* Reviews Grid - мобильная адаптация */}
           <div className="p-4 sm:p-6">
-            {console.log("Рендеринг отзывов:", { reviews: reviews.length, filteredReviews: filteredReviews.length, filterRating })}
             {filteredReviews && filteredReviews.length > 0 ? (
               <div className="space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6 lg:space-y-0">
                 {filteredReviews.map((review) => {
-                  console.log("Рендерим отзыв:", review.id, review.name, review.status)
                   return (
                   <div key={review.id} className="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200/50 hover:shadow-md transition-all duration-300">
                     {/* Review Image - компактнее для мобилки */}

@@ -83,7 +83,6 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
           setFunnelSettings(prev => ({ ...prev, ...data }))
         }
       } catch (error) {
-        console.error("Ошибка загрузки настроек воронки:", error)
       }
     }
 
@@ -141,7 +140,6 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
       }
     } catch (error) {
       submitButtonState.setError(true)
-      console.error('Ошибка отправки заявки:', error)
     }
   }
 

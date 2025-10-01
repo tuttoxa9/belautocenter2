@@ -99,7 +99,6 @@ export default function AdminCreditConditions() {
         }
       }
     } catch (error) {
-      console.error("Ошибка загрузки условий:", error)
     } finally {
       setLoading(false)
     }
@@ -112,7 +111,6 @@ export default function AdminCreditConditions() {
       await setDoc(docRef, { conditions: updatedConditions }, { merge: true })
       setConditions(updatedConditions)
     } catch (error) {
-      console.error("Ошибка сохранения условий:", error)
       alert("Ошибка сохранения. Попробуйте еще раз.")
     } finally {
       setSaving(false)

@@ -70,7 +70,6 @@ export default function AdminSettings() {
         stories: storiesDoc.exists() ? storiesDoc.data() : prevSettings.stories,
       }))
     } catch (error) {
-      console.error("Error loading settings:", error)
     } finally {
       setLoading(false)
     }
@@ -91,7 +90,6 @@ export default function AdminSettings() {
       await cacheInvalidator.onUpdate('main')
       alert("Настройки сохранены!")
     } catch (error) {
-      console.error("Ошибка сохранения:", error)
       alert("Ошибка сохранения настроек")
     } finally {
       setSaving(false)

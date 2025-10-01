@@ -47,10 +47,8 @@ export function CarsCarousel() {
   const loadCars = async () => {
     try {
       setLoading(true)
-      console.log('Карусель: Начинаем загрузку автомобилей через Firebase')
 
       const snapshot = await getDocs(collection(db, "cars"))
-      console.log('Карусель: Получено документов из Firebase:', snapshot.docs.length)
 
       const carsData = snapshot.docs
         .map((doc) => ({
@@ -61,19 +59,14 @@ export function CarsCarousel() {
           const hasPrice = car && car.price && car.price > 0
           const isAvailable = car.isAvailable !== false // Исключаем проданные автомобили
           if (!hasPrice && car) {
-            console.log('Карусель: Автомобиль без цены:', car.id, car.make, car.model, 'price:', car.price)
           }
           return hasPrice && isAvailable
         })
         .slice(0, 10)
 
-      console.log('Карусель: Загружено автомобилей для карусели:', carsData.length)
-      console.log('Карусель: Итоговые данные автомобилей:', carsData)
       setCars(carsData as CarData[])
     } catch (error) {
-      console.error("Карусель: Ошибка загрузки автомобилей:", error)
     } finally {
-      console.log('Карусель: Загрузка завершена, loading = false')
       setLoading(false)
     }
   }
@@ -154,7 +147,6 @@ export function CarsCarousel() {
   }
 
   if (cars.length === 0) {
-    console.log('Карусель: автомобили не загружены, loading:', loading)
     return (
       <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
         <div className="p-4 md:p-8">

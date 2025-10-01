@@ -119,7 +119,6 @@ export default function PrivacyPage() {
         setPrivacyData(data as PrivacyData)
       }
     } catch (error) {
-      console.error("Ошибка загрузки данных:", error)
     } finally {
       setLoading(false)
     }

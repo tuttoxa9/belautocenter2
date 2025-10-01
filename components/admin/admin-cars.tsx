@@ -81,7 +81,6 @@ export default function AdminCars() {
       })
       setCars(sortedCars)
     } catch (error) {
-      console.error("Ошибка загрузки автомобилей:", error)
     } finally {
       setLoading(false)
     }
@@ -118,7 +117,6 @@ export default function AdminCars() {
       resetForm()
       loadCars()
     } catch (error) {
-      console.error("Ошибка сохранения:", error)
       alert("Ошибка сохранения автомобиля")
     }
   }
@@ -153,7 +151,6 @@ export default function AdminCars() {
 
         loadCars()
       } catch (error) {
-        console.error("Ошибка удаления:", error)
         alert("Ошибка удаления автомобиля")
       }
     }

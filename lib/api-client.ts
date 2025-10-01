@@ -46,7 +46,6 @@ export class ApiClient {
         const token = await user.getIdToken(true)
         requestHeaders['Authorization'] = `Bearer ${token}`
       } catch (error) {
-        console.error('Ошибка получения токена авторизации:', error)
         throw new Error('Не удалось получить токен авторизации')
       }
     }
@@ -62,16 +61,12 @@ export class ApiClient {
 
     try {
       const fullUrl = `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`
-      console.log(`Making ${method} request to: ${fullUrl}`)
 
       const response = await fetch(fullUrl, requestOptions)
 
-      console.log(`Response status: ${response.status}`)
-      console.log(`Response headers:`, Object.fromEntries(response.headers.entries()))
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error(`HTTP error response body:`, errorText)
         const errorData = (() => {
           try {
             return JSON.parse(errorText)
@@ -85,13 +80,11 @@ export class ApiClient {
       // Для некоторых запросов (например, DELETE) может не быть JSON-ответа
       if (response.headers.get('content-type')?.includes('application/json')) {
         const responseData = await response.json() as T
-        console.log(`Response data:`, responseData)
         return responseData
       }
 
       return {} as T
     } catch (error) {
-      console.error(`API ошибка (${method} ${path}):`, error)
       throw error
     }
   }
