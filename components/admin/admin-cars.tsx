@@ -27,6 +27,7 @@ export default function AdminCars() {
   const [jsonInput, setJsonInput] = useState("")
   const [jsonError, setJsonError] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
   const [sortOption, setSortOption] = useState("createdAt_desc") // По умолчанию сортировка по дате добавления (новые вначале)
   const [filterOption, setFilterOption] = useState("all") // По умолчанию все автомобили
   const cacheInvalidator = createCacheInvalidator('cars')
@@ -88,6 +89,7 @@ export default function AdminCars() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsSaving(true)
     try {
       const carData = {
         ...carForm,
@@ -118,6 +120,8 @@ export default function AdminCars() {
       loadCars()
     } catch (error) {
       alert("Ошибка сохранения автомобиля")
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -741,7 +745,7 @@ export default function AdminCars() {
               </div>
 
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                <Button type="submit" className="flex-1 text-sm">
+                <Button type="submit" className="flex-1 text-sm" loading={isSaving}>
                   {editingCar ? "Сохранить" : "Добавить"}
                 </Button>
                 <Button type="button" variant="outline" className="text-sm" onClick={() => setIsDialogOpen(false)}>

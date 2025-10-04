@@ -33,6 +33,7 @@ export default function AdminReviews() {
   const [loading, setLoading] = useState(true)
   const [editingReview, setEditingReview] = useState<Review | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const cacheInvalidator = createCacheInvalidator('reviews')
   const [reviewForm, setReviewForm] = useState({
     name: "",
@@ -65,6 +66,7 @@ export default function AdminReviews() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSaving(true)
     try {
       const reviewData = {
         ...reviewForm,
@@ -87,6 +89,8 @@ export default function AdminReviews() {
       loadReviews()
     } catch (error) {
       alert("Ошибка сохранения отзыва")
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -361,6 +365,7 @@ export default function AdminReviews() {
                 <Button
                   type="submit"
                   className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  loading={isSaving}
                 >
                   {editingReview ? "Сохранить изменения" : "Добавить отзыв"}
                 </Button>

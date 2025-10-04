@@ -304,7 +304,7 @@ export default function AdminCreditConditions() {
                 >
                   Отмена
                 </Button>
-                <Button type="submit" disabled={saving}>
+                <Button type="submit" loading={saving}>
                   <Save className="h-4 w-4 mr-2" />
                   {saving ? "Сохранение..." : "Сохранить"}
                 </Button>
