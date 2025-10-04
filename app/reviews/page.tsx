@@ -33,12 +33,6 @@ export default function ReviewsPage() {
   const [selectedReview, setSelectedReview] = useState<Review | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
-    reviewsCount: reviews.length,
-    filteredCount: filteredReviews.length,
-    loading,
-    filterRating
-  })
-
   useEffect(() => {
     loadReviews()
   }, [])

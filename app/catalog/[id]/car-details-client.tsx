@@ -624,16 +624,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     const rate = rateValue / 100 / 12
     const term = loanTerm[0]
 
-    // ★★★ РАСШИРЕННЫЙ отладочный код для проверки данных перед расчетом ★★★
-        amount: principal,
-        selectedBank: selectedBank,
-        rate: rate,
-        rateValue: rateValue,
-        rateField: selectedBank.rate !== undefined ? 'rate' :
-                   selectedBank.minRate !== undefined ? 'minRate' : 'отсутствует',
-        term: term
-    });
-    // ★★★ КОНЕЦ ★★★
 
     if (!rate || rate <= 0) return principal / term
     const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
