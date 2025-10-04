@@ -27,6 +27,7 @@ export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
   const [loginError, setLoginError] = useState("")
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
   const [isCachePurging, setIsCachePurging] = useState(false)
   const { toast } = useToast()
 
@@ -40,10 +41,13 @@ export default function AdminPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoginError("")
+    setIsLoggingIn(true)
     try {
       await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password)
     } catch {
       setLoginError("Неверный email или пароль")
+    } finally {
+      setIsLoggingIn(false)
     }
   }
 
@@ -152,6 +156,7 @@ export default function AdminPage() {
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                loading={isLoggingIn}
               >
                 Войти в админ-панель
               </Button>

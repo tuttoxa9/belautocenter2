@@ -42,6 +42,7 @@ export default function Header() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [phoneLoading, setPhoneLoading] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { showSuccess } = useNotification()
 
   useEffect(() => {
@@ -63,20 +64,18 @@ export default function Header() {
 
   const handleCallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
 
-    // Сохраняем в Firebase через API
     try {
+      // Сохраняем в Firebase через API
       await firestoreApi.addDocument("leads", {
         ...formData,
         type: "callback",
         status: "new",
         createdAt: new Date(),
       })
-    } catch (error) {
-    }
 
-    // Отправляем уведомление в Telegram (всегда выполняется)
-    try {
+      // Отправляем уведомление в Telegram
       await fetch("/api/send-telegram", {
         method: "POST",
         headers: {
@@ -95,6 +94,8 @@ export default function Header() {
       )
     } catch (error) {
       showSuccess("Произошла ошибка. Попробуйте еще раз.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -315,7 +316,7 @@ export default function Header() {
                     )}
                   </div>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" loading={isSubmitting}>
                   Заказать звонок
                 </Button>
               </form>
