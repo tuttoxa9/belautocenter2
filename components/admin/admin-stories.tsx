@@ -13,7 +13,7 @@ import { Plus, Upload, Trash2, Edit, Eye, Link as LinkIcon, GripVertical } from 
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy, setDoc, getDoc } from "firebase/firestore"
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
 import { db } from "@/lib/firebase"
-import { uploadImage, deleteImage } from "@/lib/storage"
+import { uploadImage, deleteImage, UploadResult } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
 interface Story {
@@ -133,7 +133,8 @@ export default function AdminStories() {
 
   const uploadFile = async (file: File): Promise<string> => {
     // Загружаем файл в R2 через API
-    return await uploadImage(file, 'stories')
+    const uploadResult = await uploadImage(file, 'stories')
+    return uploadResult.path
   }
 
   const handleSubmit = async () => {

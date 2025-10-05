@@ -2,14 +2,24 @@
 import { auth } from './firebase';
 const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
 
+export interface UploadResult {
+  path: string;
+  uploadSessionId?: string;
+  convertedToWebP?: boolean;
+  originalType?: string;
+  originalSize?: number;
+  savedAs?: string;
+  message?: string;
+}
+
 /**
  * Загружает изображение на Cloudflare Worker
  * @param file - Файл для загрузки
  * @param path - Путь (папка) для хранения файла, например 'cars'
  * @param autoWebP - Автоматически конвертировать в WebP (по умолчанию true)
- * @returns Promise<string> - Путь к файлу (без хоста), который нужно сохранить в Firestore
+ * @returns Promise<UploadResult> - Результат загрузки с детальной информацией
  */
-export const uploadImage = async (file: File, path: string, autoWebP: boolean = true): Promise<string> => {
+export const uploadImage = async (file: File, path: string, autoWebP: boolean = true): Promise<UploadResult> => {
   try {
 
     // Генерируем уникальный путь для файла, имя файла также подвергается санитизации
@@ -60,8 +70,16 @@ export const uploadImage = async (file: File, path: string, autoWebP: boolean = 
       console.log(`Image converted to WebP: ${result.originalType} -> ${result.savedAs}`);
     }
 
-    // Возвращаем только путь к файлу, который будет сохранен в Firestore
-    return result.path;
+    // Возвращаем расширенную информацию о загрузке
+    return {
+      path: result.path,
+      uploadSessionId: result.uploadSessionId,
+      convertedToWebP: result.convertedToWebP,
+      originalType: result.originalType,
+      originalSize: result.originalSize,
+      savedAs: result.savedAs,
+      message: result.message
+    };
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Ошибка загрузки изображения: ${error.message}`);

@@ -1,13 +1,13 @@
-// Cloudflare Worker для BelAutoCenter – УНИВЕРСАЛЬНАЯ ВЕРСИЯ
-// Поддерживает: R2 (файлы) + Кэширующий прокси для Firestore.
+// Cloudflare Worker для BelAutoCenter – БЕСПЛАТНАЯ ВЕРСИЯ v2.2
+// Поддерживает: R2 (с базовой конвертацией в WebP) + Кэширующий прокси для Firestore.
 
 // ====================================================================================
-// 1. ОСНОВНЫЕ ХЕЛПЕРЫ
+// 1. ОСНОВНЫЕ ХЕЛПЕРЫ И КОНСТАНТЫ
 // ====================================================================================
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
-const CACHE_TTL_SECONDS = 86400; // 24 часа
-const CAR_DETAILS_CACHE_TTL = 86400; // 24 часа для деталей авто
+const API_CACHE_TTL_SECONDS = 86400; // 24 часа для данных Firestore API
+const IMAGE_CACHE_TTL_SECONDS = 2592000; // 30 дней для изображений в R2
 const GOOGLE_JWKS_URL = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com";
 
 /** Универсальный ответ в формате JSON. */

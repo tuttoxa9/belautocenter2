@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react"
 import { useDropzone } from "react-dropzone"
-import { uploadImage } from "@/lib/storage"
+import { uploadImage, UploadResult } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -28,10 +28,19 @@ interface ImageUploadProps {
   multiple?: boolean
 }
 
-interface UploadError {
+interface UploadLog {
   message: string
   fileName: string
-  type: 'error' | 'warning' | 'success'
+  type: 'error' | 'warning' | 'success' | 'info' | 'processing'
+  timestamp: Date
+  uploadSessionId?: string
+  details?: {
+    originalSize?: number
+    convertedSize?: number
+    compressionPercent?: string
+    originalType?: string
+    savedAs?: string
+  }
 }
 
 export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUpload, path = 'general', currentImage, currentImages, className, multiple = false }: ImageUploadProps) {
@@ -43,27 +52,39 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editingValue, setEditingValue] = useState<string>("")
-  const [uploadNotifications, setUploadNotifications] = useState<UploadError[]>([])
-  const [showNotifications, setShowNotifications] = useState(false)
+  const [uploadLogs, setUploadLogs] = useState<UploadLog[]>([])
+  const [showLogs, setShowLogs] = useState(false)
+  const [activeUploads, setActiveUploads] = useState<Map<string, string>>(new Map())
   const containerRef = useRef<HTMLDivElement>(null)
   const pasteAreaRef = useRef<HTMLDivElement>(null)
 
-  // Функции для управления уведомлениями
-  const addNotification = (notification: UploadError) => {
-    setUploadNotifications(prev => [...prev, notification])
-    setShowNotifications(true)
-    // Автоматически скрываем уведомления через 5 секунд
+  // Функции для управления логами
+  const addLog = (log: Omit<UploadLog, 'timestamp'>) => {
+    const newLog: UploadLog = {
+      ...log,
+      timestamp: new Date()
+    }
+    setUploadLogs(prev => [...prev, newLog])
+    setShowLogs(true)
+
+    // Автоматически скрываем старые логи (оставляем последние 20)
     setTimeout(() => {
-      setUploadNotifications(prev => prev.slice(1))
-      if (uploadNotifications.length <= 1) {
-        setShowNotifications(false)
-      }
-    }, 5000)
+      setUploadLogs(prev => prev.slice(-20))
+    }, 100)
   }
 
-  const clearNotifications = () => {
-    setUploadNotifications([])
-    setShowNotifications(false)
+  const clearLogs = () => {
+    setUploadLogs([])
+    setShowLogs(false)
+  }
+
+  const addProcessingLog = (fileName: string, message: string, uploadSessionId?: string) => {
+    addLog({
+      message,
+      fileName,
+      type: 'processing',
+      uploadSessionId
+    })
   }
 
   const onDrop = useCallback(
@@ -76,8 +97,8 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
       // Проверка размера и типа файлов
       for (const file of filesToProcess) {
         if (file.size > 10 * 1024 * 1024) {
-          addNotification({
-            message: `Файл ${file.name} слишком большой. Максимальный размер: 10MB`,
+          addLog({
+            message: `Файл слишком большой. Максимальный размер: 10MB`,
             fileName: file.name,
             type: 'error'
           })
@@ -92,8 +113,8 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
         const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'];
 
         if (!file.type.startsWith('image/') && !allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension || '')) {
-          addNotification({
-            message: `${file.name} не является файлом изображения (поддерживаются форматы: JPEG, PNG, WebP, HEIC, HEIF)`,
+          addLog({
+            message: `Не является файлом изображения (поддерживаются форматы: JPEG, PNG, WebP, HEIC, HEIF)`,
             fileName: file.name,
             type: 'error'
           })
@@ -118,13 +139,25 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           // Загружаем файлы параллельно
           filesToProcess.forEach(async (file, index) => {
             try {
-              const imagePath = await uploadImage(file, path, autoWebP)
+              addProcessingLog(file.name, `Начинается загрузка файла (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
 
-              // Добавляем уведомление об успешной загрузке
-              addNotification({
-                message: `Файл ${file.name} успешно загружен`,
+              const uploadResult = await uploadImage(file, path, autoWebP)
+              const imagePath = uploadResult.path
+
+              // Добавляем детальный лог об успешной загрузке
+              addLog({
+                message: uploadResult.message || 'Файл успешно загружен',
                 fileName: file.name,
-                type: 'success'
+                type: 'success',
+                uploadSessionId: uploadResult.uploadSessionId,
+                details: {
+                  originalSize: uploadResult.originalSize,
+                  originalType: uploadResult.originalType,
+                  savedAs: uploadResult.savedAs,
+                  compressionPercent: uploadResult.convertedToWebP ?
+                    ((uploadResult.originalSize! - (uploadResult.originalSize! * 0.3)) / uploadResult.originalSize! * 100).toFixed(1) + '%' :
+                    undefined
+                }
               })
 
               // Обновляем превью для этого конкретного файла
@@ -155,8 +188,8 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 }, 100)
               }
             } catch (error) {
-              addNotification({
-                message: `Ошибка загрузки ${file.name}: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
+              addLog({
+                message: `Ошибка загрузки: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
                 fileName: file.name,
                 type: 'error'
               })
@@ -176,12 +209,24 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           const file = filesToProcess[0]
 
           setUploading(true)
-          const imagePath = await uploadImage(file, path, autoWebP)
+          addProcessingLog(file.name, `Начинается загрузка файла (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
 
-          addNotification({
-            message: `Файл ${file.name} успешно загружен`,
+          const uploadResult = await uploadImage(file, path, autoWebP)
+          const imagePath = uploadResult.path
+
+          addLog({
+            message: uploadResult.message || 'Файл успешно загружен',
             fileName: file.name,
-            type: 'success'
+            type: 'success',
+            uploadSessionId: uploadResult.uploadSessionId,
+            details: {
+              originalSize: uploadResult.originalSize,
+              originalType: uploadResult.originalType,
+              savedAs: uploadResult.savedAs,
+              compressionPercent: uploadResult.convertedToWebP ?
+                ((uploadResult.originalSize! - (uploadResult.originalSize! * 0.3)) / uploadResult.originalSize! * 100).toFixed(1) + '%' :
+                undefined
+            }
           })
 
           setPreview(imagePath)
@@ -195,7 +240,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           setUploading(false)
         }
       } catch (error) {
-        addNotification({
+        addLog({
           message: `Ошибка загрузки изображения: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
           fileName: 'Неизвестный файл',
           type: 'error'
@@ -203,7 +248,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
         setUploading(false)
       }
     },
-    [onImageUploaded, onUpload, onMultipleUpload, path, multiple, previews, uploadingFiles, autoWebP],
+    [onImageUploaded, onUpload, onMultipleUpload, path, multiple, previews, uploadingFiles, autoWebP, addLog, addProcessingLog],
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -348,47 +393,74 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
 
   return (
     <div ref={containerRef} className={`${className} outline-none`}>
-      {/* Панель уведомлений */}
-      {showNotifications && uploadNotifications.length > 0 && (
+      {/* Панель логов загрузки */}
+      {showLogs && uploadLogs.length > 0 && (
         <div className="mb-4 space-y-2">
           <div className="flex justify-between items-center">
-            <h4 className="text-sm font-medium">Уведомления загрузки</h4>
+            <h4 className="text-sm font-medium">Логи загрузки изображений</h4>
             <Button
               size="sm"
               variant="ghost"
-              onClick={clearNotifications}
+              onClick={clearLogs}
               className="h-6 px-2 text-xs"
             >
               Очистить все
             </Button>
           </div>
-          <div className="max-h-32 overflow-y-auto space-y-1">
-            {uploadNotifications.map((notification, index) => (
+          <div className="max-h-48 overflow-y-auto space-y-1 bg-gray-50 rounded-lg p-3">
+            {uploadLogs.map((log, index) => (
               <div
                 key={index}
                 className={`p-2 rounded text-sm border ${
-                  notification.type === 'error'
+                  log.type === 'error'
                     ? 'bg-red-50 border-red-200 text-red-800'
-                    : notification.type === 'success'
+                    : log.type === 'success'
                     ? 'bg-green-50 border-green-200 text-green-800'
-                    : 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                    : log.type === 'processing'
+                    ? 'bg-blue-50 border-blue-200 text-blue-800'
+                    : log.type === 'warning'
+                    ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                    : 'bg-gray-50 border-gray-200 text-gray-800'
                 }`}
               >
                 <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium">{notification.fileName}</p>
-                    <p className="text-xs">{notification.message}</p>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-xs">{log.fileName}</p>
+                      {log.uploadSessionId && (
+                        <span className="text-xs px-1 py-0.5 bg-gray-200 rounded text-gray-600 font-mono">
+                          {log.uploadSessionId.slice(-6)}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-500">
+                        {log.timestamp.toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <p className="text-xs mt-1">{log.message}</p>
+                    {log.details && (
+                      <div className="text-xs mt-1 space-y-0.5 bg-white bg-opacity-50 rounded p-1">
+                        {log.details.originalSize && (
+                          <div>Размер: {(log.details.originalSize / 1024 / 1024).toFixed(2)} MB</div>
+                        )}
+                        {log.details.originalType && log.details.savedAs && (
+                          <div>Конвертация: {log.details.originalType} → {log.details.savedAs}</div>
+                        )}
+                        {log.details.compressionPercent && (
+                          <div>Сжатие: ~{log.details.compressionPercent}</div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => {
-                      setUploadNotifications(prev => prev.filter((_, i) => i !== index))
-                      if (uploadNotifications.length <= 1) {
-                        setShowNotifications(false)
+                      setUploadLogs(prev => prev.filter((_, i) => i !== index))
+                      if (uploadLogs.length <= 1) {
+                        setShowLogs(false)
                       }
                     }}
-                    className="h-4 w-4 p-0 ml-2 text-gray-500 hover:text-gray-700"
+                    className="h-4 w-4 p-0 ml-2 text-gray-500 hover:text-gray-700 flex-shrink-0"
                   >
                     <X className="h-3 w-3" />
                   </Button>
