@@ -28,6 +28,12 @@ interface ImageUploadProps {
   multiple?: boolean
 }
 
+interface UploadError {
+  message: string
+  fileName: string
+  type: 'error' | 'warning' | 'success'
+}
+
 export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUpload, path = 'general', currentImage, currentImages, className, multiple = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [autoWebP, setAutoWebP] = useState(true)
@@ -37,8 +43,28 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editingValue, setEditingValue] = useState<string>("")
+  const [uploadNotifications, setUploadNotifications] = useState<UploadError[]>([])
+  const [showNotifications, setShowNotifications] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const pasteAreaRef = useRef<HTMLDivElement>(null)
+
+  // Функции для управления уведомлениями
+  const addNotification = (notification: UploadError) => {
+    setUploadNotifications(prev => [...prev, notification])
+    setShowNotifications(true)
+    // Автоматически скрываем уведомления через 5 секунд
+    setTimeout(() => {
+      setUploadNotifications(prev => prev.slice(1))
+      if (uploadNotifications.length <= 1) {
+        setShowNotifications(false)
+      }
+    }, 5000)
+  }
+
+  const clearNotifications = () => {
+    setUploadNotifications([])
+    setShowNotifications(false)
+  }
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -50,7 +76,11 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
       // Проверка размера и типа файлов
       for (const file of filesToProcess) {
         if (file.size > 10 * 1024 * 1024) {
-          alert(`Файл ${file.name} слишком большой. Максимальный размер: 10MB`)
+          addNotification({
+            message: `Файл ${file.name} слишком большой. Максимальный размер: 10MB`,
+            fileName: file.name,
+            type: 'error'
+          })
           return
         }
 
@@ -62,7 +92,11 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
         const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'];
 
         if (!file.type.startsWith('image/') && !allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension || '')) {
-          alert(`${file.name} не является файлом изображения (поддерживаются форматы: JPEG, PNG, WebP, HEIC, HEIF)`)
+          addNotification({
+            message: `${file.name} не является файлом изображения (поддерживаются форматы: JPEG, PNG, WebP, HEIC, HEIF)`,
+            fileName: file.name,
+            type: 'error'
+          })
           return
         }
       }
@@ -85,6 +119,13 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           filesToProcess.forEach(async (file, index) => {
             try {
               const imagePath = await uploadImage(file, path, autoWebP)
+
+              // Добавляем уведомление об успешной загрузке
+              addNotification({
+                message: `Файл ${file.name} успешно загружен`,
+                fileName: file.name,
+                type: 'success'
+              })
 
               // Обновляем превью для этого конкретного файла
               setPreviews(current => {
@@ -114,7 +155,11 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 }, 100)
               }
             } catch (error) {
-              alert(`Ошибка загрузки ${file.name}: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
+              addNotification({
+                message: `Ошибка загрузки ${file.name}: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
+                fileName: file.name,
+                type: 'error'
+              })
 
               // Убираем неудачную загрузку из превью
               setPreviews(current => current.filter((_, i) => i !== previews.length + index))
@@ -133,6 +178,12 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           setUploading(true)
           const imagePath = await uploadImage(file, path, autoWebP)
 
+          addNotification({
+            message: `Файл ${file.name} успешно загружен`,
+            fileName: file.name,
+            type: 'success'
+          })
+
           setPreview(imagePath)
 
           if (onImageUploaded) {
@@ -144,7 +195,11 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           setUploading(false)
         }
       } catch (error) {
-        alert(`Ошибка загрузки изображения: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
+        addNotification({
+          message: `Ошибка загрузки изображения: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
+          fileName: 'Неизвестный файл',
+          type: 'error'
+        })
         setUploading(false)
       }
     },
@@ -293,6 +348,57 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
 
   return (
     <div ref={containerRef} className={`${className} outline-none`}>
+      {/* Панель уведомлений */}
+      {showNotifications && uploadNotifications.length > 0 && (
+        <div className="mb-4 space-y-2">
+          <div className="flex justify-between items-center">
+            <h4 className="text-sm font-medium">Уведомления загрузки</h4>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={clearNotifications}
+              className="h-6 px-2 text-xs"
+            >
+              Очистить все
+            </Button>
+          </div>
+          <div className="max-h-32 overflow-y-auto space-y-1">
+            {uploadNotifications.map((notification, index) => (
+              <div
+                key={index}
+                className={`p-2 rounded text-sm border ${
+                  notification.type === 'error'
+                    ? 'bg-red-50 border-red-200 text-red-800'
+                    : notification.type === 'success'
+                    ? 'bg-green-50 border-green-200 text-green-800'
+                    : 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium">{notification.fileName}</p>
+                    <p className="text-xs">{notification.message}</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setUploadNotifications(prev => prev.filter((_, i) => i !== index))
+                      if (uploadNotifications.length <= 1) {
+                        setShowNotifications(false)
+                      }
+                    }}
+                    className="h-4 w-4 p-0 ml-2 text-gray-500 hover:text-gray-700"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {multiple ? (
         <div className="space-y-4">
           {/* Область для множественной загрузки */}

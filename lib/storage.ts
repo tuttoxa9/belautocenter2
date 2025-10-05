@@ -51,10 +51,14 @@ export const uploadImage = async (file: File, path: string, autoWebP: boolean = 
     // Получаем ответ от воркера
     const result = await response.json();
 
-    if (!result.path) {
-      throw new Error('Сервер не вернул путь к файлу');
+    if (!result.success || !result.path) {
+      throw new Error(result.error || 'Сервер не вернул путь к файлу');
     }
 
+    // Логируем результат конвертации для отладки
+    if (result.convertedToWebP) {
+      console.log(`Image converted to WebP: ${result.originalType} -> ${result.savedAs}`);
+    }
 
     // Возвращаем только путь к файлу, который будет сохранен в Firestore
     return result.path;
@@ -87,14 +91,15 @@ export const deleteImage = async (path: string): Promise<void> => {
     }
 
     // Отправляем POST-запрос на эндпоинт удаления
-    const response = await fetch(`${IMAGE_HOST}/delete`, {
+    const response = await fetch(`${IMAGE_HOST}/delete-image`, {
       method: 'POST',
       headers,
       body: JSON.stringify({ path }),
     });
 
     if (!response.ok) {
-      throw new Error(`Ошибка удаления: ${response.status} ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({ error: 'Неизвестная ошибка сервера' }));
+      throw new Error(`Ошибка удаления: ${errorData.error || response.statusText}`);
     }
 
   } catch (error) {
