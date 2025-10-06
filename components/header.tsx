@@ -239,7 +239,7 @@ export default function Header() {
               key={item.name}
               href={item.href}
               prefetch={true}
-              className={`text-sm font-bold tracking-wide transition-colors hover:text-blue-600 ${
+              className={`text-sm font-bold tracking-wide transition-colors ${
                 pathname === item.href
                   ? "bg-blue-600 text-white px-3 py-2 rounded-md"
                   : "text-gray-700"
