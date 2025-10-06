@@ -10,6 +10,12 @@ export interface UploadResult {
   originalSize?: number;
   savedAs?: string;
   message?: string;
+  conversionResult?: {
+    status: 'SUCCESS' | 'FAILED' | 'SKIPPED';
+    reason: string;
+    originalSize: number;
+    convertedSize: number;
+  };
 }
 
 /**
@@ -65,20 +71,41 @@ export const uploadImage = async (file: File, path: string, autoWebP: boolean = 
       throw new Error(result.error || 'Сервер не вернул путь к файлу');
     }
 
+    // Проверяем информацию о конвертации из нового формата
+    const conversionResult = result.conversionResult;
+    const wasConverted = conversionResult?.status === 'SUCCESS';
+
     // Логируем результат конвертации для отладки
-    if (result.convertedToWebP) {
-      console.log(`Image converted to WebP: ${result.originalType} -> ${result.savedAs}`);
+    if (conversionResult) {
+      console.log(`Конвертация ${conversionResult.status}: ${conversionResult.reason}`);
+      if (wasConverted) {
+        console.log(`Image converted to WebP: ${result.originalType} -> ${result.savedAs}`);
+      }
+    }
+
+    // Создаем сообщение для пользователя на основе результата конвертации
+    let userMessage = 'Файл успешно загружен';
+    if (conversionResult) {
+      if (conversionResult.status === 'SUCCESS') {
+        const compressionPercent = ((conversionResult.originalSize - conversionResult.convertedSize) / conversionResult.originalSize * 100).toFixed(1);
+        userMessage = `Файл загружен и оптимизирован в WebP (сжатие ${compressionPercent}%)`;
+      } else if (conversionResult.status === 'FAILED') {
+        userMessage = `Файл загружен, но конвертация в WebP не удалась: ${conversionResult.reason}`;
+      } else {
+        userMessage = `Файл загружен без конвертации: ${conversionResult.reason}`;
+      }
     }
 
     // Возвращаем расширенную информацию о загрузке
     return {
       path: result.path,
       uploadSessionId: result.uploadSessionId,
-      convertedToWebP: result.convertedToWebP,
+      convertedToWebP: wasConverted,
       originalType: result.originalType,
-      originalSize: result.originalSize,
+      originalSize: conversionResult?.originalSize || 0,
       savedAs: result.savedAs,
-      message: result.message
+      message: userMessage,
+      conversionResult: conversionResult
     };
   } catch (error) {
     if (error instanceof Error) {

@@ -148,17 +148,28 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               addLog({
                 message: uploadResult.message || 'Файл успешно загружен',
                 fileName: file.name,
-                type: 'success',
+                type: uploadResult.conversionResult?.status === 'FAILED' ? 'warning' : 'success',
                 uploadSessionId: uploadResult.uploadSessionId,
                 details: {
-                  originalSize: uploadResult.originalSize,
+                  originalSize: uploadResult.conversionResult?.originalSize || uploadResult.originalSize,
                   originalType: uploadResult.originalType,
                   savedAs: uploadResult.savedAs,
-                  compressionPercent: uploadResult.convertedToWebP ?
-                    ((uploadResult.originalSize! - (uploadResult.originalSize! * 0.3)) / uploadResult.originalSize! * 100).toFixed(1) + '%' :
+                  compressionPercent: uploadResult.conversionResult?.status === 'SUCCESS' && uploadResult.conversionResult.originalSize && uploadResult.conversionResult.convertedSize ?
+                    ((uploadResult.conversionResult.originalSize - uploadResult.conversionResult.convertedSize) / uploadResult.conversionResult.originalSize * 100).toFixed(1) + '%' :
                     undefined
                 }
               })
+
+              // Добавляем дополнительную информацию о конвертации, если есть
+              if (uploadResult.conversionResult) {
+                addLog({
+                  message: `Результат конвертации: ${uploadResult.conversionResult.reason}`,
+                  fileName: file.name,
+                  type: uploadResult.conversionResult.status === 'SUCCESS' ? 'info' :
+                       uploadResult.conversionResult.status === 'FAILED' ? 'warning' : 'info',
+                  uploadSessionId: uploadResult.uploadSessionId
+                })
+              }
 
               // Обновляем превью для этого конкретного файла
               setPreviews(current => {
@@ -217,17 +228,28 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           addLog({
             message: uploadResult.message || 'Файл успешно загружен',
             fileName: file.name,
-            type: 'success',
+            type: uploadResult.conversionResult?.status === 'FAILED' ? 'warning' : 'success',
             uploadSessionId: uploadResult.uploadSessionId,
             details: {
-              originalSize: uploadResult.originalSize,
+              originalSize: uploadResult.conversionResult?.originalSize || uploadResult.originalSize,
               originalType: uploadResult.originalType,
               savedAs: uploadResult.savedAs,
-              compressionPercent: uploadResult.convertedToWebP ?
-                ((uploadResult.originalSize! - (uploadResult.originalSize! * 0.3)) / uploadResult.originalSize! * 100).toFixed(1) + '%' :
+              compressionPercent: uploadResult.conversionResult?.status === 'SUCCESS' && uploadResult.conversionResult.originalSize && uploadResult.conversionResult.convertedSize ?
+                ((uploadResult.conversionResult.originalSize - uploadResult.conversionResult.convertedSize) / uploadResult.conversionResult.originalSize * 100).toFixed(1) + '%' :
                 undefined
             }
           })
+
+          // Добавляем дополнительную информацию о конвертации, если есть
+          if (uploadResult.conversionResult) {
+            addLog({
+              message: `Результат конвертации: ${uploadResult.conversionResult.reason}`,
+              fileName: file.name,
+              type: uploadResult.conversionResult.status === 'SUCCESS' ? 'info' :
+                   uploadResult.conversionResult.status === 'FAILED' ? 'warning' : 'info',
+              uploadSessionId: uploadResult.uploadSessionId
+            })
+          }
 
           setPreview(imagePath)
 
@@ -440,13 +462,13 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                     {log.details && (
                       <div className="text-xs mt-1 space-y-0.5 bg-white bg-opacity-50 rounded p-1">
                         {log.details.originalSize && (
-                          <div>Размер: {(log.details.originalSize / 1024 / 1024).toFixed(2)} MB</div>
+                          <div>Исходный размер: {(log.details.originalSize / 1024 / 1024).toFixed(2)} MB</div>
                         )}
                         {log.details.originalType && log.details.savedAs && (
                           <div>Конвертация: {log.details.originalType} → {log.details.savedAs}</div>
                         )}
                         {log.details.compressionPercent && (
-                          <div>Сжатие: ~{log.details.compressionPercent}</div>
+                          <div>Экономия места: {log.details.compressionPercent}</div>
                         )}
                       </div>
                     )}
