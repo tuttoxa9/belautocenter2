@@ -9,7 +9,7 @@ import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Car, Code, Search } from "lucide-react"
@@ -23,7 +23,8 @@ export default function AdminCars() {
   const [cars, setCars] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingCar, setEditingCar] = useState(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState("basic")
   const [jsonInput, setJsonInput] = useState("")
   const [jsonError, setJsonError] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
@@ -114,7 +115,7 @@ export default function AdminCars() {
       localStorage.setItem('cars_updated', Date.now().toString())
       window.dispatchEvent(new CustomEvent('carsUpdated'))
 
-      setIsDialogOpen(false)
+      setIsSheetOpen(false)
       setEditingCar(null)
       resetForm()
       loadCars()
@@ -140,7 +141,7 @@ export default function AdminCars() {
       tiktok_url: car.tiktok_url || "",
       youtube_url: car.youtube_url || "",
     })
-    setIsDialogOpen(true)
+    setIsSheetOpen(true)
   }
 
   const handleDelete = async (carId) => {
@@ -191,6 +192,7 @@ export default function AdminCars() {
     })
     setJsonInput("")
     setJsonError("")
+    setActiveTab("basic")
   }
 
   const processJsonInput = () => {
@@ -343,62 +345,66 @@ export default function AdminCars() {
               : `Показано ${filteredCars.length} из ${cars.length} автомобилей`}
           </div>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetTrigger asChild>
             <Button
               onClick={() => {
                 resetForm()
                 setEditingCar(null)
+                setActiveTab("basic")
               }}
               className="w-full sm:w-auto"
             >
               <Plus className="h-4 w-4 mr-2" />
               <span className="sm:inline">Добавить автомобиль</span>
             </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4 md:mx-auto">
-            <DialogHeader>
-              <DialogTitle className="text-lg md:text-xl">{editingCar ? "Редактировать" : "Добавить"} автомобиль</DialogTitle>
-            </DialogHeader>
-            <Tabs defaultValue="form" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="form">Форма</TabsTrigger>
-                <TabsTrigger value="json">JSON</TabsTrigger>
-              </TabsList>
-              <TabsContent value="json" className="mt-2 space-y-4">
-                <div>
-                  <Label className="text-sm mb-2 block">Вставьте JSON данные автомобиля</Label>
-                  <Textarea
-                    value={jsonInput}
-                    onChange={(e) => setJsonInput(e.target.value)}
-                    className="font-mono text-xs h-64"
-                    placeholder='{\n  "make": "BMW",\n  "model": "M5 Competition",\n  "year": 2020,\n  "price": 95000,\n  "mileage": 45000,\n  "bodyType": "Седан",\n  "color": "Синий металлик",\n  "engineVolume": 4.4,\n  "fuelType": "Бензин",\n  "transmission": "Автомат",\n  "driveTrain": "Полный",\n  "isAvailable": true,\n  "imageUrls": ["cars/example1.jpg", "cars/example2.jpg"],\n  "description": "Текст описания",\n  "features": ["Адаптивная подвеска", "Карбоновые тормоза"],\n  "specifications": {\n    "Двигатель": "4.4 V8 Twin-Turbo",\n    "Мощность": "625",\n    "Разгон 0-100": "3.3"\n  }\n}'
-                  />
-                  {jsonError && (
-                    <div className="text-sm text-red-600 mt-2">{jsonError}</div>
-                  )}
-                  <div className="flex gap-2 mt-3">
-                    <Button
-                      type="button"
-                      onClick={processJsonInput}
-                      className="flex-1"
-                    >
-                      <Code className="h-4 w-4 mr-2" />
-                      Применить JSON
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setJsonInput("")}
-                      className="flex-1"
-                    >
-                      Очистить
-                    </Button>
-                  </div>
-                </div>
-              </TabsContent>
-              <TabsContent value="form" className="mt-2">
-                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+          </SheetTrigger>
+          <SheetContent side="right" className="admin-sheet-wide overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle className="text-lg md:text-xl">{editingCar ? "Редактировать" : "Добавить"} автомобиль</SheetTitle>
+            </SheetHeader>
+
+            {/* Навигация по разделам */}
+            <div className="flex gap-1 mb-6 mt-4 bg-gray-100 p-1 rounded-lg">
+              <button
+                type="button"
+                onClick={() => setActiveTab("basic")}
+                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                  activeTab === "basic"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Основная информация
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("images")}
+                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                  activeTab === "images"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Изображения
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("json")}
+                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                  activeTab === "json"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                JSON
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Раздел: Основная информация */}
+              {activeTab === "basic" && (
+                <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <Label className="text-sm">Марка</Label>
@@ -596,167 +602,247 @@ export default function AdminCars() {
                 </Tabs>
               </div>
 
-              <div>
-                <Label className="text-sm">Фотографии</Label>
-                <ImageUpload
-                  multiple={true}
-                  currentImages={carForm.imageUrls.filter(url => url.trim() !== "")}
-                  path="cars"
-                  onMultipleUpload={(allUrls) => {
-                    // allUrls уже содержит все изображения (текущие + новые)
-                    setCarForm({ ...carForm, imageUrls: allUrls.length > 0 ? allUrls : [""] })
-                  }}
-                  className="w-full"
-                />
-              </div>
-
-              <div>
-                <Label className="text-sm">Характеристики</Label>
-                <div className="space-y-2">
-                  {Object.entries(carForm.specifications).map(([key, value], index) => (
-                    <div key={index} className="flex flex-col sm:flex-row gap-2">
-                      <Input
-                        placeholder="Название"
-                        value={key}
-                        className="text-sm"
-                        onChange={(e) => {
-                          const newSpecs = { ...carForm.specifications }
-                          delete newSpecs[key]
-                          newSpecs[e.target.value] = value
-                          setCarForm({ ...carForm, specifications: newSpecs })
-                        }}
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="isAvailable"
+                        checked={carForm.isAvailable}
+                        onChange={(e) => setCarForm({ ...carForm, isAvailable: e.target.checked })}
                       />
-                      <Input
-                        placeholder="Значение"
-                        value={value}
-                        className="text-sm"
-                        onChange={(e) => {
+                      <Label htmlFor="isAvailable">В наличии</Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="showOnHomepage"
+                        checked={carForm.showOnHomepage}
+                        onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
+                      />
+                      <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Раздел: Изображения */}
+              {activeTab === "images" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm">Фотографии автомобиля</Label>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Загрузите качественные фотографии автомобиля. Первое изображение будет использоваться как главное.
+                    </p>
+                    <ImageUpload
+                      multiple={true}
+                      currentImages={carForm.imageUrls.filter(url => url.trim() !== "")}
+                      path="cars"
+                      onMultipleUpload={(allUrls) => {
+                        setCarForm({ ...carForm, imageUrls: allUrls.length > 0 ? allUrls : [""] })
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Раздел: JSON */}
+              {activeTab === "json" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm mb-2 block">Импорт данных из JSON</Label>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Вставьте JSON с данными автомобиля для быстрого заполнения формы. Это перезапишет текущие данные.
+                    </p>
+                    <Textarea
+                      value={jsonInput}
+                      onChange={(e) => setJsonInput(e.target.value)}
+                      className="font-mono text-xs h-64"
+                      placeholder='{\n  "make": "BMW",\n  "model": "M5 Competition",\n  "year": 2020,\n  "price": 95000,\n  "mileage": 45000,\n  "bodyType": "Седан",\n  "color": "Синий металлик",\n  "engineVolume": 4.4,\n  "fuelType": "Бензин",\n  "transmission": "Автомат",\n  "driveTrain": "Полный",\n  "isAvailable": true,\n  "imageUrls": ["cars/example1.jpg", "cars/example2.jpg"],\n  "description": "Текст описания",\n  "features": ["Адаптивная подвеска", "Карбоновые тормоза"],\n  "specifications": {\n    "Двигатель": "4.4 V8 Twin-Turbo",\n    "Мощность": "625",\n    "Разгон 0-100": "3.3"\n  }\n}'
+                    />
+                    {jsonError && (
+                      <div className="text-sm text-red-600 mt-2">{jsonError}</div>
+                    )}
+                    <div className="flex gap-2 mt-3">
+                      <Button
+                        type="button"
+                        onClick={processJsonInput}
+                        className="flex-1"
+                      >
+                        <Code className="h-4 w-4 mr-2" />
+                        Применить JSON
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setJsonInput("")}
+                        className="flex-1"
+                      >
+                        Очистить
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Предпросмотр текущих данных формы */}
+                  <div>
+                    <Label className="text-sm mb-2 block">Предпросмотр данных формы</Label>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Просмотр текущих данных в JSON формате
+                    </p>
+                    <Textarea
+                      value={JSON.stringify({
+                        make: carForm.make,
+                        model: carForm.model,
+                        year: Number(carForm.year),
+                        price: Number(carForm.price),
+                        mileage: Number(carForm.mileage),
+                        engineVolume: carForm.fuelType === "Электро" ? 0 : parseFloat(carForm.engineVolume),
+                        fuelType: carForm.fuelType,
+                        transmission: carForm.transmission,
+                        driveTrain: carForm.driveTrain,
+                        bodyType: carForm.bodyType,
+                        color: carForm.color,
+                        description: carForm.description,
+                        imageUrls: carForm.imageUrls.filter(url => url.trim() !== ""),
+                        isAvailable: carForm.isAvailable,
+                        showOnHomepage: carForm.showOnHomepage,
+                        specifications: carForm.specifications,
+                        features: carForm.features,
+                        tiktok_url: carForm.tiktok_url,
+                        youtube_url: carForm.youtube_url
+                      }, null, 2)}
+                      className="font-mono text-xs h-64"
+                      readOnly
+                    />
+                  </div>
+                </div>
+              )}
+
+                  <div>
+                    <Label className="text-sm">Характеристики</Label>
+                    <div className="space-y-2">
+                      {Object.entries(carForm.specifications).map(([key, value], index) => (
+                        <div key={index} className="flex flex-col sm:flex-row gap-2">
+                          <Input
+                            placeholder="Название"
+                            value={key}
+                            className="text-sm"
+                            onChange={(e) => {
+                              const newSpecs = { ...carForm.specifications }
+                              delete newSpecs[key]
+                              newSpecs[e.target.value] = value
+                              setCarForm({ ...carForm, specifications: newSpecs })
+                            }}
+                          />
+                          <Input
+                            placeholder="Значение"
+                            value={value}
+                            className="text-sm"
+                            onChange={(e) => {
+                              setCarForm({
+                                ...carForm,
+                                specifications: {
+                                  ...carForm.specifications,
+                                  [key]: e.target.value
+                                }
+                              })
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-full sm:w-auto"
+                            onClick={() => {
+                              const newSpecs = { ...carForm.specifications }
+                              delete newSpecs[key]
+                              setCarForm({ ...carForm, specifications: newSpecs })
+                            }}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="text-xs w-full sm:w-auto"
+                        onClick={() => {
                           setCarForm({
                             ...carForm,
                             specifications: {
                               ...carForm.specifications,
-                              [key]: e.target.value
+                              "": ""
                             }
                           })
                         }}
-                      />
+                      >
+                        <Plus className="h-3 w-3 mr-2" />
+                        Добавить характеристику
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm">Комплектация</Label>
+                    <div className="space-y-2">
+                      {carForm.features.map((feature, index) => (
+                        <div key={index} className="flex gap-2">
+                          <Input
+                            placeholder="Особенность"
+                            value={feature}
+                            className="text-sm"
+                            onChange={(e) => {
+                              const newFeatures = [...carForm.features]
+                              newFeatures[index] = e.target.value
+                              setCarForm({ ...carForm, features: newFeatures })
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newFeatures = carForm.features.filter((_, i) => i !== index)
+                              setCarForm({ ...carForm, features: newFeatures })
+                            }}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
+                        className="text-xs w-full sm:w-auto"
                         onClick={() => {
-                          const newSpecs = { ...carForm.specifications }
-                          delete newSpecs[key]
-                          setCarForm({ ...carForm, specifications: newSpecs })
+                          setCarForm({
+                            ...carForm,
+                            features: [...carForm.features, ""]
+                          })
                         }}
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Plus className="h-3 w-3 mr-2" />
+                        Добавить особенность
                       </Button>
                     </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="text-xs w-full sm:w-auto"
-                    onClick={() => {
-                      setCarForm({
-                        ...carForm,
-                        specifications: {
-                          ...carForm.specifications,
-                          "": ""
-                        }
-                      })
-                    }}
-                  >
-                    <Plus className="h-3 w-3 mr-2" />
-                    Добавить характеристику
-                  </Button>
-                </div>
-              </div>
+                  </div>
 
-              <div>
-                <Label className="text-sm">Комплектация</Label>
-                <div className="space-y-2">
-                  {carForm.features.map((feature, index) => (
-                    <div key={index} className="flex gap-2">
-                      <Input
-                        placeholder="Особенность"
-                        value={feature}
-                        className="text-sm"
-                        onChange={(e) => {
-                          const newFeatures = [...carForm.features]
-                          newFeatures[index] = e.target.value
-                          setCarForm({ ...carForm, features: newFeatures })
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const newFeatures = carForm.features.filter((_, i) => i !== index)
-                          setCarForm({ ...carForm, features: newFeatures })
-                        }}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="text-xs w-full sm:w-auto"
-                    onClick={() => {
-                      setCarForm({
-                        ...carForm,
-                        features: [...carForm.features, ""]
-                      })
-                    }}
-                  >
-                    <Plus className="h-3 w-3 mr-2" />
-                    Добавить особенность
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="isAvailable"
-                    checked={carForm.isAvailable}
-                    onChange={(e) => setCarForm({ ...carForm, isAvailable: e.target.checked })}
-                  />
-                  <Label htmlFor="isAvailable">В наличии</Label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="showOnHomepage"
-                    checked={carForm.showOnHomepage}
-                    onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
-                  />
-                  <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+              {/* Кнопки управления */}
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t">
                 <Button type="submit" className="flex-1 text-sm" loading={isSaving}>
-                  {editingCar ? "Сохранить" : "Добавить"}
+                  {editingCar ? "Сохранить изменения" : "Добавить автомобиль"}
                 </Button>
-                <Button type="button" variant="outline" className="text-sm" onClick={() => setIsDialogOpen(false)}>
+                <Button type="button" variant="outline" className="text-sm" onClick={() => setIsSheetOpen(false)}>
                   Отмена
                 </Button>
               </div>
             </form>
-              </TabsContent>
-            </Tabs>
-          </DialogContent>
-        </Dialog>
+          </SheetContent>
+        </Sheet>
       </div>
 
       {/* Статистика автомобилей */}
@@ -855,7 +941,10 @@ export default function AdminCars() {
                 <p>Пробег: {car.mileage?.toLocaleString()} км</p>
               </div>
               <div className="flex space-x-2 mt-3 md:mt-4">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(car)} className="flex-1">
+                <Button size="sm" variant="outline" onClick={() => {
+                  handleEdit(car)
+                  setActiveTab("basic")
+                }} className="flex-1">
                   <Edit className="h-3 w-3 md:h-4 md:w-4 mr-1" />
                   <span className="text-xs">Изменить</span>
                 </Button>

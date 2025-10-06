@@ -419,4 +419,24 @@
       background: rgba(0, 0, 0, 0.8);
     }
   }
+
+  /* Custom Sheet styles for admin panel */
+  .admin-sheet-wide {
+    width: 100% !important;
+    max-width: 900px !important;
+  }
+
+  @media (min-width: 768px) {
+    .admin-sheet-wide {
+      width: 80vw !important;
+      max-width: 900px !important;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .admin-sheet-wide {
+      width: 60vw !important;
+      max-width: 900px !important;
+    }
+  }
 }
