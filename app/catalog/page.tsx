@@ -43,7 +43,10 @@ async function getFilterData() {
 
 // Основная функция для получения отфильтрованных и отсортированных автомобилей
 async function getCars(searchParams: { [key: string]: string | string[] | undefined }) {
-  if (!db) return { cars: [], totalCars: 0, totalPages: 0 }
+  if (!db) {
+    // Если база данных не инициализирована, возвращаем ошибку
+    return { cars: [], totalCars: 0, totalPages: 0, error: "Database connection failed on server. Check environment variables." }
+  }
 
   try {
     let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('cars')
@@ -131,6 +134,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: { [k
         totalCars={carsData.totalCars}
         totalPages={carsData.totalPages}
         searchParams={searchParams}
+        error={carsData.error}
       />
     </Suspense>
   )

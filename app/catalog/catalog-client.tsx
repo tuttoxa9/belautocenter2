@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import CarCard from "@/components/car-card"
-import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw, Loader2 } from "lucide-react"
+import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw, Loader2, AlertTriangle } from "lucide-react"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import type { Car } from '@/types/car'
 
@@ -20,6 +20,7 @@ interface CatalogClientProps {
   totalCars: number;
   totalPages: number;
   searchParams: { [key: string]: string | string[] | undefined };
+  error?: string;
 }
 
 // Компонент для пагинации
@@ -79,15 +80,15 @@ const Pagination = ({ totalPages, currentPage, createPageUrl }: { totalPages: nu
 export default function CatalogClient({
   initialCars,
   availableMakes,
-  availableModels: allModels, // Переименовываем для ясности
+  availableModels: allModels,
   totalCars,
   totalPages,
   searchParams,
+  error,
 }: CatalogClientProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
-  // Фильтры теперь управляются локальным состоянием, синхронизированным с URL
   const [filters, setFilters] = useState({
     priceFrom: searchParams.priceFrom as string || "",
     priceTo: searchParams.priceTo as string || "",
@@ -102,22 +103,17 @@ export default function CatalogClient({
   const [sortBy, setSortBy] = useState(searchParams.sortBy as string || "date-desc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-  // Динамически вычисляем доступные модели на клиенте для лучшего UX
   const [availableModels, setAvailableModels] = useState<string[]>(allModels)
 
   useEffect(() => {
     if (filters.make === "all") {
       setAvailableModels(allModels)
     } else {
-      // Это потребует запроса к серверу, если мы хотим точные модели.
-      // Для простоты пока оставим так, но в идеале это тоже серверная логика.
-      // В данном рефакторинге это не критично, так как сервер все равно вернет правильные авто.
       const modelsForMake = allModels.filter(model => model.toLowerCase().startsWith(filters.make.toLowerCase()))
       setAvailableModels(modelsForMake)
     }
   }, [filters.make, allModels])
 
-  // Функция для создания нового URL с обновленными параметрами
   const updateUrl = (newParams: Record<string, string>) => {
     const params = new URLSearchParams(window.location.search)
     Object.entries(newParams).forEach(([key, value]) => {
@@ -127,7 +123,6 @@ export default function CatalogClient({
         params.set(key, value)
       }
     })
-    // Сбрасываем страницу при изменении фильтров
     params.delete('page')
     startTransition(() => {
       router.push(`/catalog?${params.toString()}`, { scroll: false })
@@ -136,7 +131,6 @@ export default function CatalogClient({
 
   const handleFilterChange = <K extends keyof typeof filters>(key: K, value: (typeof filters)[K]) => {
     const newFilters = { ...filters, [key]: value };
-    // Если изменили марку, сбрасываем модель
     if (key === 'make') {
       newFilters.model = 'all';
     }
@@ -145,7 +139,7 @@ export default function CatalogClient({
 
   const applyFilters = () => {
     updateUrl(filters)
-    setIsFilterOpen(false) // Закрываем мобильные фильтры после применения
+    setIsFilterOpen(false)
   }
 
   const handleSortChange = (value: string) => {
@@ -225,7 +219,6 @@ export default function CatalogClient({
         {hasActiveFilters && <Button onClick={resetFilters} variant="ghost" size="sm"><X className="h-4 w-4" /></Button>}
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Поля фильтров идентичны мобильным, но с вызовом applyFilters по кнопке */}
         <div className="space-y-2">
           <Label>Марка</Label>
           <Select value={filters.make} onValueChange={(v) => handleFilterChange('make', v)}>
@@ -295,7 +288,14 @@ export default function CatalogClient({
             </div>
 
             <div className={`transition-opacity duration-300 ${isPending ? 'opacity-50' : 'opacity-100'}`}>
-              {initialCars.length > 0 ? (
+              {error ? (
+                <div className="text-center py-16 bg-red-50 border border-red-200 rounded-lg">
+                  <AlertTriangle className="mx-auto h-12 w-12 text-red-400" />
+                  <h3 className="mt-2 text-xl font-semibold text-red-600">Ошибка на сервере</h3>
+                  <p className="mt-2 text-gray-600 font-mono bg-red-100 inline-block px-2 py-1 rounded">{error}</p>
+                  <p className="mt-4 text-gray-500">Это означает, что сервер не смог подключиться к базе данных. <br /> Пожалуйста, проверьте переменные окружения для Firebase Admin SDK в настройках проекта Vercel.</p>
+                </div>
+              ) : initialCars.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {initialCars.map(car => <CarCard key={car.id} car={car} />)}
                 </div>
@@ -313,11 +313,13 @@ export default function CatalogClient({
               )}
             </div>
 
-            <Pagination
-              totalPages={totalPages}
-              currentPage={Number(searchParams.page || '1')}
-              createPageUrl={createPageUrl}
-            />
+            {!error && (
+              <Pagination
+                totalPages={totalPages}
+                currentPage={Number(searchParams.page || '1')}
+                createPageUrl={createPageUrl}
+              />
+            )}
           </div>
         </div>
       </div>
