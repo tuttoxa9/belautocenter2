@@ -210,6 +210,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [loadingBanks, setLoadingBanks] = useState(true)
   const [leasingCompanies, setLeasingCompanies] = useState<any[]>([])
   const [loadingLeasing, setLoadingLeasing] = useState(true)
+  const [creditAmount, setCreditAmount] = useState([0]);
+  const [downPayment, setDownPayment] = useState([0]);
+  const [selectedBank, setSelectedBank] = useState<PartnerBank | null>(null)
+  const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null)
   // Полноэкранный просмотр фотографий
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
