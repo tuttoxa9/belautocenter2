@@ -72,9 +72,19 @@ export default function AdminCredit() {
     try {
       const creditDoc = await getDoc(doc(db, "pages", "credit"))
       if (creditDoc.exists()) {
-        setCreditData(creditDoc.data())
+        const data = creditDoc.data()
+        setCreditData({
+          title: data.title || "Автокредит на выгодных условиях",
+          subtitle: data.subtitle || "Получите кредит на автомобиль мечты уже сегодня",
+          description:
+            data.description ||
+            "Мы работаем с ведущими банками Беларуси и поможем вам получить автокредит на самых выгодных условиях.",
+          benefits: data.benefits || [],
+          partners: data.partners || [],
+        })
       }
     } catch (error) {
+      console.error("Ошибка загрузки данных:", error)
     } finally {
       setLoading(false)
     }
@@ -90,7 +100,7 @@ export default function AdminCredit() {
     setCreditData({
       ...creditData,
       partners: [
-        ...creditData.partners,
+        ...(creditData.partners || []),
         {
           name: "",
           logoUrl: "",
@@ -102,13 +112,13 @@ export default function AdminCredit() {
   }
 
   const updatePartner = (index: number, field: string, value: any) => {
-    const newPartners = [...creditData.partners]
+    const newPartners = [...(creditData.partners || [])]
     newPartners[index] = { ...newPartners[index], [field]: value }
     setCreditData({ ...creditData, partners: newPartners })
   }
 
   const removePartner = (index: number) => {
-    const newPartners = creditData.partners.filter((_, i) => i !== index)
+    const newPartners = (creditData.partners || []).filter((_, i) => i !== index)
     setCreditData({ ...creditData, partners: newPartners })
   }
 

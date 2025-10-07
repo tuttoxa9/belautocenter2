@@ -97,19 +97,42 @@ export default function CreditPage() {
 
   const loadSettings = async () => {
     try {
-      const data = await firestoreApi.getDocument("pages", "credit")
+      const data = (await firestoreApi.getDocument(
+        "pages",
+        "credit"
+      )) as CreditPageSettings | null
+
       if (data) {
-        setSettings(data as CreditPageSettings)
+        setSettings({
+          title: data.title || "Автокредит на выгодных условиях",
+          subtitle:
+            data.subtitle || "Получите кредит на автомобиль мечты уже сегодня",
+          description:
+            data.description ||
+            "Мы работаем с ведущими банками Беларуси и поможем вам получить автокредит на самых выгодных условиях.",
+          benefits: data.benefits || [],
+          partners: data.partners || [],
+        })
       } else {
         setSettings({
           title: "Автокредит на выгодных условиях",
           subtitle: "Получите кредит на автомобиль мечты уже сегодня",
-          description: "Мы работаем с ведущими банками Беларуси и поможем вам получить автокредит на самых выгодных условиях.",
+          description:
+            "Мы работаем с ведущими банками Беларуси и поможем вам получить автокредит на самых выгодных условиях.",
           benefits: [],
-          partners: []
+          partners: [],
         })
       }
     } catch (error) {
+      console.error("Ошибка загрузки настроек страницы кредита:", error)
+      setSettings({
+        title: "Автокредит на выгодных условиях",
+        subtitle: "Получите кредит на автомобиль мечты уже сегодня",
+        description:
+          "Мы работаем с ведущими банками Беларуси и поможем вам получить автокредит на самых выгодных условиях.",
+        benefits: [],
+        partners: [],
+      })
     } finally {
       setLoading(false)
     }
