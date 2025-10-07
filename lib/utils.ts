@@ -111,3 +111,32 @@ export function sanitizePath(str: string): string {
     .replace(/-+/g, '-')      // Заменяем множественные дефисы на один
     .trim();                  // Удаляем пробелы в начале и конце строки
 }
+
+export function formatPrice(price: number, currency: 'USD' | 'BYN') {
+  const locale = currency === 'BYN' ? 'ru-BY' : 'en-US';
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 0,
+  }).format(price);
+}
+
+export function formatPhoneNumber(value: string): string {
+  // Удаляем все нецифровые символы кроме +
+  let numbers = value.replace(/[^\d+]/g, "");
+
+  // Если нет + в начале, добавляем +375
+  if (!numbers.startsWith("+375")) {
+    numbers = "+375";
+  }
+
+  // Берем только +375 и следующие 9 цифр максимум
+  const prefix = "+375";
+  const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9);
+
+  return prefix + afterPrefix;
+}
+
+export function isPhoneValid(phone: string): boolean {
+  return phone.length === 13 && phone.startsWith("+375");
+}
