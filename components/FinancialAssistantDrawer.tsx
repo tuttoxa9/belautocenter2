@@ -196,108 +196,108 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
 
   const renderContent = () => (
     <div className="flex flex-col h-full bg-white">
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {car && (
-          <div className="flex items-center space-x-4 p-3 bg-slate-50 rounded-xl border">
-            <Image src={carImage} alt={carName} width={80} height={60} className="rounded-lg object-cover" />
+          <div className="flex items-center space-x-3 p-2 bg-slate-50 rounded-lg border">
+            <Image src={carImage} alt={carName} width={64} height={48} className="rounded-md object-cover" />
             <div>
-              <p className="font-bold text-slate-900">{carName}</p>
-              <p className="text-slate-800 font-semibold">{new Intl.NumberFormat("ru-RU").format(car.price)} $</p>
+              <p className="font-bold text-sm text-slate-900">{carName}</p>
+              <p className="text-slate-800 font-semibold text-sm">{new Intl.NumberFormat("ru-RU").format(car.price)} $</p>
             </div>
           </div>
         )}
-        <div className="flex items-center justify-center space-x-1 bg-slate-100 rounded-full p-1">
+        <div className="flex items-center justify-center space-x-1 bg-slate-100 rounded-full p-0.5">
           {(['credit', 'leasing'] as const).map(type => (
             <button key={type} onClick={() => setFinanceType(type)}
-              className={`flex-1 text-sm font-semibold py-2 px-4 rounded-full transition-all ${financeType === type ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600'}`}>
+              className={`flex-1 text-xs font-semibold py-1.5 px-3 rounded-full transition-all ${financeType === type ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600'}`}>
               {type === 'credit' ? 'Кредит' : 'Лизинг'}
             </button>
           ))}
         </div>
-        <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border">
+        <div className="flex items-center space-x-2 p-2 bg-slate-50 rounded-lg border">
           <Checkbox id="currency-switch-drawer" checked={isBelarusianRubles} onCheckedChange={handleCurrencyChange as (checked: boolean) => void} />
-          <Label htmlFor="currency-switch-drawer" className="text-sm font-medium cursor-pointer">Расчет в белорусских рублях</Label>
+          <Label htmlFor="currency-switch-drawer" className="text-xs font-medium cursor-pointer">Расчет в белорусских рублях</Label>
         </div>
-        <div className="space-y-4">
-          <h3 className="font-semibold text-lg text-slate-800">Калькулятор</h3>
+        <div className="space-y-3">
+          <h3 className="font-semibold text-base text-slate-800">Калькулятор</h3>
           {financeType === 'credit' ? (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div>
-                <Label className="flex justify-between"><span>Первый взнос</span> <span>{formatPrice(downPayment[0])}</span></Label>
+                <Label className="flex justify-between text-xs"><span>Первый взнос</span> <span>{formatPrice(downPayment[0])}</span></Label>
                 <Slider value={downPayment} onValueChange={setDownPayment} max={carPriceInCurrency * 0.8} step={100} className="mt-2" />
               </div>
               <div>
-                <Label className="flex justify-between"><span>Срок кредита</span> <span>{loanTerm[0]} мес.</span></Label>
+                <Label className="flex justify-between text-xs"><span>Срок кредита</span> <span>{loanTerm[0]} мес.</span></Label>
                 <Slider value={loanTerm} onValueChange={setLoanTerm} max={120} min={12} step={1} className="mt-2" />
               </div>
               <div>
-                <Label>Банк-партнер</Label>
+                <Label className="text-xs">Банк-партнер</Label>
                 <Select value={selectedBank?.name} onValueChange={v => setSelectedBank(partnerBanks.find(b => b.name === v) || null)}>
-                  <SelectTrigger><SelectValue placeholder="Выберите банк" /></SelectTrigger>
+                  <SelectTrigger className="h-9 mt-1"><SelectValue placeholder="Выберите банк" /></SelectTrigger>
                   <SelectContent>{loadingBanks ? <SelectItem value="loading" disabled>Загрузка...</SelectItem> : partnerBanks.map(b => <SelectItem key={b.id} value={b.name}>{b.name} - от {b.rate || b.minRate}%</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
           ) : (
-             <div className="space-y-5">
+             <div className="space-y-4">
               <div>
-                <Label className="flex justify-between"><span>Авансовый платеж</span> <span>{formatPrice(leasingAdvance[0])}</span></Label>
+                <Label className="flex justify-between text-xs"><span>Авансовый платеж</span> <span>{formatPrice(leasingAdvance[0])}</span></Label>
                 <Slider value={leasingAdvance} onValueChange={setLeasingAdvance} max={carPriceInCurrency * 0.8} step={100} className="mt-2" />
               </div>
               <div>
-                <Label className="flex justify-between"><span>Срок лизинга</span> <span>{leasingTerm[0]} мес.</span></Label>
+                <Label className="flex justify-between text-xs"><span>Срок лизинга</span> <span>{leasingTerm[0]} мес.</span></Label>
                 <Slider value={leasingTerm} onValueChange={setLeasingTerm} max={84} min={12} step={1} className="mt-2" />
               </div>
                <div>
-                <Label className="flex justify-between"><span>Остаточная стоимость</span> <span>{residualValue[0]}%</span></Label>
+                <Label className="flex justify-between text-xs"><span>Остаточная стоимость</span> <span>{residualValue[0]}%</span></Label>
                 <Slider value={residualValue} onValueChange={setResidualValue} max={50} min={1} step={1} className="mt-2" />
               </div>
               <div>
-                <Label>Лизинговая компания</Label>
+                <Label className="text-xs">Лизинговая компания</Label>
                  <Select value={selectedLeasingCompany?.name} onValueChange={v => setSelectedLeasingCompany(leasingCompanies.find(c => c.name === v) || null)}>
-                  <SelectTrigger><SelectValue placeholder="Выберите компанию" /></SelectTrigger>
+                  <SelectTrigger className="h-9 mt-1"><SelectValue placeholder="Выберите компанию" /></SelectTrigger>
                   <SelectContent>{loadingLeasing ? <SelectItem value="loading" disabled>Загрузка...</SelectItem> : leasingCompanies.map(c => <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
           )}
         </div>
-        <div className="space-y-3 pt-4 border-t">
-            <h3 className="font-semibold text-lg text-slate-800">Ваш расчет</h3>
-            <div className="p-4 bg-blue-50 rounded-xl border border-blue-200 space-y-3">
+        <div className="space-y-2 pt-3 border-t">
+            <h3 className="font-semibold text-base text-slate-800">Ваш расчет</h3>
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 space-y-2">
                  <div className="flex justify-between items-baseline">
-                    <span className="text-slate-600 text-sm">Ежемесячный платеж</span>
-                    <span className="font-bold text-2xl text-blue-600">{formatPrice(financeType === 'credit' ? calculateMonthlyPayment() : calculateLeasingPayment())}</span>
+                    <span className="text-slate-600 text-xs">Ежемесячный платеж</span>
+                    <span className="font-bold text-xl text-blue-600">{formatPrice(financeType === 'credit' ? calculateMonthlyPayment() : calculateLeasingPayment())}</span>
                  </div>
-                 <div className="flex justify-between items-center text-sm">
+                 <div className="flex justify-between items-center text-xs">
                     <span className="text-slate-600">{financeType === 'credit' ? 'Сумма кредита' : 'Сумма договора'}</span>
                     <span className="font-semibold text-slate-800">{formatPrice(financeType === 'credit' ? creditAmountValue : carPriceInCurrency)}</span>
                  </div>
             </div>
         </div>
-        <div className="space-y-4 pt-4 border-t">
-          <h3 className="font-semibold text-lg text-slate-800">Оформить заявку</h3>
-          <div className="space-y-3">
+        <div className="space-y-3 pt-3 border-t">
+          <h3 className="font-semibold text-base text-slate-800">Оформить заявку</h3>
+          <div className="space-y-2">
             <div>
-              <Label htmlFor="drawer-name">Имя</Label>
-              <Input id="drawer-name" value={creditForm.name} onChange={e => setCreditForm({...creditForm, name: e.target.value})} placeholder="Ваше имя" required />
+              <Label htmlFor="drawer-name" className="text-xs">Имя</Label>
+              <Input id="drawer-name" value={creditForm.name} onChange={e => setCreditForm({...creditForm, name: e.target.value})} placeholder="Ваше имя" required className="h-9 mt-1" />
             </div>
             <div>
-              <Label htmlFor="drawer-phone">Телефон</Label>
-              <Input id="drawer-phone" type="tel" value={creditForm.phone} onChange={e => setCreditForm({...creditForm, phone: formatPhoneNumber(e.target.value)})} placeholder="+375 (XX) XXX-XX-XX" required />
+              <Label htmlFor="drawer-phone" className="text-xs">Телефон</Label>
+              <Input id="drawer-phone" type="tel" value={creditForm.phone} onChange={e => setCreditForm({...creditForm, phone: formatPhoneNumber(e.target.value)})} placeholder="+375 (XX) XXX-XX-XX" required className="h-9 mt-1" />
             </div>
              <div>
-              <Label htmlFor="drawer-comment">Комментарий</Label>
-              <Input id="drawer-comment" value={creditForm.message} onChange={e => setCreditForm({...creditForm, message: e.target.value})} placeholder="Дополнительная информация (необязательно)" />
+              <Label htmlFor="drawer-comment" className="text-xs">Комментарий</Label>
+              <Input id="drawer-comment" value={creditForm.message} onChange={e => setCreditForm({...creditForm, message: e.target.value})} placeholder="Дополнительная информация (необязательно)" className="h-9 mt-1"/>
             </div>
           </div>
         </div>
       </div>
-      <div className="p-4 sm:p-6 border-t bg-white/80 backdrop-blur-sm sticky bottom-0">
-        <Button onClick={handleCreditSubmit} className="w-full h-12 text-base" disabled={!isPhoneValid(creditForm.phone) || !creditForm.name || creditButtonState.isLoading}>
+      <div className="p-3 border-t bg-white/80 backdrop-blur-sm sticky bottom-0">
+        <Button onClick={handleCreditSubmit} className="w-full h-11 text-sm" disabled={!isPhoneValid(creditForm.phone) || !creditForm.name || creditButtonState.isLoading}>
             {creditButtonState.isLoading ? 'Отправка...' : `Отправить заявку на ${financeType === 'credit' ? 'кредит' : 'лизинг'}`}
         </Button>
-        <p className="text-xs text-slate-500 mt-3 text-center">Нажимая кнопку, вы соглашаетесь с <a href="/privacy" className="underline hover:text-blue-600">политикой обработки персональных данных</a>.</p>
+        <p className="text-[10px] text-slate-500 mt-2 text-center">Нажимая кнопку, вы соглашаетесь с <a href="/privacy" className="underline hover:text-blue-600">политикой обработки персональных данных</a>.</p>
       </div>
     </div>
   );
@@ -317,7 +317,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[95vh]">
+      <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left"><DrawerTitle>{title}</DrawerTitle></DrawerHeader>
         {renderContent()}
       </DrawerContent>
