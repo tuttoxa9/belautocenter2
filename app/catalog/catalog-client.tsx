@@ -156,6 +156,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       setCars(processedCars)
       setFilteredCars(processedCars)
     } catch (error) {
+      console.error("Failed to load cars from Cloudflare:", error);
     } finally {
       setLoading(false)
     }

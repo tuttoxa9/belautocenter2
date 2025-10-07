@@ -5,20 +5,16 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
-import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
 import { parseFirestoreDoc } from "@/lib/firestore-parser"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
@@ -30,14 +26,10 @@ import {
   Settings,
   Car,
   Phone,
-  CreditCard,
   ChevronLeft,
   ChevronRight,
-  Heart,
-  CheckCircle,
   Calculator,
   Building2,
-  MapPin,
   Eye,
   Calendar,
   Clock,
@@ -45,39 +37,29 @@ import {
   Check
 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
-import CarDetailsSkeleton from "@/components/car-details-skeleton"
 import MarkdownRenderer from "@/components/markdown-renderer"
+import { preloadImages } from "@/lib/image-preloader"
 
-import { useDebouncedTouch } from "@/hooks/use-debounced-touch"
-import { preloadImages, preloadImage } from "@/lib/image-preloader"
-
-// Кэш для статических данных (загружается один раз за сессию)
 let staticDataCache: {
-  banks?: any[]
-  leasingCompanies?: any[]
+  banks?: PartnerBank[]
+  leasingCompanies?: LeasingCompany[]
   contactPhones?: { main?: string, additional?: string }
   lastLoadTime?: number
 } = {}
 
-const CACHE_DURATION = 5 * 60 * 1000 // 5 минут
+const CACHE_DURATION = 5 * 60 * 1000
 
-// Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: string, contactPhone2?: string }) => {
-  // Используем hook из контекста для получения настроек
   const { settings, isLoading: isSettingsLoading } = useSettings();
-  // State для отображения скелетона
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Установим задержку, чтобы сначала загрузились настройки
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timer);
   }, []);
 
-  // Получаем номера телефонов из настроек, если доступны, иначе используем переданные параметры
-  // Но только если настройки загружены
   const phoneNumber = !isLoading && settings?.main?.showroomInfo?.phone
     ? settings.main.showroomInfo.phone
     : '';
@@ -96,11 +78,9 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
             К сожалению, автомобиль с указанным ID не существует или произошла ошибка при загрузке данных.
           </p>
         </div>
-
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
           <h3 className="text-lg font-semibold text-slate-900 mb-3">Нужна помощь?</h3>
           <p className="text-slate-600 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
-
           {isLoading || isSettingsLoading ? (
             <div className="flex flex-col items-center space-y-4">
               <div className="h-6 bg-slate-200 rounded w-32 animate-pulse"></div>
@@ -125,17 +105,28 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
                 </div>
               )}
               {!phoneNumber && !phoneNumber2 && (
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-5 w-5" />
-                  <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-                    {contactPhone}
-                  </a>
-                </div>
+                <>
+                  {contactPhone && (
+                    <div className="flex items-center space-x-2">
+                      <Phone className="h-5 w-5" />
+                      <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+                        {contactPhone}
+                      </a>
+                    </div>
+                  )}
+                  {contactPhone2 && (
+                    <div className="flex items-center space-x-2">
+                      <Phone className="h-5 w-5" />
+                      <a href={`tel:${contactPhone2.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
+                        {contactPhone2}
+                      </a>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}
         </div>
-
         <Button
           onClick={() => window.location.href = '/catalog'}
           className="w-full bg-slate-900 hover:bg-slate-800 text-white"
@@ -148,47 +139,14 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
 };
 
 interface Car {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  price: number;
-  currency: string;
-  mileage: number;
-  engineVolume: number;
-  fuelType: string;
-  transmission: string;
-  driveTrain: string;
-  bodyType: string;
-  color: string;
-  description: string;
-  imageUrls: string[];
-  isAvailable: boolean;
-  features: string[];
-  specifications: Record<string, string>;
-  tiktok_url?: string;
-  youtube_url?: string;
+  id: string; make: string; model: string; year: number; price: number; currency: string; mileage: number; engineVolume: number; fuelType: string; transmission: string; driveTrain: string; bodyType: string; color: string; description: string; imageUrls: string[]; isAvailable: boolean; features: string[]; specifications: Record<string, string>; tiktok_url?: string; youtube_url?: string;
 }
-
 interface PartnerBank {
-  id: number;
-  name: string;
-  logo: string;
-  rate: number;
-  minDownPayment: number;
-  maxTerm: number;
-  features: string[];
-  color: string;
+  id: number; name: string; logo: string; rate: number; minDownPayment: number; maxTerm: number; features: string[]; color: string;
 }
-
 interface LeasingCompany {
-  name: string;
-  logoUrl?: string;
-  minAdvance: number;
-  maxTerm: number;
-  interestRate?: number;
+  name: string; logoUrl?: string; minAdvance: number; maxTerm: number; interestRate?: number;
 }
-
 interface CarDetailsClientProps {
   carId: string;
 }
@@ -205,64 +163,44 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isCreditOpen, setIsCreditOpen] = useState(false)
   const [isFinancialAssistantOpen, setFinancialAssistantOpen] = useState(false)
-  const [bookingForm, setBookingForm] = useState({ name: "", phone: "+375", message: "" })
-  const [callbackForm, setCallbackForm] = useState({ name: "", phone: "+375" })
   const [creditForm, setCreditForm] = useState({ name: "", phone: "+375", message: "" })
   const [isCreditFormOpen, setIsCreditFormOpen] = useState(false)
   const [partnerBanks, setPartnerBanks] = useState<PartnerBank[]>([])
   const [loadingBanks, setLoadingBanks] = useState(true)
-  const [leasingCompanies, setLeasingCompanies] = useState<any[]>([])
+  const [leasingCompanies, setLeasingCompanies] = useState<LeasingCompany[]>([])
   const [loadingLeasing, setLoadingLeasing] = useState(true)
   const [financeType, setFinanceType] = useState<'credit' | 'leasing'>('credit')
-  // Состояние кредитного калькулятора
   const [creditAmount, setCreditAmount] = useState([75000])
   const [downPayment, setDownPayment] = useState([20000])
   const [loanTerm, setLoanTerm] = useState([60])
   const [selectedBank, setSelectedBank] = useState<PartnerBank | null>(null)
-  // Состояние лизингового калькулятора
   const [leasingAmount, setLeasingAmount] = useState([75000])
   const [leasingAdvance, setLeasingAdvance] = useState([15000])
   const [leasingTerm, setLeasingTerm] = useState([36])
   const [residualValue, setResidualValue] = useState([20])
   const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null)
-  // Состояние для валюты (по умолчанию - белорусские рубли)
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(true)
-  // Полноэкранный просмотр фотографий
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
-  // Состояние для текущей фотографии в галерее
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-
-  // Touch события для полноэкранного режима
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
-  // Ref для контейнера прокрутки галереи
   const galleryScrollRef = useRef<HTMLDivElement>(null)
-
-  // Button states
-  const bookingButtonState = useButtonState()
-  const callbackButtonState = useButtonState()
   const creditButtonState = useButtonState()
-
-  // Notification hook
   const { showSuccess } = useNotification()
-
-  // Settings hook
   const { settings } = useSettings()
 
   useEffect(() => {
     if (carId) {
       loadCarData(carId)
-      setCurrentImageIndex(0) // Сбрасываем индекс при загрузке нового авто
+      setCurrentImageIndex(0)
     }
   }, [carId])
 
-  // Загружаем статические данные только один раз при инициализации компонента
   useEffect(() => {
     loadStaticData()
   }, [])
 
-  // Сброс значений калькулятора при открытии модального окна кредита
   useEffect(() => {
     if (isCreditOpen && car && car.price) {
       const price = car.price
@@ -283,61 +221,33 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
 
-  // Обработчик клавиатуры для полноэкранного режима
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isFullscreenOpen) return
-
       switch (event.key) {
-        case 'Escape':
-          setIsFullscreenOpen(false)
-          break
-        case 'ArrowLeft':
-          event.preventDefault()
-          if (car?.imageUrls && car.imageUrls.length > 1) {
-            setFullscreenImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length)
-          }
-          break
-        case 'ArrowRight':
-          event.preventDefault()
-          if (car?.imageUrls && car.imageUrls.length > 1) {
-            setFullscreenImageIndex((prev) => (prev + 1) % car.imageUrls.length)
-          }
-          break
+        case 'Escape': setIsFullscreenOpen(false); break
+        case 'ArrowLeft': event.preventDefault(); if (car?.imageUrls && car.imageUrls.length > 1) { setFullscreenImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length) }; break
+        case 'ArrowRight': event.preventDefault(); if (car?.imageUrls && car.imageUrls.length > 1) { setFullscreenImageIndex((prev) => (prev + 1) % car.imageUrls.length) }; break
       }
     }
-
     if (isFullscreenOpen) {
       document.addEventListener('keydown', handleKeyDown)
-      // Запрещаем скролл страницы в полноэкранном режиме
       document.body.style.overflow = 'hidden'
     }
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
     }
   }, [isFullscreenOpen, car?.imageUrls])
 
-  // Получаем хост для изображений
-  const imageHost = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
-
-  // Функции навигации по галерее
   const navigateToImage = (index: number) => {
     if (!car?.imageUrls || car.imageUrls.length === 0) return;
-
     const clampedIndex = Math.max(0, Math.min(index, car.imageUrls.length - 1));
     setCurrentImageIndex(clampedIndex);
-
     if (galleryScrollRef.current) {
       const containerWidth = galleryScrollRef.current.clientWidth;
-      // Каждое изображение занимает полную ширину видимой области
       const targetScrollLeft = clampedIndex * containerWidth;
-
-      galleryScrollRef.current.scrollTo({
-        left: targetScrollLeft,
-        behavior: 'smooth'
-      });
+      galleryScrollRef.current.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
     }
   };
 
@@ -353,14 +263,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     navigateToImage(newIndex);
   };
 
-  // Обработчик прокрутки для синхронизации индекса при ручной прокрутке
   const handleScroll = () => {
     if (!galleryScrollRef.current || !car?.imageUrls) return;
-
     const containerWidth = galleryScrollRef.current.clientWidth;
     const scrollLeft = galleryScrollRef.current.scrollLeft;
     const newIndex = Math.round(scrollLeft / containerWidth);
-
     if (newIndex !== currentImageIndex && newIndex >= 0 && newIndex < car.imageUrls.length) {
       setCurrentImageIndex(newIndex);
     }
@@ -368,15 +275,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   const loadStaticData = async () => {
     try {
-      // Проверяем кэш - если данные свежие, используем их
       const now = Date.now()
-      if (staticDataCache.lastLoadTime &&
-          (now - staticDataCache.lastLoadTime) < CACHE_DURATION &&
-          staticDataCache.banks &&
-          staticDataCache.leasingCompanies &&
-          staticDataCache.contactPhones) {
-
-        // Используем кэшированные данные
+      if (staticDataCache.lastLoadTime && (now - staticDataCache.lastLoadTime) < CACHE_DURATION && staticDataCache.banks && staticDataCache.leasingCompanies && staticDataCache.contactPhones) {
         setPartnerBanks(staticDataCache.banks)
         setSelectedBank(staticDataCache.banks[0] || null)
         setLeasingCompanies(staticDataCache.leasingCompanies)
@@ -385,416 +285,112 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         setContactPhone2(staticDataCache.contactPhones.additional || "")
         return
       }
-
-      setLoadingBanks(true)
-      setLoadingLeasing(true)
-
-      // Используем прямые запросы к Firestore (исключены vercel functions)
+      setLoadingBanks(true); setLoadingLeasing(true);
       const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
       const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages`
-
-      // Определяем эндпоинты Firestore напрямую
-      const endpoints = {
-        banks: `${baseUrl}/credit`,
-        leasing: `${baseUrl}/leasing`,
-        contacts: `${baseUrl}/contacts`
-      }
-
-      // Выполняем запросы параллельно для максимальной скорости
+      const endpoints = { banks: `${baseUrl}/credit`, leasing: `${baseUrl}/leasing`, contacts: `${baseUrl}/contacts` }
       const [banksResponse, leasingResponse, contactsResponse] = await Promise.all([
-        fetch(endpoints.banks, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.leasing, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.contacts, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        })
+        fetch(endpoints.banks, { headers: { 'Content-Type': 'application/json', 'User-Agent': 'NextJS-Direct-Firestore/1.0' } }),
+        fetch(endpoints.leasing, { headers: { 'Content-Type': 'application/json', 'User-Agent': 'NextJS-Direct-Firestore/1.0' } }),
+        fetch(endpoints.contacts, { headers: { 'Content-Type': 'application/json', 'User-Agent': 'NextJS-Direct-Firestore/1.0' } })
       ])
-
-      // Получаем JSON из каждого ответа
-      const banksRawData = await banksResponse.json()
-      const leasingRawData = await leasingResponse.json()
-      const contactsRawData = await contactsResponse.json()
-
-      // Парсим полученные данные
-      const creditPageData = parseFirestoreDoc(banksRawData);
-      const leasingPageData = parseFirestoreDoc(leasingRawData);
-      const contacts = parseFirestoreDoc(contactsRawData);
-
-      // Безопасно извлекаем из них чистые массивы с партнерами
-      const banks = creditPageData.partners || [];
-      const leasingCompanies = leasingPageData.leasingCompanies || leasingPageData.partners || [];
-
-      // Сохраняем в кэш
-      staticDataCache = {
-        banks,
-        leasingCompanies,
-        contactPhones: {
-          main: contacts.phone || "+375 29 123-45-67",
-          additional: contacts.phone2 || ""
-        },
-        lastLoadTime: now
-      }
-
-      // Применяем обработанные данные
-      if (banks && banks.length > 0) {
-        setPartnerBanks(banks)
-        setSelectedBank(banks[0]) // Выбираем лучший банк по умолчанию
-      } else {
-        setPartnerBanks([])
-      }
-
-      // Устанавливаем данные лизинговых компаний
-      if (leasingCompanies && leasingCompanies.length > 0) {
-        setLeasingCompanies(leasingCompanies)
-        setSelectedLeasingCompany(leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
-      } else {
-        setLeasingCompanies([])
-      }
-
-      // Устанавливаем контактные телефоны из документа контактов
-      setContactPhone(staticDataCache.contactPhones.main)
-      setContactPhone2(staticDataCache.contactPhones.additional)
-
+      const banksRawData = await banksResponse.json(); const leasingRawData = await leasingResponse.json(); const contactsRawData = await contactsResponse.json()
+      const creditPageData = parseFirestoreDoc(banksRawData); const leasingPageData = parseFirestoreDoc(leasingRawData); const contacts = parseFirestoreDoc(contactsRawData);
+      const banks = creditPageData.partners || []; const leasingCompanies = leasingPageData.leasingCompanies || leasingPageData.partners || [];
+      staticDataCache = { banks, leasingCompanies, contactPhones: { main: contacts.phone || "+375 29 123-45-67", additional: contacts.phone2 || "" }, lastLoadTime: now }
+      if (banks && banks.length > 0) { setPartnerBanks(banks); setSelectedBank(banks[0]) } else { setPartnerBanks([]) }
+      if (leasingCompanies && leasingCompanies.length > 0) { setLeasingCompanies(leasingCompanies); setSelectedLeasingCompany(leasingCompanies[0]) } else { setLeasingCompanies([]) }
+      setContactPhone(staticDataCache.contactPhones.main); setContactPhone2(staticDataCache.contactPhones.additional)
     } catch (error) {
-      setPartnerBanks([])
-      setLeasingCompanies([])
-      setContactPhone("+375 29 123-45-67")
-      setContactPhone2("")
+      console.error("Failed to load static data:", error);
+      setPartnerBanks([]); setLeasingCompanies([]); setContactPhone("+375 29 123-45-67"); setContactPhone2("")
     } finally {
-      setLoadingBanks(false)
-      setLoadingLeasing(false)
+      setLoadingBanks(false); setLoadingLeasing(false);
     }
   }
 
   const loadCarData = async (carId: string) => {
     try {
       setLoading(true)
-
-      // Используем прямой запрос к Firestore (исключены vercel functions)
       const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
       const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
-
-      const response = await fetch(firestoreUrl, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-
+      const response = await fetch(firestoreUrl, { headers: { 'Content-Type': 'application/json', 'User-Agent': 'NextJS-Direct-Firestore/1.0' } })
       let carData = null
       if (response.ok) {
-        const doc = await response.json()
-        // Используем парсер для обработки данных Firestore
-        carData = parseFirestoreDoc(doc)
+        const doc = await response.json(); carData = parseFirestoreDoc(doc)
       }
-
       if (carData) {
-        // Очистка данных от несериализуемых объектов
-        const cleanCarData = JSON.parse(JSON.stringify(carData))
-        setCar(cleanCarData as Car)
-        setCarNotFound(false)
-
-        // Оптимизированная предзагрузка первых 3 изображений
-        if (cleanCarData.imageUrls && cleanCarData.imageUrls.length > 1) {
-          preloadImages(cleanCarData.imageUrls.slice(0, 3))
-        }
-
-        // Устанавливаем значения калькулятора по умолчанию
-        const price = cleanCarData.price || 95000
-        setCreditAmount([price * 0.8])
-        setDownPayment([price * 0.2])
+        const cleanCarData = JSON.parse(JSON.stringify(carData)); setCar(cleanCarData as Car); setCarNotFound(false)
+        if (cleanCarData.imageUrls && cleanCarData.imageUrls.length > 1) { preloadImages(cleanCarData.imageUrls.slice(0, 3)) }
+        const price = cleanCarData.price || 95000; setCreditAmount([price * 0.8]); setDownPayment([price * 0.2])
       } else {
-        setCarNotFound(true)
-        setCar(null)
+        setCarNotFound(true); setCar(null)
       }
     } catch (error) {
-      setCarNotFound(true)
-      setCar(null)
+      console.error("Failed to load car data:", error);
+      setCarNotFound(true); setCar(null)
     } finally {
       setLoading(false)
     }
   }
 
-  // Функция для конвертации значения поля из формата Firestore
-  // Функция для конвертации полей удалена, теперь везде используется parseFirestoreDoc
-
   const formatPrice = (price: number, currencyType?: 'USD' | 'BYN') => {
     if (currencyType === 'BYN' || (currencyType === undefined && isBelarusianRubles)) {
-      return new Intl.NumberFormat("ru-BY", {
-        style: "currency",
-        currency: "BYN",
-        minimumFractionDigits: 0,
-      }).format(price)
+      return new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(price)
     }
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-    }).format(price)
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(price)
   }
 
-  const getCreditMinValue = () => {
-    return isBelarusianRubles ? 3000 : 1000
-  }
+  const getCreditMinValue = () => { return isBelarusianRubles ? 3000 : 1000 }
+  const getCreditMaxValue = () => { if (isBelarusianRubles && usdBynRate) { return car && car.price ? car.price * usdBynRate : 200000 }; return car && car.price ? car.price : 200000 }
+  const getCurrentCreditAmount = () => { return creditAmount[0] }
+  const getCurrentDownPayment = () => { return downPayment[0] }
 
-  const getCreditMaxValue = () => {
-    if (isBelarusianRubles && usdBynRate) {
-      return car && car.price ? car.price * usdBynRate : 200000
-    }
-    return car && car.price ? car.price : 200000
-  }
-
-  const getCurrentCreditAmount = () => {
-    return creditAmount[0]
-  }
-
-  const getCurrentDownPayment = () => {
-    return downPayment[0]
-  }
-
-  // При переключении валюты пересчитываем значения
   const handleCurrencyChange = (checked: boolean) => {
     setIsBelarusianRubles(checked)
-
     if (!car || !car.price || !usdBynRate) return
-
     if (checked) {
-      // Переключение на BYN
-      setCreditAmount([Math.round(car.price * 0.8 * usdBynRate)])
-      setDownPayment([Math.round(car.price * 0.2 * usdBynRate)])
-      setLeasingAmount([Math.round(car.price * usdBynRate)])
-      setLeasingAdvance([Math.round(car.price * 0.2 * usdBynRate)])
+      setCreditAmount([Math.round(car.price * 0.8 * usdBynRate)]); setDownPayment([Math.round(car.price * 0.2 * usdBynRate)]); setLeasingAmount([Math.round(car.price * usdBynRate)]); setLeasingAdvance([Math.round(car.price * 0.2 * usdBynRate)])
     } else {
-      // Переключение на USD
-      setCreditAmount([car.price * 0.8])
-      setDownPayment([car.price * 0.2])
-      setLeasingAmount([car.price])
-      setLeasingAdvance([car.price * 0.2])
+      setCreditAmount([car.price * 0.8]); setDownPayment([car.price * 0.2]); setLeasingAmount([car.price]); setLeasingAdvance([car.price * 0.2])
     }
   }
 
-  const formatMileage = (mileage: number) => {
-    return new Intl.NumberFormat("ru-BY").format(mileage)
-  }
-
-  const formatEngineVolume = (volume: number) => {
-    // Всегда показываем с одним знаком после запятой (3.0, 2.5, 1.6)
-    return volume.toFixed(1)
-  }
-
+  const formatMileage = (mileage: number) => { return new Intl.NumberFormat("ru-BY").format(mileage) }
+  const formatEngineVolume = (volume: number) => { return volume.toFixed(1) }
   const formatPhoneNumber = (value: string) => {
-    // Удаляем все нецифровые символы кроме +
-    let numbers = value.replace(/[^\d+]/g, "")
-
-    // Если нет + в начале, добавляем +375
-    if (!numbers.startsWith("+375")) {
-      numbers = "+375"
-    }
-
-    // Берем только +375 и следующие 9 цифр максимум
-    const prefix = "+375"
-    const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9)
-
-    return prefix + afterPrefix
+    let numbers = value.replace(/[^\d+]/g, ""); if (!numbers.startsWith("+375")) { numbers = "+375" }; const prefix = "+375"; const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9); return prefix + afterPrefix
   }
+  const isPhoneValid = (phone: string) => { return phone.length === 13 && phone.startsWith("+375") }
 
-  const isPhoneValid = (phone: string) => {
-    return phone.length === 13 && phone.startsWith("+375")
-  }
-
-  // Расчет ежемесячного платежа
   const calculateMonthlyPayment = () => {
-    if (!selectedBank) return 0
-    const principal = getCurrentCreditAmount()
-
-    // Используем rate, если доступно, иначе minRate
-    const rateValue = selectedBank.rate !== undefined ? selectedBank.rate :
-                    selectedBank.minRate !== undefined ? selectedBank.minRate : 0;
-
-    const rate = rateValue / 100 / 12
-    const term = loanTerm[0]
-
-
-    if (!rate || rate <= 0) return principal / term
-    const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
-    return monthlyPayment
+    if (!selectedBank) return 0; const principal = getCurrentCreditAmount(); const rateValue = selectedBank.rate !== undefined ? selectedBank.rate : selectedBank.minRate !== undefined ? selectedBank.minRate : 0; const rate = rateValue / 100 / 12; const term = loanTerm[0]; if (!rate || rate <= 0) return principal / term; const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1); return monthlyPayment
   }
 
-  // Расчет ежемесячного лизингового платежа
   const calculateLeasingPayment = () => {
-    const carPrice = isBelarusianRubles && usdBynRate ? (car && car.price ? car.price * usdBynRate : 0) : (car && car.price ? car.price : 0)
-    const advance = isBelarusianRubles && usdBynRate ? leasingAdvance[0] : leasingAdvance[0]
-    const term = leasingTerm[0]
-    const residualVal = (carPrice * residualValue[0]) / 100
-
-    const leasingSum = carPrice - advance - residualVal
-    return leasingSum / term
-  }
-
-  const handleBookingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    await bookingButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
-      try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
-          ...bookingForm,
-          carId: carId,
-          carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
-          type: "booking",
-          status: "new",
-          createdAt: new Date(),
-        })
-      } catch (error) {
-      }
-
-      // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch('/api/send-telegram', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: bookingForm.name,
-          phone: bookingForm.phone,
-          message: bookingForm.message,
-          carMake: car && car.make ? car.make : '',
-          carModel: car && car.model ? car.model : '',
-          carYear: car && car.year ? car.year : '',
-          carId: carId,
-          type: 'car_booking'
-        })
-      })
-
-      setIsBookingOpen(false)
-      setBookingForm({ name: "", phone: "+375", message: "" })
-      showSuccess("Заявка на бронирование успешно отправлена! Мы свяжемся с вами в ближайшее время.")
-    })
-  }
-
-  const handleCallbackSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    await callbackButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
-      try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
-          ...callbackForm,
-          carId: carId,
-          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-          type: "callback",
-          status: "new",
-          createdAt: new Date(),
-        })
-      } catch (error) {
-      }
-
-      // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch('/api/send-telegram', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: callbackForm.name,
-          phone: callbackForm.phone,
-          carMake: car && car.make ? car.make : '',
-          carModel: car && car.model ? car.model : '',
-          carYear: car && car.year ? car.year : '',
-          carId: carId,
-          type: 'callback'
-        })
-      })
-
-      setIsCallbackOpen(false)
-      setCallbackForm({ name: "", phone: "+375" })
-      showSuccess("Заявка на обратный звонок успешно отправлена! Мы свяжемся с вами в ближайшее время.")
-    })
+    const carPrice = isBelarusianRubles && usdBynRate ? (car && car.price ? car.price * usdBynRate : 0) : (car && car.price ? car.price : 0); const advance = isBelarusianRubles && usdBynRate ? leasingAdvance[0] : leasingAdvance[0]; const term = leasingTerm[0]; const residualVal = (carPrice * residualValue[0]) / 100; const leasingSum = carPrice - advance - residualVal; return leasingSum / term
   }
 
   const handleCreditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     await creditButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
+        const { collection, addDoc } = await import('firebase/firestore'); const { db } = await import('@/lib/firebase')
         await addDoc(collection(db, "leads"), {
-          ...creditForm,
-          carId: carId,
-          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-          type: financeType,
-          status: "new",
-          createdAt: new Date(),
-          creditAmount: getCurrentCreditAmount(),
-          downPayment: getCurrentDownPayment(),
-          loanTerm: loanTerm[0],
-          selectedBank: selectedBank ? selectedBank.name : "",
-          monthlyPayment: calculateMonthlyPayment(),
-          currency: isBelarusianRubles ? "BYN" : "USD",
-          financeType: financeType
+          ...creditForm, carId: carId, carInfo: `${car?.make} ${car?.model} ${car?.year}`, type: financeType, status: "new", createdAt: new Date(), creditAmount: getCurrentCreditAmount(), downPayment: getCurrentDownPayment(), loanTerm: loanTerm[0], selectedBank: selectedBank ? selectedBank.name : "", monthlyPayment: calculateMonthlyPayment(), currency: isBelarusianRubles ? "BYN" : "USD", financeType: financeType
         })
       } catch (error) {
+        console.error("Failed to save lead to Firestore:", error);
       }
-
-      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: 'POST', headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({
-          name: creditForm.name,
-          phone: creditForm.phone,
-          message: creditForm.message,
-          carMake: car && car.make ? car.make : '',
-          carModel: car && car.model ? car.model : '',
-          carYear: car && car.year ? car.year : '',
-          carId: carId,
-          carPrice: isBelarusianRubles
-            ? formatPrice(getCurrentCreditAmount() + getCurrentDownPayment(), 'BYN')
-            : formatPrice(car?.price || 0, 'USD'),
-          downPayment: isBelarusianRubles
-            ? formatPrice(getCurrentDownPayment(), 'BYN')
-            : formatPrice(getCurrentDownPayment() / (usdBynRate || 1), 'USD'),
-          loanTerm: loanTerm[0],
-          bank: selectedBank ? selectedBank.name : "Не выбран",
-          financeType: financeType,
-          type: financeType === 'credit' ? 'credit_request' : 'leasing_request'
+          name: creditForm.name, phone: creditForm.phone, message: creditForm.message, carMake: car && car.make ? car.make : '', carModel: car && car.model ? car.model : '', carYear: car && car.year ? car.year : '', carId: carId, carPrice: isBelarusianRubles ? formatPrice(getCurrentCreditAmount() + getCurrentDownPayment(), 'BYN') : formatPrice(car?.price || 0, 'USD'), downPayment: isBelarusianRubles ? formatPrice(getCurrentDownPayment(), 'BYN') : formatPrice(getCurrentDownPayment() / (usdBynRate || 1), 'USD'), loanTerm: loanTerm[0], bank: selectedBank ? selectedBank.name : "Не выбран", financeType: financeType, type: financeType === 'credit' ? 'credit_request' : 'leasing_request'
         })
       })
-
-      setIsCreditFormOpen(false)
-      setCreditForm({ name: "", phone: "+375", message: "" })
-      showSuccess(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.`)
+      setIsCreditFormOpen(false); setCreditForm({ name: "", phone: "+375", message: "" }); showSuccess(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.`)
     })
   }
-
-
-
-
-
-
 
   if (carNotFound) {
     return <CarNotFoundComponent contactPhone={contactPhone} contactPhone2={contactPhone2} />
@@ -803,591 +399,112 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       <div className="container mx-auto px-1 sm:px-2 lg:px-4 py-4 sm:py-6 max-w-7xl">
-        {/* Хлебные крошки */}
         <nav className="mb-4 sm:mb-6">
           <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500">
-            <li>
-              <button
-                onClick={() => router.push('/')}
-                className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100"
-              >
-                Главная
-              </button>
-            </li>
-            <li>
-              <ChevronRight className="h-4 w-4 text-slate-400" />
-            </li>
-            <li>
-              <button
-                onClick={() => router.push('/catalog')}
-                className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100"
-              >
-                Каталог
-              </button>
-            </li>
-            <li>
-              <ChevronRight className="h-4 w-4 text-slate-400" />
-            </li>
-            <li className="text-slate-900 font-medium px-2 py-1 bg-slate-100 rounded-md">
-              {loading ? (
-                <div className="h-4 bg-slate-300 rounded w-20 animate-pulse inline-block"></div>
-              ) : (
-                `${car?.make || ''} ${car?.model || ''}`
-              )}
-            </li>
+            <li><button onClick={() => router.push('/')} className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100">Главная</button></li>
+            <li><ChevronRight className="h-4 w-4 text-slate-400" /></li>
+            <li><button onClick={() => router.push('/catalog')} className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100">Каталог</button></li>
+            <li><ChevronRight className="h-4 w-4 text-slate-400" /></li>
+            <li className="text-slate-900 font-medium px-2 py-1 bg-slate-100 rounded-md">{loading ? <div className="h-4 bg-slate-300 rounded w-20 animate-pulse inline-block"></div> : `${car?.make || ''} ${car?.model || ''}`}</li>
           </ol>
         </nav>
-
-        {/* ЕДИНЫЙ ОСНОВНОЙ БЛОК */}
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden">
           <div>
-
-          {/* Заголовок и цена - компактный верхний блок */}
-          <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
-            {/* Мобильная компоновка - горизонтальная для экономии места */}
-            <div className="flex items-start justify-between gap-3 lg:gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  {loading ? (
-                    <div className="h-8 sm:h-10 lg:h-12 bg-slate-300 rounded w-48 animate-pulse"></div>
-                  ) : (
-                    <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight">
-                      {car?.make} {car?.model}
-                    </h1>
-                  )}
-                  <div className="self-start sm:self-auto">
-                    {loading ? (
-                      <div className="h-6 sm:h-7 bg-slate-300 rounded-full w-16 animate-pulse"></div>
-                    ) : car?.isAvailable ? (
-                      <div className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
-                        В наличии
-                      </div>
-                    ) : (
-                      <div className="bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
-                        Продан
-                      </div>
-                    )}
+            <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
+              <div className="flex items-start justify-between gap-3 lg:gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                    {loading ? <div className="h-8 sm:h-10 lg:h-12 bg-slate-300 rounded w-48 animate-pulse"></div> : <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight">{car?.make} {car?.model}</h1>}
+                    <div className="self-start sm:self-auto">{loading ? <div className="h-6 sm:h-7 bg-slate-300 rounded-full w-16 animate-pulse"></div> : car?.isAvailable ? <div className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">В наличии</div> : <div className="bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">Продан</div>}</div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-600">
+                    {loading ? (<><div className="h-6 bg-slate-300 rounded-lg w-12 animate-pulse"></div><div className="h-6 bg-slate-300 rounded-lg w-16 animate-pulse"></div><div className="h-6 bg-slate-300 rounded-lg w-14 animate-pulse"></div></>) : (<><span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.year}</span><span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.color}</span><span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.bodyType}</span></>)}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-600">
-                  {loading ? (
+                <div className="text-right flex-shrink-0">
+                  {loading ? (<><div className="h-6 sm:h-8 lg:h-9 bg-slate-300 rounded w-24 mb-1 animate-pulse ml-auto"></div><div className="h-4 sm:h-5 lg:h-6 bg-slate-300 rounded w-20 animate-pulse ml-auto"></div><div className="h-3 sm:h-4 bg-slate-300 rounded w-16 mt-1 animate-pulse ml-auto"></div></>) : (<>
+                    <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 mb-1 leading-tight">{car?.price ? formatPrice(car.price) : 'Цена по запросу'}</div>
+                    {usdBynRate && car?.price && <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600">≈ {new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(car.price * usdBynRate)}</div>}
+                    <div className="text-xs sm:text-sm text-slate-500 mt-1">от {car?.price ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес</div>
+                  </>)}
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+              <div className="lg:col-span-8 lg:border-r border-slate-200/50">
+                <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden">
+                  {loading ? <div className="w-full h-full flex items-center justify-center"><div className="w-16 h-16 bg-slate-300 rounded-full animate-pulse"></div></div> : (
                     <>
-                      <div className="h-6 bg-slate-300 rounded-lg w-12 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 rounded-lg w-16 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 rounded-lg w-14 animate-pulse"></div>
-                    </>
-                  ) : (
-                    <>
-                      <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.year}</span>
-                      <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.color}</span>
-                      <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.bodyType}</span>
+                      <div ref={galleryScrollRef} onScroll={handleScroll} className="w-full h-full overflow-x-auto overflow-y-hidden scrollbar-hide">
+                        <div className="flex h-full" style={{ width: `${(car?.imageUrls?.length || 1) * 100}%` }}>
+                          {car?.imageUrls?.map((url, index) => (<div key={index} className="h-full flex-shrink-0 relative cursor-pointer" style={{ width: `${100 / (car?.imageUrls?.length || 1)}%` }} onClick={() => { setCurrentImageIndex(index); setFullscreenImageIndex(index); setIsFullscreenOpen(true) }}><Image src={getCachedImageUrl(url)} alt={`${car?.make} ${car?.model} - фото ${index + 1}`} fill className="object-contain" priority={index === 0} quality={80} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px" /></div>)) || [<div key="placeholder" className="h-full flex-shrink-0 relative cursor-pointer w-full" onClick={() => { setCurrentImageIndex(0); setFullscreenImageIndex(0); setIsFullscreenOpen(true) }}><Image src="/placeholder.svg" alt={`${car?.make} ${car?.model}`} fill className="object-contain" priority quality={80} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px" /></div>]}
+                        </div>
+                      </div>
+                      {car?.imageUrls && car.imageUrls.length >= 1 && <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10"><button onClick={() => { setFullscreenImageIndex(currentImageIndex); setIsFullscreenOpen(true) }} className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95" aria-label="Открыть в полноэкранном режиме"><svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg></button></div>}
+                      {car?.imageUrls && car.imageUrls.length > 1 && <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-3"><button onClick={(e) => { e.stopPropagation(); navigatePrevious() }} className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95" aria-label="Предыдущее фото"><ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white" /></button><div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">{currentImageIndex + 1} из {car.imageUrls.length}</div><button onClick={(e) => { e.stopPropagation(); navigateNext() }} className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95" aria-label="Следующее фото"><ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-white" /></button></div>}
                     </>
                   )}
                 </div>
-              </div>
-
-              {/* Цена справа - всегда горизонтально */}
-              <div className="text-right flex-shrink-0">
-                {loading ? (
-                  <>
-                    <div className="h-6 sm:h-8 lg:h-9 bg-slate-300 rounded w-24 mb-1 animate-pulse ml-auto"></div>
-                    <div className="h-4 sm:h-5 lg:h-6 bg-slate-300 rounded w-20 animate-pulse ml-auto"></div>
-                    <div className="h-3 sm:h-4 bg-slate-300 rounded w-16 mt-1 animate-pulse ml-auto"></div>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 mb-1 leading-tight">
-                      {car?.price ? new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                        minimumFractionDigits: 0,
-                      }).format(car.price) : 'Цена по запросу'}
+                {(car?.tiktok_url || car?.youtube_url) && (
+                  <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-200/50 lg:border-b-0 lg:border-t lg:border-slate-200/50">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Видеообзоры</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {car.tiktok_url && <a href={car.tiktok_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full px-4 py-3 bg-black text-white rounded-xl font-semibold transition-colors duration-200 hover:bg-gray-800"><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.10-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" /></svg><span>Обзор в Tik Tok</span></a>}
+                      {car.youtube_url && <a href={car.youtube_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full px-4 py-3 bg-red-600 text-white rounded-xl font-semibold transition-colors duration-200 hover:bg-red-700"><svg className="w-6 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg><span>Обзор в YouTube</span></a>}
                     </div>
-                    {usdBynRate && car?.price && (
-                      <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600">
-                        ≈ {new Intl.NumberFormat("ru-BY", {
-                          style: "currency",
-                          currency: "BYN",
-                          minimumFractionDigits: 0,
-                        }).format(car.price * usdBynRate)}
-                      </div>
-                    )}
-                    <div className="text-xs sm:text-sm text-slate-500 mt-1">
-                      от {car?.price ? new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                        minimumFractionDigits: 0,
-                      }).format(Math.round(car.price * 0.8 / 60)) : '0'}/мес
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Основной контент - мобильная и десктопная версии */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-
-            {/* Левая колонка: Галерея */}
-            <div className="lg:col-span-8 lg:border-r border-slate-200/50">
-              <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden">
-                {loading ? (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="w-16 h-16 bg-slate-300 rounded-full animate-pulse"></div>
                   </div>
-                ) : (
-                  <>
-                    {/* Контейнер для свободной прокрутки */}
-                    <div ref={galleryScrollRef} onScroll={handleScroll} className="w-full h-full overflow-x-auto overflow-y-hidden scrollbar-hide">
-                      <div className="flex h-full" style={{ width: `${(car?.imageUrls?.length || 1) * 100}%` }}>
-                        {car?.imageUrls?.map((url, index) => (
-                          <div
-                            key={index}
-                            className="h-full flex-shrink-0 relative cursor-pointer"
-                            style={{ width: `${100 / (car?.imageUrls?.length || 1)}%` }}
-                            onClick={() => {
-                              setCurrentImageIndex(index)
-                              setFullscreenImageIndex(index)
-                              setIsFullscreenOpen(true)
-                            }}
-                          >
-                            <Image
-                              src={getCachedImageUrl(url)}
-                              alt={`${car?.make} ${car?.model} - фото ${index + 1}`}
-                              fill
-                              className="object-contain"
-                              priority={index === 0}
-                              quality={80}
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                            />
-                          </div>
-                        )) || [
-                          <div
-                            key="placeholder"
-                            className="h-full flex-shrink-0 relative cursor-pointer w-full"
-                            onClick={() => {
-                              setCurrentImageIndex(0)
-                              setFullscreenImageIndex(0)
-                              setIsFullscreenOpen(true)
-                            }}
-                          >
-                            <Image
-                              src="/placeholder.svg"
-                              alt={`${car?.make} ${car?.model}`}
-                              fill
-                              className="object-contain"
-                              priority
-                              quality={80}
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                            />
-                          </div>
-                        ]}
-                      </div>
-                    </div>
-
-                    {/* Кнопка полноэкранного режима */}
-                    {car?.imageUrls && car.imageUrls.length >= 1 && (
-                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
-                        <button
-                          onClick={() => {
-                            setFullscreenImageIndex(currentImageIndex)
-                            setIsFullscreenOpen(true)
-                          }}
-                          className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                          aria-label="Открыть в полноэкранном режиме"
-                        >
-                          <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                          </svg>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Стрелочки навигации по прокрутке */}
-                    {car?.imageUrls && car.imageUrls.length > 1 && (
-                      <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-3">
-                        {/* Стрелочка влево */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            navigatePrevious()
-                          }}
-                          className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                          aria-label="Предыдущее фото"
-                        >
-                          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                        </button>
-
-                        {/* Индикатор прокрутки */}
-                        <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
-                          {currentImageIndex + 1} из {car.imageUrls.length}
-                        </div>
-
-                        {/* Стрелочка вправо */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            navigateNext()
-                          }}
-                          className="w-8 h-8 sm:w-10 sm:h-10 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-                          aria-label="Следующее фото"
-                        >
-                          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                        </button>
-                      </div>
-                    )}
-                  </>
                 )}
-              </div>
-
-              {/* Видеообзоры */}
-              {(car?.tiktok_url || car?.youtube_url) && (
-                <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-200/50 lg:border-b-0 lg:border-t lg:border-slate-200/50">
-                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                    Видеообзоры
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {car.tiktok_url && (
-                      <a
-                        href={car.tiktok_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center w-full px-4 py-3 bg-black text-white rounded-xl font-semibold transition-colors duration-200 hover:bg-gray-800"
-                      >
-                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.10-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-                        <span>Обзор в Tik Tok</span>
-                      </a>
-                    )}
-                    {car.youtube_url && (
-                      <a
-                        href={car.youtube_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center w-full px-4 py-3 bg-red-600 text-white rounded-xl font-semibold transition-colors duration-200 hover:bg-red-700"
-                      >
-                        <svg className="w-6 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                        <span>Обзор в YouTube</span>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Описание под галереей для десктопов */}
-              <div className="hidden lg:block p-6 bg-slate-50/50 border-slate-200/50">
-                <h4 className="text-lg font-bold text-slate-900 mb-3">
-                  Описание
-                </h4>
-                <div className="bg-white rounded-xl p-4 border border-slate-200/50">
-                  {loading ? (
-                    <div className="space-y-2">
-                      <div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div>
-                      <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                      <div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div>
-                    </div>
-                  ) : car?.description ? (
-                    <MarkdownRenderer
-                      content={car.description}
-                      className="text-sm leading-relaxed"
-                    />
-                  ) : (
-                    <p className="text-slate-500 italic text-sm">Описание отсутствует</p>
-                  )}
+                <div className="hidden lg:block p-6 bg-slate-50/50 border-slate-200/50">
+                  <h4 className="text-lg font-bold text-slate-900 mb-3">Описание</h4>
+                  <div className="bg-white rounded-xl p-4 border border-slate-200/50">{loading ? <div className="space-y-2"><div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div><div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div><div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div></div> : car?.description ? <MarkdownRenderer content={car.description} className="text-sm leading-relaxed" /> : <p className="text-slate-500 italic text-sm">Описание отсутствует</p>}</div>
                 </div>
               </div>
-            </div>
-
-            {/* Описание для мобильных устройств под галереей */}
-            <div className="lg:hidden p-3 sm:p-4 bg-slate-50/50 border-b border-slate-200/50">
-              <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                Описание
-              </h4>
-              <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
-                {loading ? (
-                  <div className="space-y-2">
-                    <div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div>
-                    <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                    <div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div>
-                  </div>
-                ) : car?.description ? (
-                  <MarkdownRenderer
-                    content={car.description}
-                    className="text-sm leading-relaxed"
-                  />
-                ) : (
-                  <p className="text-slate-500 italic text-sm">Описание отсутствует</p>
-                )}
+              <div className="lg:hidden p-3 sm:p-4 bg-slate-50/50 border-b border-slate-200/50">
+                <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Описание</h4>
+                <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">{loading ? <div className="space-y-2"><div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div><div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div><div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div></div> : car?.description ? <MarkdownRenderer content={car.description} className="text-sm leading-relaxed" /> : <p className="text-slate-500 italic text-sm">Описание отсутствует</p>}</div>
               </div>
-            </div>
-
-            {/* Правая колонка: Характеристики и действия */}
-            <div className="lg:col-span-4">
-              <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
-
-                {/* Основные характеристики - компактный стиль */}
-                <div>
-                  <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4">
-                    Характеристики
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2 lg:gap-3">
-                    <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
-                      <div className="absolute top-2 right-2 opacity-10">
-                        <Gauge className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600" />
-                      </div>
-                      <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-20 animate-pulse"></div>
-                        ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">{formatMileage(car?.mileage || 0)} км</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="relative bg-gradient-to-br from-green-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
-                      <div className="absolute top-2 right-2 opacity-10">
-                        <Fuel className="h-6 w-6 lg:h-8 lg:w-8 text-green-600" />
-                      </div>
-                      <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-16 animate-pulse"></div>
-                        ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">
-                            {car?.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car?.engineVolume || 0)}л ${car?.fuelType}`}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="relative bg-gradient-to-br from-purple-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
-                      <div className="absolute top-2 right-2 opacity-10">
-                        <Settings className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600" />
-                      </div>
-                      <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-12 animate-pulse"></div>
-                        ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.transmission}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="relative bg-gradient-to-br from-orange-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
-                      <div className="absolute top-2 right-2 opacity-10">
-                        <Car className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
-                      </div>
-                      <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">Привод</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-14 animate-pulse"></div>
-                        ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.driveTrain}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Комплектация */}
-                {loading ? (
+              <div className="lg:col-span-4">
+                <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                      Комплектация
-                    </h4>
-                    <div className="space-y-2">
-                      {Array.from({ length: 5 }).map((_, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-slate-300 rounded-full animate-pulse flex-shrink-0"></div>
-                          <div className="h-4 bg-slate-300 rounded w-32 animate-pulse"></div>
-                        </div>
-                      ))}
+                    <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4">Характеристики</h3>
+                    <div className="grid grid-cols-2 gap-2 lg:gap-3">
+                      <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden"><div className="absolute top-2 right-2 opacity-10"><Gauge className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600" /></div><div className="relative z-10"><div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>{loading ? <div className="h-5 lg:h-7 bg-slate-300 rounded w-20 animate-pulse"></div> : <div className="text-sm lg:text-lg font-bold text-slate-900">{formatMileage(car?.mileage || 0)} км</div>}</div></div>
+                      <div className="relative bg-gradient-to-br from-green-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden"><div className="absolute top-2 right-2 opacity-10"><Fuel className="h-6 w-6 lg:h-8 lg:w-8 text-green-600" /></div><div className="relative z-10"><div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>{loading ? <div className="h-5 lg:h-7 bg-slate-300 rounded w-16 animate-pulse"></div> : <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car?.engineVolume || 0)}л ${car?.fuelType}`}</div>}</div></div>
+                      <div className="relative bg-gradient-to-br from-purple-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden"><div className="absolute top-2 right-2 opacity-10"><Settings className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600" /></div><div className="relative z-10"><div className="text-xs text-slate-500 font-medium mb-1">КПП</div>{loading ? <div className="h-5 lg:h-7 bg-slate-300 rounded w-12 animate-pulse"></div> : <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.transmission}</div>}</div></div>
+                      <div className="relative bg-gradient-to-br from-orange-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden"><div className="absolute top-2 right-2 opacity-10"><Car className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" /></div><div className="relative z-10"><div className="text-xs text-slate-500 font-medium mb-1">Привод</div>{loading ? <div className="h-5 lg:h-7 bg-slate-300 rounded w-14 animate-pulse"></div> : <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.driveTrain}</div>}</div></div>
                     </div>
                   </div>
-                ) : car?.features && car.features.length > 0 && (
+                  {loading ? <div><h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Комплектация</h4><div className="space-y-2">{Array.from({ length: 5 }).map((_, index) => <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50"><div className="w-4 h-4 sm:w-5 sm:h-5 bg-slate-300 rounded-full animate-pulse flex-shrink-0"></div><div className="h-4 bg-slate-300 rounded w-32 animate-pulse"></div></div>)}</div></div> : car?.features && car.features.length > 0 && <div><h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Комплектация</h4><div className="space-y-2">{car.features.map((feature, index) => <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50"><div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0"><Check className="h-2 w-2 sm:h-3 sm:w-3 text-white" /></div><span className="text-slate-700 font-medium text-xs sm:text-sm">{feature}</span></div>)}</div></div>}
+                  {loading ? <div><h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Технические данные</h4><div className="space-y-1 sm:space-y-2">{Array.from({ length: 4 }).map((_, index) => <div key={index} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50"><div className="h-4 bg-slate-300 rounded w-20 animate-pulse"></div><div className="h-4 bg-slate-300 rounded w-16 animate-pulse"></div></div>)}</div></div> : car?.specifications && <div><h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Технические данные</h4><div className="space-y-1 sm:space-y-2">{Object.entries(car.specifications).map(([key, value]) => <div key={key} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50"><span className="text-slate-600 font-medium text-xs sm:text-sm">{key}</span><span className="text-slate-900 font-bold text-xs sm:text-sm">{value}</span></div>)}</div></div>}
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                      Комплектация
-                    </h4>
-                    <div className="space-y-2">
-                      {car.features.map((feature, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                            <Check className="h-2 w-2 sm:h-3 sm:w-3 text-white" />
-                          </div>
-                          <span className="text-slate-700 font-medium text-xs sm:text-sm">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Технические характеристики */}
-                {loading ? (
-                  <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                      Технические данные
-                    </h4>
-                    <div className="space-y-1 sm:space-y-2">
-                      {Array.from({ length: 4 }).map((_, index) => (
-                        <div key={index} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="h-4 bg-slate-300 rounded w-20 animate-pulse"></div>
-                          <div className="h-4 bg-slate-300 rounded w-16 animate-pulse"></div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : car?.specifications && (
-                  <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                      Технические данные
-                    </h4>
-                    <div className="space-y-1 sm:space-y-2">
-                      {Object.entries(car.specifications).map(([key, value]) => (
-                        <div key={key} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <span className="text-slate-600 font-medium text-xs sm:text-sm">{key}</span>
-                          <span className="text-slate-900 font-bold text-xs sm:text-sm">{value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Финансирование - компактный блок */}
-                <div>
-                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                    Финансирование
-                  </h4>
-                  <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200/50">
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
-                      <div className="text-center">
-                        <div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>
-                        {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
-                        ) : (
-                          <div className="text-sm sm:text-lg font-bold text-slate-900">
-                            {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
-                          </div>
-                        )}
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Финансирование</h4>
+                    <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200/50">
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                        <div className="text-center"><div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>{loading ? <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div> : <div className="text-sm sm:text-lg font-bold text-slate-900">{car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес</div>}</div>
+                        <div className="text-center"><div className="text-xs sm:text-sm text-slate-500 mb-1">Лизинг от</div>{loading ? <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div> : <div className="text-sm sm:text-lg font-bold text-slate-900">{car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес</div>}</div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-xs sm:text-sm text-slate-500 mb-1">Лизинг от</div>
-                        {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
-                        ) : (
-                          <div className="text-sm sm:text-lg font-bold text-slate-900">
-                            {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес
-                          </div>
-                        )}
-                      </div>
+                      <Button onClick={() => setFinancialAssistantOpen(true)} className="w-full bg-slate-900 hover:bg-black text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"><Calculator className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />Рассчитать кредит/лизинг</Button>
                     </div>
-                    <Button
-                      onClick={() => setFinancialAssistantOpen(true)}
-                      className="w-full bg-slate-900 hover:bg-black text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"
-                    >
-                      <Calculator className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                      Рассчитать кредит/лизинг
-                    </Button>
+                  </div>
+                  <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
+                    <div className="grid grid-cols-1 gap-2 sm:gap-3">
+                      <Button onClick={() => setIsBookingOpen(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"><Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />Записаться на просмотр</Button>
+                      <Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"><Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />Заказать звонок</Button>
+                    </div>
                   </div>
                 </div>
-
-                {/* Кнопки действий */}
-                <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
-                  <div className="grid grid-cols-1 gap-2 sm:gap-3">
-                    <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-                      <DialogTrigger asChild>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
-                          <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                          Записаться на просмотр
-                        </Button>
-                      </DialogTrigger>
-                    </Dialog>
-
-                    <Dialog open={isCallbackOpen} onOpenChange={setIsCallbackOpen}>
-                      <DialogTrigger asChild>
-                        <Button className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
-                          <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                          Заказать звонок
-                        </Button>
-                      </DialogTrigger>
-                    </Dialog>
-                  </div>
-                </div>
-
               </div>
             </div>
-          </div>
-
-          {/* Контактная информация внизу */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 sm:p-6 border-t border-slate-200/50">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center">
-              <div className="text-center md:text-left">
-                {loading ? (
-                  <div className="space-y-2">
-                    <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto md:mx-0 animate-pulse"></div>
-                    <div className="h-4 bg-blue-400/40 rounded w-52 mx-auto md:mx-0 animate-pulse"></div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="font-medium text-base sm:text-lg mb-1">
-                      {settings?.main?.showroomInfo?.companyName || ""}
-                    </div>
-                    <div className="text-blue-100 text-xs sm:text-sm">
-                      {settings?.main?.showroomInfo?.address || ""}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="text-center">
-                {loading ? (
-                  <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto animate-pulse"></div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2 text-blue-100 text-xs sm:text-sm">
-                    <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <div>
-                      <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || ""}</div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="text-center md:text-right">
-                {loading ? (
-                  <div className="space-y-2">
-                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
-                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center md:items-end space-y-1">
-                    {settings?.main?.showroomInfo?.phone && (
-                      <div className="flex items-center space-x-2">
-                        <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                        <div className="font-medium text-base sm:text-lg">
-                          {settings.main.showroomInfo.phone}
-                        </div>
-                      </div>
-                    )}
-                    {settings?.main?.showroomInfo?.phone2 && (
-                      <div className="flex items-center space-x-2">
-                        <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                        <div className="font-medium text-base sm:text-lg">
-                          {settings.main.showroomInfo.phone2}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 sm:p-6 border-t border-slate-200/50">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center">
+                <div className="text-center md:text-left">{loading ? <div className="space-y-2"><div className="h-5 bg-blue-400/40 rounded w-40 mx-auto md:mx-0 animate-pulse"></div><div className="h-4 bg-blue-400/40 rounded w-52 mx-auto md:mx-0 animate-pulse"></div></div> : <><div className="font-medium text-base sm:text-lg mb-1">{settings?.main?.showroomInfo?.companyName || ""}</div><div className="text-blue-100 text-xs sm:text-sm">{settings?.main?.showroomInfo?.address || ""}</div></>}</div>
+                <div className="text-center">{loading ? <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto animate-pulse"></div> : <div className="flex items-center justify-center space-x-2 text-blue-100 text-xs sm:text-sm"><Clock className="h-3 w-3 sm:h-4 sm:w-4" /><div><div>{settings?.main?.showroomInfo?.workingHours?.weekdays || ""}</div></div></div>}</div>
+                <div className="text-center md:text-right">{loading ? <div className="space-y-2"><div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div><div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div></div> : <div className="flex flex-col items-center md:items-end space-y-1">{settings?.main?.showroomInfo?.phone && <div className="flex items-center space-x-2"><Phone className="h-3 w-3 sm:h-4 sm:w-4" /><div className="font-medium text-base sm:text-lg">{settings.main.showroomInfo.phone}</div></div>}{settings?.main?.showroomInfo?.phone2 && <div className="flex items-center space-x-2"><Phone className="h-3 w-3 sm:h-4 sm:w-4" /><div className="font-medium text-base sm:text-lg">{settings.main.showroomInfo.phone2}</div></div>}</div>}</div>
               </div>
             </div>
-          </div>
           </div>
         </div>
-
-        {/* Диалоги */}
-        <FinancialAssistantDrawer
-          open={isFinancialAssistantOpen}
-          onOpenChange={setFinancialAssistantOpen}
-          car={car}
-        />
+        <FinancialAssistantDrawer open={isFinancialAssistantOpen} onOpenChange={setFinancialAssistantOpen} car={car} />
         <Dialog open={isCreditOpen} onOpenChange={setIsCreditOpen}>
           <DialogContent className="max-w-lg sm:max-w-4xl max-h-[95vh] overflow-y-auto p-3 sm:p-6">
             <DialogHeader className="pb-2 sm:pb-4">
