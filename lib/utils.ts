@@ -111,3 +111,32 @@ export function sanitizePath(str: string): string {
     .replace(/-+/g, '-')      // Заменяем множественные дефисы на один
     .trim();                  // Удаляем пробелы в начале и конце строки
 }
+
+export function formatPrice(price: number, currency: 'USD' | 'BYN'): string {
+  if (currency === 'BYN') {
+    return new Intl.NumberFormat("ru-BY", {
+      style: "currency",
+      currency: "BYN",
+      minimumFractionDigits: 0,
+    }).format(price);
+  }
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+  }).format(price);
+}
+
+export const formatPhoneNumber = (value: string): string => {
+  // Удаляем все нецифровые символы
+  const digits = value.replace(/\D/g, "");
+
+  // Удаляем белорусский префикс, если он есть, чтобы избежать дублирования
+  const withoutPrefix = digits.startsWith("375") ? digits.substring(3) : digits;
+
+  // Ограничиваем количество цифр до 9
+  const limitedDigits = withoutPrefix.slice(0, 9);
+
+  // Возвращаем отформатированный номер
+  return `+375${limitedDigits}`;
+};
