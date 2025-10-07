@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import CarCard from "@/components/car-card"
 import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { firestoreApi } from "@/lib/firestore-api"
 
 interface Car {
@@ -311,9 +311,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
            filters.fuelType !== "any" || filters.driveTrain !== "any"
   }
 
-  // Мобильные фильтры компонент
-  const MobileFilters = () => (
-    <div className="space-y-4 max-h-[70vh] overflow-y-auto px-1">
+  const MobileFiltersContent = () => (
+    <div className="space-y-4">
       {/* Марка */}
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700">Марка</Label>
@@ -395,31 +394,30 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           />
         </div>
       </div>
-
-      {/* Кнопки */}
-      <div className="flex space-x-3 pt-4">
-        <Button
-          onClick={() => {
-            setIsFilterOpen(false)
-          }}
-          className="flex-1 h-11 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors"
-        >
-          Применить
-        </Button>
-        <Button
-          onClick={() => {
-            resetFilters()
-            setIsFilterOpen(false)
-          }}
-          variant="outline"
-          className="flex-1 h-11 bg-white border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Сбросить
-        </Button>
-      </div>
     </div>
-  )
+  );
+
+  const MobileFiltersFooter = () => (
+    <div className="flex space-x-3">
+      <Button
+        onClick={() => setIsFilterOpen(false)}
+        className="flex-1 h-11 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors"
+      >
+        Применить
+      </Button>
+      <Button
+        onClick={() => {
+          resetFilters()
+          setIsFilterOpen(false)
+        }}
+        variant="outline"
+        className="flex-1 h-11 bg-white border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+      >
+        <RotateCcw className="h-4 w-4 mr-2" />
+        Сбросить
+      </Button>
+    </div>
+  );
 
   // Десктопные фильтры компонент
   const DesktopFilters = () => (
@@ -637,26 +635,25 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Мобильная кнопка фильтров */}
           <div className="lg:hidden mb-6">
-            <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full h-11 bg-white border-gray-200 hover:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Фильтры
-                  {hasActiveFilters() && (
-                    <span className="ml-2 w-2 h-2 bg-slate-500 rounded-full"></span>
-                  )}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-sm rounded-2xl border border-gray-200 bg-white">
-                <DialogHeader className="pb-4">
-                  <DialogTitle className="text-lg font-medium text-gray-900">Фильтры поиска</DialogTitle>
-                </DialogHeader>
-                <MobileFilters />
-              </DialogContent>
-            </Dialog>
+            <Button
+              variant="outline"
+              className="w-full h-11 bg-white border-gray-200 hover:bg-gray-50 rounded-lg transition-colors"
+              onClick={() => setIsFilterOpen(true)}
+            >
+              <Filter className="h-4 w-4 mr-2" />
+              Фильтры
+              {hasActiveFilters() && (
+                <span className="ml-2 w-2 h-2 bg-slate-500 rounded-full"></span>
+              )}
+            </Button>
+            <UniversalDrawer
+              open={isFilterOpen}
+              onOpenChange={setIsFilterOpen}
+              title="Фильтры поиска"
+              footer={<MobileFiltersFooter />}
+            >
+              <MobileFiltersContent />
+            </UniversalDrawer>
           </div>
 
           {/* Десктопные фильтры */}
