@@ -203,6 +203,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [loading, setLoading] = useState(true)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
+  const [isCreditOpen, setIsCreditOpen] = useState(false)
   const [isFinancialAssistantOpen, setFinancialAssistantOpen] = useState(false)
   const [bookingForm, setBookingForm] = useState({ name: "", phone: "+375", message: "" })
   const [callbackForm, setCallbackForm] = useState({ name: "", phone: "+375" })
@@ -1279,7 +1280,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     </div>
                     <Button
-                      onClick={() => setIsCreditOpen(true)}
+                      onClick={() => setFinancialAssistantOpen(true)}
                       className="w-full bg-slate-900 hover:bg-black text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"
                     >
                       <Calculator className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
@@ -1382,6 +1383,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
         </div>
 
         {/* Диалоги */}
+        <FinancialAssistantDrawer
+          open={isFinancialAssistantOpen}
+          onOpenChange={setFinancialAssistantOpen}
+          car={car}
+        />
         <Dialog open={isCreditOpen} onOpenChange={setIsCreditOpen}>
           <DialogContent className="max-w-lg sm:max-w-4xl max-h-[95vh] overflow-y-auto p-3 sm:p-6">
             <DialogHeader className="pb-2 sm:pb-4">

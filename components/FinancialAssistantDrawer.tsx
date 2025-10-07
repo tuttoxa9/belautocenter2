@@ -139,7 +139,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
     const rateValue = selectedBank.rate ?? selectedBank.minRate ?? 0;
     const rate = rateValue / 100 / 12;
     const term = loanTerm[0];
-    if (rate <= 0) return term > 0 ? principal / term : 0;
+    if (rate <= 0 || term <= 0) return term > 0 ? principal / term : 0;
     return principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
   };
 
