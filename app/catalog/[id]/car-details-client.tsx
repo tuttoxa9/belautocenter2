@@ -13,6 +13,7 @@ import { parseFirestoreDoc } from "@/lib/firestore-parser"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -1292,23 +1293,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 {/* Кнопки действий */}
                 <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
                   <div className="grid grid-cols-1 gap-2 sm:gap-3">
-                    <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-                      <DialogTrigger asChild>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
-                          <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                          Записаться на просмотр
-                        </Button>
-                      </DialogTrigger>
-                    </Dialog>
+<Button onClick={() => setIsBookingOpen(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+  <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+  Записаться на просмотр
+</Button>
 
-                    <Dialog open={isCallbackOpen} onOpenChange={setIsCallbackOpen}>
-                      <DialogTrigger asChild>
-                        <Button className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
-                          <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                          Заказать звонок
-                        </Button>
-                      </DialogTrigger>
-                    </Dialog>
+<Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+  <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+  Заказать звонок
+</Button>
                   </div>
                 </div>
 
@@ -1874,108 +1867,110 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           </DialogContent>
         </Dialog>
 
-        {/* Диалог бронирования */}
-        <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Записаться на просмотр</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleBookingSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="bookingName">Ваше имя</Label>
+<UniversalDrawer
+  open={isBookingOpen}
+  onOpenChange={setIsBookingOpen}
+  title="Записаться на просмотр"
+  footer={
+    <StatusButton
+      type="submit"
+      form="booking-form"
+      className="w-full"
+      state={bookingButtonState.state}
+      loadingText="Отправляем..."
+      successText="Заявка отправлена!"
+      errorText="Ошибка"
+    >
+      Записаться на просмотр
+    </StatusButton>
+  }
+>
+  <form id="booking-form" onSubmit={handleBookingSubmit} className="space-y-4">
+    <div>
+      <Label htmlFor="bookingName">Ваше имя</Label>
+      <Input
+        id="bookingName"
+        value={bookingForm.name}
+        onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
+        required
+      />
+    </div>
+    <div>
+      <Label htmlFor="bookingPhone">Номер телефона</Label>
+      <div className="relative">
                 <Input
-                  id="bookingName"
-                  value={bookingForm.name}
-                  onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
+          id="bookingPhone"
+          value={bookingForm.phone}
+          onChange={(e) => setBookingForm({ ...bookingForm, phone: formatPhoneNumber(e.target.value) })}
+          placeholder="+375XXXXXXXXX"
                   required
+          className="pr-10"
                 />
+        {isPhoneValid(bookingForm.phone) && (
+          <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
+        )}
               </div>
-              <div>
-                <Label htmlFor="bookingPhone">Номер телефона</Label>
-                <div className="relative">
-                  <Input
-                    id="bookingPhone"
-                    value={bookingForm.phone}
-                    onChange={(e) => setBookingForm({ ...bookingForm, phone: formatPhoneNumber(e.target.value) })}
-                    placeholder="+375XXXXXXXXX"
-                    required
-                    className="pr-10"
-                  />
-                  {isPhoneValid(bookingForm.phone) && (
-                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-                  )}
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="bookingMessage">Комментарий</Label>
-                <Textarea
-                  id="bookingMessage"
-                  value={bookingForm.message}
-                  onChange={(e) => setBookingForm({ ...bookingForm, message: e.target.value })}
-                  placeholder="Удобное время для просмотра..."
-                />
-              </div>
-              <StatusButton
-                type="submit"
-                className="w-full"
-                state={bookingButtonState.state}
-                loadingText="Отправляем..."
-                successText="Заявка отправлена!"
-                errorText="Ошибка"
-              >
-                Записаться на просмотр
-              </StatusButton>
-            </form>
-          </DialogContent>
-        </Dialog>
+    </div>
+    <div>
+      <Label htmlFor="bookingMessage">Комментарий</Label>
+      <Textarea
+        id="bookingMessage"
+        value={bookingForm.message}
+        onChange={(e) => setBookingForm({ ...bookingForm, message: e.target.value })}
+        placeholder="Удобное время для просмотра..."
+      />
+    </div>
+  </form>
+</UniversalDrawer>
 
-        {/* Диалог обратного звонка */}
-        <Dialog open={isCallbackOpen} onOpenChange={setIsCallbackOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Заказать обратный звонок</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleCallbackSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="callbackName">Ваше имя</Label>
+<UniversalDrawer
+  open={isCallbackOpen}
+  onOpenChange={setIsCallbackOpen}
+  title="Заказать обратный звонок"
+  footer={
+    <StatusButton
+      type="submit"
+      form="callback-form"
+      className="w-full"
+      state={callbackButtonState.state}
+      loadingText="Отправляем..."
+      successText="Заявка отправлена!"
+      errorText="Ошибка"
+    >
+      Жду звонка
+    </StatusButton>
+  }
+>
+  <form id="callback-form" onSubmit={handleCallbackSubmit} className="space-y-4">
+    <div>
+      <Label htmlFor="callbackName">Ваше имя</Label>
+      <Input
+        id="callbackName"
+        value={callbackForm.name}
+        onChange={(e) => setCallbackForm({ ...callbackForm, name: e.target.value })}
+        required
+      />
+    </div>
+    <div>
+      <Label htmlFor="callbackPhone">Номер телефона</Label>
+      <div className="relative">
                 <Input
-                  id="callbackName"
-                  value={callbackForm.name}
-                  onChange={(e) => setCallbackForm({ ...callbackForm, name: e.target.value })}
+          id="callbackPhone"
+          value={callbackForm.phone}
+          onChange={(e) =>
+            setCallbackForm({ ...callbackForm, phone: formatPhoneNumber(e.target.value) })
+          }
+          placeholder="+375XXXXXXXXX"
                   required
+          className="pr-10"
                 />
+        {isPhoneValid(callbackForm.phone) && (
+          <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
+        )}
               </div>
-              <div>
-                <Label htmlFor="callbackPhone">Номер телефона</Label>
-                <div className="relative">
-                  <Input
-                    id="callbackPhone"
-                    value={callbackForm.phone}
-                    onChange={(e) =>
-                      setCallbackForm({ ...callbackForm, phone: formatPhoneNumber(e.target.value) })
-                    }
-                    placeholder="+375XXXXXXXXX"
-                    required
-                    className="pr-10"
-                  />
-                  {isPhoneValid(callbackForm.phone) && (
-                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-                  )}
-                </div>
-              </div>
-              <StatusButton
-                type="submit"
-                className="w-full"
-                state={callbackButtonState.state}
-                loadingText="Отправляем..."
-                successText="Заявка отправлена!"
-                errorText="Ошибка"
-              >
-                Заказать звонок
-              </StatusButton>
-            </form>
-          </DialogContent>
-        </Dialog>
+    </div>
+  </form>
+</UniversalDrawer>
 
         {/* Диалог кредитной заявки */}
         <Dialog open={isCreditFormOpen} onOpenChange={setIsCreditFormOpen}>

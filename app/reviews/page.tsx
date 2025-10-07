@@ -3,14 +3,7 @@
 import { useState, useEffect } from "react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogTrigger
-} from "@/components/ui/dialog"
+import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { Star, User, MessageSquare, Calendar, ArrowRight, Filter, ChevronDown, X } from "lucide-react"
 import Link from "next/link"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -455,83 +448,79 @@ export default function ReviewsPage() {
           )}
         </div>
 
-        {/* Модальное окно для полного отзыва */}
-        <Dialog open={!!selectedReview} onOpenChange={(open) => !open && setSelectedReview(null)}>
-          <DialogContent className="max-w-6xl w-full max-h-[70vh] overflow-hidden p-0 bg-white">
-            {selectedReview && (
-              <div className="flex flex-col lg:flex-row h-full">
-                {/* Левая часть - изображение */}
-                <div className="w-full lg:w-1/2 bg-slate-50 flex items-center justify-center p-6 lg:p-8">
-                  {selectedReview.imageUrl ? (
-                    <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl overflow-hidden bg-white shadow-lg">
-                      <img
-                        src={getCachedImageUrl(selectedReview.imageUrl)}
-                        alt="Фото отзыва"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                      <div className="text-center space-y-3">
-                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
-                          <User className="h-8 w-8 text-slate-500" />
-                        </div>
-                        <p className="text-slate-600 font-medium">{selectedReview.name}</p>
-                        <div className="flex justify-center">
-                          {renderStars(selectedReview.rating, "md")}
-                        </div>
+        {/* Drawer для полного отзыва */}
+        <UniversalDrawer
+          open={!!selectedReview}
+          onOpenChange={(open) => !open && setSelectedReview(null)}
+          title={`Отзыв от ${selectedReview?.name || ''}`}
+          className="sm:max-w-4xl"
+          noPadding
+        >
+          {selectedReview && (
+            <div className="flex flex-col lg:flex-row h-full">
+              {/* Левая часть - изображение */}
+              <div className="w-full lg:w-1/2 bg-slate-50 flex items-center justify-center p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-slate-200">
+                {selectedReview.imageUrl ? (
+                  <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl overflow-hidden bg-white shadow-lg">
+                    <img
+                      src={getCachedImageUrl(selectedReview.imageUrl)}
+                      alt="Фото отзыва"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                    <div className="text-center space-y-3">
+                      <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
+                        <User className="h-8 w-8 text-slate-500" />
                       </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Правая часть - информация и текст */}
-                <div className="w-full lg:w-1/2 p-6 lg:p-8 flex flex-col">
-                  {/* Заголовок с кнопкой закрытия */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div>
-                      <DialogTitle className="text-xl lg:text-2xl font-bold text-slate-900 mb-2">
-                        Отзыв от {selectedReview.name}
-                      </DialogTitle>
-                      <div className="flex items-center space-x-3">
-                        <div className="flex">{renderStars(selectedReview.rating, "md")}</div>
-                        <span className="text-sm text-slate-500">{selectedReview.rating}/5</span>
+                      <p className="text-slate-600 font-medium">{selectedReview.name}</p>
+                      <div className="flex justify-center">
+                        {renderStars(selectedReview.rating, "md")}
                       </div>
                     </div>
                   </div>
+                )}
+              </div>
 
-                  {/* Модель автомобиля */}
-                  {selectedReview.carModel && (
-                    <div className="bg-slate-50 rounded-xl px-4 py-3 mb-6 border border-slate-200/50">
-                      <p className="text-sm text-slate-600">
-                        <span className="font-semibold text-slate-800">Автомобиль:</span> {selectedReview.carModel}
-                      </p>
-                    </div>
-                  )}
+              {/* Правая часть - информация и текст */}
+              <div className="w-full lg:w-1/2 p-6 lg:p-8 flex flex-col">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="flex">{renderStars(selectedReview.rating, "md")}</div>
+                  <span className="text-sm text-slate-500">{selectedReview.rating}/5</span>
+                </div>
 
-                  {/* Полный текст отзыва */}
-                  <div className="flex-1 overflow-y-auto">
-                    <p className="text-slate-700 text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
-                      {selectedReview.text}
+                {/* Модель автомобиля */}
+                {selectedReview.carModel && (
+                  <div className="bg-slate-50 rounded-xl px-4 py-3 mb-6 border border-slate-200/50">
+                    <p className="text-sm text-slate-600">
+                      <span className="font-semibold text-slate-800">Автомобиль:</span> {selectedReview.carModel}
                     </p>
                   </div>
+                )}
 
-                  {/* Дата */}
-                  <div className="flex items-center space-x-2 text-sm text-slate-500 pt-6 border-t border-slate-200/50 mt-6">
-                    <Calendar className="h-4 w-4 flex-shrink-0" />
-                    <span>
-                      Опубликовано {selectedReview.createdAt.toLocaleDateString("ru-RU", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
+                {/* Полный текст отзыва */}
+                <div className="flex-1 overflow-y-auto pr-2">
+                  <p className="text-slate-700 text-base leading-relaxed whitespace-pre-wrap">
+                    {selectedReview.text}
+                  </p>
+                </div>
+
+                {/* Дата */}
+                <div className="flex items-center space-x-2 text-sm text-slate-500 pt-6 border-t border-slate-200/50 mt-6">
+                  <Calendar className="h-4 w-4 flex-shrink-0" />
+                  <span>
+                    Опубликовано {selectedReview.createdAt.toLocaleDateString("ru-RU", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
                 </div>
               </div>
-            )}
-          </DialogContent>
-        </Dialog>
+            </div>
+          )}
+        </UniversalDrawer>
       </div>
     </div>
   )

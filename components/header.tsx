@@ -8,7 +8,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -40,7 +40,6 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [formData, setFormData] = useState({ name: "", phone: "+375" })
   const [settings, setSettings] = useState<Settings | null>(null)
-  const [phoneLoading, setPhoneLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { showSuccess } = useNotification()
@@ -270,58 +269,53 @@ export default function Header() {
             )}
           </div>
 
-          <Dialog open={isCallbackOpen} onOpenChange={(open) => { setIsCallbackOpen(open); if (!open) setPhoneLoading(false); }}>
-            <DialogTrigger asChild>
-              <Button
-                size="sm"
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg text-sm px-4 py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-xl whitespace-nowrap"
-                onClick={() => setPhoneLoading(true)}
-              >
-                {phoneLoading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Phone className="h-4 w-4 mr-2" />
-                )}
-                <span>Заказать звонок</span>
+          <Button
+            size="sm"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg text-sm px-4 py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-xl whitespace-nowrap"
+            onClick={() => setIsCallbackOpen(true)}
+          >
+            <Phone className="h-4 w-4 mr-2" />
+            <span>Заказать звонок</span>
+          </Button>
+          <UniversalDrawer
+            open={isCallbackOpen}
+            onOpenChange={setIsCallbackOpen}
+            title="Заказать обратный звонок"
+            footer={
+              <Button type="submit" form="header-callback-form" className="w-full" loading={isSubmitting}>
+                Жду звонка
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Заказать обратный звонок</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleCallbackSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Ваше имя</Label>
+            }
+          >
+            <form id="header-callback-form" onSubmit={handleCallbackSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="header-callback-name">Ваше имя</Label>
+                <Input
+                  id="header-callback-name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Введите ваше имя"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="header-callback-phone">Номер телефона</Label>
+                <div className="relative">
                   <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Введите ваше имя"
+                    id="header-callback-phone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: formatPhoneNumber(e.target.value) })}
+                    placeholder="+375XXXXXXXXX"
                     required
+                    className="pr-10"
                   />
+                  {isPhoneValid(formData.phone) && (
+                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
+                  )}
                 </div>
-                <div>
-                  <Label htmlFor="phone">Номер телефона</Label>
-                  <div className="relative">
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: formatPhoneNumber(e.target.value) })}
-                      placeholder="+375XXXXXXXXX"
-                      required
-                      className="pr-10"
-                    />
-                    {isPhoneValid(formData.phone) && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-                    )}
-                  </div>
-                </div>
-                <Button type="submit" className="w-full" loading={isSubmitting}>
-                  Заказать звонок
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+              </div>
+            </form>
+          </UniversalDrawer>
         </div>
       </div>
     </header>
