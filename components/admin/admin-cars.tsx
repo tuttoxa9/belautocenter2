@@ -31,7 +31,6 @@ export default function AdminCars() {
   const [isSaving, setIsSaving] = useState(false)
   const [sortOption, setSortOption] = useState("createdAt_desc") // По умолчанию сортировка по дате добавления (новые вначале)
   const [filterOption, setFilterOption] = useState("all") // По умолчанию все автомобили
-  const cacheInvalidator = createCacheInvalidator('cars')
   const saveButtonState = useButtonState()
   const deleteButtonStates = {}
   const [carForm, setCarForm] = useState({
@@ -88,9 +87,28 @@ export default function AdminCars() {
     }
   }
 
+  // Функция для вызова API ревалидации для нескольких путей
+  const triggerRevalidation = async (paths: string[]) => {
+    for (const path of paths) {
+      try {
+        await fetch('/api/revalidate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-revalidate-secret': process.env.NEXT_PUBLIC_REVALIDATE_SECRET_TOKEN || ''
+          },
+          body: JSON.stringify({ path })
+        });
+      } catch (error) {
+        console.error(`Failed to revalidate path ${path}:`, error);
+      }
+    }
+  }
+
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSaving(true)
+    e.preventDefault();
+    setIsSaving(true);
+    let carId = editingCar?.id;
     try {
       const carData = {
         ...carForm,
@@ -101,30 +119,33 @@ export default function AdminCars() {
         imageUrls: carForm.imageUrls.filter((url) => url.trim() !== ""),
         createdAt: editingCar ? editingCar.createdAt : new Date(),
         updatedAt: new Date(),
-      }
+      };
 
       if (editingCar) {
-        await updateDoc(doc(db, "cars", editingCar.id), carData)
-        await cacheInvalidator.onUpdate(editingCar.id)
+        await updateDoc(doc(db, "cars", editingCar.id), carData);
       } else {
-        const docRef = await addDoc(collection(db, "cars"), carData)
-        await cacheInvalidator.onCreate(docRef.id)
+        const docRef = await addDoc(collection(db, "cars"), carData);
+        carId = docRef.id; // Получаем ID нового автомобиля
       }
 
-      // Уведомляем о изменении данных для обновления каталога
-      localStorage.setItem('cars_updated', Date.now().toString())
-      window.dispatchEvent(new CustomEvent('carsUpdated'))
+      // Сбрасываем кэш каталога и страницы автомобиля
+      if (carId) {
+        await triggerRevalidation(['/catalog', `/catalog/${carId}`]);
+      } else {
+        // Если ID по какой-то причине не получили, ревалидируем только каталог
+        await triggerRevalidation(['/catalog']);
+      }
 
-      setIsSheetOpen(false)
-      setEditingCar(null)
-      resetForm()
-      loadCars()
+      setIsSheetOpen(false);
+      setEditingCar(null);
+      resetForm();
+      loadCars();
     } catch (error) {
-      alert("Ошибка сохранения автомобиля")
+      alert("Ошибка сохранения автомобиля");
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const handleEdit = (car) => {
     setEditingCar(car)
@@ -148,11 +169,9 @@ export default function AdminCars() {
     if (confirm("Удалить этот автомобиль?")) {
       try {
         await deleteDoc(doc(db, "cars", carId))
-        await cacheInvalidator.onDelete(carId)
 
-        // Уведомляем о изменении данных для обновления каталога
-        localStorage.setItem('cars_updated', Date.now().toString())
-        window.dispatchEvent(new CustomEvent('carsUpdated'))
+        // Сбрасываем кэш каталога и удаленной страницы
+        await triggerRevalidation(['/catalog', `/catalog/${carId}`]);
 
         loadCars()
       } catch (error) {

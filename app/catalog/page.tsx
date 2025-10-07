@@ -3,8 +3,9 @@ import CatalogClient from './catalog-client'
 import { db } from '@/lib/firebase-admin'
 import { Car } from '@/types/car'
 
-// Включаем динамический рендеринг, чтобы страница реагировала на searchParams
-export const dynamic = 'force-dynamic'
+// Кэшируем страницу каталога на 6 часов (инкрементальная статическая регенерация)
+// Это значительно сократит использование Vercel Functions.
+export const revalidate = 21600
 
 // Функция для безопасной сериализации данных из Firestore
 const serializeFirestoreData = (doc: any): Car => {
