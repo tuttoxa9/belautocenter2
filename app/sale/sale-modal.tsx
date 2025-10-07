@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { StatusButton } from "@/components/ui/status-button"
-import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, RotateCcw, TrendingUp } from "lucide-react"
+import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, RotateCcw, TrendingUp, CheckCircle } from "lucide-react"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -82,7 +82,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
           const data = docSnap.data()
           setFunnelSettings(prev => ({ ...prev, ...data }))
         }
-      } catch (error) {
+      } catch {
       }
     }
 
@@ -138,7 +138,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
       } else {
         throw new Error('Ошибка отправки')
       }
-    } catch (error) {
+    } catch {
       submitButtonState.setError(true)
     }
   }
