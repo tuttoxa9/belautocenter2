@@ -195,8 +195,15 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
   const carImage = car?.imageUrls?.[0] ? getCachedImageUrl(car.imageUrls[0]) : "/placeholder.svg";
 
   const renderContent = () => (
-    <div className="flex flex-col h-full bg-white">
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+    <div className={`flex flex-col bg-white ${isMobile ? 'h-full' : 'h-full'}`}>
+      <div
+        className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+          touchAction: 'pan-y'
+        }}
+      >
         {car && (
           <div className="flex items-center space-x-4 p-3 bg-slate-50 rounded-xl border">
             <Image src={carImage} alt={carName} width={80} height={60} className="rounded-lg object-cover" />
@@ -293,7 +300,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
           </div>
         </div>
       </div>
-      <div className="p-4 sm:p-6 border-t bg-white/80 backdrop-blur-sm sticky bottom-0">
+      <div className={`p-4 sm:p-6 border-t bg-white/80 backdrop-blur-sm ${isMobile ? 'flex-shrink-0' : 'sticky bottom-0'}`}>
         <Button onClick={handleCreditSubmit} className="w-full h-12 text-base" disabled={!isPhoneValid(creditForm.phone) || !creditForm.name || creditButtonState.isLoading}>
             {creditButtonState.isLoading ? 'Отправка...' : `Отправить заявку на ${financeType === 'credit' ? 'кредит' : 'лизинг'}`}
         </Button>
@@ -317,9 +324,11 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[95vh]">
-        <DrawerHeader className="text-left"><DrawerTitle>{title}</DrawerTitle></DrawerHeader>
-        {renderContent()}
+      <DrawerContent className="max-h-[90vh] h-[90vh] flex flex-col">
+        <DrawerHeader className="text-left flex-shrink-0"><DrawerTitle>{title}</DrawerTitle></DrawerHeader>
+        <div className="flex-1 overflow-hidden">
+          {renderContent()}
+        </div>
       </DrawerContent>
     </Drawer>
   );
