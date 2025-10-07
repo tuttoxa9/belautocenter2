@@ -21,8 +21,8 @@ export class FirestoreApi {
       }
 
       const path = forceRefresh
-        ? `/${collectionName}?_t=${Date.now()}`
-        : `/${collectionName}`;
+        ? `/api/${collectionName}?_t=${Date.now()}`
+        : `/api/${collectionName}`;
 
       const response = await apiClient.get<any>(path, { headers })
 
@@ -58,7 +58,7 @@ export class FirestoreApi {
    */
   async getDocument(collectionName: string, documentId: string): Promise<FirestoreDocument | null> {
     try {
-      const doc = await apiClient.get<any>(`/${collectionName}/${documentId}`)
+      const doc = await apiClient.get<any>(`/api/${collectionName}/${documentId}`)
 
       if (!doc || !doc.fields) {
         return null
@@ -85,7 +85,7 @@ export class FirestoreApi {
   async addDocument(collectionName: string, data: Record<string, any>): Promise<{ id: string }> {
     try {
       const firebaseData = this.convertToFirestoreFormat(data)
-      const response = await apiClient.post<any>(`/${collectionName}`, { fields: firebaseData })
+      const response = await apiClient.post<any>(`/api/${collectionName}`, { fields: firebaseData })
       const id = response.name.split('/').pop() || ''
       return { id }
     } catch (error) {
@@ -100,7 +100,7 @@ export class FirestoreApi {
   async updateDocument(collectionName: string, documentId: string, data: Record<string, any>): Promise<void> {
     try {
       const firebaseData = this.convertToFirestoreFormat(data)
-      await apiClient.put<any>(`/${collectionName}/${documentId}`, { fields: firebaseData })
+      await apiClient.put<any>(`/api/${collectionName}/${documentId}`, { fields: firebaseData })
     } catch (error) {
 
       throw error
@@ -112,7 +112,7 @@ export class FirestoreApi {
    */
   async deleteDocument(collectionName: string, documentId: string): Promise<void> {
     try {
-      await apiClient.delete<any>(`/${collectionName}/${documentId}`)
+      await apiClient.delete<any>(`/api/${collectionName}/${documentId}`)
     } catch (error) {
 
       throw error
