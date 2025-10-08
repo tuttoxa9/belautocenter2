@@ -457,11 +457,11 @@ export default function ReviewsPage() {
           noPadding
         >
           {selectedReview && (
-            <div className="flex flex-col lg:flex-row h-full">
-              {/* Левая часть - изображение */}
-              <div className="w-full lg:w-1/2 bg-slate-50 flex items-center justify-center p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-slate-200">
+            <div className="flex flex-col h-full">
+              {/* Верхняя часть - изображение */}
+              <div className="w-full bg-slate-50 flex items-center justify-center p-6 border-b border-slate-200">
                 {selectedReview.imageUrl ? (
-                  <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl overflow-hidden bg-white shadow-lg">
+                  <div className="w-full h-80 max-w-lg rounded-2xl overflow-hidden bg-white shadow-lg">
                     <img
                       src={getCachedImageUrl(selectedReview.imageUrl)}
                       alt="Фото отзыва"
@@ -469,7 +469,7 @@ export default function ReviewsPage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-full h-64 lg:h-full max-h-96 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                  <div className="w-full h-80 max-w-lg rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
                     <div className="text-center space-y-3">
                       <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
                         <User className="h-8 w-8 text-slate-500" />
@@ -483,8 +483,8 @@ export default function ReviewsPage() {
                 )}
               </div>
 
-              {/* Правая часть - информация и текст */}
-              <div className="w-full lg:w-1/2 p-6 lg:p-8 flex flex-col">
+              {/* Нижняя часть - информация и текст */}
+              <div className="flex-1 p-6 lg:p-8 flex flex-col">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="flex">{renderStars(selectedReview.rating, "md")}</div>
                   <span className="text-sm text-slate-500">{selectedReview.rating}/5</span>
