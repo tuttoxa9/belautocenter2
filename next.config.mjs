@@ -42,10 +42,6 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     unoptimized: true,
   },
-  experimental: {
-    esmExternals: 'loose',
-  },
-  swcMinify: true,
   compiler: {
     removeConsole: true,
   },

@@ -29,7 +29,7 @@ import {
   Gauge,
   Fuel,
   Settings,
-  Car,
+  Car as CarIcon, // Renamed to avoid conflict with type
   Phone,
   CreditCard,
   ChevronLeft,
@@ -50,126 +50,8 @@ import CarDetailsSkeleton from "@/components/car-details-skeleton"
 import MarkdownRenderer from "@/components/markdown-renderer"
 
 import { useDebouncedTouch } from "@/hooks/use-debounced-touch"
-import { preloadImages, preloadImage } from "@/lib/image-preloader"
-
-// Кэш для статических данных (загружается один раз за сессию)
-let staticDataCache: {
-  banks?: any[]
-  leasingCompanies?: any[]
-  contactPhones?: { main?: string, additional?: string }
-  lastLoadTime?: number
-} = {}
-
-const CACHE_DURATION = 5 * 60 * 1000 // 5 минут
-
-// Компонент ошибки для несуществующего автомобиля
-const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: string, contactPhone2?: string }) => {
-  // Используем hook из контекста для получения настроек
-  const { settings, isLoading: isSettingsLoading } = useSettings();
-  // State для отображения скелетона
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Установим задержку, чтобы сначала загрузились настройки
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Получаем номера телефонов из настроек, если доступны, иначе используем переданные параметры
-  // Но только если настройки загружены
-  const phoneNumber = !isLoading && settings?.main?.showroomInfo?.phone
-    ? settings.main.showroomInfo.phone
-    : '';
-
-  const phoneNumber2 = !isLoading && settings?.main?.showroomInfo?.phone2
-    ? settings.main.showroomInfo.phone2
-    : '';
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
-      <div className="text-center max-w-md mx-auto px-4">
-        <div className="mb-6">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-slate-900 mb-4">Автомобиль не найден</h1>
-          <p className="text-slate-600 mb-6">
-            К сожалению, автомобиль с указанным ID не существует или произошла ошибка при загрузке данных.
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Нужна помощь?</h3>
-          <p className="text-slate-600 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
-
-          {isLoading || isSettingsLoading ? (
-            <div className="flex flex-col items-center space-y-4">
-              <div className="h-6 bg-slate-200 rounded w-32 animate-pulse"></div>
-              <div className="h-6 bg-slate-200 rounded w-32 animate-pulse"></div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center space-y-2 text-blue-600">
-              {phoneNumber && (
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-5 w-5" />
-                  <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-                    {phoneNumber}
-                  </a>
-                </div>
-              )}
-              {phoneNumber2 && (
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-5 w-5" />
-                  <a href={`tel:${phoneNumber2.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-                    {phoneNumber2}
-                  </a>
-                </div>
-              )}
-              {!phoneNumber && !phoneNumber2 && (
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-5 w-5" />
-                  <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="font-semibold hover:text-blue-700 transition-colors">
-                    {contactPhone}
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <Button
-          onClick={() => window.location.href = '/catalog'}
-          className="w-full bg-slate-900 hover:bg-slate-800 text-white"
-        >
-          Перейти к каталогу
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-interface Car {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  price: number;
-  currency: string;
-  mileage: number;
-  engineVolume: number;
-  fuelType: string;
-  transmission: string;
-  driveTrain: string;
-  bodyType: string;
-  color: string;
-  description: string;
-  imageUrls: string[];
-  isAvailable: boolean;
-  features: string[];
-  specifications: Record<string, string>;
-  tiktok_url?: string;
-  youtube_url?: string;
-}
+import { preloadImages } from "@/lib/image-preloader"
+import type { Car } from "@/types/car"
 
 interface PartnerBank {
   id: number;
@@ -191,17 +73,15 @@ interface LeasingCompany {
 }
 
 interface CarDetailsClientProps {
-  carId: string;
+  car: Car;
+  banks: PartnerBank[];
+  leasingCompanies: LeasingCompany[];
 }
 
-export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
+export default function CarDetailsClient({ car, banks, leasingCompanies }: CarDetailsClientProps) {
   const router = useRouter()
-  const [car, setCar] = useState<Car | null>(null)
-  const [contactPhone, setContactPhone] = useState<string>("")
-  const [contactPhone2, setContactPhone2] = useState<string>("")
-  const [carNotFound, setCarNotFound] = useState(false)
   const usdBynRate = useUsdBynRate()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false) // All data is pre-loaded
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isCreditOpen, setIsCreditOpen] = useState(false)
@@ -210,10 +90,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [callbackForm, setCallbackForm] = useState({ name: "", phone: "+375" })
   const [creditForm, setCreditForm] = useState({ name: "", phone: "+375", message: "" })
   const [isCreditFormOpen, setIsCreditFormOpen] = useState(false)
-  const [partnerBanks, setPartnerBanks] = useState<PartnerBank[]>([])
-  const [loadingBanks, setLoadingBanks] = useState(true)
-  const [leasingCompanies, setLeasingCompanies] = useState<any[]>([])
-  const [loadingLeasing, setLoadingLeasing] = useState(true)
   const [financeType, setFinanceType] = useState<'credit' | 'leasing'>('credit')
   // Состояние кредитного калькулятора
   const [creditAmount, setCreditAmount] = useState([75000])
@@ -251,17 +127,23 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   // Settings hook
   const { settings } = useSettings()
 
+  // Этот useEffect теперь сбрасывает галерею и предзагружает фото при смене машины
   useEffect(() => {
-    if (carId) {
-      loadCarData(carId)
-      setCurrentImageIndex(0) // Сбрасываем индекс при загрузке нового авто
+    setCurrentImageIndex(0)
+    if (car.imageUrls && car.imageUrls.length > 1) {
+      preloadImages(car.imageUrls.slice(0, 3))
     }
-  }, [carId])
+  }, [car])
 
-  // Загружаем статические данные только один раз при инициализации компонента
+  // Инициализируем выбранный банк и лизинговую компанию при загрузке данных
   useEffect(() => {
-    loadStaticData()
-  }, [])
+    if (banks.length > 0) {
+      setSelectedBank(banks[0]);
+    }
+    if (leasingCompanies.length > 0) {
+      setSelectedLeasingCompany(leasingCompanies[0]);
+    }
+  }, [banks, leasingCompanies]);
 
   // Сброс значений калькулятора при открытии модального окна кредита
   useEffect(() => {
@@ -367,169 +249,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   };
 
-  const loadStaticData = async () => {
-    try {
-      // Проверяем кэш - если данные свежие, используем их
-      const now = Date.now()
-      if (staticDataCache.lastLoadTime &&
-          (now - staticDataCache.lastLoadTime) < CACHE_DURATION &&
-          staticDataCache.banks &&
-          staticDataCache.leasingCompanies &&
-          staticDataCache.contactPhones) {
-
-        // Используем кэшированные данные
-        setPartnerBanks(staticDataCache.banks)
-        setSelectedBank(staticDataCache.banks[0] || null)
-        setLeasingCompanies(staticDataCache.leasingCompanies)
-        setSelectedLeasingCompany(staticDataCache.leasingCompanies[0] || null)
-        setContactPhone(staticDataCache.contactPhones.main || "+375 29 123-45-67")
-        setContactPhone2(staticDataCache.contactPhones.additional || "")
-        return
-      }
-
-      setLoadingBanks(true)
-      setLoadingLeasing(true)
-
-      // Используем прямые запросы к Firestore (исключены vercel functions)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-      const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages`
-
-      // Определяем эндпоинты Firestore напрямую
-      const endpoints = {
-        banks: `${baseUrl}/credit`,
-        leasing: `${baseUrl}/leasing`,
-        contacts: `${baseUrl}/contacts`
-      }
-
-      // Выполняем запросы параллельно для максимальной скорости
-      const [banksResponse, leasingResponse, contactsResponse] = await Promise.all([
-        fetch(endpoints.banks, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.leasing, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.contacts, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        })
-      ])
-
-      // Получаем JSON из каждого ответа
-      const banksRawData = await banksResponse.json()
-      const leasingRawData = await leasingResponse.json()
-      const contactsRawData = await contactsResponse.json()
-
-      // Парсим полученные данные
-      const creditPageData = parseFirestoreDoc(banksRawData);
-      const leasingPageData = parseFirestoreDoc(leasingRawData);
-      const contacts = parseFirestoreDoc(contactsRawData);
-
-      // Безопасно извлекаем из них чистые массивы с партнерами
-      const banks = creditPageData.partners || [];
-      const leasingCompanies = leasingPageData.leasingCompanies || leasingPageData.partners || [];
-
-      // Сохраняем в кэш
-      staticDataCache = {
-        banks,
-        leasingCompanies,
-        contactPhones: {
-          main: contacts.phone || "+375 29 123-45-67",
-          additional: contacts.phone2 || ""
-        },
-        lastLoadTime: now
-      }
-
-      // Применяем обработанные данные
-      if (banks && banks.length > 0) {
-        setPartnerBanks(banks)
-        setSelectedBank(banks[0]) // Выбираем лучший банк по умолчанию
-      } else {
-        setPartnerBanks([])
-      }
-
-      // Устанавливаем данные лизинговых компаний
-      if (leasingCompanies && leasingCompanies.length > 0) {
-        setLeasingCompanies(leasingCompanies)
-        setSelectedLeasingCompany(leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
-      } else {
-        setLeasingCompanies([])
-      }
-
-      // Устанавливаем контактные телефоны из документа контактов
-      setContactPhone(staticDataCache.contactPhones.main)
-      setContactPhone2(staticDataCache.contactPhones.additional)
-
-    } catch (error) {
-      setPartnerBanks([])
-      setLeasingCompanies([])
-      setContactPhone("+375 29 123-45-67")
-      setContactPhone2("")
-    } finally {
-      setLoadingBanks(false)
-      setLoadingLeasing(false)
-    }
-  }
-
-  const loadCarData = async (carId: string) => {
-    try {
-      setLoading(true)
-
-      // Используем прямой запрос к Firestore (исключены vercel functions)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-      const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
-
-      const response = await fetch(firestoreUrl, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-
-      let carData = null
-      if (response.ok) {
-        const doc = await response.json()
-        // Используем парсер для обработки данных Firestore
-        carData = parseFirestoreDoc(doc)
-      }
-
-      if (carData) {
-        // Очистка данных от несериализуемых объектов
-        const cleanCarData = JSON.parse(JSON.stringify(carData))
-        setCar(cleanCarData as Car)
-        setCarNotFound(false)
-
-        // Оптимизированная предзагрузка первых 3 изображений
-        if (cleanCarData.imageUrls && cleanCarData.imageUrls.length > 1) {
-          preloadImages(cleanCarData.imageUrls.slice(0, 3))
-        }
-
-        // Устанавливаем значения калькулятора по умолчанию
-        const price = cleanCarData.price || 95000
-        setCreditAmount([price * 0.8])
-        setDownPayment([price * 0.2])
-      } else {
-        setCarNotFound(true)
-        setCar(null)
-      }
-    } catch (error) {
-      setCarNotFound(true)
-      setCar(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Функция для конвертации значения поля из формата Firestore
-  // Функция для конвертации полей удалена, теперь везде используется parseFirestoreDoc
+  // Функция loadStaticData и ее вызов удалены.
+  // Эта логика будет обрабатываться отдельно.
 
   const formatPrice = (price: number, currencyType?: 'USD' | 'BYN') => {
     if (currencyType === 'BYN' || (currencyType === undefined && isBelarusianRubles)) {
@@ -655,7 +376,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
         await addDoc(collection(db, "leads"), {
           ...bookingForm,
-          carId: carId,
+          carId: car.id,
           carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
           type: "booking",
           status: "new",
@@ -677,7 +398,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           carMake: car && car.make ? car.make : '',
           carModel: car && car.model ? car.model : '',
           carYear: car && car.year ? car.year : '',
-          carId: carId,
+          carId: car.id,
           type: 'car_booking'
         })
       })
@@ -699,7 +420,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
         await addDoc(collection(db, "leads"), {
           ...callbackForm,
-          carId: carId,
+          carId: car.id,
           carInfo: `${car?.make} ${car?.model} ${car?.year}`,
           type: "callback",
           status: "new",
@@ -720,7 +441,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           carMake: car && car.make ? car.make : '',
           carModel: car && car.model ? car.model : '',
           carYear: car && car.year ? car.year : '',
-          carId: carId,
+          carId: car.id,
           type: 'callback'
         })
       })
@@ -742,7 +463,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
         await addDoc(collection(db, "leads"), {
           ...creditForm,
-          carId: carId,
+          carId: car.id,
           carInfo: `${car?.make} ${car?.model} ${car?.year}`,
           type: financeType,
           status: "new",
@@ -771,7 +492,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           carMake: car && car.make ? car.make : '',
           carModel: car && car.model ? car.model : '',
           carYear: car && car.year ? car.year : '',
-          carId: carId,
+          carId: car.id,
           carPrice: isBelarusianRubles
             ? formatPrice(getCurrentCreditAmount() + getCurrentDownPayment(), 'BYN')
             : formatPrice(car?.price || 0, 'USD'),
@@ -796,10 +517,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
 
 
-
-  if (carNotFound) {
-    return <CarNotFoundComponent contactPhone={contactPhone} contactPhone2={contactPhone2} />
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">

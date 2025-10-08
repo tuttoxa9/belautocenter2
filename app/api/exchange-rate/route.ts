@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const runtime = 'edge' // Обязательно для Cloudflare Pages
+
 export async function GET() {
   try {
     const response = await fetch('https://api.nbrb.by/exrates/rates/431', {

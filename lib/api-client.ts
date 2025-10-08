@@ -11,11 +11,16 @@ export class ApiClient {
   private baseUrl: string
 
   constructor() {
-    // Используем относительный путь по умолчанию.
-    // Это позволяет коду работать на любом домене (Vercel, localhost, production),
-    // так как запросы будут отправляться на тот же хост, с которого загружена страница.
-    // Переменная NEXT_PUBLIC_API_HOST остается для гибкости, если понадобится указать другой хост.
-    this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || ''
+    // На сервере нам нужен абсолютный URL для fetch, в то время как на клиенте
+    // достаточно относительного. Проверяем, где выполняется код.
+    if (typeof window === 'undefined') {
+      // Мы на сервере. Используем полный URL сайта.
+      // NEXT_PUBLIC_SITE_URL должен быть определен в переменных окружения.
+      this.baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    } else {
+      // Мы на клиенте. Относительного пути достаточно.
+      this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || '';
+    }
   }
 
   async fetch<T>(

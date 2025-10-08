@@ -1,3 +1,5 @@
+export const runtime = 'edge'; // Обязательно для Cloudflare Pages
+
 export async function POST(request: Request) {
   try {
     const { collection: collectionName, documentId, action } = await request.json()
