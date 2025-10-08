@@ -192,16 +192,17 @@ interface LeasingCompany {
 
 interface CarDetailsClientProps {
   carId: string;
+  initialCarData: Car | null;
 }
 
-export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
+export default function CarDetailsClient({ carId, initialCarData }: CarDetailsClientProps) {
   const router = useRouter()
-  const [car, setCar] = useState<Car | null>(null)
+  const [car, setCar] = useState<Car | null>(initialCarData)
   const [contactPhone, setContactPhone] = useState<string>("")
   const [contactPhone2, setContactPhone2] = useState<string>("")
-  const [carNotFound, setCarNotFound] = useState(false)
+  const [carNotFound, setCarNotFound] = useState(!initialCarData)
   const usdBynRate = useUsdBynRate()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isCreditOpen, setIsCreditOpen] = useState(false)
@@ -252,11 +253,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const { settings } = useSettings()
 
   useEffect(() => {
-    if (carId) {
-      loadCarData(carId)
-      setCurrentImageIndex(0) // Сбрасываем индекс при загрузке нового авто
-    }
-  }, [carId])
+    // Reset the image index when the carId changes
+    setCurrentImageIndex(0)
+  }, [carId]);
 
   // Загружаем статические данные только один раз при инициализации компонента
   useEffect(() => {
@@ -479,54 +478,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }
 
-  const loadCarData = async (carId: string) => {
-    try {
-      setLoading(true)
-
-      // Используем прямой запрос к Firestore (исключены vercel functions)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-      const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
-
-      const response = await fetch(firestoreUrl, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-
-      let carData = null
-      if (response.ok) {
-        const doc = await response.json()
-        // Используем парсер для обработки данных Firestore
-        carData = parseFirestoreDoc(doc)
-      }
-
-      if (carData) {
-        // Очистка данных от несериализуемых объектов
-        const cleanCarData = JSON.parse(JSON.stringify(carData))
-        setCar(cleanCarData as Car)
-        setCarNotFound(false)
-
-        // Оптимизированная предзагрузка первых 3 изображений
-        if (cleanCarData.imageUrls && cleanCarData.imageUrls.length > 1) {
-          preloadImages(cleanCarData.imageUrls.slice(0, 3))
-        }
-
-        // Устанавливаем значения калькулятора по умолчанию
-        const price = cleanCarData.price || 95000
-        setCreditAmount([price * 0.8])
-        setDownPayment([price * 0.2])
-      } else {
-        setCarNotFound(true)
-        setCar(null)
-      }
-    } catch (error) {
-      setCarNotFound(true)
-      setCar(null)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   // Функция для конвертации значения поля из формата Firestore
   // Функция для конвертации полей удалена, теперь везде используется parseFirestoreDoc
