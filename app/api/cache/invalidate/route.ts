@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 export async function POST(request: Request) {
   try {
     const { collection: collectionName, documentId, action } = await request.json()

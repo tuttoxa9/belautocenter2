@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import { createCacheInvalidator } from "@/lib/cache-invalidation"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
@@ -31,7 +30,6 @@ export default function AdminCars() {
   const [isSaving, setIsSaving] = useState(false)
   const [sortOption, setSortOption] = useState("createdAt_desc") // По умолчанию сортировка по дате добавления (новые вначале)
   const [filterOption, setFilterOption] = useState("all") // По умолчанию все автомобили
-  const cacheInvalidator = createCacheInvalidator('cars')
   const saveButtonState = useButtonState()
   const deleteButtonStates = {}
   const [carForm, setCarForm] = useState({
@@ -88,6 +86,29 @@ export default function AdminCars() {
     }
   }
 
+  const revalidateCache = async () => {
+    try {
+      const response = await fetch('/api/revalidate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_REVALIDATION_SECRET}`
+        },
+        body: JSON.stringify({
+          purgeAll: true
+        })
+      });
+
+      if (response.ok) {
+        console.log('✅ Cache invalidated successfully');
+      } else {
+        console.error('❌ Cache invalidation failed');
+      }
+    } catch (error) {
+      console.error('❌ Revalidation error:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSaving(true)
@@ -105,15 +126,11 @@ export default function AdminCars() {
 
       if (editingCar) {
         await updateDoc(doc(db, "cars", editingCar.id), carData)
-        await cacheInvalidator.onUpdate(editingCar.id)
       } else {
-        const docRef = await addDoc(collection(db, "cars"), carData)
-        await cacheInvalidator.onCreate(docRef.id)
+        await addDoc(collection(db, "cars"), carData)
       }
 
-      // Уведомляем о изменении данных для обновления каталога
-      localStorage.setItem('cars_updated', Date.now().toString())
-      window.dispatchEvent(new CustomEvent('carsUpdated'))
+      await revalidateCache();
 
       setIsSheetOpen(false)
       setEditingCar(null)
@@ -148,12 +165,7 @@ export default function AdminCars() {
     if (confirm("Удалить этот автомобиль?")) {
       try {
         await deleteDoc(doc(db, "cars", carId))
-        await cacheInvalidator.onDelete(carId)
-
-        // Уведомляем о изменении данных для обновления каталога
-        localStorage.setItem('cars_updated', Date.now().toString())
-        window.dispatchEvent(new CustomEvent('carsUpdated'))
-
+        await revalidateCache();
         loadCars()
       } catch (error) {
         alert("Ошибка удаления автомобиля")

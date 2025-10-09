@@ -5,21 +5,16 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
-import { apiClient } from "@/lib/api-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
-import { parseFirestoreDoc } from "@/lib/firestore-parser"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
@@ -31,14 +26,10 @@ import {
   Settings,
   Car,
   Phone,
-  CreditCard,
   ChevronLeft,
   ChevronRight,
-  Heart,
-  CheckCircle,
   Calculator,
   Building2,
-  MapPin,
   Eye,
   Calendar,
   Clock,
@@ -46,13 +37,9 @@ import {
   Check
 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
-import CarDetailsSkeleton from "@/components/car-details-skeleton"
 import MarkdownRenderer from "@/components/markdown-renderer"
+import { preloadImages } from "@/lib/image-preloader"
 
-import { useDebouncedTouch } from "@/hooks/use-debounced-touch"
-import { preloadImages, preloadImage } from "@/lib/image-preloader"
-
-// Кэш для статических данных (загружается один раз за сессию)
 let staticDataCache: {
   banks?: any[]
   leasingCompanies?: any[]
@@ -62,23 +49,17 @@ let staticDataCache: {
 
 const CACHE_DURATION = 5 * 60 * 1000 // 5 минут
 
-// Компонент ошибки для несуществующего автомобиля
 const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: string, contactPhone2?: string }) => {
-  // Используем hook из контекста для получения настроек
   const { settings, isLoading: isSettingsLoading } = useSettings();
-  // State для отображения скелетона
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Установим задержку, чтобы сначала загрузились настройки
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timer);
   }, []);
 
-  // Получаем номера телефонов из настроек, если доступны, иначе используем переданные параметры
-  // Но только если настройки загружены
   const phoneNumber = !isLoading && settings?.main?.showroomInfo?.phone
     ? settings.main.showroomInfo.phone
     : '';
@@ -192,16 +173,17 @@ interface LeasingCompany {
 
 interface CarDetailsClientProps {
   carId: string;
+  initialCar: Car | null;
 }
 
-export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
+export default function CarDetailsClient({ carId, initialCar }: CarDetailsClientProps) {
   const router = useRouter()
-  const [car, setCar] = useState<Car | null>(null)
+  const [car, setCar] = useState<Car | null>(initialCar)
   const [contactPhone, setContactPhone] = useState<string>("")
   const [contactPhone2, setContactPhone2] = useState<string>("")
-  const [carNotFound, setCarNotFound] = useState(false)
+  const [carNotFound, setCarNotFound] = useState(initialCar === null)
   const usdBynRate = useUsdBynRate()
-  const [loading, setLoading] = useState(true)
+  const [loading] = useState(false) // No initial loading
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isCreditOpen, setIsCreditOpen] = useState(false)
@@ -215,55 +197,38 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   const [leasingCompanies, setLeasingCompanies] = useState<any[]>([])
   const [loadingLeasing, setLoadingLeasing] = useState(true)
   const [financeType, setFinanceType] = useState<'credit' | 'leasing'>('credit')
-  // Состояние кредитного калькулятора
   const [creditAmount, setCreditAmount] = useState([75000])
   const [downPayment, setDownPayment] = useState([20000])
   const [loanTerm, setLoanTerm] = useState([60])
   const [selectedBank, setSelectedBank] = useState<PartnerBank | null>(null)
-  // Состояние лизингового калькулятора
   const [leasingAmount, setLeasingAmount] = useState([75000])
   const [leasingAdvance, setLeasingAdvance] = useState([15000])
   const [leasingTerm, setLeasingTerm] = useState([36])
   const [residualValue, setResidualValue] = useState([20])
   const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null)
-  // Состояние для валюты (по умолчанию - белорусские рубли)
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(true)
-  // Полноэкранный просмотр фотографий
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
   const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
-  // Состояние для текущей фотографии в галерее
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-
-  // Touch события для полноэкранного режима
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
-  // Ref для контейнера прокрутки галереи
   const galleryScrollRef = useRef<HTMLDivElement>(null)
 
-  // Button states
   const bookingButtonState = useButtonState()
   const callbackButtonState = useButtonState()
   const creditButtonState = useButtonState()
 
-  // Notification hook
   const { showSuccess } = useNotification()
-
-  // Settings hook
   const { settings } = useSettings()
 
-  useEffect(() => {
-    if (carId) {
-      loadCarData(carId)
-      setCurrentImageIndex(0) // Сбрасываем индекс при загрузке нового авто
-    }
-  }, [carId])
-
-  // Загружаем статические данные только один раз при инициализации компонента
   useEffect(() => {
     loadStaticData()
   }, [])
 
-  // Сброс значений калькулятора при открытии модального окна кредита
+  useEffect(() => {
+    if (car && car.imageUrls && car.imageUrls.length > 1) {
+      preloadImages(car.imageUrls.slice(0, 3))
+    }
+  }, [car])
+
   useEffect(() => {
     if (isCreditOpen && car && car.price) {
       const price = car.price
@@ -284,7 +249,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
 
-  // Обработчик клавиатуры для полноэкранного режима
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isFullscreenOpen) return
@@ -310,7 +274,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
     if (isFullscreenOpen) {
       document.addEventListener('keydown', handleKeyDown)
-      // Запрещаем скролл страницы в полноэкранном режиме
       document.body.style.overflow = 'hidden'
     }
 
@@ -320,10 +283,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     }
   }, [isFullscreenOpen, car?.imageUrls])
 
-  // Получаем хост для изображений
-  const imageHost = process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by';
-
-  // Функции навигации по галерее
   const navigateToImage = (index: number) => {
     if (!car?.imageUrls || car.imageUrls.length === 0) return;
 
@@ -332,7 +291,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
     if (galleryScrollRef.current) {
       const containerWidth = galleryScrollRef.current.clientWidth;
-      // Каждое изображение занимает полную ширину видимой области
       const targetScrollLeft = clampedIndex * containerWidth;
 
       galleryScrollRef.current.scrollTo({
@@ -354,7 +312,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     navigateToImage(newIndex);
   };
 
-  // Обработчик прокрутки для синхронизации индекса при ручной прокрутке
   const handleScroll = () => {
     if (!galleryScrollRef.current || !car?.imageUrls) return;
 
@@ -369,15 +326,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
 
   const loadStaticData = async () => {
     try {
-      // Проверяем кэш - если данные свежие, используем их
       const now = Date.now()
       if (staticDataCache.lastLoadTime &&
           (now - staticDataCache.lastLoadTime) < CACHE_DURATION &&
           staticDataCache.banks &&
           staticDataCache.leasingCompanies &&
           staticDataCache.contactPhones) {
-
-        // Используем кэшированные данные
         setPartnerBanks(staticDataCache.banks)
         setSelectedBank(staticDataCache.banks[0] || null)
         setLeasingCompanies(staticDataCache.leasingCompanies)
@@ -390,83 +344,83 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingBanks(true)
       setLoadingLeasing(true)
 
-      // Используем прямые запросы к Firestore (исключены vercel functions)
       const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
       const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages`
 
-      // Определяем эндпоинты Firestore напрямую
       const endpoints = {
         banks: `${baseUrl}/credit`,
         leasing: `${baseUrl}/leasing`,
         contacts: `${baseUrl}/contacts`
       }
 
-      // Выполняем запросы параллельно для максимальной скорости
       const [banksResponse, leasingResponse, contactsResponse] = await Promise.all([
-        fetch(endpoints.banks, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.leasing, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        }),
-        fetch(endpoints.contacts, {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Direct-Firestore/1.0'
-          }
-        })
-      ])
+        fetch(endpoints.banks, { headers: { 'Content-Type': 'application/json' } }),
+        fetch(endpoints.leasing, { headers: { 'Content-Type': 'application/json' } }),
+        fetch(endpoints.contacts, { headers: { 'Content-Type': 'application/json' } })
+      ]);
 
-      // Получаем JSON из каждого ответа
       const banksRawData = await banksResponse.json()
       const leasingRawData = await leasingResponse.json()
       const contactsRawData = await contactsResponse.json()
 
-      // Парсим полученные данные
+      const parseFirestoreDoc = (doc: any) => {
+          if (!doc || !doc.fields) return null;
+          const result: any = {};
+          for (const [key, value] of Object.entries(doc.fields)) {
+              const convertFieldValue = (val: any): any => {
+                  if (val.stringValue !== undefined) return val.stringValue;
+                  if (val.integerValue !== undefined) return parseInt(val.integerValue, 10);
+                  if (val.doubleValue !== undefined) return parseFloat(val.doubleValue);
+                  if (val.booleanValue !== undefined) return val.booleanValue;
+                  if (val.timestampValue !== undefined) return new Date(val.timestampValue);
+                  if (val.arrayValue !== undefined) return val.arrayValue.values?.map((v: any) => convertFieldValue(v)) || [];
+                  if (val.mapValue !== undefined) {
+                      const res: Record<string, any> = {};
+                      for (const [k, v] of Object.entries(val.mapValue.fields || {})) {
+                          res[k] = convertFieldValue(v);
+                      }
+                      return res;
+                  }
+                  return null;
+              };
+              result[key] = convertFieldValue(value);
+          }
+          return result;
+      };
+
       const creditPageData = parseFirestoreDoc(banksRawData);
       const leasingPageData = parseFirestoreDoc(leasingRawData);
       const contacts = parseFirestoreDoc(contactsRawData);
 
-      // Безопасно извлекаем из них чистые массивы с партнерами
-      const banks = creditPageData.partners || [];
-      const leasingCompanies = leasingPageData.leasingCompanies || leasingPageData.partners || [];
+      const banks = creditPageData?.partners || [];
+      const leasingCompanies = leasingPageData?.leasingCompanies || leasingPageData?.partners || [];
 
-      // Сохраняем в кэш
       staticDataCache = {
         banks,
         leasingCompanies,
         contactPhones: {
-          main: contacts.phone || "+375 29 123-45-67",
-          additional: contacts.phone2 || ""
+          main: contacts?.phone || "+375 29 123-45-67",
+          additional: contacts?.phone2 || ""
         },
         lastLoadTime: now
       }
 
-      // Применяем обработанные данные
       if (banks && banks.length > 0) {
         setPartnerBanks(banks)
-        setSelectedBank(banks[0]) // Выбираем лучший банк по умолчанию
+        setSelectedBank(banks[0])
       } else {
         setPartnerBanks([])
       }
 
-      // Устанавливаем данные лизинговых компаний
       if (leasingCompanies && leasingCompanies.length > 0) {
         setLeasingCompanies(leasingCompanies)
-        setSelectedLeasingCompany(leasingCompanies[0]) // Выбираем лучшую компанию по умолчанию
+        setSelectedLeasingCompany(leasingCompanies[0])
       } else {
         setLeasingCompanies([])
       }
 
-      // Устанавливаем контактные телефоны из документа контактов
-      setContactPhone(staticDataCache.contactPhones.main)
-      setContactPhone2(staticDataCache.contactPhones.additional)
+      setContactPhone(staticDataCache.contactPhones.main || "")
+      setContactPhone2(staticDataCache.contactPhones.additional || "")
 
     } catch (error) {
       setPartnerBanks([])
@@ -478,58 +432,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
       setLoadingLeasing(false)
     }
   }
-
-  const loadCarData = async (carId: string) => {
-    try {
-      setLoading(true)
-
-      // Используем прямой запрос к Firestore (исключены vercel functions)
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-      const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
-
-      const response = await fetch(firestoreUrl, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NextJS-Direct-Firestore/1.0'
-        }
-      })
-
-      let carData = null
-      if (response.ok) {
-        const doc = await response.json()
-        // Используем парсер для обработки данных Firestore
-        carData = parseFirestoreDoc(doc)
-      }
-
-      if (carData) {
-        // Очистка данных от несериализуемых объектов
-        const cleanCarData = JSON.parse(JSON.stringify(carData))
-        setCar(cleanCarData as Car)
-        setCarNotFound(false)
-
-        // Оптимизированная предзагрузка первых 3 изображений
-        if (cleanCarData.imageUrls && cleanCarData.imageUrls.length > 1) {
-          preloadImages(cleanCarData.imageUrls.slice(0, 3))
-        }
-
-        // Устанавливаем значения калькулятора по умолчанию
-        const price = cleanCarData.price || 95000
-        setCreditAmount([price * 0.8])
-        setDownPayment([price * 0.2])
-      } else {
-        setCarNotFound(true)
-        setCar(null)
-      }
-    } catch (error) {
-      setCarNotFound(true)
-      setCar(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Функция для конвертации значения поля из формата Firestore
-  // Функция для конвертации полей удалена, теперь везде используется parseFirestoreDoc
 
   const formatPrice = (price: number, currencyType?: 'USD' | 'BYN') => {
     if (currencyType === 'BYN' || (currencyType === undefined && isBelarusianRubles)) {
@@ -565,20 +467,17 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     return downPayment[0]
   }
 
-  // При переключении валюты пересчитываем значения
   const handleCurrencyChange = (checked: boolean) => {
     setIsBelarusianRubles(checked)
 
     if (!car || !car.price || !usdBynRate) return
 
     if (checked) {
-      // Переключение на BYN
       setCreditAmount([Math.round(car.price * 0.8 * usdBynRate)])
       setDownPayment([Math.round(car.price * 0.2 * usdBynRate)])
       setLeasingAmount([Math.round(car.price * usdBynRate)])
       setLeasingAdvance([Math.round(car.price * 0.2 * usdBynRate)])
     } else {
-      // Переключение на USD
       setCreditAmount([car.price * 0.8])
       setDownPayment([car.price * 0.2])
       setLeasingAmount([car.price])
@@ -591,23 +490,16 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
   }
 
   const formatEngineVolume = (volume: number) => {
-    // Всегда показываем с одним знаком после запятой (3.0, 2.5, 1.6)
     return volume.toFixed(1)
   }
 
   const formatPhoneNumber = (value: string) => {
-    // Удаляем все нецифровые символы кроме +
     let numbers = value.replace(/[^\d+]/g, "")
-
-    // Если нет + в начале, добавляем +375
     if (!numbers.startsWith("+375")) {
       numbers = "+375"
     }
-
-    // Берем только +375 и следующие 9 цифр максимум
     const prefix = "+375"
     const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9)
-
     return prefix + afterPrefix
   }
 
@@ -615,162 +507,83 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
     return phone.length === 13 && phone.startsWith("+375")
   }
 
-  // Расчет ежемесячного платежа
   const calculateMonthlyPayment = () => {
     if (!selectedBank) return 0
     const principal = getCurrentCreditAmount()
-
-    // Используем rate, если доступно, иначе minRate
-    const rateValue = selectedBank.rate !== undefined ? selectedBank.rate :
-                    selectedBank.minRate !== undefined ? selectedBank.minRate : 0;
-
+    const rateValue = selectedBank.rate ?? selectedBank.minRate ?? 0;
     const rate = rateValue / 100 / 12
     const term = loanTerm[0]
-
-
     if (!rate || rate <= 0) return principal / term
-    const monthlyPayment = principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
-    return monthlyPayment
+    return principal * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1)
   }
 
-  // Расчет ежемесячного лизингового платежа
   const calculateLeasingPayment = () => {
-    const carPrice = isBelarusianRubles && usdBynRate ? (car && car.price ? car.price * usdBynRate : 0) : (car && car.price ? car.price : 0)
-    const advance = isBelarusianRubles && usdBynRate ? leasingAdvance[0] : leasingAdvance[0]
+    const carPrice = isBelarusianRubles && usdBynRate ? (car?.price ?? 0) * usdBynRate : (car?.price ?? 0)
+    const advance = leasingAdvance[0]
     const term = leasingTerm[0]
     const residualVal = (carPrice * residualValue[0]) / 100
-
     const leasingSum = carPrice - advance - residualVal
     return leasingSum / term
   }
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     await bookingButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
-      try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
-          ...bookingForm,
-          carId: carId,
-          carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
-          type: "booking",
-          status: "new",
-          createdAt: new Date(),
-        })
-      } catch (error) {
-      }
-
-      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: bookingForm.name,
           phone: bookingForm.phone,
           message: bookingForm.message,
-          carMake: car && car.make ? car.make : '',
-          carModel: car && car.model ? car.model : '',
-          carYear: car && car.year ? car.year : '',
+          carMake: car?.make ?? '',
+          carModel: car?.model ?? '',
+          carYear: car?.year ?? '',
           carId: carId,
           type: 'car_booking'
         })
       })
-
       setIsBookingOpen(false)
       setBookingForm({ name: "", phone: "+375", message: "" })
-      showSuccess("Заявка на бронирование успешно отправлена! Мы свяжемся с вами в ближайшее время.")
+      showSuccess("Заявка на бронирование успешно отправлена!")
     })
   }
 
   const handleCallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     await callbackButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
-      try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
-          ...callbackForm,
-          carId: carId,
-          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-          type: "callback",
-          status: "new",
-          createdAt: new Date(),
-        })
-      } catch (error) {
-      }
-
-      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: callbackForm.name,
           phone: callbackForm.phone,
-          carMake: car && car.make ? car.make : '',
-          carModel: car && car.model ? car.model : '',
-          carYear: car && car.year ? car.year : '',
+          carMake: car?.make ?? '',
+          carModel: car?.model ?? '',
+          carYear: car?.year ?? '',
           carId: carId,
           type: 'callback'
         })
       })
-
       setIsCallbackOpen(false)
       setCallbackForm({ name: "", phone: "+375" })
-      showSuccess("Заявка на обратный звонок успешно отправлена! Мы свяжемся с вами в ближайшее время.")
+      showSuccess("Заявка на обратный звонок успешно отправлена!")
     })
   }
 
   const handleCreditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     await creditButtonState.execute(async () => {
-      // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
-      try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
-          ...creditForm,
-          carId: carId,
-          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-          type: financeType,
-          status: "new",
-          createdAt: new Date(),
-          creditAmount: getCurrentCreditAmount(),
-          downPayment: getCurrentDownPayment(),
-          loanTerm: loanTerm[0],
-          selectedBank: selectedBank ? selectedBank.name : "",
-          monthlyPayment: calculateMonthlyPayment(),
-          currency: isBelarusianRubles ? "BYN" : "USD",
-          financeType: financeType
-        })
-      } catch (error) {
-      }
-
-      // Отправляем уведомление в Telegram (всегда выполняется)
       await fetch('/api/send-telegram', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: creditForm.name,
           phone: creditForm.phone,
           message: creditForm.message,
-          carMake: car && car.make ? car.make : '',
-          carModel: car && car.model ? car.model : '',
-          carYear: car && car.year ? car.year : '',
+          carMake: car?.make ?? '',
+          carModel: car?.model ?? '',
+          carYear: car?.year ?? '',
           carId: carId,
           carPrice: isBelarusianRubles
             ? formatPrice(getCurrentCreditAmount() + getCurrentDownPayment(), 'BYN')
@@ -784,27 +597,19 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           type: financeType === 'credit' ? 'credit_request' : 'leasing_request'
         })
       })
-
       setIsCreditFormOpen(false)
       setCreditForm({ name: "", phone: "+375", message: "" })
-      showSuccess(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.`)
+      showSuccess(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} успешно отправлена!`)
     })
   }
 
-
-
-
-
-
-
-  if (carNotFound) {
+  if (carNotFound || !car) {
     return <CarNotFoundComponent contactPhone={contactPhone} contactPhone2={contactPhone2} />
   }
 
-  return (
+    return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       <div className="container mx-auto px-1 sm:px-2 lg:px-4 py-4 sm:py-6 max-w-7xl">
-        {/* Хлебные крошки */}
         <nav className="mb-4 sm:mb-6">
           <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500">
             <li>
@@ -830,36 +635,22 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               <ChevronRight className="h-4 w-4 text-slate-400" />
             </li>
             <li className="text-slate-900 font-medium px-2 py-1 bg-slate-100 rounded-md">
-              {loading ? (
-                <div className="h-4 bg-slate-300 rounded w-20 animate-pulse inline-block"></div>
-              ) : (
-                `${car?.make || ''} ${car?.model || ''}`
-              )}
+              {`${car?.make || ''} ${car?.model || ''}`}
             </li>
           </ol>
         </nav>
 
-        {/* ЕДИНЫЙ ОСНОВНОЙ БЛОК */}
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden">
           <div>
-
-          {/* Заголовок и цена - компактный верхний блок */}
           <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
-            {/* Мобильная компоновка - горизонтальная для экономии места */}
             <div className="flex items-start justify-between gap-3 lg:gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  {loading ? (
-                    <div className="h-8 sm:h-10 lg:h-12 bg-slate-300 rounded w-48 animate-pulse"></div>
-                  ) : (
                     <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight">
                       {car?.make} {car?.model}
                     </h1>
-                  )}
                   <div className="self-start sm:self-auto">
-                    {loading ? (
-                      <div className="h-6 sm:h-7 bg-slate-300 rounded-full w-16 animate-pulse"></div>
-                    ) : car?.isAvailable ? (
+                    {car?.isAvailable ? (
                       <div className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
                         В наличии
                       </div>
@@ -871,31 +662,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-600">
-                  {loading ? (
-                    <>
-                      <div className="h-6 bg-slate-300 rounded-lg w-12 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 rounded-lg w-16 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 rounded-lg w-14 animate-pulse"></div>
-                    </>
-                  ) : (
                     <>
                       <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.year}</span>
                       <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.color}</span>
                       <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.bodyType}</span>
                     </>
-                  )}
                 </div>
               </div>
 
-              {/* Цена справа - всегда горизонтально */}
               <div className="text-right flex-shrink-0">
-                {loading ? (
-                  <>
-                    <div className="h-6 sm:h-8 lg:h-9 bg-slate-300 rounded w-24 mb-1 animate-pulse ml-auto"></div>
-                    <div className="h-4 sm:h-5 lg:h-6 bg-slate-300 rounded w-20 animate-pulse ml-auto"></div>
-                    <div className="h-3 sm:h-4 bg-slate-300 rounded w-16 mt-1 animate-pulse ml-auto"></div>
-                  </>
-                ) : (
                   <>
                     <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 mb-1 leading-tight">
                       {car?.price ? new Intl.NumberFormat("en-US", {
@@ -921,24 +696,14 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       }).format(Math.round(car.price * 0.8 / 60)) : '0'}/мес
                     </div>
                   </>
-                )}
               </div>
             </div>
           </div>
 
-          {/* Основной контент - мобильная и десктопная версии */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-
-            {/* Левая колонка: Галерея */}
             <div className="lg:col-span-8 lg:border-r border-slate-200/50">
               <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden">
-                {loading ? (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="w-16 h-16 bg-slate-300 rounded-full animate-pulse"></div>
-                  </div>
-                ) : (
                   <>
-                    {/* Контейнер для свободной прокрутки */}
                     <div ref={galleryScrollRef} onScroll={handleScroll} className="w-full h-full overflow-x-auto overflow-y-hidden scrollbar-hide">
                       <div className="flex h-full" style={{ width: `${(car?.imageUrls?.length || 1) * 100}%` }}>
                         {car?.imageUrls?.map((url, index) => (
@@ -986,7 +751,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     </div>
 
-                    {/* Кнопка полноэкранного режима */}
                     {car?.imageUrls && car.imageUrls.length >= 1 && (
                       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                         <button
@@ -1004,10 +768,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     )}
 
-                    {/* Стрелочки навигации по прокрутке */}
                     {car?.imageUrls && car.imageUrls.length > 1 && (
                       <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-3">
-                        {/* Стрелочка влево */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
@@ -1019,12 +781,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                         </button>
 
-                        {/* Индикатор прокрутки */}
                         <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 text-white text-sm font-medium">
                           {currentImageIndex + 1} из {car.imageUrls.length}
                         </div>
 
-                        {/* Стрелочка вправо */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
@@ -1038,10 +798,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     )}
                   </>
-                )}
               </div>
 
-              {/* Видеообзоры */}
               {(car?.tiktok_url || car?.youtube_url) && (
                 <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-200/50 lg:border-b-0 lg:border-t lg:border-slate-200/50">
                   <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
@@ -1074,19 +832,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 </div>
               )}
 
-              {/* Описание под галереей для десктопов */}
               <div className="hidden lg:block p-6 bg-slate-50/50 border-slate-200/50">
                 <h4 className="text-lg font-bold text-slate-900 mb-3">
                   Описание
                 </h4>
                 <div className="bg-white rounded-xl p-4 border border-slate-200/50">
-                  {loading ? (
-                    <div className="space-y-2">
-                      <div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div>
-                      <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                      <div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div>
-                    </div>
-                  ) : car?.description ? (
+                  {car?.description ? (
                     <MarkdownRenderer
                       content={car.description}
                       className="text-sm leading-relaxed"
@@ -1098,19 +849,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </div>
             </div>
 
-            {/* Описание для мобильных устройств под галереей */}
             <div className="lg:hidden p-3 sm:p-4 bg-slate-50/50 border-b border-slate-200/50">
               <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                 Описание
               </h4>
               <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
-                {loading ? (
-                  <div className="space-y-2">
-                    <div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div>
-                    <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                    <div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div>
-                  </div>
-                ) : car?.description ? (
+                {car?.description ? (
                   <MarkdownRenderer
                     content={car.description}
                     className="text-sm leading-relaxed"
@@ -1121,11 +865,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               </div>
             </div>
 
-            {/* Правая колонка: Характеристики и действия */}
             <div className="lg:col-span-4">
               <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
 
-                {/* Основные характеристики - компактный стиль */}
                 <div>
                   <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4">
                     Характеристики
@@ -1137,11 +879,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                       <div className="relative z-10">
                         <div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-20 animate-pulse"></div>
-                        ) : (
                           <div className="text-sm lg:text-lg font-bold text-slate-900">{formatMileage(car?.mileage || 0)} км</div>
-                        )}
                       </div>
                     </div>
                     <div className="relative bg-gradient-to-br from-green-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
@@ -1150,13 +888,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                       <div className="relative z-10">
                         <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-16 animate-pulse"></div>
-                        ) : (
                           <div className="text-sm lg:text-lg font-bold text-slate-900">
                             {car?.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car?.engineVolume || 0)}л ${car?.fuelType}`}
                           </div>
-                        )}
                       </div>
                     </div>
                     <div className="relative bg-gradient-to-br from-purple-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
@@ -1165,11 +899,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                       <div className="relative z-10">
                         <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-12 animate-pulse"></div>
-                        ) : (
                           <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.transmission}</div>
-                        )}
                       </div>
                     </div>
                     <div className="relative bg-gradient-to-br from-orange-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
@@ -1178,32 +908,13 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                       <div className="relative z-10">
                         <div className="text-xs text-slate-500 font-medium mb-1">Привод</div>
-                        {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-14 animate-pulse"></div>
-                        ) : (
                           <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.driveTrain}</div>
-                        )}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Комплектация */}
-                {loading ? (
-                  <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                      Комплектация
-                    </h4>
-                    <div className="space-y-2">
-                      {Array.from({ length: 5 }).map((_, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-slate-300 rounded-full animate-pulse flex-shrink-0"></div>
-                          <div className="h-4 bg-slate-300 rounded w-32 animate-pulse"></div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : car?.features && car.features.length > 0 && (
+                {car?.features && car.features.length > 0 && (
                   <div>
                     <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                       Комплектация
@@ -1221,22 +932,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 )}
 
-                {/* Технические характеристики */}
-                {loading ? (
-                  <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
-                      Технические данные
-                    </h4>
-                    <div className="space-y-1 sm:space-y-2">
-                      {Array.from({ length: 4 }).map((_, index) => (
-                        <div key={index} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="h-4 bg-slate-300 rounded w-20 animate-pulse"></div>
-                          <div className="h-4 bg-slate-300 rounded w-16 animate-pulse"></div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : car?.specifications && (
+                {car?.specifications && (
                   <div>
                     <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                       Технические данные
@@ -1252,7 +948,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 )}
 
-                {/* Финансирование - компактный блок */}
                 <div>
                   <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                     Финансирование
@@ -1261,23 +956,15 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>
-                        {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
-                        ) : (
                           <div className="text-sm sm:text-lg font-bold text-slate-900">
                             {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
                           </div>
-                        )}
                       </div>
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 mb-1">Лизинг от</div>
-                        {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
-                        ) : (
                           <div className="text-sm sm:text-lg font-bold text-slate-900">
                             {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес
                           </div>
-                        )}
                       </div>
                     </div>
                     <Button
@@ -1290,18 +977,17 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 </div>
 
-                {/* Кнопки действий */}
                 <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
                   <div className="grid grid-cols-1 gap-2 sm:gap-3">
-<Button onClick={() => setIsBookingOpen(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
-  <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-  Записаться на просмотр
-</Button>
+                    <Button onClick={() => setIsBookingOpen(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+                      <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                      Записаться на просмотр
+                    </Button>
 
-<Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
-  <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-  Заказать звонок
-</Button>
+                    <Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+                      <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                      Заказать звонок
+                    </Button>
                   </div>
                 </div>
 
@@ -1309,16 +995,9 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
             </div>
           </div>
 
-          {/* Контактная информация внизу */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 sm:p-6 border-t border-slate-200/50">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center">
               <div className="text-center md:text-left">
-                {loading ? (
-                  <div className="space-y-2">
-                    <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto md:mx-0 animate-pulse"></div>
-                    <div className="h-4 bg-blue-400/40 rounded w-52 mx-auto md:mx-0 animate-pulse"></div>
-                  </div>
-                ) : (
                   <>
                     <div className="font-medium text-base sm:text-lg mb-1">
                       {settings?.main?.showroomInfo?.companyName || ""}
@@ -1327,29 +1006,18 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       {settings?.main?.showroomInfo?.address || ""}
                     </div>
                   </>
-                )}
               </div>
 
               <div className="text-center">
-                {loading ? (
-                  <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto animate-pulse"></div>
-                ) : (
                   <div className="flex items-center justify-center space-x-2 text-blue-100 text-xs sm:text-sm">
                     <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                     <div>
                       <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || ""}</div>
                     </div>
                   </div>
-                )}
               </div>
 
               <div className="text-center md:text-right">
-                {loading ? (
-                  <div className="space-y-2">
-                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
-                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
-                  </div>
-                ) : (
                   <div className="flex flex-col items-center md:items-end space-y-1">
                     {settings?.main?.showroomInfo?.phone && (
                       <div className="flex items-center space-x-2">
@@ -1368,14 +1036,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       </div>
                     )}
                   </div>
-                )}
               </div>
             </div>
           </div>
           </div>
         </div>
 
-        {/* Диалоги */}
         <FinancialAssistantDrawer
           open={isFinancialAssistantOpen}
           onOpenChange={setFinancialAssistantOpen}
@@ -1387,9 +1053,7 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
               <DialogTitle className="text-lg sm:text-2xl">Калькулятор финансирования</DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-              {/* Калькулятор */}
               <div className="space-y-3 sm:space-y-6">
-                {/* Переключатель типа финансирования */}
                 <div className="flex items-center justify-center space-x-1 bg-slate-100 rounded-lg p-1">
                   <button
                     onClick={() => setFinanceType('credit')}
@@ -1413,7 +1077,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </button>
                 </div>
 
-                {/* Переключатель валюты */}
                 <div className="flex items-center space-x-2 p-2 sm:p-3 bg-slate-50 rounded-lg">
                   <Checkbox
                     id="currency-switch"
@@ -1445,8 +1108,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           onChange={(e) => {
                             const newCreditAmount = Number(e.target.value)
                             setCreditAmount([newCreditAmount])
-
-                            // Автоматически пересчитываем первый взнос
                             const carPriceInSelectedCurrency = car?.price ?
                               (isBelarusianRubles && usdBynRate ? car.price * usdBynRate : car.price) : 0
                             const newDownPayment = Math.max(0, carPriceInSelectedCurrency - newCreditAmount)
@@ -1468,8 +1129,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           onChange={(e) => {
                             const newDownPayment = Number(e.target.value)
                             setDownPayment([newDownPayment])
-
-                            // Автоматически пересчитываем сумму кредита
                             const carPriceInSelectedCurrency = car?.price ?
                               (isBelarusianRubles && usdBynRate ? car.price * usdBynRate : car.price) : 0
                             const newCreditAmount = Math.max(0, carPriceInSelectedCurrency - newDownPayment)
@@ -1502,9 +1161,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           onValueChange={(value) => {
                             const bank = partnerBanks.find(b => b.name === value) || partnerBanks[0];
                             setSelectedBank(bank);
-
-                            // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранного банка ★★★
-                            // ★★★ КОНЕЦ ★★★
                           }}
                         >
                           <SelectTrigger className="h-8 sm:h-10">
@@ -1583,8 +1239,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           onChange={(e) => {
                             const newAdvance = Number(e.target.value)
                             setLeasingAdvance([newAdvance])
-
-                            // Автоматически пересчитываем стоимость лизинга
                             const carPriceInSelectedCurrency = car?.price ?
                               (isBelarusianRubles && usdBynRate ? car.price * usdBynRate : car.price) : 0
                             setLeasingAmount([carPriceInSelectedCurrency])
@@ -1630,9 +1284,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                           onValueChange={(value) => {
                             const company = leasingCompanies.find(c => c.name.toLowerCase().replace(/[\s-]/g, '') === value) || leasingCompanies[0];
                             setSelectedLeasingCompany(company);
-
-                            // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранной лизинговой компании ★★★
-                            // ★★★ КОНЕЦ ★★★
                           }}
                         >
                           <SelectTrigger className="h-8 sm:h-10">
@@ -1695,13 +1346,11 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 )}
               </div>
 
-              {/* Результат */}
               <div className="bg-slate-50 rounded-lg p-3 sm:p-6">
                 <h4 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">Результат</h4>
                 {financeType === 'credit' ? (
                   selectedBank ? (
                     <div className="space-y-3 sm:space-y-4 relative">
-                      {/* Логотип банка в правом верхнем углу */}
                       {(selectedBank.logo || selectedBank.logoUrl) && (
                         <div className="absolute top-0 right-8">
                           <Image
@@ -1792,7 +1441,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   )
                 ) : (
                   <div className="space-y-3 sm:space-y-4 relative">
-                    {/* Логотип лизинговой компании в правом верхнем углу */}
                     {selectedLeasingCompany && (selectedLeasingCompany.logo || selectedLeasingCompany.logoUrl) && (
                       <div className="absolute top-0 right-8">
                         <Image
@@ -1867,119 +1515,117 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           </DialogContent>
         </Dialog>
 
-<UniversalDrawer
-  open={isBookingOpen}
-  onOpenChange={setIsBookingOpen}
-  title="Записаться на просмотр"
-  footer={
-    <StatusButton
-      type="submit"
-      form="booking-form"
-      className="w-full"
-      state={bookingButtonState.state}
-      loadingText="Отправляем..."
-      successText="Заявка отправлена!"
-      errorText="Ошибка"
-    >
-      Записаться на просмотр
-    </StatusButton>
-  }
->
-  <form id="booking-form" onSubmit={handleBookingSubmit} className="space-y-4">
-    <div>
-      <Label htmlFor="bookingName">Ваше имя</Label>
-      <Input
-        id="bookingName"
-        value={bookingForm.name}
-        onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
-        required
-      />
-    </div>
-    <div>
-      <Label htmlFor="bookingPhone">Номер телефона</Label>
-      <div className="relative">
-                <Input
-          id="bookingPhone"
-          value={bookingForm.phone}
-          onChange={(e) => setBookingForm({ ...bookingForm, phone: formatPhoneNumber(e.target.value) })}
-          placeholder="+375XXXXXXXXX"
-                  required
-          className="pr-10"
-                />
-        {isPhoneValid(bookingForm.phone) && (
-          <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-        )}
-              </div>
-    </div>
-    <div>
-      <Label htmlFor="bookingMessage">Комментарий</Label>
-      <Textarea
-        id="bookingMessage"
-        value={bookingForm.message}
-        onChange={(e) => setBookingForm({ ...bookingForm, message: e.target.value })}
-        placeholder="Удобное время для просмотра..."
-      />
-    </div>
-  </form>
-</UniversalDrawer>
-
-<UniversalDrawer
-  open={isCallbackOpen}
-  onOpenChange={setIsCallbackOpen}
-  title="Заказать обратный звонок"
-  footer={
-    <StatusButton
-      type="submit"
-      form="callback-form"
-      className="w-full"
-      state={callbackButtonState.state}
-      loadingText="Отправляем..."
-      successText="Заявка отправлена!"
-      errorText="Ошибка"
-    >
-      Жду звонка
-    </StatusButton>
-  }
->
-  <form id="callback-form" onSubmit={handleCallbackSubmit} className="space-y-4">
-    <div>
-      <Label htmlFor="callbackName">Ваше имя</Label>
-      <Input
-        id="callbackName"
-        value={callbackForm.name}
-        onChange={(e) => setCallbackForm({ ...callbackForm, name: e.target.value })}
-        required
-      />
-    </div>
-    <div>
-      <Label htmlFor="callbackPhone">Номер телефона</Label>
-      <div className="relative">
-                <Input
-          id="callbackPhone"
-          value={callbackForm.phone}
-          onChange={(e) =>
-            setCallbackForm({ ...callbackForm, phone: formatPhoneNumber(e.target.value) })
+        <UniversalDrawer
+          open={isBookingOpen}
+          onOpenChange={setIsBookingOpen}
+          title="Записаться на просмотр"
+          footer={
+            <StatusButton
+              type="submit"
+              form="booking-form"
+              className="w-full"
+              state={bookingButtonState.state}
+              loadingText="Отправляем..."
+              successText="Заявка отправлена!"
+              errorText="Ошибка"
+            >
+              Записаться на просмотр
+            </StatusButton>
           }
-          placeholder="+375XXXXXXXXX"
-                  required
-          className="pr-10"
-                />
-        {isPhoneValid(callbackForm.phone) && (
-          <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-        )}
-              </div>
-    </div>
-  </form>
-</UniversalDrawer>
+        >
+          <form id="booking-form" onSubmit={handleBookingSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="bookingName">Ваше имя</Label>
+              <Input
+                id="bookingName"
+                value={bookingForm.name}
+                onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="bookingPhone">Номер телефона</Label>
+              <div className="relative">
+                        <Input
+                  id="bookingPhone"
+                  value={bookingForm.phone}
+                  onChange={(e) => setBookingForm({ ...bookingForm, phone: formatPhoneNumber(e.target.value) })}
+                  placeholder="+375XXXXXXXXX"
+                          required
+                  className="pr-10"
+                        />
+                {isPhoneValid(bookingForm.phone) && (
+                  <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
+                )}
+                      </div>
+            </div>
+            <div>
+              <Label htmlFor="bookingMessage">Комментарий</Label>
+              <Textarea
+                id="bookingMessage"
+                value={bookingForm.message}
+                onChange={(e) => setBookingForm({ ...bookingForm, message: e.target.value })}
+                placeholder="Удобное время для просмотра..."
+              />
+            </div>
+          </form>
+        </UniversalDrawer>
 
-        {/* Диалог кредитной заявки */}
+        <UniversalDrawer
+          open={isCallbackOpen}
+          onOpenChange={setIsCallbackOpen}
+          title="Заказать обратный звонок"
+          footer={
+            <StatusButton
+              type="submit"
+              form="callback-form"
+              className="w-full"
+              state={callbackButtonState.state}
+              loadingText="Отправляем..."
+              successText="Заявка отправлена!"
+              errorText="Ошибка"
+            >
+              Жду звонка
+            </StatusButton>
+          }
+        >
+          <form id="callback-form" onSubmit={handleCallbackSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="callbackName">Ваше имя</Label>
+              <Input
+                id="callbackName"
+                value={callbackForm.name}
+                onChange={(e) => setCallbackForm({ ...callbackForm, name: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="callbackPhone">Номер телефона</Label>
+              <div className="relative">
+                        <Input
+                  id="callbackPhone"
+                  value={callbackForm.phone}
+                  onChange={(e) =>
+                    setCallbackForm({ ...callbackForm, phone: formatPhoneNumber(e.target.value) })
+                  }
+                  placeholder="+375XXXXXXXXX"
+                          required
+                  className="pr-10"
+                        />
+                {isPhoneValid(callbackForm.phone) && (
+                  <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
+                )}
+                      </div>
+            </div>
+          </form>
+        </UniversalDrawer>
+
         <Dialog open={isCreditFormOpen} onOpenChange={setIsCreditFormOpen}>
           <DialogContent className="max-w-md sm:max-w-lg p-3 sm:p-6">
             <DialogHeader className="pb-2 sm:pb-4">
               <DialogTitle className="text-base sm:text-lg">Подать заявку на {financeType === 'credit' ? 'кредит' : 'лизинг'}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleCreditSubmit} className="space-y-3 sm:space-y-4">
-              {/* Компактная форма на мобильных - имя и телефон в одной строке */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="creditName" className="text-sm">Ваше имя</Label>
@@ -2020,7 +1666,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                 />
               </div>
 
-              {/* Компактные данные о выбранном кредите */}
               {(selectedBank || (financeType === 'leasing' && selectedLeasingCompany)) && (
                 <div className="bg-slate-50 p-3 sm:p-4 rounded-lg">
                   <h4 className="font-semibold text-slate-900 text-sm mb-2">Параметры {financeType === 'credit' ? 'кредита' : 'лизинга'}:</h4>
@@ -2086,12 +1731,10 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
           </DialogContent>
         </Dialog>
 
-        {/* Полноэкранная галерея */}
         <Dialog open={isFullscreenOpen} onOpenChange={setIsFullscreenOpen}>
           <DialogContent className="max-w-full h-full p-0 bg-black/95 border-none">
             {car?.imageUrls && car.imageUrls.length > 0 && (
               <div className="relative w-full h-full flex items-center justify-center">
-                {/* Кнопка закрытия */}
                 <button
                   onClick={() => setIsFullscreenOpen(false)}
                   className="absolute top-4 right-4 z-50 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
@@ -2102,30 +1745,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </svg>
                 </button>
 
-                {/* Основное изображение */}
                 <div
                   className="relative w-full h-full flex items-center justify-center select-none"
-                  onTouchStart={(e) => {
-                    setTouchEnd(null)
-                    setTouchStart(e.targetTouches[0].clientX)
-                  }}
-                  onTouchMove={(e) => {
-                    if (!touchStart) return
-                    setTouchEnd(e.targetTouches[0].clientX)
-                  }}
-                  onTouchEnd={() => {
-                    if (!touchStart || !touchEnd) return
-                    const distance = touchStart - touchEnd
-                    const isLeftSwipe = distance > 50
-                    const isRightSwipe = distance < -50
-
-                    if (isLeftSwipe && car.imageUrls.length > 1) {
-                      setFullscreenImageIndex((prev) => (prev + 1) % car.imageUrls.length)
-                    }
-                    if (isRightSwipe && car.imageUrls.length > 1) {
-                      setFullscreenImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length)
-                    }
-                  }}
                 >
                   <Image
                     src={getCachedImageUrl(car.imageUrls[fullscreenImageIndex])}
@@ -2138,10 +1759,8 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   />
                 </div>
 
-                {/* Навигация */}
                 {car.imageUrls.length > 1 && (
                   <>
-                    {/* Кнопка предыдущего изображения */}
                     <button
                       onClick={() => setFullscreenImageIndex((prev) => (prev - 1 + car.imageUrls.length) % car.imageUrls.length)}
                       className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 z-40"
@@ -2150,7 +1769,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                       <ChevronLeft className="h-8 w-8 text-white" />
                     </button>
 
-                    {/* Кнопка следующего изображения */}
                     <button
                       onClick={() => setFullscreenImageIndex((prev) => (prev + 1) % car.imageUrls.length)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 z-40"
@@ -2161,14 +1779,12 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </>
                 )}
 
-                {/* Счетчик изображений */}
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-40">
                   <div className="bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
                     {fullscreenImageIndex + 1} из {car.imageUrls.length}
                   </div>
                 </div>
 
-                {/* Миниатюры для десктопа */}
                 {car.imageUrls.length > 1 && (
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex space-x-2 z-40 max-w-4xl overflow-x-auto scrollbar-hide pb-1">
                     <div className="flex space-x-2 px-2">
@@ -2197,7 +1813,6 @@ export default function CarDetailsClient({ carId }: CarDetailsClientProps) {
                   </div>
                 )}
 
-                {/* Индикаторы точек для мобильных */}
                 {car.imageUrls.length > 1 && (
                   <div className="absolute bottom-20 left-1/2 -translate-x-1/2 md:hidden z-40">
                     <div className="flex space-x-2">

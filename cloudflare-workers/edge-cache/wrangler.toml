@@ -1,0 +1,30 @@
+name = "belautocenter-edge-cache"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Service Binding к Next.js Worker
+[[services]]
+binding = "NEXTJS"
+service = "belautocenter-nextjs"  # Имя Next.js worker после деплоя
+
+# Конфигурация для production
+[env.production]
+name = "belautocenter-edge-cache-prod"
+routes = [
+  { pattern = "belautocenter.by/*", zone_name = "belautocenter.by" },
+  { pattern = "www.belautocenter.by/*", zone_name = "belautocenter.by" }
+]
+
+# Конфигурация для development
+[env.development]
+name = "belautocenter-edge-cache-dev"
+
+# Переменные окружения
+[vars]
+CACHE_TTL = "86400"  # 24 часа в секундах
+
+# Настройки для локальной разработки
+[dev]
+port = 8788
+local_protocol = "http"
