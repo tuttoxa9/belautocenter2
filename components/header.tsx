@@ -148,7 +148,7 @@ export default function Header() {
           open={isMobileMenuOpen}
           onOpenChange={setIsMobileMenuOpen}
           title="Меню"
-          position="left"
+          position="bottom"
           noPadding={true}
         >
           {/* Простой заголовок */}
@@ -175,26 +175,28 @@ export default function Header() {
 
           {/* Компактное навигационное меню */}
           <div className="py-4">
-            {navigation.map((item) => {
-              const isActive = pathname === item.href;
+            {navigation
+              .filter((item) => !["/", "/catalog", "/credit", "/contacts"].includes(item.href))
+              .map((item) => {
+                const isActive = pathname === item.href;
 
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  prefetch={true}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
-                    isActive ? 'text-blue-600 bg-blue-50' : ''
-                  }`}
-                >
-                  <div className={`w-2 h-2 rounded-full mr-3 ${
-                    isActive ? 'bg-blue-600' : 'bg-gray-300'
-                  }`}></div>
-                  <span className="font-medium">{item.name}</span>
-                </Link>
-              );
-            })}
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    prefetch={true}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
+                      isActive ? 'text-blue-600 bg-blue-50' : ''
+                    }`}
+                  >
+                    <div className={`w-2 h-2 rounded-full mr-3 ${
+                      isActive ? 'bg-blue-600' : 'bg-gray-300'
+                    }`}></div>
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                );
+              })}
           </div>
 
           {/* Компактная секция контактов */}
