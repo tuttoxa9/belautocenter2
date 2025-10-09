@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import CarCard from "@/components/car-card"
 import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw } from "lucide-react"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
-import { firestoreApi } from "@/lib/firestore-api"
 
 interface Car {
   id: string;
@@ -23,6 +22,7 @@ interface Car {
   transmission: string;
   fuelType: string;
   driveTrain: string;
+  [key: string]: any; // Позволяет другие поля
 }
 
 interface CatalogClientProps {
@@ -32,12 +32,12 @@ interface CatalogClientProps {
 export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [cars, setCars] = useState<Car[]>(initialCars)
   const [filteredCars, setFilteredCars] = useState<Car[]>(initialCars)
-  const [displayedCars, setDisplayedCars] = useState<Car[]>([]) // Новое состояние для отображаемых авто
-  const [loading, setLoading] = useState(initialCars.length === 0)
-  const [loadingMore, setLoadingMore] = useState(false) // Состояние загрузки дополнительных авто
-  const [currentPage, setCurrentPage] = useState(1) // Текущая страница
-  const [carsPerPage] = useState(12) // Количество авто на странице
-  const [hasMore, setHasMore] = useState(true) // Есть ли ещё авто для загрузки
+  const [displayedCars, setDisplayedCars] = useState<Car[]>([])
+  const [loading, setLoading] = useState(false) // Данные теперь всегда загружаются на сервере
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [carsPerPage] = useState(12)
+  const [hasMore, setHasMore] = useState(true)
   const [availableMakes, setAvailableMakes] = useState<string[]>([])
   const [availableModels, setAvailableModels] = useState<string[]>([])
   const [filters, setFilters] = useState({
@@ -53,115 +53,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     fuelType: "any",
     driveTrain: "any",
   })
-  const [sortBy, setSortBy] = useState("date-desc") // По умолчанию новые объявления сначала
+  const [sortBy, setSortBy] = useState("date-desc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-
-  // Загружаем данные на клиенте, если они не были предзагружены
-  useEffect(() => {
-    if (initialCars.length === 0) {
-      loadCarsFromCloudflare()
-    }
-  }, [initialCars.length])
-
-  // Функция для принудительного обновления каталога
-  const refreshCatalog = () => {
-    loadCarsFromCloudflare(true)
-  }
-
-  // Слушаем события изменения данных в админке
-  useEffect(() => {
-    const handleCarsUpdate = () => {
-      refreshCatalog()
-    }
-
-    // Слушаем события от localStorage (когда админка сохраняет изменения)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'cars_updated') {
-        refreshCatalog()
-        // Очищаем флаг после обновления
-        localStorage.removeItem('cars_updated')
-      }
-    }
-
-    // Слушаем custom события
-    window.addEventListener('carsUpdated', handleCarsUpdate)
-    window.addEventListener('storage', handleStorageChange)
-
-    return () => {
-      window.removeEventListener('carsUpdated', handleCarsUpdate)
-      window.removeEventListener('storage', handleStorageChange)
-    }
-  }, [])
-
-  const loadCarsFromCloudflare = async (forceRefresh = false) => {
-    try {
-      setLoading(true)
-
-      // Если нужно принудительное обновление, добавляем заголовок Cache-Control: no-cache
-      // и timestamp для обхода кэша браузера
-      let allCars;
-      if (forceRefresh) {
-        const timestamp = Date.now();
-        const response = await fetch(`/cars?_t=${timestamp}`, {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch cars: ${response.status}`);
-        }
-
-        const data = await response.json();
-        allCars = data.documents?.map((doc: any) => {
-          const id = doc.name.split('/').pop() || '';
-          const fields: Record<string, any> = {};
-
-          // Преобразуем Firestore поля в обычные объекты
-          for (const [key, value] of Object.entries(doc.fields || {})) {
-            if (value.stringValue) {
-              fields[key] = value.stringValue;
-            } else if (value.integerValue) {
-              fields[key] = parseInt(value.integerValue);
-            } else if (value.doubleValue) {
-              fields[key] = parseFloat(value.doubleValue);
-            } else if (value.booleanValue !== undefined) {
-              fields[key] = value.booleanValue;
-            } else if (value.timestampValue) {
-              fields[key] = { seconds: new Date(value.timestampValue).getTime() / 1000 };
-            } else if (value.arrayValue) {
-              fields[key] = value.arrayValue.values?.map((v: any) => {
-                if (v.stringValue) return v.stringValue;
-                if (v.integerValue) return parseInt(v.integerValue);
-                if (v.doubleValue) return parseFloat(v.doubleValue);
-                return v;
-              }) || [];
-            } else {
-              fields[key] = value;
-            }
-          }
-
-          return { id, ...fields };
-        }) || [];
-      } else {
-        // Используем firestoreApi для запроса через Cloudflare Worker (с кэшированием)
-        allCars = await firestoreApi.getCollection("cars", forceRefresh);
-      }
-
-      // Фильтруем только доступные автомобили
-      const processedCars = allCars.filter((car: any) => car.isAvailable !== false)
-
-      setCars(processedCars)
-      setFilteredCars(processedCars)
-    } catch (error) {
-    } finally {
-      setLoading(false)
-    }
-  }
-
-
 
   // Инициализация доступных марок и моделей
   useEffect(() => {
@@ -197,14 +90,12 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     }
 
     const filtered = cars.filter((car) => {
-      // Добавляем проверки на null и undefined для всех полей
       if (!car) return false;
 
       const carPrice = car.price || 0;
       const carYear = car.year || 0;
       const carMileage = car.mileage || 0;
 
-      // Безопасный парсинг чисел с защитой от NaN
       const priceFrom = filters.priceFrom ? Number.parseInt(filters.priceFrom) || 0 : 0;
       const priceTo = filters.priceTo ? Number.parseInt(filters.priceTo) || 0 : 0;
       const yearFrom = filters.yearFrom ? Number.parseInt(filters.yearFrom) || 0 : 0;
@@ -252,7 +143,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     })
 
     setFilteredCars(filtered)
-    // Сбрасываем пагинацию при применении фильтров
     setCurrentPage(1)
     const initialDisplayed = filtered.slice(0, carsPerPage)
     setDisplayedCars(initialDisplayed)
@@ -263,13 +153,11 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     applyFilters()
   }, [applyFilters])
 
-  // Функция для загрузки дополнительных авто
   const loadMoreCars = useCallback(() => {
     if (loadingMore || !hasMore) return
 
     setLoadingMore(true)
 
-    // Имитируем небольшую задержку для UX
     setTimeout(() => {
       const nextPage = currentPage + 1
       const startIndex = currentPage * carsPerPage
@@ -313,7 +201,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
 
   const MobileFiltersContent = () => (
     <div className="space-y-4">
-      {/* Марка */}
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700">Марка</Label>
         <Select
@@ -333,7 +220,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         </Select>
       </div>
 
-      {/* Модель */}
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700">Модель</Label>
         <Select
@@ -353,7 +239,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         </Select>
       </div>
 
-      {/* Цена */}
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700">Цена ($)</Label>
         <div className="grid grid-cols-2 gap-2">
@@ -374,7 +259,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         </div>
       </div>
 
-      {/* Год */}
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700">Год выпуска</Label>
         <div className="grid grid-cols-2 gap-2">
@@ -419,7 +303,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     </div>
   );
 
-  // Десктопные фильтры компонент
   const DesktopFilters = () => (
     <Card className="sticky top-24 border border-gray-200 shadow-sm bg-white rounded-2xl overflow-hidden">
       <CardHeader className="bg-gray-50/50 border-b border-gray-200/50 py-4">
@@ -438,9 +321,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 p-4">
-        {/* Марка и Модель в одном ряду */}
         <div className="grid grid-cols-1 gap-4">
-          {/* Марка */}
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Марка</Label>
             <Select
@@ -460,7 +341,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
             </Select>
           </div>
 
-          {/* Модель */}
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Модель</Label>
             <Select
@@ -481,7 +361,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           </div>
         </div>
 
-        {/* Цена */}
         <div className="space-y-2">
           <Label className="text-sm font-medium text-gray-700">Цена ($)</Label>
           <div className="grid grid-cols-2 gap-2">
@@ -502,7 +381,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           </div>
         </div>
 
-        {/* Год и Пробег в одном ряду */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Год от</Label>
@@ -526,7 +404,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           </div>
         </div>
 
-        {/* Пробег */}
         <div className="space-y-2">
           <Label className="text-sm font-medium text-gray-700">Пробег (тыс. км)</Label>
           <div className="grid grid-cols-2 gap-2">
@@ -547,7 +424,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           </div>
         </div>
 
-        {/* Дополнительные фильтры в компактном виде */}
         <div className="space-y-2">
           <Label className="text-sm font-medium text-gray-700">Коробка передач</Label>
           <Select
@@ -619,7 +495,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50">
       <div className="container px-4 py-8">
-        {/* Хлебные крошки */}
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
@@ -633,7 +508,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         </nav>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Мобильная кнопка фильтров */}
           <div className="lg:hidden mb-6">
             <Button
               variant="outline"
@@ -656,14 +530,11 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
             </UniversalDrawer>
           </div>
 
-          {/* Десктопные фильтры */}
           <div className="lg:w-80 hidden lg:block">
             <DesktopFilters />
           </div>
 
-          {/* Основная область */}
           <div className="flex-1">
-            {/* Сортировка и результаты */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Каталог автомобилей</h1>
@@ -696,22 +567,9 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                     </Select>
                   </div>
                 </div>
-
-                {/* Кнопка принудительного обновления каталога */}
-                <Button
-                  onClick={refreshCatalog}
-                  variant="outline"
-                  size="sm"
-                  className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 text-sm"
-                  disabled={loading}
-                >
-                  <RotateCcw className="h-4 w-4 mr-1" />
-                  Обновить
-                </Button>
               </div>
             </div>
 
-            {/* Сетка автомобилей */}
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {Array.from({ length: 6 }).map((_, index) => (
@@ -733,7 +591,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                   ))}
                 </div>
 
-                {/* Кнопка "Показать ещё" */}
                 {hasMore && (
                   <div className="flex justify-center pt-6">
                     <button
@@ -758,7 +615,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                   </div>
                 )}
 
-                {/* Информация о загруженных автомобилях */}
                 {!hasMore && displayedCars.length > 0 && displayedCars.length === filteredCars.length && (
                   <div className="text-center pt-6">
                     <p className="text-gray-500">
