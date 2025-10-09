@@ -7,7 +7,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -135,101 +135,107 @@ export default function Header() {
         </Link>
 
         {/* Мобильное меню (справа) */}
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-80 bg-white border-r border-gray-200">
-            {/* Простой заголовок */}
-            <div className="flex items-center justify-center p-4 border-b border-gray-100">
-              {loading ? (
-                <div className="flex items-center text-gray-600">
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  <span className="font-medium">Загрузка...</span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center">
-                  <Image
-                    src="/logo4.png"
-                    alt="Белавто Центр"
-                    width={120}
-                    height={40}
-                    className="h-10 w-auto mb-2"
-                    priority
-                  />
-                  <div className="w-12 h-px bg-gray-300"></div>
-                </div>
-              )}
-            </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={() => setIsMobileMenuOpen(true)}
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
 
-            {/* Компактное навигационное меню */}
-            <div className="py-4">
-              {navigation
-                .filter((item) => !["/", "/catalog", "/credit", "/contacts"].includes(item.href))
-                .map((item) => {
-                  const isActive = pathname === item.href;
+        <UniversalDrawer
+          open={isMobileMenuOpen}
+          onOpenChange={setIsMobileMenuOpen}
+          title="Меню"
+          position="left"
+          noPadding={true}
+        >
+          {/* Простой заголовок */}
+          <div className="flex items-center justify-center p-4 border-b border-gray-100">
+            {loading ? (
+              <div className="flex items-center text-gray-600">
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <span className="font-medium">Загрузка...</span>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center">
+                <Image
+                  src="/logo4.png"
+                  alt="Белавто Центр"
+                  width={120}
+                  height={40}
+                  className="h-10 w-auto mb-2"
+                  priority
+                />
+                <div className="w-12 h-px bg-gray-300"></div>
+              </div>
+            )}
+          </div>
 
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      prefetch={true}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
-                        isActive ? 'text-blue-600 bg-blue-50' : ''
-                      }`}
-                    >
-                      <div className={`w-2 h-2 rounded-full mr-3 ${
-                        isActive ? 'bg-blue-600' : 'bg-gray-300'
-                      }`}></div>
-                      <span className="font-medium">{item.name}</span>
-                    </Link>
-                  );
-                })}
-            </div>
+          {/* Компактное навигационное меню */}
+          <div className="py-4">
+            {navigation.map((item) => {
+              const isActive = pathname === item.href;
 
-            {/* Компактная секция контактов */}
-            <div className="mx-4 mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              {loading ? (
-                <div className="flex items-center text-gray-600 mb-3">
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  <span className="text-sm">Загрузка контактов...</span>
-                </div>
-              ) : (
-                <a
-                  href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                  className="block text-center text-white font-semibold text-base mb-3 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  prefetch={true}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
+                    isActive ? 'text-blue-600 bg-blue-50' : ''
+                  }`}
                 >
-                  {settings?.phone || "+375 XX XXX-XX-XX"}
-                </a>
-              )}
+                  <div className={`w-2 h-2 rounded-full mr-3 ${
+                    isActive ? 'bg-blue-600' : 'bg-gray-300'
+                  }`}></div>
+                  <span className="font-medium">{item.name}</span>
+                </Link>
+              );
+            })}
+          </div>
 
-              <Button
-                className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 rounded-lg transition-colors mb-4"
-                onClick={() => {
-                  setIsMobileMenuOpen(false)
-                  setIsCallbackOpen(true)
-                }}
+          {/* Компактная секция контактов */}
+          <div className="mx-4 mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            {loading ? (
+              <div className="flex items-center text-gray-600 mb-3">
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <span className="text-sm">Загрузка контактов...</span>
+              </div>
+            ) : (
+              <a
+                href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
+                className="block text-center text-white font-semibold text-base mb-3 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
               >
-                Связаться с нами
-              </Button>
+                {settings?.phone || "+375 XX XXX-XX-XX"}
+              </a>
+            )}
 
-              {/* Простая контактная информация */}
-              <div className="space-y-2 pt-3 border-t border-gray-200">
-                <div className="flex items-center space-x-2 text-xs text-gray-600">
-                  <MapPin className="w-3 h-3" />
-                  <span>{settings?.address || "г. Минск, ул. Примерная, 123"}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-xs text-gray-600">
-                  <Clock className="w-3 h-3" />
-                  <span>{settings?.workingHours || "пн-вск: 9:00-21:00"}</span>
-                </div>
+            <Button
+              className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 rounded-lg transition-colors mb-4"
+              onClick={() => {
+                setIsMobileMenuOpen(false)
+                setIsCallbackOpen(true)
+              }}
+            >
+              Связаться с нами
+            </Button>
+
+            {/* Простая контактная информация */}
+            <div className="space-y-2 pt-3 border-t border-gray-200">
+              <div className="flex items-center space-x-2 text-xs text-gray-600">
+                <MapPin className="w-3 h-3" />
+                <span>{settings?.address || "г. Минск, ул. Примерная, 123"}</span>
+              </div>
+              <div className="flex items-center space-x-2 text-xs text-gray-600">
+                <Clock className="w-3 h-3" />
+                <span>{settings?.workingHours || "пн-вск: 9:00-21:00"}</span>
               </div>
             </div>
-          </SheetContent>
-        </Sheet>
+          </div>
+        </UniversalDrawer>
 
         {/* Десктопное меню */}
         <nav className="hidden md:flex items-center space-x-6 flex-1 justify-start ml-8">

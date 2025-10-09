@@ -13,15 +13,18 @@ interface UniversalDrawerProps {
   footer?: React.ReactNode;
   className?: string;
   noPadding?: boolean;
+  position?: 'left' | 'right' | 'bottom';
 }
 
-export function UniversalDrawer({ open, onOpenChange, title, children, footer, className, noPadding = false }: UniversalDrawerProps) {
+export function UniversalDrawer({ open, onOpenChange, title, children, footer, className, noPadding = false, position = 'right' }: UniversalDrawerProps) {
   const isMobile = useIsMobile();
 
+  // Для десктопа используем Sheet
   if (!isMobile) {
+    const side = position === 'bottom' ? 'right' : position;
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className={`w-[600px] sm:max-w-[800px] p-0 flex flex-col ${className}`}>
+        <SheetContent side={side} className={`w-[600px] sm:max-w-[800px] p-0 flex flex-col ${className}`}>
           <SheetHeader className="p-4 sm:p-6 border-b">
             <SheetTitle>{title}</SheetTitle>
           </SheetHeader>
@@ -38,9 +41,13 @@ export function UniversalDrawer({ open, onOpenChange, title, children, footer, c
     );
   }
 
+  // Для мобильных используем Drawer с нужным направлением
+  const direction = position === 'left' ? 'left' : position === 'right' ? 'right' : 'bottom';
+  const maxHeight = position === 'bottom' ? 'max-h-[90vh]' : 'h-full';
+
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className={`max-h-[90vh] flex flex-col ${className}`}>
+    <Drawer open={open} onOpenChange={onOpenChange} direction={direction}>
+      <DrawerContent direction={direction} className={`${maxHeight} flex flex-col ${className}`}>
         <DrawerHeader className="text-left flex-shrink-0">
           <DrawerTitle>{title}</DrawerTitle>
         </DrawerHeader>
