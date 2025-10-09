@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import CarCard from "@/components/car-card"
 import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw } from "lucide-react"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
-import { firestoreApi } from "@/lib/firestore-api"
 
 interface Car {
   id: string;
@@ -33,7 +32,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [cars, setCars] = useState<Car[]>(initialCars)
   const [filteredCars, setFilteredCars] = useState<Car[]>(initialCars)
   const [displayedCars, setDisplayedCars] = useState<Car[]>([]) // Новое состояние для отображаемых авто
-  const [loading, setLoading] = useState(initialCars.length === 0)
+  const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false) // Состояние загрузки дополнительных авто
   const [currentPage, setCurrentPage] = useState(1) // Текущая страница
   const [carsPerPage] = useState(12) // Количество авто на странице
@@ -56,110 +55,11 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [sortBy, setSortBy] = useState("date-desc") // По умолчанию новые объявления сначала
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-  // Загружаем данные на клиенте, если они не были предзагружены
+  // Обновляем данные при изменении initialCars
   useEffect(() => {
-    if (initialCars.length === 0) {
-      loadCarsFromCloudflare()
-    }
-  }, [initialCars.length])
-
-  // Функция для принудительного обновления каталога
-  const refreshCatalog = () => {
-    loadCarsFromCloudflare(true)
-  }
-
-  // Слушаем события изменения данных в админке
-  useEffect(() => {
-    const handleCarsUpdate = () => {
-      refreshCatalog()
-    }
-
-    // Слушаем события от localStorage (когда админка сохраняет изменения)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'cars_updated') {
-        refreshCatalog()
-        // Очищаем флаг после обновления
-        localStorage.removeItem('cars_updated')
-      }
-    }
-
-    // Слушаем custom события
-    window.addEventListener('carsUpdated', handleCarsUpdate)
-    window.addEventListener('storage', handleStorageChange)
-
-    return () => {
-      window.removeEventListener('carsUpdated', handleCarsUpdate)
-      window.removeEventListener('storage', handleStorageChange)
-    }
-  }, [])
-
-  const loadCarsFromCloudflare = async (forceRefresh = false) => {
-    try {
-      setLoading(true)
-
-      // Если нужно принудительное обновление, добавляем заголовок Cache-Control: no-cache
-      // и timestamp для обхода кэша браузера
-      let allCars;
-      if (forceRefresh) {
-        const timestamp = Date.now();
-        const response = await fetch(`/cars?_t=${timestamp}`, {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch cars: ${response.status}`);
-        }
-
-        const data = await response.json();
-        allCars = data.documents?.map((doc: any) => {
-          const id = doc.name.split('/').pop() || '';
-          const fields: Record<string, any> = {};
-
-          // Преобразуем Firestore поля в обычные объекты
-          for (const [key, value] of Object.entries(doc.fields || {})) {
-            if (value.stringValue) {
-              fields[key] = value.stringValue;
-            } else if (value.integerValue) {
-              fields[key] = parseInt(value.integerValue);
-            } else if (value.doubleValue) {
-              fields[key] = parseFloat(value.doubleValue);
-            } else if (value.booleanValue !== undefined) {
-              fields[key] = value.booleanValue;
-            } else if (value.timestampValue) {
-              fields[key] = { seconds: new Date(value.timestampValue).getTime() / 1000 };
-            } else if (value.arrayValue) {
-              fields[key] = value.arrayValue.values?.map((v: any) => {
-                if (v.stringValue) return v.stringValue;
-                if (v.integerValue) return parseInt(v.integerValue);
-                if (v.doubleValue) return parseFloat(v.doubleValue);
-                return v;
-              }) || [];
-            } else {
-              fields[key] = value;
-            }
-          }
-
-          return { id, ...fields };
-        }) || [];
-      } else {
-        // Используем firestoreApi для запроса через Cloudflare Worker (с кэшированием)
-        allCars = await firestoreApi.getCollection("cars", forceRefresh);
-      }
-
-      // Фильтруем только доступные автомобили
-      const processedCars = allCars.filter((car: any) => car.isAvailable !== false)
-
-      setCars(processedCars)
-      setFilteredCars(processedCars)
-    } catch (error) {
-    } finally {
-      setLoading(false)
-    }
-  }
+    setCars(initialCars)
+    setFilteredCars(initialCars)
+  }, [initialCars])
 
 
 
@@ -696,18 +596,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                     </Select>
                   </div>
                 </div>
-
-                {/* Кнопка принудительного обновления каталога */}
-                <Button
-                  onClick={refreshCatalog}
-                  variant="outline"
-                  size="sm"
-                  className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 text-sm"
-                  disabled={loading}
-                >
-                  <RotateCcw className="h-4 w-4 mr-1" />
-                  Обновить
-                </Button>
               </div>
             </div>
 

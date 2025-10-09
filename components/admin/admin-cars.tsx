@@ -111,9 +111,19 @@ export default function AdminCars() {
         await cacheInvalidator.onCreate(docRef.id)
       }
 
-      // Уведомляем о изменении данных для обновления каталога
-      localStorage.setItem('cars_updated', Date.now().toString())
-      window.dispatchEvent(new CustomEvent('carsUpdated'))
+      // Вызываем API для сброса кэша Cloudflare
+      try {
+        await fetch('/api/revalidate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_REVALIDATION_SECRET}`
+          },
+          body: JSON.stringify({ purgeAll: true })
+        })
+      } catch (error) {
+        console.error('Failed to revalidate cache:', error)
+      }
 
       setIsSheetOpen(false)
       setEditingCar(null)
@@ -150,9 +160,19 @@ export default function AdminCars() {
         await deleteDoc(doc(db, "cars", carId))
         await cacheInvalidator.onDelete(carId)
 
-        // Уведомляем о изменении данных для обновления каталога
-        localStorage.setItem('cars_updated', Date.now().toString())
-        window.dispatchEvent(new CustomEvent('carsUpdated'))
+        // Вызываем API для сброса кэша Cloudflare
+        try {
+          await fetch('/api/revalidate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.NEXT_PUBLIC_REVALIDATION_SECRET}`
+            },
+            body: JSON.stringify({ purgeAll: true })
+          })
+        } catch (error) {
+          console.error('Failed to revalidate cache:', error)
+        }
 
         loadCars()
       } catch (error) {

@@ -2,10 +2,9 @@ import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
-// Принудительная статическая генерация с кэшированием на сутки
-export const dynamic = 'force-static'
-export const dynamicParams = true
-export const revalidate = 86400 // 24 часа
+// Серверный компонент с SSR
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -153,6 +152,36 @@ export async function generateMetadata(
   }
 }
 
-export default function CarDetailsPage({ params }: { params: { id: string } }) {
-  return <CarDetailsClient carId={params.id} />
+// Функция для загрузки данных автомобиля с сервера
+async function getCarData(carId: string) {
+  try {
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`
+
+    const response = await fetch(firestoreUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'NextJS-Direct-Firestore/1.0'
+      },
+      cache: 'no-store' // Отключаем кэширование для актуальности данных
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const doc = await response.json()
+    const carData = parseFirestoreDoc(doc)
+
+    return carData
+  } catch (error) {
+    console.error('Error loading car data:', error)
+    return null
+  }
+}
+
+export default async function CarDetailsPage({ params }: { params: { id: string } }) {
+  const carData = await getCarData(params.id)
+
+  return <CarDetailsClient carId={params.id} initialCar={carData} />
 }
