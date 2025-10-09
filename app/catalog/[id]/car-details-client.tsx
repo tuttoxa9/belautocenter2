@@ -1447,31 +1447,10 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                           onValueChange={(value) => {
                             const bank = partnerBanks.find(b => b.name === value) || partnerBanks[0];
                             setSelectedBank(bank);
-
-                            // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранного банка ★★★
-                            // ★★★ КОНЕЦ ★★★
                           }}
                         >
                           <SelectTrigger className="h-8 sm:h-10">
-                            <SelectValue placeholder="Выберите банк">
-                              {selectedBank && (
-                                <div className="flex items-center justify-between w-full">
-                                  <div className="flex items-center gap-2">
-                                    {(selectedBank.logo || selectedBank.logoUrl) && (
-                                      <Image
-                                        src={getCachedImageUrl(selectedBank.logo || selectedBank.logoUrl)}
-                                        alt={`${selectedBank.name} логотип`}
-                                        width={16}
-                                        height={16}
-                                        className="object-contain rounded"
-                                      />
-                                    )}
-                                    <span className="text-xs sm:text-sm truncate">{selectedBank.name}</span>
-                                  </div>
-                                  <span className="text-xs font-semibold text-slate-600">{selectedBank.rate || selectedBank.minRate}%</span>
-                                </div>
-                              )}
-                            </SelectValue>
+                            <SelectValue placeholder="Выберите банк" />
                           </SelectTrigger>
                           <SelectContent>
                             {partnerBanks.map((bank, index) => (
@@ -1575,31 +1554,10 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                           onValueChange={(value) => {
                             const company = leasingCompanies.find(c => c.name.toLowerCase().replace(/[\s-]/g, '') === value) || leasingCompanies[0];
                             setSelectedLeasingCompany(company);
-
-                            // ★★★ ДОБАВЛЕНО: Отладочный код для проверки выбранной лизинговой компании ★★★
-                            // ★★★ КОНЕЦ ★★★
                           }}
                         >
                           <SelectTrigger className="h-8 sm:h-10">
-                            <SelectValue placeholder="Выберите компанию">
-                              {selectedLeasingCompany && (
-                                <div className="flex items-center justify-between w-full">
-                                  <div className="flex items-center gap-2">
-                                    {selectedLeasingCompany.logoUrl && (
-                                      <Image
-                                        src={getCachedImageUrl(selectedLeasingCompany.logoUrl)}
-                                        alt={`${selectedLeasingCompany.name} логотип`}
-                                        width={16}
-                                        height={16}
-                                        className="object-contain rounded"
-                                      />
-                                    )}
-                                    <span className="text-xs sm:text-sm truncate">{selectedLeasingCompany.name}</span>
-                                  </div>
-                                  <span className="text-xs font-semibold text-slate-600">{selectedLeasingCompany.minAdvance}%</span>
-                                </div>
-                              )}
-                            </SelectValue>
+                            <SelectValue placeholder="Выберите компанию" />
                           </SelectTrigger>
                           <SelectContent>
                             {leasingCompanies.map((company) => (
