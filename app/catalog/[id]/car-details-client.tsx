@@ -785,7 +785,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
         </nav>
 
         {/* ЕДИНЫЙ ОСНОВНОЙ БЛОК */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden">
+        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden" style={{ boxShadow: '0 8px 32px rgba(27, 40, 52, 0.07)' }}>
           <div>
 
           {/* Заголовок и цена - компактный верхний блок */}
@@ -1020,7 +1020,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               )}
 
               {/* Описание под галереей для десктопов */}
-              <div className="hidden lg:block p-6 bg-slate-50/50 border-slate-200/50">
+              <div className="hidden lg:block p-6 border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
                 <h4 className="text-lg font-bold text-slate-900 mb-3">
                   Описание
                 </h4>
@@ -1044,7 +1044,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
             </div>
 
             {/* Описание для мобильных устройств под галереей */}
-            <div className="lg:hidden p-3 sm:p-4 bg-slate-50/50 border-b border-slate-200/50">
+            <div className="lg:hidden p-3 sm:p-4 border-b border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
               <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                 Описание
               </h4>
@@ -1202,7 +1202,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                   <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                     Финансирование
                   </h4>
-                  <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200/50">
+                  <div className="rounded-xl p-3 sm:p-4 border border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>
@@ -1243,7 +1243,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   Записаться на просмотр
 </Button>
 
-<Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+<Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-transparent hover:bg-blue-600 text-blue-600 hover:text-white border-2 border-blue-600 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base transition-colors">
   <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
   Заказать звонок
 </Button>
