@@ -643,101 +643,6 @@ export default function AdminCars() {
                       <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
                     </div>
                   </div>
-                </div>
-              )}
-
-              {/* Раздел: Изображения */}
-              {activeTab === "images" && (
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-sm">Фотографии автомобиля</Label>
-                    <p className="text-xs text-gray-500 mb-3">
-                      Загрузите качественные фотографии автомобиля. Первое изображение будет использоваться как главное.
-                    </p>
-                    <ImageUpload
-                      multiple={true}
-                      currentImages={carForm.imageUrls.filter(url => url.trim() !== "")}
-                      path="cars"
-                      onMultipleUpload={(allUrls) => {
-                        setCarForm({ ...carForm, imageUrls: allUrls.length > 0 ? allUrls : [""] })
-                      }}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Раздел: JSON */}
-              {activeTab === "json" && (
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-sm mb-2 block">Импорт данных из JSON</Label>
-                    <p className="text-xs text-gray-500 mb-3">
-                      Вставьте JSON с данными автомобиля для быстрого заполнения формы. Это перезапишет текущие данные.
-                    </p>
-                    <Textarea
-                      value={jsonInput}
-                      onChange={(e) => setJsonInput(e.target.value)}
-                      className="font-mono text-xs h-64"
-                      placeholder='{\n  "make": "BMW",\n  "model": "M5 Competition",\n  "year": 2020,\n  "price": 95000,\n  "mileage": 45000,\n  "bodyType": "Седан",\n  "color": "Синий металлик",\n  "engineVolume": 4.4,\n  "fuelType": "Бензин",\n  "transmission": "Автомат",\n  "driveTrain": "Полный",\n  "isAvailable": true,\n  "imageUrls": ["cars/example1.jpg", "cars/example2.jpg"],\n  "description": "Текст описания",\n  "features": ["Адаптивная подвеска", "Карбоновые тормоза"],\n  "specifications": {\n    "Двигатель": "4.4 V8 Twin-Turbo",\n    "Мощность": "625",\n    "Разгон 0-100": "3.3"\n  }\n}'
-                    />
-                    {jsonError && (
-                      <div className="text-sm text-red-600 mt-2">{jsonError}</div>
-                    )}
-                    <div className="flex gap-2 mt-3">
-                      <Button
-                        type="button"
-                        onClick={processJsonInput}
-                        className="flex-1"
-                      >
-                        <Code className="h-4 w-4 mr-2" />
-                        Применить JSON
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setJsonInput("")}
-                        className="flex-1"
-                      >
-                        Очистить
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Предпросмотр текущих данных формы */}
-                  <div>
-                    <Label className="text-sm mb-2 block">Предпросмотр данных формы</Label>
-                    <p className="text-xs text-gray-500 mb-3">
-                      Просмотр текущих данных в JSON формате
-                    </p>
-                    <Textarea
-                      value={JSON.stringify({
-                        make: carForm.make,
-                        model: carForm.model,
-                        year: Number(carForm.year),
-                        price: Number(carForm.price),
-                        mileage: Number(carForm.mileage),
-                        engineVolume: carForm.fuelType === "Электро" ? 0 : parseFloat(carForm.engineVolume),
-                        fuelType: carForm.fuelType,
-                        transmission: carForm.transmission,
-                        driveTrain: carForm.driveTrain,
-                        bodyType: carForm.bodyType,
-                        color: carForm.color,
-                        description: carForm.description,
-                        imageUrls: carForm.imageUrls.filter(url => url.trim() !== ""),
-                        isAvailable: carForm.isAvailable,
-                        showOnHomepage: carForm.showOnHomepage,
-                        specifications: carForm.specifications,
-                        features: carForm.features,
-                        tiktok_url: carForm.tiktok_url,
-                        youtube_url: carForm.youtube_url
-                      }, null, 2)}
-                      className="font-mono text-xs h-64"
-                      readOnly
-                    />
-                  </div>
-                </div>
-              )}
 
                   <div>
                     <Label className="text-sm">Характеристики</Label>
@@ -850,6 +755,101 @@ export default function AdminCars() {
                       </Button>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* Раздел: Изображения */}
+              {activeTab === "images" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm">Фотографии автомобиля</Label>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Загрузите качественные фотографии автомобиля. Первое изображение будет использоваться как главное.
+                    </p>
+                    <ImageUpload
+                      multiple={true}
+                      currentImages={carForm.imageUrls.filter(url => url.trim() !== "")}
+                      path="cars"
+                      onMultipleUpload={(allUrls) => {
+                        setCarForm({ ...carForm, imageUrls: allUrls.length > 0 ? allUrls : [""] })
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Раздел: JSON */}
+              {activeTab === "json" && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm mb-2 block">Импорт данных из JSON</Label>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Вставьте JSON с данными автомобиля для быстрого заполнения формы. Это перезапишет текущие данные.
+                    </p>
+                    <Textarea
+                      value={jsonInput}
+                      onChange={(e) => setJsonInput(e.target.value)}
+                      className="font-mono text-xs h-64"
+                      placeholder='{\n  "make": "BMW",\n  "model": "M5 Competition",\n  "year": 2020,\n  "price": 95000,\n  "mileage": 45000,\n  "bodyType": "Седан",\n  "color": "Синий металлик",\n  "engineVolume": 4.4,\n  "fuelType": "Бензин",\n  "transmission": "Автомат",\n  "driveTrain": "Полный",\n  "isAvailable": true,\n  "imageUrls": ["cars/example1.jpg", "cars/example2.jpg"],\n  "description": "Текст описания",\n  "features": ["Адаптивная подвеска", "Карбоновые тормоза"],\n  "specifications": {\n    "Двигатель": "4.4 V8 Twin-Turbo",\n    "Мощность": "625",\n    "Разгон 0-100": "3.3"\n  }\n}'
+                    />
+                    {jsonError && (
+                      <div className="text-sm text-red-600 mt-2">{jsonError}</div>
+                    )}
+                    <div className="flex gap-2 mt-3">
+                      <Button
+                        type="button"
+                        onClick={processJsonInput}
+                        className="flex-1"
+                      >
+                        <Code className="h-4 w-4 mr-2" />
+                        Применить JSON
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setJsonInput("")}
+                        className="flex-1"
+                      >
+                        Очистить
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Предпросмотр текущих данных формы */}
+                  <div>
+                    <Label className="text-sm mb-2 block">Предпросмотр данных формы</Label>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Просмотр текущих данных в JSON формате
+                    </p>
+                    <Textarea
+                      value={JSON.stringify({
+                        make: carForm.make,
+                        model: carForm.model,
+                        year: Number(carForm.year),
+                        price: Number(carForm.price),
+                        mileage: Number(carForm.mileage),
+                        engineVolume: carForm.fuelType === "Электро" ? 0 : parseFloat(carForm.engineVolume),
+                        fuelType: carForm.fuelType,
+                        transmission: carForm.transmission,
+                        driveTrain: carForm.driveTrain,
+                        bodyType: carForm.bodyType,
+                        color: carForm.color,
+                        description: carForm.description,
+                        imageUrls: carForm.imageUrls.filter(url => url.trim() !== ""),
+                        isAvailable: carForm.isAvailable,
+                        showOnHomepage: carForm.showOnHomepage,
+                        specifications: carForm.specifications,
+                        features: carForm.features,
+                        tiktok_url: carForm.tiktok_url,
+                        youtube_url: carForm.youtube_url
+                      }, null, 2)}
+                      className="font-mono text-xs h-64"
+                      readOnly
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Кнопки управления */}
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t">
@@ -947,6 +947,15 @@ export default function AdminCars() {
         {filteredCars && filteredCars.map((car) => (
           <Card key={car.id}>
             <CardContent className="p-3 md:p-4">
+              {car.imageUrls && car.imageUrls.length > 0 && car.imageUrls[0] && (
+                <div className="mb-3">
+                  <img
+                    src={car.imageUrls[0]}
+                    alt={`${car.make} ${car.model}`}
+                    className="w-full h-40 object-cover rounded-md"
+                  />
+                </div>
+              )}
               <div className="flex items-start justify-between mb-2 gap-2">
                 <h3 className="font-semibold text-sm md:text-base truncate flex-1">
                   {car.make} {car.model}
