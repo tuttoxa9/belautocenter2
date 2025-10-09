@@ -18,6 +18,7 @@ import { useButtonState } from "@/hooks/use-button-state"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MarkdownRenderer from "@/components/markdown-renderer"
 import { Textarea } from "@/components/ui/textarea"
+import { getCachedImageUrl } from "@/lib/image-cache"
 
 export default function AdminCars() {
   const [cars, setCars] = useState([])
@@ -950,7 +951,7 @@ export default function AdminCars() {
               {car.imageUrls && car.imageUrls.length > 0 && car.imageUrls[0] && (
                 <div className="mb-3">
                   <img
-                    src={car.imageUrls[0]}
+                    src={getCachedImageUrl(car.imageUrls[0])}
                     alt={`${car.make} ${car.model}`}
                     className="w-full h-40 object-cover rounded-md"
                   />
