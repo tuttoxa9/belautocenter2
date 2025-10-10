@@ -41,9 +41,9 @@ export function UniversalDrawer({ open, onOpenChange, title, children, footer, c
     );
   }
 
-  // Для мобильных используем Drawer с нужным направлением
-  const direction = position === 'left' ? 'left' : position === 'right' ? 'right' : 'bottom';
-  const maxHeight = position === 'bottom' ? 'max-h-[90vh]' : 'h-full';
+  // Для мобильных используем Drawer с направлением снизу вверх
+  const direction = 'bottom';
+  const maxHeight = 'max-h-[90vh]';
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction={direction}>
