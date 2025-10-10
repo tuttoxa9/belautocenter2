@@ -34,6 +34,7 @@ export default function LeasingCalculator() {
   const [loading, setLoading] = useState(true)
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(false)
   const usdBynRate = useUsdBynRate()
+  const [isMounted, setIsMounted] = useState(false)
 
   const [calculator, setCalculator] = useState({
     carPrice: [50000],
@@ -51,6 +52,7 @@ export default function LeasingCalculator() {
   })
 
   useEffect(() => {
+    setIsMounted(true)
     loadCalculatorData()
   }, [])
 
@@ -216,7 +218,7 @@ export default function LeasingCalculator() {
   const totalPayments = monthlyPayment * calculator.leasingTerm[0] + calculator.advance[0]
   const residualValue = (calculator.carPrice[0] * calculator.residualValue[0]) / 100
 
-  if (loading) {
+  if (!isMounted || loading) {
     return (
       <Card>
         <CardHeader>

@@ -39,8 +39,10 @@ export function CarsCarousel() {
   const carouselRef = useRef<HTMLDivElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const usdBynRate = useUsdBynRate()
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
     loadCars()
   }, [])
 
@@ -123,7 +125,7 @@ export function CarsCarousel() {
     })
   }, [activeIndex, cars.length])
 
-  if (loading) {
+  if (!isMounted || loading) {
     return (
       <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
         <div className="p-4 md:p-8">
