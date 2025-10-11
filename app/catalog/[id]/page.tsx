@@ -2,9 +2,8 @@ import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
-// Серверный компонент с SSR
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+// ISR: кэширование на 24 часа
+export const revalidate = 86400
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -163,7 +162,7 @@ async function getCarData(carId: string) {
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
       },
-      cache: 'no-store' // Отключаем кэширование для актуальности данных
+      next: { revalidate: 86400 }
     })
 
     if (!response.ok) {

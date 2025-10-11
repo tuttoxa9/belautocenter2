@@ -104,12 +104,16 @@ export default function AdminCars() {
         updatedAt: new Date(),
       }
 
+      let carId: string;
+
       if (editingCar) {
         await updateDoc(doc(db, "cars", editingCar.id), carData)
         await cacheInvalidator.onUpdate(editingCar.id)
+        carId = editingCar.id
       } else {
         const docRef = await addDoc(collection(db, "cars"), carData)
         await cacheInvalidator.onCreate(docRef.id)
+        carId = docRef.id
       }
 
       // Вызываем API для сброса кэша Cloudflare
@@ -120,7 +124,11 @@ export default function AdminCars() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${process.env.NEXT_PUBLIC_REVALIDATION_SECRET}`
           },
-          body: JSON.stringify({ purgeAll: true })
+          body: JSON.stringify({
+            collection: 'cars',
+            documentId: carId,
+            paths: ['/catalog', '/catalog/[id]', '/']
+          })
         })
       } catch (error) {
         console.error('Failed to revalidate cache:', error)
@@ -169,7 +177,11 @@ export default function AdminCars() {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${process.env.NEXT_PUBLIC_REVALIDATION_SECRET}`
             },
-            body: JSON.stringify({ purgeAll: true })
+            body: JSON.stringify({
+              collection: 'cars',
+              documentId: carId,
+              paths: ['/catalog', '/catalog/[id]', '/']
+            })
           })
         } catch (error) {
           console.error('Failed to revalidate cache:', error)

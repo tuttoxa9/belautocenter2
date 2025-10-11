@@ -35,17 +35,14 @@ export function middleware(request: NextRequest) {
     response.headers.set('Vary', 'Accept-Encoding')
   }
 
-  // Дифференцированное кэширование страниц
-  if (pathname === '/' || pathname.startsWith('/catalog')) {
-    response.headers.set('Cache-Control', 'public, max-age=108000, stale-while-revalidate=3600')
-    response.headers.set('Vary', 'Accept-Encoding')
-  } else if (pathname.match(/^\/(about|contacts|credit|leasing|privacy)$/)) {
-    response.headers.set('Cache-Control', 'public, max-age=1800, stale-while-revalidate=300') // 30 минут
-    response.headers.set('Vary', 'Accept-Encoding')
-  } else if (!pathname.startsWith('/api/') &&
-             !pathname.startsWith('/_next/') &&
-             !pathname.startsWith('/adminbel')) {
-    response.headers.set('Cache-Control', 'public, max-age=600, stale-while-revalidate=120') // 10 минут
+  // Кэширование всех публичных страниц на 24 часа
+  const publicPages = ['/', '/catalog', '/about', '/contacts', '/credit', '/leasing', '/privacy', '/reviews', '/sale'];
+  const isPublicPage = publicPages.some(page =>
+    pathname === page || pathname.startsWith(page + '/')
+  );
+
+  if (isPublicPage) {
+    response.headers.set('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=3600')
     response.headers.set('Vary', 'Accept-Encoding')
   }
 

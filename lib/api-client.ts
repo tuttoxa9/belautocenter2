@@ -15,7 +15,9 @@ export class ApiClient {
     // Это позволяет коду работать на любом домене (Vercel, localhost, production),
     // так как запросы будут отправляться на тот же хост, с которого загружена страница.
     // Переменная NEXT_PUBLIC_API_HOST остается для гибкости, если понадобится указать другой хост.
+    // Используем Worker URL если указан, иначе относительные пути
     this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || ''
+    console.log('[API Client] Base URL:', this.baseUrl || 'relative paths')
   }
 
   async fetch<T>(

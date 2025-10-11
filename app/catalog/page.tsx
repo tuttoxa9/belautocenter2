@@ -1,8 +1,7 @@
 import CatalogClient from './catalog-client'
 
-// Серверный компонент с SSR
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+// ISR: кэширование на 24 часа
+export const revalidate = 86400
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -53,7 +52,7 @@ export default async function CatalogPage() {
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
       },
-      cache: 'no-store' // Отключаем кэширование для актуальности данных
+      next: { revalidate: 86400 }
     })
 
     if (response.ok) {
