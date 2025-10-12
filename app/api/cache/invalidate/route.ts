@@ -1,3 +1,6 @@
+// DEPRECATED: Этот API устарел и перенаправляет на /api/revalidate
+// Оставлен для обратной совместимости
+
 export async function POST(request: Request) {
   try {
     const { collection: collectionName, documentId, action } = await request.json()
@@ -9,42 +12,50 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const cloudflareZoneId = process.env.CLOUDFLARE_ZONE_ID
-    const cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN
+    console.log('[DEPRECATED] /api/cache/invalidate called, redirecting to /api/revalidate')
 
-    if (cloudflareZoneId && cloudflareApiToken) {
+    // Перенаправляем на новый API для точечной очистки
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
-      const response = await fetch(
-        `https://api.cloudflare.com/client/v4/zones/${cloudflareZoneId}/purge_cache`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${cloudflareApiToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ purge_everything: true }),
-        }
-      )
+    const response = await fetch(`${baseUrl}/api/revalidate`, {
+      method: 'POST',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        collection: collectionName,
+        documentId,
+        action,
+        // Не делаем purgeAll, используем точечную очистку
+      })
+    })
 
-      if (response.ok) {
-
-      } else {
-
-        // Не возвращаем ошибку клиенту, так как это фоновая задача,
-        // но логируем ее для отладки.
-      }
-    } else {
-
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('[DEPRECATED] Revalidation failed:', error)
+      return Response.json({
+        error: 'Failed to invalidate cache',
+        details: error
+      }, { status: 500 })
     }
+
+    const result = await response.json()
 
     return Response.json({
       success: true,
-      message: `Cache invalidation triggered for collection: ${collectionName}. The entire site cache will be refreshed.`,
+      message: `Cache invalidation triggered for collection: ${collectionName}`,
       action,
+      deprecated: true,
+      redirectedTo: '/api/revalidate',
+      result
     })
 
   } catch (error) {
-
-    return Response.json({ error: 'Internal Server Error' }, { status: 500 })
+    console.error('[DEPRECATED] Error:', error)
+    return Response.json({
+      error: 'Internal Server Error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }

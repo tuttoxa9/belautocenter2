@@ -35,14 +35,23 @@ export function middleware(request: NextRequest) {
     response.headers.set('Vary', 'Accept-Encoding')
   }
 
-  // Кэширование всех публичных страниц на 24 часа
+  // Кэширование всех публичных страниц на 24 часа с умной стратегией
   const publicPages = ['/', '/catalog', '/about', '/contacts', '/credit', '/leasing', '/privacy', '/reviews', '/sale'];
   const isPublicPage = publicPages.some(page =>
     pathname === page || pathname.startsWith(page + '/')
   );
 
   if (isPublicPage) {
-    response.headers.set('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=3600')
+    // s-maxage - для Vercel Edge Cache и Cloudflare
+    // stale-while-revalidate - позволяет показывать старую версию пока обновляется новая
+    // max-age - для браузера (5 минут)
+    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=3600')
+    response.headers.set('Vary', 'Accept-Encoding')
+  }
+
+  // Страницы каталога - более частое обновление
+  if (pathname.startsWith('/catalog/')) {
+    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=3600, stale-while-revalidate=1800')
     response.headers.set('Vary', 'Accept-Encoding')
   }
 

@@ -3,18 +3,19 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import { createCacheInvalidator } from "@/lib/cache-invalidation"
+import { createCacheInvalidator, purgeAllCache } from "@/lib/cache-invalidation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Save, Loader2 } from "lucide-react"
+import { Save, Loader2, RefreshCw } from "lucide-react"
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [purgingCache, setPurgingCache] = useState(false)
   const cacheInvalidator = createCacheInvalidator('settings')
   const [settings, setSettings] = useState({
     main: {
@@ -96,6 +97,27 @@ export default function AdminSettings() {
     }
   }
 
+  const handlePurgeAllCache = async () => {
+    if (!confirm('Вы уверены? Это очистит весь кэш сайта (Cloudflare + Vercel). Первые пользователи после очистки будут загружать данные из первоисточника.')) {
+      return
+    }
+
+    setPurgingCache(true)
+    try {
+      const result = await purgeAllCache()
+
+      if (result.success) {
+        alert('Кэш успешно очищен! Все страницы будут загружать свежие данные.')
+      } else {
+        alert(`Ошибка очистки кэша: ${result.error || 'Неизвестная ошибка'}`)
+      }
+    } catch (error) {
+      alert(`Ошибка: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
+    } finally {
+      setPurgingCache(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -108,10 +130,20 @@ export default function AdminSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Настройки сайта</h2>
-        <Button onClick={saveSettings} disabled={saving}>
-          {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-          Сохранить все
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handlePurgeAllCache}
+            disabled={purgingCache}
+            variant="outline"
+          >
+            {purgingCache ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+            Сбросить весь кэш
+          </Button>
+          <Button onClick={saveSettings} disabled={saving}>
+            {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            Сохранить все
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="main" className="w-full">
