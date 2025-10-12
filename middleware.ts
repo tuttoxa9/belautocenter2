@@ -42,17 +42,28 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPublicPage) {
-    // s-maxage - для Vercel Edge Cache и Cloudflare
-    // stale-while-revalidate - позволяет показывать старую версию пока обновляется новая
-    // max-age - для браузера (5 минут)
+    // s-maxage - для Vercel Edge Cache и Cloudflare (24 часа)
+    // stale-while-revalidate - позволяет показывать старую версию пока обновляется новая (1 час)
+    // max-age - для браузера (5 минут, чтобы пользователи видели относительно свежие данные)
     response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=3600')
     response.headers.set('Vary', 'Accept-Encoding')
+    response.headers.set('CDN-Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600')
   }
 
-  // Страницы каталога - более частое обновление
-  if (pathname.startsWith('/catalog/')) {
+  // Страницы каталога автомобилей - кэширование на 24 часа с автоматической очисткой при изменениях
+  if (pathname.startsWith('/catalog/') && pathname !== '/catalog') {
+    // Для конкретных страниц автомобилей кэшируем на 24 часа
+    // При изменении данных автомобиля в админке, кэш автоматически очищается
+    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=3600')
+    response.headers.set('Vary', 'Accept-Encoding')
+    response.headers.set('CDN-Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600')
+  }
+
+  // Страница списка каталога - чаще обновляем (каждый час)
+  if (pathname === '/catalog') {
     response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=3600, stale-while-revalidate=1800')
     response.headers.set('Vary', 'Accept-Encoding')
+    response.headers.set('CDN-Cache-Control', 'public, max-age=3600, stale-while-revalidate=1800')
   }
 
   return response

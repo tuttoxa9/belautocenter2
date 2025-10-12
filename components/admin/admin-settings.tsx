@@ -98,7 +98,7 @@ export default function AdminSettings() {
   }
 
   const handlePurgeAllCache = async () => {
-    if (!confirm('Вы уверены? Это очистит весь кэш сайта (Cloudflare + Vercel). Первые пользователи после очистки будут загружать данные из первоисточника.')) {
+    if (!confirm('Вы уверены? Это очистит весь кэш сайта (Cloudflare + Vercel + Next.js ISR). Первые пользователи после очистки будут загружать данные из первоисточника.')) {
       return
     }
 
@@ -107,12 +107,20 @@ export default function AdminSettings() {
       const result = await purgeAllCache()
 
       if (result.success) {
-        alert('Кэш успешно очищен! Все страницы будут загружать свежие данные.')
+        const details = result.details ? JSON.stringify(result.details, null, 2) : ''
+        alert(`✅ Кэш успешно очищен!\n\nВсе страницы будут загружать свежие данные.\n\nДетали:\n${details}`)
       } else {
-        alert(`Ошибка очистки кэша: ${result.error || 'Неизвестная ошибка'}`)
+        // Показываем детальное сообщение об ошибке
+        let errorMessage = result.error || 'Неизвестная ошибка'
+
+        if (errorMessage.includes('API key не настроен')) {
+          errorMessage += '\n\n📝 Инструкция:\n1. Откройте Vercel Dashboard\n2. Перейдите в Settings → Environment Variables\n3. Добавьте переменные:\n   - CACHE_INVALIDATION_API_KEY\n   - NEXT_PUBLIC_CACHE_INVALIDATION_API_KEY\n4. Используйте любой случайный ключ (например: abc123xyz)\n5. Оба ключа должны быть одинаковыми'
+        }
+
+        alert(`❌ Ошибка очистки кэша:\n\n${errorMessage}`)
       }
     } catch (error) {
-      alert(`Ошибка: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
+      alert(`❌ Ошибка: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
     } finally {
       setPurgingCache(false)
     }

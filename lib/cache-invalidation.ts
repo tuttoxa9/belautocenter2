@@ -52,13 +52,14 @@ export function getPathsToInvalidate(collection: string, documentId?: string): s
   return paths
 }
 
-export async function invalidateCache(params: CacheInvalidationParams): Promise<void> {
+export async function invalidateCache(params: CacheInvalidationParams): Promise<{ success: boolean; error?: string }> {
   try {
     const apiKey = process.env.CACHE_INVALIDATION_API_KEY || process.env.NEXT_PUBLIC_CACHE_INVALIDATION_API_KEY
 
     if (!apiKey) {
-      console.warn('[Cache Invalidation] API key not found')
-      return
+      console.warn('[Cache Invalidation] ⚠️ API key не настроен. Настройте CACHE_INVALIDATION_API_KEY в Vercel Environment Variables')
+      // Не выбрасываем ошибку, чтобы не блокировать работу приложения
+      return { success: false, error: 'API key not configured' }
     }
 
     const baseUrl = typeof window !== 'undefined'
@@ -66,6 +67,8 @@ export async function invalidateCache(params: CacheInvalidationParams): Promise<
       : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
     const paths = getPathsToInvalidate(params.collection, params.documentId)
+
+    console.log(`[Cache Invalidation] 🔄 Очистка кэша для ${params.collection}${params.documentId ? `/${params.documentId}` : ''}, пути:`, paths)
 
     const response = await fetch(`${baseUrl}/api/revalidate`, {
       method: 'POST',
@@ -82,29 +85,38 @@ export async function invalidateCache(params: CacheInvalidationParams): Promise<
     })
 
     if (!response.ok) {
-      console.error('[Cache Invalidation] Failed:', await response.text())
-    } else {
-      console.log('[Cache Invalidation] Success:', { collection: params.collection, paths })
+      const errorText = await response.text()
+      console.error('[Cache Invalidation] ❌ Failed:', errorText)
+      return { success: false, error: errorText }
     }
+
+    const result = await response.json()
+    console.log('[Cache Invalidation] ✅ Success:', { collection: params.collection, documentId: params.documentId, paths, result })
+    return { success: true }
   } catch (error) {
-    console.error('[Cache Invalidation] Error:', error)
+    console.error('[Cache Invalidation] ❌ Error:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
 /**
- * Сбрасывает весь кэш сайта (Cloudflare + Vercel)
+ * Сбрасывает весь кэш сайта (Cloudflare + Vercel + Next.js ISR)
  */
-export async function purgeAllCache(): Promise<{ success: boolean; error?: string }> {
+export async function purgeAllCache(): Promise<{ success: boolean; error?: string; details?: any }> {
   try {
     const apiKey = process.env.CACHE_INVALIDATION_API_KEY || process.env.NEXT_PUBLIC_CACHE_INVALIDATION_API_KEY
 
     if (!apiKey) {
-      return { success: false, error: 'API key not configured' }
+      const errorMessage = 'API key не настроен. Перейдите в Vercel Dashboard → Settings → Environment Variables и добавьте CACHE_INVALIDATION_API_KEY'
+      console.error('[Purge All Cache] ❌', errorMessage)
+      return { success: false, error: errorMessage }
     }
 
     const baseUrl = typeof window !== 'undefined'
       ? window.location.origin
       : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+
+    console.log('[Purge All Cache] 🔄 Начинаем полную очистку кэша...')
 
     const response = await fetch(`${baseUrl}/api/revalidate`, {
       method: 'POST',
@@ -118,35 +130,52 @@ export async function purgeAllCache(): Promise<{ success: boolean; error?: strin
     })
 
     if (!response.ok) {
-      const error = await response.text()
-      return { success: false, error }
+      const errorText = await response.text()
+      console.error('[Purge All Cache] ❌ Failed:', errorText)
+      return { success: false, error: `Ошибка ${response.status}: ${errorText}` }
     }
 
-    return { success: true }
+    const result = await response.json()
+    console.log('[Purge All Cache] ✅ Success:', result)
+    return { success: true, details: result }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error('[Purge All Cache] ❌ Error:', errorMessage)
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: `Произошла ошибка: ${errorMessage}`
     }
   }
 }
 
+/**
+ * Создает объект для автоматической инвалидации кэша при изменениях в коллекции
+ */
 export function createCacheInvalidator(collection: string) {
   return {
-    onCreate: (documentId?: string) => invalidateCache({
-      collection,
-      documentId,
-      action: 'create'
-    }),
-    onUpdate: (documentId?: string) => invalidateCache({
-      collection,
-      documentId,
-      action: 'update'
-    }),
-    onDelete: (documentId?: string) => invalidateCache({
-      collection,
-      documentId,
-      action: 'delete'
-    })
+    onCreate: async (documentId?: string) => {
+      console.log(`[Cache Invalidator] 📝 onCreate: ${collection}${documentId ? `/${documentId}` : ''}`)
+      return await invalidateCache({
+        collection,
+        documentId,
+        action: 'create'
+      })
+    },
+    onUpdate: async (documentId?: string) => {
+      console.log(`[Cache Invalidator] ✏️ onUpdate: ${collection}${documentId ? `/${documentId}` : ''}`)
+      return await invalidateCache({
+        collection,
+        documentId,
+        action: 'update'
+      })
+    },
+    onDelete: async (documentId?: string) => {
+      console.log(`[Cache Invalidator] 🗑️ onDelete: ${collection}${documentId ? `/${documentId}` : ''}`)
+      return await invalidateCache({
+        collection,
+        documentId,
+        action: 'delete'
+      })
+    }
   }
 }

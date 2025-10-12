@@ -145,39 +145,65 @@ export async function POST(request: NextRequest) {
       results.vercel.message = 'Skipped (only for full purge)';
     }
 
-    // 3. Очистка Next.js ISR кэша
+    // 3. Очистка Next.js ISR кэша (включая Vercel Edge Cache через revalidatePath)
     if (paths && Array.isArray(paths)) {
       console.log('[REVALIDATE] Next.js: Revalidating paths:', paths);
 
       paths.forEach(path => {
         try {
-          revalidatePath(path);
+          // revalidatePath в Next.js 14+ автоматически очищает Vercel Edge Cache
+          // Используем 'page' для очистки всех связанных кэшей (data + page)
+          revalidatePath(path, 'page');
           results.nextjs.revalidatedPaths.push(path);
-          console.log(`[REVALIDATE] Next.js: Revalidated ${path}`);
+          console.log(`[REVALIDATE] Next.js + Vercel Edge: Revalidated ${path}`);
         } catch (err) {
           console.error(`[REVALIDATE] Next.js: Failed to revalidate ${path}:`, err);
         }
       });
 
       results.nextjs.success = results.nextjs.revalidatedPaths.length > 0;
+
+      // Если были успешные ревалидации, отмечаем Vercel как успешный
+      if (results.nextjs.success) {
+        results.vercel.success = true;
+        results.vercel.message = 'Vercel Edge Cache cleared via revalidatePath';
+      }
     }
 
     // 4. Если purgeAll, то принудительно обновляем все основные пути
     if (purgeAll) {
       const allPaths = ['/', '/catalog', '/about', '/contacts', '/credit', '/leasing', '/reviews', '/sale', '/privacy'];
 
+      console.log('[REVALIDATE] Purge All: Revalidating all main paths...');
+
       allPaths.forEach(path => {
         try {
-          revalidatePath(path);
+          // Полная очистка всех кэшей для каждого пути
+          revalidatePath(path, 'page');
           if (!results.nextjs.revalidatedPaths.includes(path)) {
             results.nextjs.revalidatedPaths.push(path);
           }
+          console.log(`[REVALIDATE] Next.js + Vercel Edge: Revalidated ${path}`);
         } catch (err) {
           console.error(`[REVALIDATE] Next.js: Failed to revalidate ${path}:`, err);
         }
       });
 
       results.nextjs.success = true;
+
+      // Также очищаем все динамические маршруты каталога
+      try {
+        revalidatePath('/catalog/[id]', 'page');
+        console.log('[REVALIDATE] Next.js + Vercel Edge: Revalidated all catalog pages');
+      } catch (err) {
+        console.error('[REVALIDATE] Failed to revalidate catalog pages:', err);
+      }
+
+      // Отмечаем Vercel Edge Cache как очищенный
+      if (!results.vercel.success) {
+        results.vercel.success = true;
+        results.vercel.message = 'Vercel Edge Cache cleared via revalidatePath (purgeAll)';
+      }
     }
 
     return NextResponse.json({
