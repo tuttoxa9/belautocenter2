@@ -35,7 +35,7 @@ export function middleware(request: NextRequest) {
     response.headers.set('Vary', 'Accept-Encoding')
   }
 
-  // Кэширование всех публичных страниц на 24 часа с умной стратегией
+  // Кэширование всех публичных страниц на 24 часа с автоматической очисткой при изменениях
   const publicPages = ['/', '/catalog', '/about', '/contacts', '/credit', '/leasing', '/privacy', '/reviews', '/sale'];
   const isPublicPage = publicPages.some(page =>
     pathname === page || pathname.startsWith(page + '/')
@@ -45,25 +45,12 @@ export function middleware(request: NextRequest) {
     // s-maxage - для Vercel Edge Cache и Cloudflare (24 часа)
     // stale-while-revalidate - позволяет показывать старую версию пока обновляется новая (1 час)
     // max-age - для браузера (5 минут, чтобы пользователи видели относительно свежие данные)
+    // CDN-Cache-Control - специально для Cloudflare CDN (24 часа)
+    //
+    // ✅ При изменении данных в админке кэш автоматически очищается через cacheInvalidator
     response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=3600')
     response.headers.set('Vary', 'Accept-Encoding')
     response.headers.set('CDN-Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600')
-  }
-
-  // Страницы каталога автомобилей - кэширование на 24 часа с автоматической очисткой при изменениях
-  if (pathname.startsWith('/catalog/') && pathname !== '/catalog') {
-    // Для конкретных страниц автомобилей кэшируем на 24 часа
-    // При изменении данных автомобиля в админке, кэш автоматически очищается
-    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=3600')
-    response.headers.set('Vary', 'Accept-Encoding')
-    response.headers.set('CDN-Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600')
-  }
-
-  // Страница списка каталога - чаще обновляем (каждый час)
-  if (pathname === '/catalog') {
-    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=3600, stale-while-revalidate=1800')
-    response.headers.set('Vary', 'Accept-Encoding')
-    response.headers.set('CDN-Cache-Control', 'public, max-age=3600, stale-while-revalidate=1800')
   }
 
   return response
