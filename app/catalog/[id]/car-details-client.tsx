@@ -1599,70 +1599,84 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               </div>
 
               {/* Результат */}
-              <div className="bg-slate-50 rounded-lg p-3 sm:p-6">
-                <h4 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">Результат</h4>
+              <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-6">
+                {/* Декоративный фон */}
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
+
+                <h4 className="text-base sm:text-xl font-bold mb-3 sm:mb-5 text-white relative">Ваш расчет</h4>
+
                 {financeType === 'credit' ? (
                   selectedBank ? (
                     <div className="space-y-3 sm:space-y-4 relative">
                       {/* Логотип банка в правом верхнем углу */}
                       {(selectedBank.logo || selectedBank.logoUrl) && (
-                        <div className="absolute top-0 right-8">
+                        <div className="absolute -top-3 sm:top-0 right-0 bg-white rounded-lg p-1.5 sm:p-2 shadow-md">
                           <Image
                             src={getCachedImageUrl(selectedBank.logo || selectedBank.logoUrl)}
                             alt={`${selectedBank.name} логотип`}
-                            width={60}
-                            height={60}
-                            className="object-contain rounded-lg"
+                            width={50}
+                            height={30}
+                            className="object-contain"
                           />
                         </div>
                       )}
-                      <div className="pr-16">
-                        <div className="text-xs sm:text-sm text-slate-500">Ежемесячный платеж</div>
-                        <div className="text-xl sm:text-3xl font-bold text-slate-900">
-                          {isBelarusianRubles
-                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment())
-                            : formatPrice(calculateMonthlyPayment())
-                          }
-                        </div>
-                        {!isBelarusianRubles && usdBynRate && (
-                          <div className="text-sm sm:text-xl font-semibold text-slate-700">
-                            ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
+
+                      {/* Главный платеж */}
+                      <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
+                        <div className="pr-14 sm:pr-16">
+                          <div className="text-xs text-slate-300 mb-1">Ежемесячный платеж</div>
+                          <div className="text-xl sm:text-3xl font-bold text-white">
+                            {isBelarusianRubles
+                              ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment())
+                              : formatPrice(calculateMonthlyPayment())
+                            }
                           </div>
-                        )}
+                          {!isBelarusianRubles && usdBynRate && (
+                            <div className="text-sm sm:text-base font-semibold text-slate-300 mt-1">
+                              ≈ {convertUsdToByn(calculateMonthlyPayment(), usdBynRate)} BYN
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm">
-                        <div>
-                          <div className="text-slate-500">Переплата</div>
-                          <div className="font-semibold">
+
+                      {/* Детали */}
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                          <div className="text-xs text-slate-400 mb-0.5">Переплата</div>
+                          <div className="font-semibold text-xs sm:text-sm text-white">
                             {isBelarusianRubles
                               ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment() * loanTerm[0] - getCurrentCreditAmount())
                               : formatPrice(calculateMonthlyPayment() * loanTerm[0] - creditAmount[0])
                             }
                           </div>
                         </div>
-                        <div>
-                          <div className="text-slate-500">Общая сумма</div>
-                          <div className="font-semibold">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                          <div className="text-xs text-slate-400 mb-0.5">Общая сумма</div>
+                          <div className="font-semibold text-xs sm:text-sm text-white">
                             {isBelarusianRubles
                               ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateMonthlyPayment() * loanTerm[0] + getCurrentDownPayment())
                               : formatPrice(calculateMonthlyPayment() * loanTerm[0] + downPayment[0])
                             }
                           </div>
                         </div>
-                      </div>
-                      <div className="pt-2 sm:pt-4">
-                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedBank.name}</div>
-                        <div className="flex items-center space-x-2 text-xs text-slate-600">
-                          <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
-                          <span>Ставка: {selectedBank.rate || selectedBank.minRate}%</span>
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                          <div className="text-xs text-slate-400 mb-0.5">Ставка</div>
+                          <div className="font-semibold text-xs sm:text-sm text-white">{selectedBank.rate || selectedBank.minRate}%</div>
                         </div>
-                        <div className="flex items-center space-x-2 text-xs text-slate-600 mt-1">
-                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
-                          <span>Макс. срок: {selectedBank.maxTerm || selectedBank.maxLoanTerm || 60} мес.</span>
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                          <div className="text-xs text-slate-400 mb-0.5">Срок</div>
+                          <div className="font-semibold text-xs sm:text-sm text-white">{loanTerm[0]} мес.</div>
                         </div>
                       </div>
+
+                      {/* Партнёр */}
+                      <div className="pt-2 sm:pt-3 border-t border-white/10">
+                        <div className="text-xs text-slate-400 mb-1">Партнёр</div>
+                        <div className="text-xs sm:text-sm font-medium text-white">{selectedBank.name}</div>
+                      </div>
+
                       <Button
-                        className="w-full mt-3 sm:mt-6 h-8 sm:h-10 text-xs sm:text-sm"
+                        className="w-full mt-3 sm:mt-4 h-9 sm:h-11 text-xs sm:text-sm bg-white text-slate-900 hover:bg-slate-100"
                         onClick={() => {
                           setIsCreditOpen(false)
                           setTimeout(() => setIsCreditFormOpen(true), 150)
@@ -1672,23 +1686,23 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                       </Button>
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center h-32 sm:h-64 text-center">
+                    <div className="flex flex-col items-center justify-center h-32 sm:h-64 text-center relative">
                       {loadingBanks ? (
                         <div className="w-full space-y-2 sm:space-y-4">
-                          <div className="w-full h-8 sm:h-12 bg-slate-200 rounded animate-pulse"></div>
-                          <div className="w-3/4 h-3 sm:h-4 bg-slate-200 rounded animate-pulse mx-auto"></div>
+                          <div className="w-full h-8 sm:h-12 bg-white/10 rounded animate-pulse"></div>
+                          <div className="w-3/4 h-3 sm:h-4 bg-white/10 rounded animate-pulse mx-auto"></div>
                         </div>
                       ) : partnerBanks.length === 0 ? (
                         <>
-                          <AlertCircle className="h-6 w-6 sm:h-10 sm:w-10 text-amber-500 mb-2 sm:mb-4" />
-                          <p className="text-sm sm:text-base text-slate-700 font-medium">Банки не найдены</p>
-                          <p className="text-xs sm:text-sm text-slate-500 mt-1 sm:mt-2">Обратитесь к менеджеру</p>
+                          <AlertCircle className="h-6 w-6 sm:h-10 sm:w-10 text-amber-400 mb-2 sm:mb-4" />
+                          <p className="text-sm sm:text-base text-white font-medium">Банки не найдены</p>
+                          <p className="text-xs sm:text-sm text-slate-300 mt-1 sm:mt-2">Обратитесь к менеджеру</p>
                         </>
                       ) : (
                         <>
                           <Building2 className="h-6 w-6 sm:h-10 sm:w-10 text-slate-400 mb-2 sm:mb-4" />
-                          <p className="text-sm sm:text-base text-slate-700 font-medium">Выберите банк</p>
-                          <p className="text-xs sm:text-sm text-slate-500 mt-1 sm:mt-2">Для расчета кредита</p>
+                          <p className="text-sm sm:text-base text-white font-medium">Выберите банк</p>
+                          <p className="text-xs sm:text-sm text-slate-300 mt-1 sm:mt-2">Для расчета кредита</p>
                         </>
                       )}
                     </div>
@@ -1697,65 +1711,75 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                   <div className="space-y-3 sm:space-y-4 relative">
                     {/* Логотип лизинговой компании в правом верхнем углу */}
                     {selectedLeasingCompany && (selectedLeasingCompany.logo || selectedLeasingCompany.logoUrl) && (
-                      <div className="absolute top-0 right-8">
+                      <div className="absolute -top-3 sm:top-0 right-0 bg-white rounded-lg p-1.5 sm:p-2 shadow-md">
                         <Image
                           src={getCachedImageUrl(selectedLeasingCompany.logo || selectedLeasingCompany.logoUrl)}
                           alt={`${selectedLeasingCompany.name} логотип`}
-                          width={selectedLeasingCompany.name === 'А-Лизинг' ? 60 : 150}
-                          height={selectedLeasingCompany.name === 'А-Лизинг' ? 60 : 150}
-                          className="object-contain rounded-lg"
+                          width={50}
+                          height={30}
+                          className="object-contain"
                         />
                       </div>
                     )}
-                    <div className="pr-16">
-                      <div className="text-xs sm:text-sm text-slate-500">Ежемесячный платеж</div>
-                      <div className="text-xl sm:text-3xl font-bold text-slate-900">
-                        {isBelarusianRubles
-                          ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateLeasingPayment())
-                          : formatPrice(calculateLeasingPayment())
-                        }
-                      </div>
-                      {!isBelarusianRubles && usdBynRate && (
-                        <div className="text-sm sm:text-xl font-semibold text-slate-700">
-                          ≈ {convertUsdToByn(calculateLeasingPayment(), usdBynRate)} BYN
+
+                    {/* Главный платеж */}
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20">
+                      <div className="pr-14 sm:pr-16">
+                        <div className="text-xs text-slate-300 mb-1">Ежемесячный платеж</div>
+                        <div className="text-xl sm:text-3xl font-bold text-white">
+                          {isBelarusianRubles
+                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateLeasingPayment())
+                            : formatPrice(calculateLeasingPayment())
+                          }
                         </div>
-                      )}
+                        {!isBelarusianRubles && usdBynRate && (
+                          <div className="text-sm sm:text-base font-semibold text-slate-300 mt-1">
+                            ≈ {convertUsdToByn(calculateLeasingPayment(), usdBynRate)} BYN
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm">
-                      <div>
-                        <div className="text-slate-500">Общие выплаты</div>
-                        <div className="font-semibold">
+
+                    {/* Детали */}
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                        <div className="text-xs text-slate-400 mb-0.5">Общие выплаты</div>
+                        <div className="font-semibold text-xs sm:text-sm text-white">
                           {isBelarusianRubles
                             ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format(calculateLeasingPayment() * leasingTerm[0] + leasingAdvance[0])
                             : formatPrice(calculateLeasingPayment() * leasingTerm[0] + leasingAdvance[0])
                           }
                         </div>
                       </div>
-                      <div>
-                        <div className="text-slate-500">Остаточная стоимость</div>
-                        <div className="font-semibold">
+                      <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                        <div className="text-xs text-slate-400 mb-0.5">Остаточная</div>
+                        <div className="font-semibold text-xs sm:text-sm text-white">
                           {isBelarusianRubles
                             ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format((leasingAmount[0] * residualValue[0]) / 100)
                             : formatPrice((leasingAmount[0] * residualValue[0]) / 100)
                           }
                         </div>
                       </div>
+                      <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                        <div className="text-xs text-slate-400 mb-0.5">Остаточная %</div>
+                        <div className="font-semibold text-xs sm:text-sm text-white">{residualValue[0]}%</div>
+                      </div>
+                      <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
+                        <div className="text-xs text-slate-400 mb-0.5">Срок</div>
+                        <div className="font-semibold text-xs sm:text-sm text-white">{leasingTerm[0]} мес.</div>
+                      </div>
                     </div>
+
+                    {/* Партнёр */}
                     {selectedLeasingCompany && (
-                      <div className="pt-2 sm:pt-4">
-                        <div className="text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-2">{selectedLeasingCompany.name}</div>
-                        <div className="flex items-center space-x-2 text-xs text-slate-600">
-                          <Building2 className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
-                          <span>Мин. аванс: {selectedLeasingCompany.minAdvance}%</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-xs text-slate-600 mt-1">
-                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
-                          <span>Макс. срок: {selectedLeasingCompany.maxTerm} мес.</span>
-                        </div>
+                      <div className="pt-2 sm:pt-3 border-t border-white/10">
+                        <div className="text-xs text-slate-400 mb-1">Партнёр</div>
+                        <div className="text-xs sm:text-sm font-medium text-white">{selectedLeasingCompany.name}</div>
                       </div>
                     )}
+
                     <Button
-                      className="w-full mt-3 sm:mt-6 h-8 sm:h-10 text-xs sm:text-sm"
+                      className="w-full mt-3 sm:mt-4 h-9 sm:h-11 text-xs sm:text-sm bg-white text-slate-900 hover:bg-slate-100"
                       onClick={() => {
                         setIsCreditOpen(false)
                         setTimeout(() => setIsCreditFormOpen(true), 150)

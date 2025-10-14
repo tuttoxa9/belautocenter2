@@ -257,17 +257,87 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
           </div>
         )}
       </div>
-      <div className="space-y-3 pt-4 border-t mt-5">
-          <h3 className="font-semibold text-lg text-slate-800">Ваш расчет</h3>
-          <div className="p-4 bg-blue-50 rounded-xl border border-blue-200 space-y-3">
-               <div className="flex justify-between items-baseline">
-                  <span className="text-slate-600 text-sm">Ежемесячный платеж</span>
-                  <span className="font-bold text-2xl text-blue-600">{formatPrice(financeType === 'credit' ? calculateMonthlyPayment() : calculateLeasingPayment())}</span>
-               </div>
-               <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-600">{financeType === 'credit' ? 'Сумма кредита' : 'Сумма договора'}</span>
-                  <span className="font-semibold text-slate-800">{formatPrice(financeType === 'credit' ? creditAmountValue : carPriceInCurrency)}</span>
-               </div>
+      <div className="space-y-4 pt-5 border-t mt-6">
+          <h3 className="font-semibold text-lg text-slate-900">Ваш расчет</h3>
+          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl shadow-xl p-5">
+            {/* Декоративный фон */}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
+
+            {/* Логотип банка/компании в правом верхнем углу */}
+            {financeType === 'credit' && selectedBank?.logoUrl && (
+              <div className="absolute top-4 right-4 bg-white rounded-lg p-2 shadow-md">
+                <Image
+                  src={getCachedImageUrl(selectedBank.logoUrl)}
+                  alt={selectedBank.name}
+                  width={50}
+                  height={30}
+                  className="object-contain"
+                />
+              </div>
+            )}
+            {financeType === 'leasing' && selectedLeasingCompany?.logoUrl && (
+              <div className="absolute top-4 right-4 bg-white rounded-lg p-2 shadow-md">
+                <Image
+                  src={getCachedImageUrl(selectedLeasingCompany.logoUrl)}
+                  alt={selectedLeasingCompany.name}
+                  width={50}
+                  height={30}
+                  className="object-contain"
+                />
+              </div>
+            )}
+
+            <div className="relative space-y-4">
+              {/* Главный платеж */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="flex items-baseline justify-between gap-2">
+                  <div>
+                    <p className="text-xs text-slate-300 mb-1">Ежемесячный платеж</p>
+                    <p className="font-bold text-2xl sm:text-3xl text-white leading-tight">{formatPrice(financeType === 'credit' ? calculateMonthlyPayment() : calculateLeasingPayment())}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Детали расчёта */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                  <p className="text-xs text-slate-400 mb-1">{financeType === 'credit' ? 'Сумма кредита' : 'Сумма договора'}</p>
+                  <p className="font-semibold text-sm text-white">{formatPrice(financeType === 'credit' ? creditAmountValue : carPriceInCurrency)}</p>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                  <p className="text-xs text-slate-400 mb-1">Срок</p>
+                  <p className="font-semibold text-sm text-white">{financeType === 'credit' ? loanTerm[0] : leasingTerm[0]} мес.</p>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                  <p className="text-xs text-slate-400 mb-1">{financeType === 'credit' ? 'Первый взнос' : 'Аванс'}</p>
+                  <p className="font-semibold text-sm text-white">{formatPrice(financeType === 'credit' ? downPayment[0] : leasingAdvance[0])}</p>
+                </div>
+
+                {financeType === 'credit' && selectedBank && (
+                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                    <p className="text-xs text-slate-400 mb-1">Ставка</p>
+                    <p className="font-semibold text-sm text-white">{selectedBank.rate || selectedBank.minRate}%</p>
+                  </div>
+                )}
+
+                {financeType === 'leasing' && (
+                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                    <p className="text-xs text-slate-400 mb-1">Остаточная</p>
+                    <p className="font-semibold text-sm text-white">{residualValue[0]}%</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Информация о партнёре */}
+              <div className="pt-3 border-t border-white/10">
+                <p className="text-xs text-slate-400 mb-1">Партнёр</p>
+                <p className="text-sm font-medium text-white">
+                  {financeType === 'credit' ? selectedBank?.name || 'Не выбран' : selectedLeasingCompany?.name || 'Не выбрана'}
+                </p>
+              </div>
+            </div>
           </div>
       </div>
       <div className="space-y-4 pt-4 border-t mt-5">
