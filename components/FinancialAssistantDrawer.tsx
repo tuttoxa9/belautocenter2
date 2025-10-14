@@ -265,7 +265,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
 
             {/* Логотип банка/компании в правом верхнем углу */}
             {financeType === 'credit' && selectedBank?.logoUrl && (
-              <div className="absolute top-10 right-8 bg-white rounded-lg p-2 shadow-md z-20">
+              <div className="absolute top-8 right-8 bg-white rounded-lg p-2 shadow-md z-20">
                 <Image
                   src={getCachedImageUrl(selectedBank.logoUrl)}
                   alt={selectedBank.name}
@@ -276,7 +276,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
               </div>
             )}
             {financeType === 'leasing' && selectedLeasingCompany?.logoUrl && (
-              <div className="absolute top-10 right-8 bg-white rounded-lg p-2 shadow-md z-20">
+              <div className="absolute top-8 right-8 bg-white rounded-lg p-2 shadow-md z-20">
                 <Image
                   src={getCachedImageUrl(selectedLeasingCompany.logoUrl)}
                   alt={selectedLeasingCompany.name}
