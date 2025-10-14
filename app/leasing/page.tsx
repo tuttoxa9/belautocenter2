@@ -237,8 +237,35 @@ export default function LeasingPage() {
     return phone.length === 13 && phone.startsWith("+375")
   }
 
+  const isFormValid = () => {
+    const baseFieldsValid =
+      isPhoneValid(leasingForm.phone) &&
+      leasingForm.carPrice.trim() !== "" &&
+      leasingForm.advance.trim() !== "" &&
+      leasingForm.leasingTerm !== "" &&
+      leasingForm.company !== ""
+
+    if (leasingForm.clientType === "organization") {
+      return (
+        baseFieldsValid &&
+        leasingForm.companyName.trim() !== "" &&
+        leasingForm.contactPerson.trim() !== "" &&
+        leasingForm.unp.trim() !== ""
+      )
+    } else {
+      return (
+        baseFieldsValid &&
+        leasingForm.fullName.trim() !== ""
+      )
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!isFormValid()) {
+      return
+    }
 
     await submitButtonState.execute(async () => {
       try {
@@ -743,7 +770,7 @@ export default function LeasingPage() {
                     </div>
                     <div>
                       <Label htmlFor="email" className="text-sm font-medium text-slate-800 mb-1 block">
-                        Email
+                        Email (необязательно)
                       </Label>
                       <Input
                         id="email"
@@ -752,7 +779,6 @@ export default function LeasingPage() {
                         onChange={(e) => setLeasingForm({ ...leasingForm, email: e.target.value })}
                         className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
                         placeholder="your@company.com"
-                        required
                       />
                     </div>
                   </div>
@@ -849,7 +875,7 @@ export default function LeasingPage() {
 
                   <div>
                     <Label htmlFor="message" className="text-sm font-medium text-slate-800 mb-1 block">
-                      Комментарий
+                      Комментарий (необязательно)
                     </Label>
                     <Input
                       id="message"
@@ -862,11 +888,12 @@ export default function LeasingPage() {
 
                   <StatusButton
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 mt-3 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 mt-3 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     state={submitButtonState.state}
                     loadingText="Отправляем..."
                     successText="Отправлено!"
                     errorText="Ошибка"
+                    disabled={!isFormValid()}
                   >
                     Отправить заявку на лизинг
                   </StatusButton>
