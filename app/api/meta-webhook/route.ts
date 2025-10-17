@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
+  console.log("META WEBHOOK: GET request received.");
+
   try {
     const searchParams = request.nextUrl.searchParams
+    console.log("Query params received:", request.nextUrl.searchParams.toString());
+
     const mode = searchParams.get('hub.mode')
     const token = searchParams.get('hub.verify_token')
     const challenge = searchParams.get('hub.challenge')
 
     const VERIFY_TOKEN = process.env.META_VERIFY_TOKEN
+
+    const tokenFromMeta = token;
+    const tokenFromEnv = VERIFY_TOKEN;
+    console.log(`Comparing tokens: [From Meta: '${tokenFromMeta}'] vs [From Env: '${tokenFromEnv}']`);
 
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
       return new NextResponse(challenge, { status: 200 })
@@ -23,11 +31,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  console.log("ЗАПУСК: /api/meta-webhook POST");
+  console.log("META WEBHOOK: POST request received.");
 
   try {
     const body = await request.json()
-    console.log("Полученное тело запроса от Meta:", JSON.stringify(body, null, 2));
+    console.log("Request Body:", JSON.stringify(body, null, 2));
 
     // Извлекаем leadgen_id из тела запроса
     const leadgenId = body?.entry?.[0]?.changes?.[0]?.value?.leadgen_id
