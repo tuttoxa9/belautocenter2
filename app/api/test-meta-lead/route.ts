@@ -13,12 +13,12 @@ export async function POST(request: NextRequest) {
 
     // Отправляем в Telegram
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-    const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID
+    const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
     console.log("TELEGRAM_BOT_TOKEN доступен:", !!TELEGRAM_BOT_TOKEN);
-    console.log("TELEGRAM_CHANNEL_ID:", TELEGRAM_CHANNEL_ID);
+    console.log("TELEGRAM_CHAT_ID:", TELEGRAM_CHAT_ID);
 
-    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
       console.error("ОШИБКА: Telegram credentials не настроены");
       return NextResponse.json(
         { success: false, error: 'Telegram credentials not configured' },
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chat_id: TELEGRAM_CHANNEL_ID,
+          chat_id: TELEGRAM_CHAT_ID,
           text: message,
           parse_mode: 'HTML',
         }),

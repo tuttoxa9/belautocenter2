@@ -43,11 +43,11 @@ export async function POST(request: NextRequest) {
 
     const META_PAGE_ACCESS_TOKEN = process.env.META_PAGE_ACCESS_TOKEN
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-    const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID
+    const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
     console.log("META_PAGE_ACCESS_TOKEN доступен:", !!META_PAGE_ACCESS_TOKEN);
     console.log("TELEGRAM_BOT_TOKEN доступен:", !!TELEGRAM_BOT_TOKEN);
-    console.log("TELEGRAM_CHANNEL_ID:", TELEGRAM_CHANNEL_ID);
+    console.log("TELEGRAM_CHAT_ID:", TELEGRAM_CHAT_ID);
 
     if (!META_PAGE_ACCESS_TOKEN) {
       console.error("ОШИБКА: META_PAGE_ACCESS_TOKEN не настроен");
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Отправляем в Telegram
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHANNEL_ID) {
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
       const message = `📱 <b>Новый лид из Meta (Facebook/Instagram)</b>\n\n👤 <b>Имя:</b> ${leadInfo.name}\n📞 <b>Телефон:</b> ${leadInfo.phone}\n📧 <b>Email:</b> ${leadInfo.email}`
 
       console.log("Сформированное сообщение для Telegram:", message);
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            chat_id: TELEGRAM_CHANNEL_ID,
+            chat_id: TELEGRAM_CHAT_ID,
             text: message,
             parse_mode: 'HTML',
           }),
