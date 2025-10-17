@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/firebase-admin'
-
-export const runtime = 'nodejs'
 
 export async function GET(request: NextRequest) {
   try {
@@ -79,9 +76,36 @@ export async function POST(request: NextRequest) {
       rawData: leadData,
     }
 
-    // Сохраняем в Firestore
+    // Сохраняем в Firestore через REST API
+    const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/metaLeads`
+
     try {
-      await db.collection('metaLeads').add(leadInfo)
+      // Конвертируем данные в формат Firestore
+      const firestoreData = {
+        fields: {
+          leadId: { stringValue: leadInfo.leadId },
+          name: { stringValue: leadInfo.name },
+          phone: { stringValue: leadInfo.phone },
+          email: { stringValue: leadInfo.email },
+          createdAt: { stringValue: leadInfo.createdAt },
+          rawData: {
+            mapValue: {
+              fields: {
+                fieldData: { stringValue: JSON.stringify(leadData.field_data || []) }
+              }
+            }
+          },
+        }
+      }
+
+      await fetch(firestoreUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(firestoreData),
+      })
     } catch (firestoreError) {
       console.error('Firestore error:', firestoreError)
     }
