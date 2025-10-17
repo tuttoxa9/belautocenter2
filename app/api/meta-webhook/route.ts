@@ -23,13 +23,18 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  console.log("ЗАПУСК: /api/meta-webhook POST");
+
   try {
     const body = await request.json()
+    console.log("Полученное тело запроса от Meta:", JSON.stringify(body, null, 2));
 
     // Извлекаем leadgen_id из тела запроса
     const leadgenId = body?.entry?.[0]?.changes?.[0]?.value?.leadgen_id
+    console.log("Извлеченный leadgen_id:", leadgenId);
 
     if (!leadgenId) {
+      console.error("ОШИБКА: leadgen_id не найден в теле запроса");
       return NextResponse.json(
         { success: false, error: 'No lead ID found' },
         { status: 400 }
@@ -37,8 +42,15 @@ export async function POST(request: NextRequest) {
     }
 
     const META_PAGE_ACCESS_TOKEN = process.env.META_PAGE_ACCESS_TOKEN
+    const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+    const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID
+
+    console.log("META_PAGE_ACCESS_TOKEN доступен:", !!META_PAGE_ACCESS_TOKEN);
+    console.log("TELEGRAM_BOT_TOKEN доступен:", !!TELEGRAM_BOT_TOKEN);
+    console.log("TELEGRAM_CHANNEL_ID:", TELEGRAM_CHANNEL_ID);
 
     if (!META_PAGE_ACCESS_TOKEN) {
+      console.error("ОШИБКА: META_PAGE_ACCESS_TOKEN не настроен");
       return NextResponse.json(
         { success: false, error: 'Meta access token not configured' },
         { status: 500 }
@@ -46,18 +58,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Получаем полную информацию о лиде от Meta Graph API
-    const leadResponse = await fetch(
-      `https://graph.facebook.com/v18.0/${leadgenId}?access_token=${META_PAGE_ACCESS_TOKEN}`
-    )
-
-    if (!leadResponse.ok) {
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch lead data from Meta' },
-        { status: 500 }
+    try {
+      console.log("Запрос данных лида из Meta Graph API...");
+      const leadResponse = await fetch(
+        `https://graph.facebook.com/v18.0/${leadgenId}?access_token=${META_PAGE_ACCESS_TOKEN}`
       )
-    }
 
-    const leadData = await leadResponse.json()
+      console.log("Ответ Meta Graph API - статус:", leadResponse.status);
+
+      if (!leadResponse.ok) {
+        const errorText = await leadResponse.text();
+        console.error("ОШИБКА Meta Graph API - тело:", errorText);
+        return NextResponse.json(
+          { success: false, error: 'Failed to fetch lead data from Meta' },
+          { status: 500 }
+        )
+      }
+
+      const leadData = await leadResponse.json()
+      console.log("Полученные данные лида от Meta:", JSON.stringify(leadData, null, 2));
 
     // Парсим данные лида в нужный формат
     const leadFields: Record<string, string> = {}
@@ -111,29 +130,54 @@ export async function POST(request: NextRequest) {
     }
 
     // Отправляем в Telegram
-    const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-    const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID
-
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHANNEL_ID) {
       const message = `📱 <b>Новый лид из Meta (Facebook/Instagram)</b>\n\n👤 <b>Имя:</b> ${leadInfo.name}\n📞 <b>Телефон:</b> ${leadInfo.phone}\n📧 <b>Email:</b> ${leadInfo.email}`
 
+      console.log("Сформированное сообщение для Telegram:", message);
+
       const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`
 
-      await fetch(telegramUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHANNEL_ID,
-          text: message,
-          parse_mode: 'HTML',
-        }),
-      })
+      try {
+        console.log("Отправка уведомления в Telegram...");
+        const telegramResponse = await fetch(telegramUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHANNEL_ID,
+            text: message,
+            parse_mode: 'HTML',
+          }),
+        })
+
+        console.log("Ответ Telegram API - статус:", telegramResponse.status);
+        const telegramResponseText = await telegramResponse.text();
+        console.log("Ответ Telegram API - тело:", telegramResponseText);
+
+        if (telegramResponse.ok) {
+          console.log("УСПЕХ: Уведомление отправлено в Telegram");
+        } else {
+          console.error("ОШИБКА: Не удалось отправить уведомление в Telegram");
+        }
+      } catch (telegramError) {
+        console.error("ОШИБКА при отправке в Telegram:", telegramError);
+      }
+    } else {
+      console.log("ВНИМАНИЕ: Telegram credentials отсутствуют, уведомление не отправлено");
     }
 
+    console.log("УСПЕХ: Лид обработан успешно");
     return NextResponse.json({ success: true }, { status: 200 })
+    } catch (metaError) {
+      console.error("ОШИБКА при запросе к Meta Graph API:", metaError);
+      return NextResponse.json(
+        { success: false, error: 'Failed to fetch lead from Meta' },
+        { status: 500 }
+      )
+    }
   } catch (error) {
+    console.error("КРИТИЧЕСКАЯ ОШИБКА в /api/meta-webhook POST:", error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }
