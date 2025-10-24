@@ -23,6 +23,7 @@ import AdminPrivacy from "@/components/admin/admin-privacy"
 import AdminLeasing from "@/components/admin/admin-leasing"
 import AdminFunnel from "@/components/admin/admin-funnel"
 import AdminMetaLeads from "@/components/admin/admin-meta-leads"
+import AdminBuyback from "@/components/admin/admin-buyback"
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -301,6 +302,13 @@ export default function AdminPage() {
                   <Facebook className="h-5 w-5 mb-1" />
                   <span>Meta Ads</span>
                 </TabsTrigger>
+                <TabsTrigger
+                  value="buyback"
+                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
+                >
+                  <Car className="h-5 w-5 mb-1" />
+                  <span>Выкуп</span>
+                </TabsTrigger>
               </TabsList>
             </div>
           </div>
@@ -392,6 +400,13 @@ export default function AdminPage() {
                 <Facebook className="h-4 w-4" />
                 <span className="hidden sm:inline">Meta Ads</span>
               </TabsTrigger>
+              <TabsTrigger
+                value="buyback"
+                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
+              >
+                <Car className="h-4 w-4" />
+                <span className="hidden sm:inline">Выкуп</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -430,6 +445,9 @@ export default function AdminPage() {
           </TabsContent>
           <TabsContent value="meta-leads" className="mt-6">
             <AdminMetaLeads />
+          </TabsContent>
+          <TabsContent value="buyback" className="mt-6">
+            <AdminBuyback />
           </TabsContent>
         </Tabs>
       </div>

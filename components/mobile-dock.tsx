@@ -2,11 +2,12 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Car, CreditCard, Phone } from "lucide-react"
+import { Home, Car, CreditCard, Phone, CarIcon } from "lucide-react"
 
 const dockItems = [
   { name: "Главная", href: "/", icon: Home },
   { name: "Каталог", href: "/catalog", icon: Car },
+  { name: "Выкуп", href: "/buyback", icon: CarIcon },
   { name: "Кредит", href: "/credit", icon: CreditCard },
   { name: "Контакты", href: "/contacts", icon: Phone },
 ]

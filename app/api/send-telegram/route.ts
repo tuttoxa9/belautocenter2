@@ -145,6 +145,10 @@ export async function POST(request: NextRequest) {
         }
         break
 
+      case 'buyback_request':
+        message = `💰 <b>Новая заявка на выкуп авто</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}\n🚗 <b>Авто:</b> ${body.car}\n📍 <b>Город:</b> ${body.city}`
+        break
+
       default:
         message = `📝 <b>Новая заявка</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}`
         if (email) {

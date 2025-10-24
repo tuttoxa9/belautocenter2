@@ -2,9 +2,12 @@
 
 import { createContext, useContext, useState, ReactNode } from "react"
 import { SuccessNotification } from "@/components/success-notification"
+import { Toaster, toast } from 'sonner'
+
 
 interface NotificationContextType {
-  showSuccess: (message: string) => void
+  showSuccess: (message: string) => void;
+  showError: (message: string) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined)
@@ -16,27 +19,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   })
 
   const showSuccess = (message: string) => {
-    setNotification({
-      show: true,
-      message
-    })
+    toast.success(message)
   }
 
-  const hideNotification = () => {
-    setNotification({
-      show: false,
-      message: ""
-    })
+  const showError = (message: string) => {
+    toast.error(message)
   }
 
   return (
-    <NotificationContext.Provider value={{ showSuccess }}>
+    <NotificationContext.Provider value={{ showSuccess, showError }}>
+      <Toaster position="top-center" richColors />
       {children}
-      <SuccessNotification
-        show={notification.show}
-        message={notification.message}
-        onClose={hideNotification}
-      />
     </NotificationContext.Provider>
   )
 }
