@@ -852,11 +852,17 @@ export default function AdminCars() {
           <div className="text-2xl font-bold mt-1 text-green-600">
             {cars.filter(car => car.isAvailable === true).length}
           </div>
+          <div className="text-sm text-gray-600 mt-1">
+            {cars.filter(car => car.isAvailable === true).reduce((sum, car) => sum + (car.price || 0), 0).toLocaleString('ru-RU')} $
+          </div>
         </div>
         <div className="bg-white rounded-lg shadow p-4">
           <div className="text-sm text-gray-500">Проданные</div>
           <div className="text-2xl font-bold mt-1 text-gray-500">
             {cars.filter(car => car.isAvailable === false).length}
+          </div>
+          <div className="text-sm text-gray-600 mt-1">
+            {cars.filter(car => car.isAvailable === false).reduce((sum, car) => sum + (car.price || 0), 0).toLocaleString('ru-RU')} $
           </div>
         </div>
       </div>
