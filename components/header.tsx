@@ -19,6 +19,7 @@ import { useNotification } from "@/components/providers/notification-provider"
 const navigation = [
   { name: "Главная", href: "/" },
   { name: "Каталог", href: "/catalog" },
+  { name: "Выкуп", href: "https://vikup.belautocenter.by" },
   { name: "Кредит", href: "/credit" },
   { name: "Лизинг", href: "/leasing" },
   { name: "О нас", href: "/about" },
