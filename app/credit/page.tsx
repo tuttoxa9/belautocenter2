@@ -211,7 +211,7 @@ export default function CreditPage() {
         setCalculator({ ...calculator, loanTerm: [clampedTerm] })
         break
       case 'interestRate':
-        const clampedRate = Math.max(10, Math.min(25, numValue))
+        const clampedRate = Math.max(10, Math.min(30, numValue))
         setCalculator({ ...calculator, interestRate: [clampedRate] })
         break
     }
@@ -534,7 +534,7 @@ export default function CreditPage() {
                       setCalculator({ ...calculator, interestRate: value })
                       setManualInputs({ ...manualInputs, interestRate: value[0].toString() })
                     }}
-                    max={25}
+                    max={30}
                     min={10}
                     step={0.25}
                     disabled={manualInputs.selectedBank !== '' && manualInputs.selectedBank !== 'custom'}

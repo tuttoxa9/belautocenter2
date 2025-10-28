@@ -64,6 +64,51 @@ const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableMo
         <Input type="number" placeholder="До" value={filters.yearTo} onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
       </div>
     </div>
+    <div className="space-y-2">
+      <Label className="text-sm font-medium text-gray-700">Пробег (тыс. км)</Label>
+      <div className="grid grid-cols-2 gap-2">
+        <Input type="number" placeholder="От" value={filters.mileageFrom} onChange={(e) => setFilters({ ...filters, mileageFrom: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
+        <Input type="number" placeholder="До" value={filters.mileageTo} onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
+      </div>
+    </div>
+    <div className="space-y-2">
+      <Label className="text-sm font-medium text-gray-700">Коробка передач</Label>
+      <Select value={filters.transmission} onValueChange={(value) => setFilters({ ...filters, transmission: value })}>
+        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder="Любая" /></SelectTrigger>
+        <SelectContent className="border-gray-200 shadow-lg">
+          <SelectItem value="any" className="text-base py-3">Любая</SelectItem>
+          <SelectItem value="Механика" className="text-base py-3">Механика</SelectItem>
+          <SelectItem value="Автомат" className="text-base py-3">Автомат</SelectItem>
+          <SelectItem value="Вариатор" className="text-base py-3">Вариатор</SelectItem>
+          <SelectItem value="Робот" className="text-base py-3">Робот</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+    <div className="space-y-2">
+      <Label className="text-sm font-medium text-gray-700">Тип топлива</Label>
+      <Select value={filters.fuelType} onValueChange={(value) => setFilters({ ...filters, fuelType: value })}>
+        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder="Любой" /></SelectTrigger>
+        <SelectContent className="border-gray-200 shadow-lg">
+          <SelectItem value="any" className="text-base py-3">Любой</SelectItem>
+          <SelectItem value="Бензин" className="text-base py-3">Бензин</SelectItem>
+          <SelectItem value="Дизель" className="text-base py-3">Дизель</SelectItem>
+          <SelectItem value="Гибрид" className="text-base py-3">Гибрид</SelectItem>
+          <SelectItem value="Электро" className="text-base py-3">Электро</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+    <div className="space-y-2">
+      <Label className="text-sm font-medium text-gray-700">Привод</Label>
+      <Select value={filters.driveTrain} onValueChange={(value) => setFilters({ ...filters, driveTrain: value })}>
+        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder="Любой" /></SelectTrigger>
+        <SelectContent className="border-gray-200 shadow-lg">
+          <SelectItem value="any" className="text-base py-3">Любой</SelectItem>
+          <SelectItem value="Передний" className="text-base py-3">Передний</SelectItem>
+          <SelectItem value="Задний" className="text-base py-3">Задний</SelectItem>
+          <SelectItem value="Полный" className="text-base py-3">Полный</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   </div>
 );
 
