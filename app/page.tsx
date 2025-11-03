@@ -192,7 +192,7 @@ export default function HomePage() {
             left: 0,
             right: 0,
             bottom: '150px', // Заканчиваем фон ДО блока историй
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/mercedes-new-bg.jpg')`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center 90%',
             backgroundRepeat: 'no-repeat'
@@ -207,7 +207,7 @@ export default function HomePage() {
             left: 0,
             right: 0,
             bottom: '120px', // Увеличиваем отступ снизу для лучшего перехода
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/mercedes-new-bg.jpg')`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center top', // Изменяем позицию на center top
             backgroundRepeat: 'no-repeat'
