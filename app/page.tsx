@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -42,6 +42,13 @@ export default function HomePage() {
   const { showSuccess } = useNotification()
   const [isMounted, setIsMounted] = useState(true)
   const [showSaleModal, setShowSaleModal] = useState(false)
+
+  // Состояния для видео
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
+  const [videosLoaded, setVideosLoaded] = useState(false)
+  const [showVideo, setShowVideo] = useState(false)
+  const video1Ref = useRef<HTMLVideoElement>(null)
+  const video2Ref = useRef<HTMLVideoElement>(null)
 
   const [cars, setCars] = useState<Array<any>>([])
   const [loadingCars, setLoadingCars] = useState(true)
@@ -114,6 +121,71 @@ export default function HomePage() {
     }
   }, [loadHomepageSettings, loadFeaturedCars])
 
+  // Управление видео
+  useEffect(() => {
+    const videos = [
+      { ref: video1Ref, src: '/mazda6vid.mp4' },
+      { ref: video2Ref, src: '/jettavid.mp4' }
+    ]
+
+    let loadedCount = 0
+
+    const handleVideoLoaded = () => {
+      loadedCount++
+      if (loadedCount === videos.length) {
+        setVideosLoaded(true)
+        setTimeout(() => {
+          setShowVideo(true)
+          if (video1Ref.current) {
+            video1Ref.current.play()
+          }
+        }, 300)
+      }
+    }
+
+    videos.forEach(({ ref }) => {
+      if (ref.current) {
+        ref.current.addEventListener('loadeddata', handleVideoLoaded)
+      }
+    })
+
+    return () => {
+      videos.forEach(({ ref }) => {
+        if (ref.current) {
+          ref.current.removeEventListener('loadeddata', handleVideoLoaded)
+        }
+      })
+    }
+  }, [])
+
+  // Переключение видео каждые 4 секунды
+  useEffect(() => {
+    if (!showVideo) return
+
+    const interval = setInterval(() => {
+      setCurrentVideoIndex((prev) => {
+        const next = prev === 0 ? 1 : 0
+
+        // Плавное переключение
+        if (next === 0) {
+          if (video1Ref.current) {
+            video1Ref.current.currentTime = 0
+            video1Ref.current.play()
+          }
+        } else {
+          if (video2Ref.current) {
+            video2Ref.current.currentTime = 0
+            video2Ref.current.play()
+          }
+        }
+
+        return next
+      })
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [showVideo])
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const params = new URLSearchParams()
@@ -184,14 +256,14 @@ export default function HomePage() {
       {/* Главный баннер */}
       <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14">
 
-        {/* Фоновое изображение для ПК */}
+        {/* Фоновое изображение (показывается пока видео не загружено) */}
         <div
-          className="absolute hero-bg-desktop hidden md:block"
+          className={`absolute hero-bg-desktop hidden md:block transition-opacity duration-500 ${showVideo ? 'opacity-0' : 'opacity-100'}`}
           style={{
             top: 0,
             left: 0,
             right: 0,
-            bottom: '150px', // Заканчиваем фон ДО блока историй
+            bottom: '150px',
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center 70%',
@@ -199,20 +271,71 @@ export default function HomePage() {
           }}
         />
 
-        {/* Фоновое изображение для мобильных */}
         <div
-          className="absolute hero-bg-mobile block md:hidden"
+          className={`absolute hero-bg-mobile block md:hidden transition-opacity duration-500 ${showVideo ? 'opacity-0' : 'opacity-100'}`}
           style={{
             top: 0,
             left: 0,
             right: 0,
-            bottom: '120px', // Увеличиваем отступ снизу для лучшего перехода
+            bottom: '120px',
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg.jpg')`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center 30%', // Изменяем позицию на center top
+            backgroundPosition: 'center 30%',
             backgroundRepeat: 'no-repeat'
           }}
         />
+
+        {/* Видео фон - Desktop */}
+        <div className="absolute hidden md:block" style={{ top: 0, left: 0, right: 0, bottom: '150px', overflow: 'hidden' }}>
+          <div className="absolute inset-0 bg-black/60 z-10" />
+          <video
+            ref={video1Ref}
+            src="/mazda6vid.mp4"
+            muted
+            playsInline
+            preload="auto"
+            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              showVideo && currentVideoIndex === 0 ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ objectPosition: 'center 70%' }}
+          />
+          <video
+            ref={video2Ref}
+            src="/jettavid.mp4"
+            muted
+            playsInline
+            preload="auto"
+            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              showVideo && currentVideoIndex === 1 ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ objectPosition: 'center 70%' }}
+          />
+        </div>
+
+        {/* Видео фон - Mobile */}
+        <div className="absolute block md:hidden" style={{ top: 0, left: 0, right: 0, bottom: '120px', overflow: 'hidden' }}>
+          <div className="absolute inset-0 bg-black/60 z-10" />
+          <video
+            src="/mazda6vid.mp4"
+            muted
+            playsInline
+            preload="auto"
+            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              showVideo && currentVideoIndex === 0 ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ objectPosition: 'center 30%' }}
+          />
+          <video
+            src="/jettavid.mp4"
+            muted
+            playsInline
+            preload="auto"
+            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              showVideo && currentVideoIndex === 1 ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ objectPosition: 'center 30%' }}
+          />
+        </div>
 
         <div className="relative z-30 text-center text-white max-w-4xl mx-auto px-4 pb-40 sm:pb-32 md:pb-24 lg:pb-32 xl:pb-20 hero-content">
           <h1 className="text-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 leading-tight">
