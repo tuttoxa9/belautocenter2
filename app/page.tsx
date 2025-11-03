@@ -304,7 +304,7 @@ export default function HomePage() {
         <div className="absolute hidden md:block z-5" style={{ top: 0, left: 0, right: 0, bottom: '150px', overflow: 'hidden' }}>
           <video
             ref={video1Ref}
-            src="/jettavid.mp4"
+            src="/jettavid2.mp4"
             autoPlay
             muted
             playsInline
@@ -334,7 +334,7 @@ export default function HomePage() {
         <div className="absolute block md:hidden z-5" style={{ top: 0, left: 0, right: 0, bottom: '120px', overflow: 'hidden' }}>
           <video
             ref={video1MobileRef}
-            src="/jettavid.mp4"
+            src="/jettavid2.mp4"
             autoPlay
             muted
             playsInline
