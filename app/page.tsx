@@ -141,10 +141,10 @@ export default function HomePage() {
         setTimeout(() => {
           setShowVideo(true)
           if (video1Ref.current) {
-            video1Ref.current.play()
+            video1Ref.current.play().catch(() => {})
           }
           if (video1MobileRef.current) {
-            video1MobileRef.current.play()
+            video1MobileRef.current.play().catch(() => {})
           }
         }, 4000)
       }
@@ -173,24 +173,24 @@ export default function HomePage() {
       setCurrentVideoIndex((prev) => {
         const next = prev === 0 ? 1 : 0
 
-        // Плавное переключение для desktop
+        // Плавное переключение для desktop и mobile
         if (next === 0) {
           if (video1Ref.current) {
             video1Ref.current.currentTime = 0
-            video1Ref.current.play()
+            video1Ref.current.play().catch(() => {})
           }
           if (video1MobileRef.current) {
             video1MobileRef.current.currentTime = 0
-            video1MobileRef.current.play()
+            video1MobileRef.current.play().catch(() => {})
           }
         } else {
           if (video2Ref.current) {
             video2Ref.current.currentTime = 0
-            video2Ref.current.play()
+            video2Ref.current.play().catch(() => {})
           }
           if (video2MobileRef.current) {
             video2MobileRef.current.currentTime = 0
-            video2MobileRef.current.play()
+            video2MobileRef.current.play().catch(() => {})
           }
         }
 
@@ -305,8 +305,10 @@ export default function HomePage() {
           <video
             ref={video1Ref}
             src="/jettavid.mp4"
+            autoPlay
             muted
             playsInline
+            loop
             preload="auto"
             className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
               showVideo && currentVideoIndex === 0 ? 'opacity-100' : 'opacity-0'
@@ -316,8 +318,10 @@ export default function HomePage() {
           <video
             ref={video2Ref}
             src="/mazda6vid.mp4"
+            autoPlay
             muted
             playsInline
+            loop
             preload="auto"
             className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
               showVideo && currentVideoIndex === 1 ? 'opacity-100' : 'opacity-0'
@@ -331,8 +335,10 @@ export default function HomePage() {
           <video
             ref={video1MobileRef}
             src="/jettavid.mp4"
+            autoPlay
             muted
             playsInline
+            loop
             preload="auto"
             className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
               showVideo && currentVideoIndex === 0 ? 'opacity-100' : 'opacity-0'
@@ -342,8 +348,10 @@ export default function HomePage() {
           <video
             ref={video2MobileRef}
             src="/mazda6vid.mp4"
+            autoPlay
             muted
             playsInline
+            loop
             preload="auto"
             className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
               showVideo && currentVideoIndex === 1 ? 'opacity-100' : 'opacity-0'
