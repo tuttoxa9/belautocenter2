@@ -49,6 +49,8 @@ export default function HomePage() {
   const [showVideo, setShowVideo] = useState(false)
   const video1Ref = useRef<HTMLVideoElement>(null)
   const video2Ref = useRef<HTMLVideoElement>(null)
+  const video1MobileRef = useRef<HTMLVideoElement>(null)
+  const video2MobileRef = useRef<HTMLVideoElement>(null)
 
   const [cars, setCars] = useState<Array<any>>([])
   const [loadingCars, setLoadingCars] = useState(true)
@@ -124,8 +126,10 @@ export default function HomePage() {
   // Управление видео
   useEffect(() => {
     const videos = [
-      { ref: video1Ref, src: '/mazda6vid.mp4' },
-      { ref: video2Ref, src: '/jettavid.mp4' }
+      { ref: video1Ref, src: '/jettavid.mp4' },
+      { ref: video2Ref, src: '/mazda6vid.mp4' },
+      { ref: video1MobileRef, src: '/jettavid.mp4' },
+      { ref: video2MobileRef, src: '/mazda6vid.mp4' }
     ]
 
     let loadedCount = 0
@@ -138,6 +142,9 @@ export default function HomePage() {
           setShowVideo(true)
           if (video1Ref.current) {
             video1Ref.current.play()
+          }
+          if (video1MobileRef.current) {
+            video1MobileRef.current.play()
           }
         }, 4000)
       }
@@ -166,16 +173,24 @@ export default function HomePage() {
       setCurrentVideoIndex((prev) => {
         const next = prev === 0 ? 1 : 0
 
-        // Плавное переключение
+        // Плавное переключение для desktop
         if (next === 0) {
           if (video1Ref.current) {
             video1Ref.current.currentTime = 0
             video1Ref.current.play()
           }
+          if (video1MobileRef.current) {
+            video1MobileRef.current.currentTime = 0
+            video1MobileRef.current.play()
+          }
         } else {
           if (video2Ref.current) {
             video2Ref.current.currentTime = 0
             video2Ref.current.play()
+          }
+          if (video2MobileRef.current) {
+            video2MobileRef.current.currentTime = 0
+            video2MobileRef.current.play()
           }
         }
 
@@ -314,6 +329,7 @@ export default function HomePage() {
         {/* Видео фон - Mobile */}
         <div className="absolute block md:hidden z-5" style={{ top: 0, left: 0, right: 0, bottom: '120px', overflow: 'hidden' }}>
           <video
+            ref={video1MobileRef}
             src="/jettavid.mp4"
             muted
             playsInline
@@ -324,6 +340,7 @@ export default function HomePage() {
             style={{ objectPosition: 'center 30%', filter: 'brightness(0.6)' }}
           />
           <video
+            ref={video2MobileRef}
             src="/mazda6vid.mp4"
             muted
             playsInline
