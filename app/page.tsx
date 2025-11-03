@@ -254,11 +254,11 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white homepage -mt-14">
       {/* Главный баннер */}
-      <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14">
+      <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14 bg-black">
 
         {/* Фоновое изображение (показывается пока видео не загружено) */}
         <div
-          className={`absolute hero-bg-desktop hidden md:block transition-opacity duration-500 ${showVideo ? 'opacity-0' : 'opacity-100'}`}
+          className={`absolute hero-bg-desktop hidden md:block transition-opacity duration-1000 z-10 ${showVideo ? 'opacity-0' : 'opacity-100'}`}
           style={{
             top: 0,
             left: 0,
@@ -272,7 +272,7 @@ export default function HomePage() {
         />
 
         <div
-          className={`absolute hero-bg-mobile block md:hidden transition-opacity duration-500 ${showVideo ? 'opacity-0' : 'opacity-100'}`}
+          className={`absolute hero-bg-mobile block md:hidden transition-opacity duration-1000 z-10 ${showVideo ? 'opacity-0' : 'opacity-100'}`}
           style={{
             top: 0,
             left: 0,
@@ -286,7 +286,7 @@ export default function HomePage() {
         />
 
         {/* Видео фон - Desktop */}
-        <div className="absolute hidden md:block" style={{ top: 0, left: 0, right: 0, bottom: '150px', overflow: 'hidden' }}>
+        <div className="absolute hidden md:block z-5" style={{ top: 0, left: 0, right: 0, bottom: '150px', overflow: 'hidden' }}>
           <video
             ref={video1Ref}
             src="/jettavid.mp4"
@@ -312,7 +312,7 @@ export default function HomePage() {
         </div>
 
         {/* Видео фон - Mobile */}
-        <div className="absolute block md:hidden" style={{ top: 0, left: 0, right: 0, bottom: '120px', overflow: 'hidden' }}>
+        <div className="absolute block md:hidden z-5" style={{ top: 0, left: 0, right: 0, bottom: '120px', overflow: 'hidden' }}>
           <video
             src="/jettavid.mp4"
             muted
