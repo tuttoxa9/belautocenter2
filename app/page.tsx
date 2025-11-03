@@ -126,9 +126,9 @@ export default function HomePage() {
   // Управление видео
   useEffect(() => {
     const videos = [
-      { ref: video1Ref, src: '/jettavid.mp4' },
+      { ref: video1Ref, src: '/jettavid2.mp4' },
       { ref: video2Ref, src: '/mazda6vid.mp4' },
-      { ref: video1MobileRef, src: '/jettavid.mp4' },
+      { ref: video1MobileRef, src: '/jettavid2.mp4' },
       { ref: video2MobileRef, src: '/mazda6vid.mp4' }
     ]
 
@@ -146,7 +146,7 @@ export default function HomePage() {
           if (video1MobileRef.current) {
             video1MobileRef.current.play().catch(() => {})
           }
-        }, 4000)
+        }, 2000)
       }
     }
 
@@ -305,7 +305,6 @@ export default function HomePage() {
           <video
             ref={video1Ref}
             src="/jettavid2.mp4"
-            autoPlay
             muted
             playsInline
             loop
@@ -318,7 +317,6 @@ export default function HomePage() {
           <video
             ref={video2Ref}
             src="/mazda6vid.mp4"
-            autoPlay
             muted
             playsInline
             loop
@@ -335,7 +333,6 @@ export default function HomePage() {
           <video
             ref={video1MobileRef}
             src="/jettavid2.mp4"
-            autoPlay
             muted
             playsInline
             loop
@@ -348,7 +345,6 @@ export default function HomePage() {
           <video
             ref={video2MobileRef}
             src="/mazda6vid.mp4"
-            autoPlay
             muted
             playsInline
             loop
