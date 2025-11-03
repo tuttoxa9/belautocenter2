@@ -116,19 +116,19 @@ export default function AdminPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <Card className="w-full max-w-md bg-gray-50 border-gray-200 shadow-lg">
-          <CardHeader className="text-center">
-            <div className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <Card className="w-full max-w-md bg-white border-gray-200 shadow-2xl rounded-2xl overflow-hidden">
+          <CardHeader className="text-center pb-6">
+            <div className="h-20 w-20 rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-xl transform hover:scale-105 transition-transform duration-300">
               <Image src="/logo.png" alt="Белавто Центр" width={64} height={64} className="object-contain" />
             </div>
-            <CardTitle className="text-gray-900 text-2xl">Админ-панель</CardTitle>
-            <p className="text-gray-600">Белавто Центр</p>
+            <CardTitle className="text-gray-900 text-3xl font-bold tracking-tight">Админ-панель</CardTitle>
+            <p className="text-gray-500 text-sm mt-2">Белавто Центр</p>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <Label htmlFor="email" className="text-gray-700">
+          <CardContent className="px-8 pb-8">
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700 font-medium text-sm">
                   Email
                 </Label>
                 <Input
@@ -136,12 +136,13 @@ export default function AdminPage() {
                   type="email"
                   value={loginForm.email}
                   onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500"
+                  className="bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder:text-gray-400 rounded-xl h-12 px-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-gray-300"
+                  placeholder="admin@example.com"
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="password" className="text-gray-700">
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700 font-medium text-sm">
                   Пароль
                 </Label>
                 <Input
@@ -149,19 +150,37 @@ export default function AdminPage() {
                   type="password"
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500"
+                  className="bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder:text-gray-400 rounded-xl h-12 px-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-gray-300"
+                  placeholder="••••••••"
                   required
                 />
               </div>
-              {loginError && <div className="text-red-400 text-sm text-center">{loginError}</div>}
+              {loginError && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-sm text-center py-3 rounded-xl">
+                  {loginError}
+                </div>
+              )}
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
-                loading={isLoggingIn}
+                className="w-full h-12 bg-gradient-to-r from-gray-600 via-gray-700 to-gray-800 hover:from-gray-700 hover:via-gray-800 hover:to-gray-900 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 mt-6"
+                style={{
+                  boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.15), inset 0 -2px 4px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.1)'
+                }}
+                disabled={isLoggingIn}
               >
-                Войти в админ-панель
+                {isLoggingIn ? "Вход..." : "Войти в админ-панель"}
               </Button>
             </form>
+            
+            {/* Firebase Authentication Badge */}
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <div className="flex items-center justify-center space-x-2 text-gray-400">
+                <Shield className="h-4 w-4" />
+                <span className="text-xs font-medium tracking-wide">
+                  Secured by Google Firebase Authentication
+                </span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
