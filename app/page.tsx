@@ -194,7 +194,7 @@ export default function HomePage() {
             bottom: '150px', // Заканчиваем фон ДО блока историй
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg.jpg')`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center 90%',
+            backgroundPosition: 'center 70%',
             backgroundRepeat: 'no-repeat'
           }}
         />
@@ -209,7 +209,7 @@ export default function HomePage() {
             bottom: '120px', // Увеличиваем отступ снизу для лучшего перехода
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg.jpg')`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center top', // Изменяем позицию на center top
+            backgroundPosition: 'center 30%', // Изменяем позицию на center top
             backgroundRepeat: 'no-repeat'
           }}
         />
