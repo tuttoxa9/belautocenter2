@@ -47,7 +47,7 @@ async function getAllCars() {
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Sitemap/1.0'
       },
-      next: { revalidate: 3600 } // Кешируем на 1 час
+      next: { revalidate: 86400 } // Кешируем на 24 часа
     })
 
     if (!response.ok) {
