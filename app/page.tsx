@@ -139,7 +139,7 @@ export default function HomePage() {
           if (video1Ref.current) {
             video1Ref.current.play()
           }
-        }, 300)
+        }, 4000)
       }
     }
 
@@ -158,7 +158,7 @@ export default function HomePage() {
     }
   }, [])
 
-  // Переключение видео каждые 4 секунды
+  // Переключение видео каждые 5 секунд
   useEffect(() => {
     if (!showVideo) return
 
@@ -181,7 +181,7 @@ export default function HomePage() {
 
         return next
       })
-    }, 4000)
+    }, 5000)
 
     return () => clearInterval(interval)
   }, [showVideo])
@@ -287,53 +287,51 @@ export default function HomePage() {
 
         {/* Видео фон - Desktop */}
         <div className="absolute hidden md:block" style={{ top: 0, left: 0, right: 0, bottom: '150px', overflow: 'hidden' }}>
-          <div className="absolute inset-0 bg-black/60 z-10" />
           <video
             ref={video1Ref}
-            src="/mazda6vid.mp4"
+            src="/jettavid.mp4"
             muted
             playsInline
             preload="auto"
             className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
               showVideo && currentVideoIndex === 0 ? 'opacity-100' : 'opacity-0'
             }`}
-            style={{ objectPosition: 'center 70%' }}
+            style={{ objectPosition: 'center 70%', filter: 'brightness(0.6)' }}
           />
           <video
             ref={video2Ref}
-            src="/jettavid.mp4"
+            src="/mazda6vid.mp4"
             muted
             playsInline
             preload="auto"
             className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
               showVideo && currentVideoIndex === 1 ? 'opacity-100' : 'opacity-0'
             }`}
-            style={{ objectPosition: 'center 70%' }}
+            style={{ objectPosition: 'center 70%', filter: 'brightness(0.6)' }}
           />
         </div>
 
         {/* Видео фон - Mobile */}
         <div className="absolute block md:hidden" style={{ top: 0, left: 0, right: 0, bottom: '120px', overflow: 'hidden' }}>
-          <div className="absolute inset-0 bg-black/60 z-10" />
-          <video
-            src="/mazda6vid.mp4"
-            muted
-            playsInline
-            preload="auto"
-            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
-              showVideo && currentVideoIndex === 0 ? 'opacity-100' : 'opacity-0'
-            }`}
-            style={{ objectPosition: 'center 30%' }}
-          />
           <video
             src="/jettavid.mp4"
             muted
             playsInline
             preload="auto"
             className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              showVideo && currentVideoIndex === 0 ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ objectPosition: 'center 30%', filter: 'brightness(0.6)' }}
+          />
+          <video
+            src="/mazda6vid.mp4"
+            muted
+            playsInline
+            preload="auto"
+            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
               showVideo && currentVideoIndex === 1 ? 'opacity-100' : 'opacity-0'
             }`}
-            style={{ objectPosition: 'center 30%' }}
+            style={{ objectPosition: 'center 30%', filter: 'brightness(0.6)' }}
           />
         </div>
 
