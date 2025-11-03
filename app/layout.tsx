@@ -94,6 +94,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru">
       <head>
         <meta name="yandex-verification" content="a9085911ec7f5c05" />
+        <link
+          rel="preload"
+          href="/fonts/ofont.ru_Geoform.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="font-sans min-h-screen flex flex-col">
         {/* Google Analytics */}
