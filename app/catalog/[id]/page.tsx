@@ -98,6 +98,11 @@ export async function generateMetadata(
       description: carDescription,
       keywords: `${carData.make}, ${carData.model}, ${carData.year}, автомобиль, купить авто, Беларусь, Белавто Центр, ${carData.transmission}, ${carData.fuelType}`,
 
+      // Canonical URL - указывает на эту конкретную страницу
+      alternates: {
+        canonical: carUrl,
+      },
+
       // Open Graph метатеги
       openGraph: {
         title: `${carTitle} - ${carPrice}`,

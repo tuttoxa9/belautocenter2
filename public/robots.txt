@@ -15,5 +15,5 @@ Allow: /
 Disallow: /adminbel
 Disallow: /api
 
-Sitemap: https://autobelcenter.by/sitemap.xml
-Host: autobelcenter.by
+Sitemap: https://belautocenter.by/sitemap.xml
+Host: belautocenter.by
