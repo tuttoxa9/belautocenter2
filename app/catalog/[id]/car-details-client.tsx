@@ -1020,7 +1020,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               )}
 
               {/* Описание под галереей для десктопов */}
-              <div className="hidden lg:block p-6 border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
+              <div className="hidden lg:block p-6 border-slate-200/50" style={{ backgroundColor: 'hsl(var(--custom-color))' }}>
                 <h4 className="text-lg font-bold text-slate-900 mb-3">
                   Описание
                 </h4>
@@ -1044,7 +1044,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
             </div>
 
             {/* Описание для мобильных устройств под галереей */}
-            <div className="lg:hidden p-3 sm:p-4 border-b border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
+            <div className="lg:hidden p-3 sm:p-4 border-b border-slate-200/50" style={{ backgroundColor: 'hsl(var(--custom-color))' }}>
               <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                 Описание
               </h4>
@@ -1202,7 +1202,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                   <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
                     Финансирование
                   </h4>
-                  <div className="rounded-xl p-3 sm:p-4 border border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
+                  <div className="rounded-xl p-3 sm:p-4 border border-slate-200/50" style={{ backgroundColor: 'hsl(var(--custom-color))' }}>
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>

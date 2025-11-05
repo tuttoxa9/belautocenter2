@@ -404,8 +404,8 @@ export default function SalePage() {
                             <div
                               className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105"
                               style={{
-                                backgroundColor: isSelected ? '#facc15' : '#475569',
-                                color: isSelected ? '#0f172a' : '#f8fafc'
+                                backgroundColor: isSelected ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
+                                color: isSelected ? 'hsl(var(--primary-foreground))' : 'hsl(var(--secondary-foreground))'
                               }}
                               onClick={(e) => {
                                 e.stopPropagation()
@@ -446,7 +446,7 @@ export default function SalePage() {
                       {/* Галочка выбора для десктопа */}
                       <div
                         className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all duration-200 hover:scale-110"
-                        style={{ backgroundColor: isSelected ? '#facc15' : 'transparent', border: '2px solid #facc15' }}
+                        style={{ backgroundColor: isSelected ? 'hsl(var(--primary))' : 'transparent', border: '2px solid hsl(var(--primary))' }}
                         onClick={(e) => {
                           e.stopPropagation()
                           setSelectedService(isSelected ? '' : service.id)

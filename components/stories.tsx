@@ -191,7 +191,7 @@ export default function Stories() {
                   viewedStories.has(story.id) ? "border-gray-300" : "border-gradient-to-r from-purple-500 to-pink-500"
                 } group-hover:scale-105`}
                 style={!viewedStories.has(story.id) ? {
-                  background: 'linear-gradient(45deg, #8B5CF6, #EC4899)',
+                  background: 'linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)))',
                   padding: '2px'
                 } : {}}
               >

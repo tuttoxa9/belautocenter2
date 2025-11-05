@@ -70,7 +70,7 @@ export default function YandexMap({ address, className }: YandexMapProps) {
             balloonContent: address,
             hintContent: address
           }, {
-            preset: 'islands#redIcon'
+            preset: 'islands#darkIcon'
           })
 
           map.geoObjects.add(placemark)
