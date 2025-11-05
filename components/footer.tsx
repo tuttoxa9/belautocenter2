@@ -47,7 +47,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-gray-900 text-white rounded-t-[50px] footer-corner-fill">
+    <footer className="bg-card text-foreground rounded-t-[50px] footer-corner-fill">
       <div className="container px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Колонка 1: Логотип и слоган */}
@@ -55,7 +55,7 @@ export default function Footer() {
             <Link href="/" className="flex justify-center md:justify-start" prefetch={true}>
               <Image src="/logo.png" alt="Логотип" width={160} height={160} className="object-contain" />
             </Link>
-            <p className="text-gray-400 text-sm">
+            <p className="text-muted-foreground text-sm">
               Надежный партнер в выборе качественного автомобиля с пробегом в Беларуси
             </p>
           </div>
@@ -64,25 +64,25 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Навигация</h3>
             <nav className="flex flex-col space-y-2">
-              <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
                 Главная
               </Link>
-              <Link href="/catalog" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <Link href="/catalog" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
                 Каталог
               </Link>
-              <Link href="/credit" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <Link href="/credit" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
                 Кредит
               </Link>
-              <Link href="/leasing" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <Link href="/leasing" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
                 Лизинг
               </Link>
-              <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
                 О нас
               </Link>
-              <Link href="/contacts" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <Link href="/contacts" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
                 Контакты
               </Link>
-              <Link href="/reviews" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <Link href="/reviews" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
                 Отзывы
               </Link>
             </nav>
@@ -96,32 +96,32 @@ export default function Footer() {
                 <MapPin className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
                 {loading ? (
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-gray-400 text-sm">Загрузка адреса...</span>
+                    <div className="w-3 h-3 border border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-muted-foreground text-sm">Загрузка адреса...</span>
                   </div>
                 ) : (
-                  <span className="text-gray-400 text-sm">{settings?.address || "Адрес не указан"}</span>
+                  <span className="text-muted-foreground text-sm">{settings?.address || "Адрес не указан"}</span>
                 )}
               </div>
               <div className="flex items-start space-x-3">
                 <Phone className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
                 {loading ? (
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-gray-400 text-sm">Загрузка телефонов...</span>
+                    <div className="w-3 h-3 border border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-muted-foreground text-sm">Загрузка телефонов...</span>
                   </div>
                 ) : (
                   <div className="flex flex-col space-y-1">
                     <a
                       href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                      className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                     >
                       {settings?.phone || "Телефон не указан"}
                     </a>
                     {settings?.phone2 && (
                       <a
                         href={`tel:${settings.phone2.replace(/\s/g, "")}`}
-                        className="text-gray-400 hover:text-white transition-colors text-sm"
+                        className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                       >
                         {settings.phone2}
                       </a>
@@ -133,13 +133,13 @@ export default function Footer() {
                 <Mail className="h-5 w-5 text-blue-400 flex-shrink-0" />
                 {loading ? (
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-gray-400 text-sm">Загрузка email...</span>
+                    <div className="w-3 h-3 border border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-muted-foreground text-sm">Загрузка email...</span>
                   </div>
                 ) : (
                   <a
                     href={`mailto:${settings?.email || ""}`}
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                   >
                     {settings?.email || "Email не указан"}
                   </a>
@@ -149,11 +149,11 @@ export default function Footer() {
                 <Clock className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
                 {loading ? (
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-gray-400 text-sm">Загрузка времени работы...</span>
+                    <div className="w-3 h-3 border border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-muted-foreground text-sm">Загрузка времени работы...</span>
                   </div>
                 ) : (
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-muted-foreground text-sm">
                     {settings?.workingHours ? (
                       settings.workingHours.split(", ").map((line, index) => (
                         <div key={index}>{line}</div>
@@ -172,20 +172,20 @@ export default function Footer() {
             <h3 className="font-semibold text-lg">Мы в соцсетях</h3>
             {loading ? (
               <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-gray-400 text-sm">Загрузка соцсетей...</span>
+                <div className="w-3 h-3 border border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-muted-foreground text-sm">Загрузка соцсетей...</span>
               </div>
             ) : (
               <div className="flex space-x-4">
-                <a href={settings?.socialMedia?.instagram || "#"} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <a href={settings?.socialMedia?.instagram || "#"} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                   <Instagram className="h-6 w-6" />
                 </a>
-                <a href={settings?.socialMedia?.telegram || "#"} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <a href={settings?.socialMedia?.telegram || "#"} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                   <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.584 7.44c-.12.528-.432.66-.876.412l-2.424-1.788-1.164 1.12c-.132.132-.24.24-.492.24l.168-2.388 4.416-3.984c.192-.168-.036-.264-.3-.096l-5.46 3.432-2.352-.744c-.516-.156-.528-.516.108-.768l9.192-3.54c.432-.156.804.108.672.672z"/>
                   </svg>
                 </a>
-                <a href={settings?.socialMedia?.tiktok || "#"} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <a href={settings?.socialMedia?.tiktok || "#"} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                   <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.10-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
                   </svg>
@@ -201,8 +201,8 @@ export default function Footer() {
               <div className="flex items-center">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-gray-400 text-sm">Загрузка...</span>
+                  <div className="w-3 h-3 border border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-muted-foreground text-sm">Загрузка...</span>
                 </div>
               </div>
             ) : (
@@ -221,15 +221,15 @@ export default function Footer() {
       </div>
 
       {/* Нижняя строка */}
-      <div className="border-t border-gray-800">
+      <div className="border-t border-border">
         <div className="container px-4 py-4 pb-32 md:pb-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-            <p className="text-gray-400 text-sm">
+            <p className="text-muted-foreground text-sm">
               © {currentYear} {loading ? (
                 <span className="inline-flex items-center">
                   <Loader2 className="h-3 w-3 animate-spin mr-1" />
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-3 h-3 border border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
                     <span>Загрузка...</span>
                   </div>
                 </span>
@@ -237,7 +237,7 @@ export default function Footer() {
                 settings?.companyName || "Компания"
               )}. Все права защищены.
             </p>
-            <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+            <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors text-sm" prefetch={true}>
               Политика конфиденциальности
             </Link>
           </div>

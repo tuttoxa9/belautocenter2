@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -120,7 +121,7 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-background shadow-md border-b">
       <div className="container flex h-14 items-center justify-between px-4">
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
@@ -132,7 +133,7 @@ export default function Header() {
             className="h-8 w-auto sm:h-10"
             priority
           />
-          <span className="font-display font-bold text-sm sm:text-lg text-gray-900 tracking-tight">Белавто Центр</span>
+          <span className="font-display font-bold text-sm sm:text-lg text-foreground tracking-tight">Белавто Центр</span>
         </Link>
 
         {/* Мобильное меню (справа) */}
@@ -153,7 +154,7 @@ export default function Header() {
           noPadding={true}
         >
           {/* Простой заголовок */}
-          <div className="flex items-center justify-center p-4 border-b border-gray-100">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100">
             {loading ? (
               <div className="flex items-center text-gray-600">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -172,6 +173,7 @@ export default function Header() {
                 <div className="w-12 h-px bg-gray-300"></div>
               </div>
             )}
+            <ThemeToggle />
           </div>
 
           {/* Компактное навигационное меню */}
@@ -187,7 +189,7 @@ export default function Header() {
                     href={item.href}
                     prefetch={true}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
+              className={`flex items-center px-4 py-3 mx-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors ${
                       isActive ? 'text-blue-600 bg-blue-50' : ''
                     }`}
                   >
@@ -250,7 +252,7 @@ export default function Header() {
               className={`text-sm font-bold tracking-wide transition-colors ${
                 pathname === item.href
                   ? "bg-blue-600 text-white px-3 py-2 rounded-md"
-                  : "text-gray-700"
+                  : "text-muted-foreground"
               }`}
             >
               {item.name}
@@ -268,10 +270,10 @@ export default function Header() {
               </div>
             ) : (
               <div>
-                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-gray-900 tracking-tight whitespace-nowrap">
+                <a href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`} className="text-sm font-bold text-foreground tracking-tight whitespace-nowrap">
                   {settings?.phone || "+375 XX XXX-XX-XX"}
                 </a>
-                <div className="text-xs text-gray-900 font-semibold whitespace-nowrap">
+                <div className="text-xs text-foreground font-semibold whitespace-nowrap">
                   {settings?.workingHours || "пн-вск: 9:00-21:00"}
                 </div>
               </div>
@@ -286,6 +288,7 @@ export default function Header() {
             <Phone className="h-4 w-4 mr-2" />
             <span>Заказать звонок</span>
           </Button>
+          <ThemeToggle />
           <UniversalDrawer
             open={isCallbackOpen}
             onOpenChange={setIsCallbackOpen}
