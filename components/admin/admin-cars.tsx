@@ -767,7 +767,6 @@ export default function AdminCars() {
                       value={jsonInput}
                       onChange={(e) => setJsonInput(e.target.value)}
                       className="font-mono text-xs h-64"
-                      placeholder='{\n  "make": "BMW",\n  "model": "M5 Competition",\n  "year": 2020,\n  "price": 95000,\n  "mileage": 45000,\n  "bodyType": "Седан",\n  "color": "Синий металлик",\n  "engineVolume": 4.4,\n  "fuelType": "Бензин",\n  "transmission": "Автомат",\n  "driveTrain": "Полный",\n  "isAvailable": true,\n  "imageUrls": ["cars/example1.jpg", "cars/example2.jpg"],\n  "description": "Текст описания",\n  "features": ["Адаптивная подвеска", "Карбоновые тормоза"],\n  "specifications": {\n    "Двигатель": "4.4 V8 Twin-Turbo",\n    "Мощность": "625",\n    "Разгон 0-100": "3.3"\n  }\n}'
                     />
                     {jsonError && (
                       <div className="text-sm text-red-600 mt-2">{jsonError}</div>

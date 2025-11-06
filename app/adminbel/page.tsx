@@ -116,33 +116,36 @@ export default function AdminPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <Card className="w-full max-w-md bg-white border-gray-200 shadow-2xl rounded-2xl overflow-hidden">
-          <CardHeader className="text-center pb-6">
-            <div className="h-20 w-20 rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-xl transform hover:scale-105 transition-transform duration-300">
-              <Image src="/logo.png" alt="Белавто Центр" width={64} height={64} className="object-contain" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-800 p-4">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+        <Card className="w-full max-w-md relative bg-white/95 backdrop-blur-sm border-0 shadow-2xl rounded-3xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>
+          <CardHeader className="text-center pb-8 pt-10 relative">
+            <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 flex items-center justify-center mx-auto mb-8 shadow-2xl transform hover:scale-105 transition-all duration-300 ring-4 ring-blue-100">
+              <Image src="/logo.png" alt="Белавто Центр" width={72} height={72} className="object-contain" />
             </div>
-            <CardTitle className="text-gray-900 text-3xl font-bold tracking-tight">Админ-панель</CardTitle>
-            <p className="text-gray-500 text-sm mt-2">Белавто Центр</p>
+            <CardTitle className="text-gray-900 text-4xl font-bold tracking-tight bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 bg-clip-text text-transparent">
+              Админ-панель
+            </CardTitle>
+            <p className="text-gray-600 text-base mt-3 font-medium">Белавто Центр</p>
           </CardHeader>
-          <CardContent className="px-8 pb-8">
-            <form onSubmit={handleLogin} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700 font-medium text-sm">
-                  Email
+          <CardContent className="px-10 pb-10 relative">
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="email" className="text-gray-700 font-semibold text-sm tracking-wide">
+                  Email адрес
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={loginForm.email}
                   onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                  className="bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder:text-gray-400 rounded-xl h-12 px-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-gray-300"
-                  placeholder="admin@example.com"
+                  className="bg-white border-2 border-gray-200 text-gray-900 rounded-xl h-14 px-5 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 shadow-sm text-base"
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700 font-medium text-sm">
+              <div className="space-y-3">
+                <Label htmlFor="password" className="text-gray-700 font-semibold text-sm tracking-wide">
                   Пароль
                 </Label>
                 <Input
@@ -150,33 +153,39 @@ export default function AdminPage() {
                   type="password"
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                  className="bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder:text-gray-400 rounded-xl h-12 px-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-gray-300"
-                  placeholder="••••••••"
+                  className="bg-white border-2 border-gray-200 text-gray-900 rounded-xl h-14 px-5 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-gray-300 shadow-sm text-base"
                   required
                 />
               </div>
               {loginError && (
-                <div className="bg-red-50 border border-red-200 text-red-600 text-sm text-center py-3 rounded-xl">
+                <div className="bg-red-50 border-2 border-red-200 text-red-700 text-sm font-medium text-center py-4 rounded-xl shadow-sm">
                   {loginError}
                 </div>
               )}
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-gray-600 via-gray-700 to-gray-800 hover:from-gray-700 hover:via-gray-800 hover:to-gray-900 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 mt-6"
-                style={{
-                  boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.15), inset 0 -2px 4px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.1)'
-                }}
+                className="w-full h-14 bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 hover:from-blue-700 hover:via-blue-800 hover:to-purple-800 text-white font-bold text-base rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 mt-8"
                 disabled={isLoggingIn}
               >
-                {isLoggingIn ? "Вход..." : "Войти в админ-панель"}
+                {isLoggingIn ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Вход в систему...
+                  </span>
+                ) : (
+                  "Войти в панель управления"
+                )}
               </Button>
             </form>
-            
+
             {/* Firebase Authentication Badge */}
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <div className="flex items-center justify-center space-x-2 text-gray-400">
-                <Shield className="h-4 w-4" />
-                <span className="text-xs font-medium tracking-wide">
+            <div className="mt-10 pt-8 border-t border-gray-200">
+              <div className="flex items-center justify-center space-x-2.5 text-gray-500">
+                <Shield className="h-4 w-4 text-blue-600" />
+                <span className="text-xs font-semibold tracking-wider uppercase">
                   Secured by Google Firebase Authentication
                 </span>
               </div>

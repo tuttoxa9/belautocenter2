@@ -45,7 +45,7 @@ interface UploadLog {
 
 export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUpload, path = 'general', currentImage, currentImages, className, multiple = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
-  const [autoWebP, setAutoWebP] = useState(true)
+  const [autoWebP, setAutoWebP] = useState(false)
   const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set())
   const [preview, setPreview] = useState<string | null>(currentImage || null)
   const [previews, setPreviews] = useState<string[]>(currentImages || [])
@@ -521,8 +521,8 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
 
           {/* Настройки загрузки */}
           <div className="flex items-center space-x-2 mt-4">
-            <Checkbox id="webp-toggle-multiple" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} />
-            <Label htmlFor="webp-toggle-multiple" className="text-sm font-medium text-gray-700">
+            <Checkbox id="webp-toggle-multiple" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} disabled />
+            <Label htmlFor="webp-toggle-multiple" className="text-sm font-medium text-gray-400">
               Оптимизировать в WebP
             </Label>
             <TooltipProvider>
@@ -722,8 +722,8 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
 
             {/* Настройки загрузки */}
             <div className="flex items-center space-x-2 mt-4">
-              <Checkbox id="webp-toggle-single" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} />
-              <Label htmlFor="webp-toggle-single" className="text-sm font-medium text-gray-700">
+              <Checkbox id="webp-toggle-single" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} disabled />
+              <Label htmlFor="webp-toggle-single" className="text-sm font-medium text-gray-400">
                 Оптимизировать в WebP
               </Label>
               <TooltipProvider>
