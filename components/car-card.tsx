@@ -70,11 +70,11 @@ export default function CarCard({ car }: CarCardProps) {
   }, [car.imageUrls])
 
   return (
-    <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 backdrop-blur-xl shadow-lg shadow-gray-900/5 rounded-2xl h-full group transition-all duration-200">
+    <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 dark:bg-gray-800/90 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/40 rounded-2xl h-full group transition-all duration-200">
       <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={true}>
         {/* Image Section */}
         <div className="relative">
-          <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 rounded-t-2xl h-56">
+          <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-700/80 dark:to-gray-800/60 rounded-t-2xl h-56">
             {isIntersecting ? (
               <>
                 {!isImageLoaded && (
@@ -144,14 +144,14 @@ export default function CarCard({ car }: CarCardProps) {
             <>
               {/* Header - более компактный */}
               <div className="mb-2">
-                <h3 className="font-semibold text-slate-900 text-base leading-tight mb-1 group-hover:text-slate-700 transition-colors">
+                <h3 className="font-semibold text-slate-900 dark:text-white text-base leading-tight mb-1 group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors">
                   {car.make} {car.model}
                 </h3>
-                <div className="font-bold text-slate-900 text-lg">
+                <div className="font-bold text-slate-900 dark:text-white text-lg">
                   {car?.price ? formattedPrice : 'Цена по запросу'}
                 </div>
                 {usdBynRate && car?.price && (
-                  <div className="text-xs text-slate-500 font-medium">
+                  <div className="text-xs text-slate-500 dark:text-gray-400 font-medium">
                     ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
                   </div>
                 )}
@@ -160,18 +160,18 @@ export default function CarCard({ car }: CarCardProps) {
               {/* Specs - более компактные */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-600">Пробег</span>
-                  <span className="font-medium text-slate-900">{formattedMileage} км</span>
+                  <span className="text-slate-600 dark:text-gray-400">Пробег</span>
+                  <span className="font-medium text-slate-900 dark:text-white">{formattedMileage} км</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-600">Двигатель</span>
-                  <span className="font-medium text-slate-900">
+                  <span className="text-slate-600 dark:text-gray-400">Двигатель</span>
+                  <span className="font-medium text-slate-900 dark:text-white">
                     {car.fuelType === "Электро" ? car.fuelType : `${formattedEngineVolume} ${car.fuelType}`}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-600">КПП</span>
-                  <span className="font-medium text-slate-900">{car.transmission}</span>
+                  <span className="text-slate-600 dark:text-gray-400">КПП</span>
+                  <span className="font-medium text-slate-900 dark:text-white">{car.transmission}</span>
                 </div>
               </div>
             </>

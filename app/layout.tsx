@@ -7,6 +7,7 @@ import Footer from "@/components/footer"
 import MobileDock from "@/components/mobile-dock"
 import { UsdBynRateProvider } from "@/components/providers/usd-byn-rate-provider"
 import { NotificationProvider } from "@/components/providers/notification-provider"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://belautocenter.by'),
@@ -131,16 +132,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
-        <UsdBynRateProvider>
-          <NotificationProvider>
-            <Header />
-            <main className="flex-1 flex flex-col bg-white">
-              {children}
-            </main>
-            <Footer />
-            <MobileDock />
-          </NotificationProvider>
-        </UsdBynRateProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <UsdBynRateProvider>
+            <NotificationProvider>
+              <Header />
+              <main className="flex-1 flex flex-col bg-white dark:bg-black">
+                {children}
+              </main>
+              <Footer />
+              <MobileDock />
+            </NotificationProvider>
+          </UsdBynRateProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

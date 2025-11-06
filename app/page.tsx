@@ -267,7 +267,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white homepage -mt-14">
+    <div className="min-h-screen bg-white dark:bg-black homepage -mt-14">
       {/* Главный баннер */}
       <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14 bg-black">
 
@@ -385,9 +385,9 @@ export default function HomePage() {
         </div>
 
         {/* Закругленный переход с Stories */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[30px] z-20">
+        <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-[30px] z-20">
           {/* Блок "Свежие поступления и новости" интегрированный в закругление */}
-          <div className="pt-3 pb-10 bg-gradient-to-b from-white to-gray-200 relative rounded-t-[30px]">
+          <div className="pt-3 pb-10 bg-gradient-to-b from-white to-gray-200 dark:from-black dark:to-gray-800 relative rounded-t-[30px]">
             <Stories />
           </div>
         </div>
@@ -396,7 +396,7 @@ export default function HomePage() {
       {/* Блок Stories больше не нужен отдельно */}
 
       {/* Блок "Специальное предложение" */}
-      <section className="pt-8 pb-20 bg-white relative rounded-t-[30px] -mt-6">
+      <section className="pt-8 pb-20 bg-white dark:bg-black relative rounded-t-[30px] -mt-6">
         <div className="container px-4">
 
           {loadingCars ? (
@@ -413,12 +413,12 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <div className="bg-white rounded-3xl p-12 shadow-lg max-w-md mx-auto">
+              <div className="bg-white dark:bg-gray-900 rounded-3xl p-12 shadow-lg max-w-md mx-auto">
                 <div className="text-6xl mb-6">🚗</div>
-                <h3 className="font-display text-2xl font-semibold text-gray-900 mb-4">
+                <h3 className="font-display text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                   Скоро здесь появятся автомобили
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Мы работаем над наполнением каталога лучшими предложениями
                 </p>
               </div>

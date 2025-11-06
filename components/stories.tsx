@@ -181,7 +181,7 @@ export default function Stories() {
       {/* Лента историй */}
       <div className="container px-4">
         <div className="mb-2">
-          <h2 className="text-lg md:text-xl font-display font-bold text-gray-900 tracking-tight">{settings.title}</h2>
+          <h2 className="text-lg md:text-xl font-display font-bold text-gray-900 dark:text-white tracking-tight">{settings.title}</h2>
         </div>
         <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
           {stories.map((story, index) => (
@@ -195,7 +195,7 @@ export default function Stories() {
                   padding: '2px'
                 } : {}}
               >
-                <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800">
                   <FadeInImage
                     src={story.avatarUrl || story.mediaUrl || "/placeholder.svg"}
                     alt={story.caption}
@@ -212,9 +212,9 @@ export default function Stories() {
               )}
 
               <div className="text-center mt-2 w-16">
-                <p className="text-xs text-gray-600 font-medium leading-tight break-words hyphens-auto">{story.caption}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-300 font-medium leading-tight break-words hyphens-auto">{story.caption}</p>
                 {story.subtitle && (
-                  <p className="text-xs text-gray-500 mt-1 leading-tight break-words hyphens-auto">{story.subtitle}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-tight break-words hyphens-auto">{story.subtitle}</p>
                 )}
               </div>
             </button>
