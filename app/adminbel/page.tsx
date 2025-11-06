@@ -116,28 +116,22 @@ export default function AdminPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <Card className="w-full max-w-lg bg-white border-0 shadow-2xl rounded-2xl overflow-hidden">
-          {/* Верхняя полоса с градиентом */}
-          <div className="h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"></div>
-
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-lg bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden">
           <CardHeader className="text-center pb-6 pt-12 px-8">
-            <div className="h-28 w-28 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mx-auto mb-6 shadow-xl transform hover:scale-105 transition-all duration-300 relative">
-              <div className="absolute inset-0 bg-white/20 rounded-2xl"></div>
-              <Image src="/logo.png" alt="Белавто Центр" width={80} height={80} className="object-contain relative z-10" />
+            <div className="h-24 w-24 rounded-lg bg-gray-100 flex items-center justify-center mx-auto mb-6 border border-gray-200">
+              <Image src="/logo.png" alt="Белавто Центр" width={70} height={70} className="object-contain" />
             </div>
-            <CardTitle className="text-gray-900 text-3xl font-bold tracking-tight mb-2">
+            <CardTitle className="text-gray-900 text-2xl font-semibold mb-3">
               Панель администратора
             </CardTitle>
-            <div className="inline-block px-4 py-1.5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-full border border-emerald-200">
-              <p className="text-emerald-700 text-sm font-semibold">Белавто Центр</p>
-            </div>
+            <p className="text-gray-600 text-sm">Белавто Центр</p>
           </CardHeader>
 
           <CardContent className="px-8 pb-10">
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-800 font-semibold text-sm">
+                <Label htmlFor="email" className="text-gray-700 font-medium text-sm">
                   Email
                 </Label>
                 <div className="relative">
@@ -146,14 +140,14 @@ export default function AdminPage() {
                     type="email"
                     value={loginForm.email}
                     onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                    className="bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl h-12 px-4 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 hover:border-gray-300"
+                    className="bg-white border border-gray-300 text-gray-900 rounded-md h-11 px-4 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-800 font-semibold text-sm">
+                <Label htmlFor="password" className="text-gray-700 font-medium text-sm">
                   Пароль
                 </Label>
                 <div className="relative">
@@ -162,14 +156,14 @@ export default function AdminPage() {
                     type="password"
                     value={loginForm.password}
                     onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                    className="bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl h-12 px-4 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 hover:border-gray-300"
+                    className="bg-white border border-gray-300 text-gray-900 rounded-md h-11 px-4 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     required
                   />
                 </div>
               </div>
 
               {loginError && (
-                <div className="bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium py-3 px-4 rounded-r-lg">
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm font-medium py-3 px-4 rounded-md">
                   <div className="flex items-center">
                     <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/>
@@ -181,7 +175,7 @@ export default function AdminPage() {
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 mt-6"
+                className="w-full h-11 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-md mt-6"
                 disabled={isLoggingIn}
               >
                 {isLoggingIn ? "Вход..." : "Войти"}
