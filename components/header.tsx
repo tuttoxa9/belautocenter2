@@ -155,9 +155,9 @@ export default function Header() {
           noPadding={true}
         >
           {/* Простой заголовок */}
-          <div className="flex items-center justify-center p-4 border-b border-gray-100">
+          <div className="flex items-center justify-center p-4 border-b border-gray-100 dark:border-gray-800">
             {loading ? (
-              <div className="flex items-center text-gray-600">
+              <div className="flex items-center text-gray-600 dark:text-gray-400">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 <span className="font-medium">Загрузка...</span>
               </div>
@@ -171,7 +171,7 @@ export default function Header() {
                   className="h-10 w-auto mb-2"
                   priority
                 />
-                <div className="w-12 h-px bg-gray-300"></div>
+                <div className="w-12 h-px bg-gray-300 dark:bg-gray-700"></div>
               </div>
             )}
           </div>
@@ -189,12 +189,12 @@ export default function Header() {
                     href={item.href}
                     prefetch={true}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center px-4 py-3 mx-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors ${
-                      isActive ? 'text-blue-600 bg-blue-50' : ''
+                    className={`flex items-center px-4 py-3 mx-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors ${
+                      isActive ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' : ''
                     }`}
                   >
                     <div className={`w-2 h-2 rounded-full mr-3 ${
-                      isActive ? 'bg-blue-600' : 'bg-gray-300'
+                      isActive ? 'bg-blue-600 dark:bg-blue-400' : 'bg-gray-300 dark:bg-gray-700'
                     }`}></div>
                     <span className="font-medium">{item.name}</span>
                   </Link>
@@ -205,21 +205,21 @@ export default function Header() {
           {/* Компактная секция контактов */}
           <div className="mx-4 mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
             {loading ? (
-              <div className="flex items-center text-gray-600 mb-3">
+              <div className="flex items-center text-gray-600 dark:text-gray-400 mb-3">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 <span className="text-sm">Загрузка контактов...</span>
               </div>
             ) : (
               <a
                 href={`tel:${settings?.phone?.replace(/\s/g, "") || ""}`}
-                className="block text-center text-white font-semibold text-base mb-3 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                className="block text-center text-white font-semibold text-base mb-3 p-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 rounded-lg transition-colors"
               >
                 {settings?.phone || "+375 XX XXX-XX-XX"}
               </a>
             )}
 
             <Button
-              className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 rounded-lg transition-colors mb-3"
+              className="w-full bg-gray-800 hover:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-medium py-2 rounded-lg transition-colors mb-3"
               onClick={() => {
                 setIsMobileMenuOpen(false)
                 setIsCallbackOpen(true)
@@ -248,7 +248,7 @@ export default function Header() {
             </Button>
 
             {/* Простая контактная информация */}
-            <div className="space-y-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="space-y-2 pt-3 border-t border-gray-200 dark:border-gray-800">
               <div className="flex items-center space-x-2 text-xs text-gray-600 dark:text-gray-400">
                 <MapPin className="w-3 h-3" />
                 <span>{settings?.address || "г. Минск, ул. Примерная, 123"}</span>

@@ -15,7 +15,7 @@ export default function MobileDock() {
   const pathname = usePathname()
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-slate-200/50 dark:border-gray-700/50 rounded-2xl shadow-2xl shadow-slate-900/25 dark:shadow-black/40 md:hidden">
+    <div className="fixed bottom-4 left-4 right-4 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-slate-200/50 dark:border-gray-800/50 rounded-2xl shadow-2xl shadow-slate-900/25 dark:shadow-black/60 md:hidden">
       <div className="grid grid-cols-4 p-2">
         {dockItems.map((item) => {
           const isActive = pathname === item.href
@@ -26,11 +26,11 @@ export default function MobileDock() {
               prefetch={true}
               className={`flex flex-col items-center justify-center py-3 px-2 text-xs transition-all duration-300 rounded-xl ${
                 isActive
-                  ? "text-white bg-slate-900 dark:bg-gray-600 shadow-lg shadow-slate-900/25 dark:shadow-black/40 transform scale-105"
-                  : "text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-gray-700/80"
+                  ? "text-white bg-slate-900 dark:bg-gray-700 shadow-lg shadow-slate-900/25 dark:shadow-black/60 transform scale-105"
+                  : "text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-gray-800/80"
               }`}
             >
-              <item.icon className={`h-6 w-6 mb-1 transition-all duration-300 ${isActive ? "text-white" : "text-slate-600 dark:text-gray-300"}`} />
+              <item.icon className={`h-6 w-6 mb-1 transition-all duration-300 ${isActive ? "text-white" : "text-slate-600 dark:text-gray-400"}`} />
               <span className="text-xs font-medium">{item.name}</span>
             </Link>
           )

@@ -70,11 +70,11 @@ export default function CarCard({ car }: CarCardProps) {
   }, [car.imageUrls])
 
   return (
-    <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 dark:bg-gray-800/90 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/40 rounded-2xl h-full group transition-all duration-200">
+    <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/60 rounded-2xl h-full group transition-all duration-200 dark:border dark:border-gray-800">
       <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={true}>
         {/* Image Section */}
         <div className="relative">
-          <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-700/80 dark:to-gray-800/60 rounded-t-2xl h-56">
+          <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-800/90 dark:to-black/90 rounded-t-2xl h-56">
             {isIntersecting ? (
               <>
                 {!isImageLoaded && (
@@ -104,9 +104,9 @@ export default function CarCard({ car }: CarCardProps) {
             {/* Year - скелетон или данные */}
             <div className="absolute top-3 right-3">
               {!dataReady ? (
-                <div className="h-6 w-12 bg-slate-200 rounded animate-pulse"></div>
+                <div className="h-6 w-12 bg-slate-200 dark:bg-gray-700 rounded animate-pulse"></div>
               ) : (
-                <span className="bg-black/75 text-white text-xs font-medium px-2 py-1 rounded">
+                <span className="bg-black/75 dark:bg-gray-700/90 text-white text-xs font-medium px-2 py-1 rounded">
                   {car.year}
                 </span>
               )}

@@ -269,7 +269,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black homepage -mt-14">
       {/* Главный баннер */}
-      <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14 bg-black">
+      <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14 bg-black dark:bg-black">
 
         {/* Фоновое изображение (показывается пока видео не загружено) */}
         <div
@@ -387,7 +387,7 @@ export default function HomePage() {
         {/* Закругленный переход с Stories */}
         <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-[30px] z-20">
           {/* Блок "Свежие поступления и новости" интегрированный в закругление */}
-          <div className="pt-3 pb-10 bg-gradient-to-b from-white to-gray-200 dark:from-black dark:to-gray-800 relative rounded-t-[30px]">
+          <div className="pt-3 pb-10 bg-gradient-to-b from-white to-gray-200 dark:from-gray-900 dark:to-black relative rounded-t-[30px]">
             <Stories />
           </div>
         </div>
@@ -413,7 +413,7 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <div className="bg-white dark:bg-gray-900 rounded-3xl p-12 shadow-lg max-w-md mx-auto">
+              <div className="bg-white dark:bg-gray-900/50 dark:border dark:border-gray-800 rounded-3xl p-12 shadow-lg max-w-md mx-auto">
                 <div className="text-6xl mb-6">🚗</div>
                 <h3 className="font-display text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                   Скоро здесь появятся автомобили
@@ -429,7 +429,7 @@ export default function HomePage() {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-2xl px-8 py-4 text-lg font-semibold border-2 hover:shadow-lg transition-all duration-300"
+              className="rounded-2xl px-8 py-4 text-lg font-semibold border-2 dark:border-gray-700 dark:hover:bg-gray-800 hover:shadow-lg transition-all duration-300"
               asChild
             >
               <Link href="/catalog" prefetch={true}>Посмотреть весь каталог</Link>
@@ -439,10 +439,10 @@ export default function HomePage() {
       </section>
 
       {/* Блок призыва к действию */}
-      <section className="relative pt-12 sm:pt-16 pb-32 sm:pb-40 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-t-[30px] sm:rounded-t-[50px] -mb-20 overflow-hidden">
+      <section className="relative pt-12 sm:pt-16 pb-32 sm:pb-40 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-gray-800 dark:to-gray-900 text-white rounded-t-[30px] sm:rounded-t-[50px] -mb-20 overflow-hidden">
         {/* Фоновое изображение автомобиля */}
         <div
-          className="absolute inset-0 opacity-20 bg-no-repeat bg-center mix-blend-overlay bg-[length:90%] md:bg-[length:60%]"
+          className="absolute inset-0 opacity-20 dark:opacity-10 bg-no-repeat bg-center mix-blend-overlay bg-[length:90%] md:bg-[length:60%]"
           style={{
             backgroundImage: `url('/car.png')`,
             backgroundPosition: 'center 70%',
@@ -453,7 +453,7 @@ export default function HomePage() {
         <div className="container px-4 relative z-10">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">{settings.ctaTitle}</h2>
-            <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-blue-100">{settings.ctaSubtitle}</p>
+            <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-blue-100 dark:text-gray-300">{settings.ctaSubtitle}</p>
 
             {/* Оптимизированная форма для мобильных */}
             <form onSubmit={handleContactSubmit} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-center max-w-lg mx-auto">
@@ -463,7 +463,7 @@ export default function HomePage() {
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                   required
-                  className="bg-white/10 backdrop-blur-md border-white/40 text-white placeholder:text-white/60 focus:border-white/80 focus:bg-white/20 h-10 sm:h-9 text-sm w-full"
+                  className="bg-white/10 dark:bg-gray-800/40 backdrop-blur-md border-white/40 dark:border-gray-600 text-white placeholder:text-white/60 dark:placeholder:text-gray-400 focus:border-white/80 dark:focus:border-gray-500 focus:bg-white/20 dark:focus:bg-gray-700/50 h-10 sm:h-9 text-sm w-full"
                 />
               </div>
               <div className="flex-1 sm:flex-none sm:w-40 relative">
@@ -472,7 +472,7 @@ export default function HomePage() {
                   value={contactForm.phone}
                   onChange={(e) => setContactForm({ ...contactForm, phone: formatPhoneNumber(e.target.value) })}
                   required
-                  className="bg-white/10 backdrop-blur-md border-white/40 text-white placeholder:text-white/60 focus:border-white/80 focus:bg-white/20 h-10 sm:h-9 text-sm w-full pr-8"
+                  className="bg-white/10 dark:bg-gray-800/40 backdrop-blur-md border-white/40 dark:border-gray-600 text-white placeholder:text-white/60 dark:placeholder:text-gray-400 focus:border-white/80 dark:focus:border-gray-500 focus:bg-white/20 dark:focus:bg-gray-700/50 h-10 sm:h-9 text-sm w-full pr-8"
                 />
                 {isPhoneValid(contactForm.phone) && (
                   <Check className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-400" />
@@ -481,7 +481,7 @@ export default function HomePage() {
               <StatusButton
                 type="submit"
                 size="sm"
-                className="bg-white/20 hover:bg-white/30 text-white border border-white/40 backdrop-blur-sm px-4 h-10 sm:h-9 text-sm whitespace-nowrap"
+                className="bg-white/20 hover:bg-white/30 dark:bg-gray-700/50 dark:hover:bg-gray-600/60 text-white border border-white/40 dark:border-gray-600 backdrop-blur-sm px-4 h-10 sm:h-9 text-sm whitespace-nowrap"
                 state={contactButtonState.state}
                 loadingText="Отправляем..."
                 successText="Отправлено!"

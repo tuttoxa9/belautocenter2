@@ -157,14 +157,14 @@ export default function Stories() {
     return (
       <div className="container px-4">
         <div className="animate-pulse">
-          <div className="h-5 bg-gray-300 rounded w-48 mb-2"></div>
+          <div className="h-5 bg-gray-300 dark:bg-gray-700 rounded w-48 mb-2"></div>
           <div className="flex space-x-3">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="flex-shrink-0">
-                <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
+                <div className="w-16 h-16 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
                 <div className="text-center mt-2 max-w-16">
-                  <div className="h-3 bg-gray-300 rounded w-12 mb-1"></div>
-                  <div className="h-3 bg-gray-300 rounded w-10"></div>
+                  <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-12 mb-1"></div>
+                  <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-10"></div>
                 </div>
               </div>
             ))}
@@ -188,14 +188,14 @@ export default function Stories() {
             <button key={story.id} onClick={() => handleStoryClick(index)} className="flex-shrink-0 relative group">
               <div
                 className={`w-16 h-16 rounded-full p-1 transition-all duration-300 border-2 ${
-                  viewedStories.has(story.id) ? "border-gray-300" : "border-gradient-to-r from-purple-500 to-pink-500"
+                  viewedStories.has(story.id) ? "border-gray-300 dark:border-gray-700" : "border-gradient-to-r from-purple-500 to-pink-500"
                 } group-hover:scale-105`}
                 style={!viewedStories.has(story.id) ? {
                   background: 'linear-gradient(45deg, #8B5CF6, #EC4899)',
                   padding: '2px'
                 } : {}}
               >
-                <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800">
+                <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-900">
                   <FadeInImage
                     src={story.avatarUrl || story.mediaUrl || "/placeholder.svg"}
                     alt={story.caption}
@@ -214,7 +214,7 @@ export default function Stories() {
               <div className="text-center mt-2 w-16">
                 <p className="text-xs text-gray-600 dark:text-gray-300 font-medium leading-tight break-words hyphens-auto">{story.caption}</p>
                 {story.subtitle && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-tight break-words hyphens-auto">{story.subtitle}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 leading-tight break-words hyphens-auto">{story.subtitle}</p>
                 )}
               </div>
             </button>
