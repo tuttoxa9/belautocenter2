@@ -122,7 +122,7 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white dark:bg-black shadow-md dark:shadow-gray-900">
+    <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md dark:shadow-gray-950">
       <div className="container flex h-14 items-center justify-between px-4">
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
