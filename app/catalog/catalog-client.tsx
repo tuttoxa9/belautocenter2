@@ -31,51 +31,51 @@ interface CatalogClientProps {
 const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableModels }) => (
   <div className="space-y-4">
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Марка</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Марка</Label>
       <Select value={filters.make} onValueChange={(value) => setFilters({ ...filters, make: value })} disabled={availableMakes.length === 0}>
-        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder="Выберите марку" /></SelectTrigger>
-        <SelectContent className="border-gray-200 shadow-lg">
+        <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-11 text-base"><SelectValue placeholder="Выберите марку" /></SelectTrigger>
+        <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg">
           <SelectItem value="all" className="text-base py-3">Все марки</SelectItem>
           {availableMakes.map(make => <SelectItem key={make} value={make} className="text-base py-3">{make}</SelectItem>)}
         </SelectContent>
       </Select>
     </div>
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Модель</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Модель</Label>
       <Select value={filters.model} onValueChange={(value) => setFilters({ ...filters, model: value })} disabled={filters.make === "all" || availableModels.length === 0}>
-        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder={filters.make === "all" ? "Сначала выберите марку" : "Выберите модель"} /></SelectTrigger>
-        <SelectContent className="border-gray-200 shadow-lg">
+        <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-11 text-base"><SelectValue placeholder={filters.make === "all" ? "Сначала выберите марку" : "Выберите модель"} /></SelectTrigger>
+        <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg">
           <SelectItem value="all" className="text-base py-3">Все модели</SelectItem>
           {availableModels.map(model => <SelectItem key={model} value={model} className="text-base py-3">{model}</SelectItem>)}
         </SelectContent>
       </Select>
     </div>
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Цена ($)</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Цена ($)</Label>
       <div className="grid grid-cols-2 gap-2">
-        <Input type="number" placeholder="От" value={filters.priceFrom} onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
-        <Input type="number" placeholder="До" value={filters.priceTo} onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
+        <Input type="number" placeholder="От" value={filters.priceFrom} onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-11 text-base" />
+        <Input type="number" placeholder="До" value={filters.priceTo} onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-11 text-base" />
       </div>
     </div>
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Год выпуска</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Год выпуска</Label>
       <div className="grid grid-cols-2 gap-2">
-        <Input type="number" placeholder="От" value={filters.yearFrom} onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
-        <Input type="number" placeholder="До" value={filters.yearTo} onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
+        <Input type="number" placeholder="От" value={filters.yearFrom} onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-11 text-base" />
+        <Input type="number" placeholder="До" value={filters.yearTo} onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-11 text-base" />
       </div>
     </div>
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Пробег (тыс. км)</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Пробег (тыс. км)</Label>
       <div className="grid grid-cols-2 gap-2">
-        <Input type="number" placeholder="От" value={filters.mileageFrom} onChange={(e) => setFilters({ ...filters, mileageFrom: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
-        <Input type="number" placeholder="До" value={filters.mileageTo} onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })} className="border border-gray-200 bg-white h-11 text-base" />
+        <Input type="number" placeholder="От" value={filters.mileageFrom} onChange={(e) => setFilters({ ...filters, mileageFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-11 text-base" />
+        <Input type="number" placeholder="До" value={filters.mileageTo} onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-11 text-base" />
       </div>
     </div>
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Коробка передач</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Коробка передач</Label>
       <Select value={filters.transmission} onValueChange={(value) => setFilters({ ...filters, transmission: value })}>
-        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder="Любая" /></SelectTrigger>
-        <SelectContent className="border-gray-200 shadow-lg">
+        <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-11 text-base"><SelectValue placeholder="Любая" /></SelectTrigger>
+        <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg">
           <SelectItem value="any" className="text-base py-3">Любая</SelectItem>
           <SelectItem value="Механика" className="text-base py-3">Механика</SelectItem>
           <SelectItem value="Автомат" className="text-base py-3">Автомат</SelectItem>
@@ -85,10 +85,10 @@ const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableMo
       </Select>
     </div>
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Тип топлива</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Тип топлива</Label>
       <Select value={filters.fuelType} onValueChange={(value) => setFilters({ ...filters, fuelType: value })}>
-        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder="Любой" /></SelectTrigger>
-        <SelectContent className="border-gray-200 shadow-lg">
+        <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-11 text-base"><SelectValue placeholder="Любой" /></SelectTrigger>
+        <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg">
           <SelectItem value="any" className="text-base py-3">Любой</SelectItem>
           <SelectItem value="Бензин" className="text-base py-3">Бензин</SelectItem>
           <SelectItem value="Дизель" className="text-base py-3">Дизель</SelectItem>
@@ -98,10 +98,10 @@ const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableMo
       </Select>
     </div>
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">Привод</Label>
+      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Привод</Label>
       <Select value={filters.driveTrain} onValueChange={(value) => setFilters({ ...filters, driveTrain: value })}>
-        <SelectTrigger className="border border-gray-200 bg-white h-11 text-base"><SelectValue placeholder="Любой" /></SelectTrigger>
-        <SelectContent className="border-gray-200 shadow-lg">
+        <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-11 text-base"><SelectValue placeholder="Любой" /></SelectTrigger>
+        <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg">
           <SelectItem value="any" className="text-base py-3">Любой</SelectItem>
           <SelectItem value="Передний" className="text-base py-3">Передний</SelectItem>
           <SelectItem value="Задний" className="text-base py-3">Задний</SelectItem>
@@ -114,69 +114,69 @@ const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableMo
 
 const MobileFiltersFooter = ({ applyFilters, resetFilters, setIsFilterOpen }) => (
   <div className="flex space-x-3">
-    <Button onClick={() => { applyFilters(); setIsFilterOpen(false) }} className="flex-1 h-11 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors">Применить</Button>
-    <Button onClick={() => { resetFilters(); setIsFilterOpen(false) }} variant="outline" className="flex-1 h-11 bg-white border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"><RotateCcw className="h-4 w-4 mr-2" />Сбросить</Button>
+    <Button onClick={() => { applyFilters(); setIsFilterOpen(false) }} className="flex-1 h-11 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium rounded-lg transition-colors">Применить</Button>
+    <Button onClick={() => { resetFilters(); setIsFilterOpen(false) }} variant="outline" className="flex-1 h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"><RotateCcw className="h-4 w-4 mr-2" />Сбросить</Button>
   </div>
 );
 
 const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, hasActiveFilters, resetFilters, applyFilters }) => (
-  <Card className="sticky top-24 border border-gray-200 shadow-sm bg-white rounded-2xl overflow-hidden">
-    <CardHeader className="bg-gray-50/50 border-b border-gray-200/50 py-4">
+  <Card className="sticky top-24 border border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-900 rounded-2xl overflow-hidden">
+    <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-200/50 dark:border-gray-700/50 py-4">
       <CardTitle className="flex items-center justify-between">
-        <span className="text-gray-900 font-medium text-lg">Фильтры</span>
-        {hasActiveFilters() && <Button onClick={resetFilters} variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 h-8 w-8 p-0 rounded-lg"><X className="h-4 w-4" /></Button>}
+        <span className="text-gray-900 dark:text-white font-medium text-lg">Фильтры</span>
+        {hasActiveFilters() && <Button onClick={resetFilters} variant="ghost" size="sm" className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 h-8 w-8 p-0 rounded-lg"><X className="h-4 w-4" /></Button>}
       </CardTitle>
     </CardHeader>
     <CardContent className="space-y-4 p-4">
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Марка</Label>
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Марка</Label>
         <Select value={filters.make} onValueChange={(value) => setFilters({ ...filters, make: value })} disabled={availableMakes.length === 0}>
-          <SelectTrigger className="border border-gray-200 bg-white h-9 text-sm rounded-lg"><SelectValue placeholder="Выберите марку" /></SelectTrigger>
-          <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="Выберите марку" /></SelectTrigger>
+          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
             <SelectItem value="all">Все марки</SelectItem>
             {availableMakes.map(make => <SelectItem key={make} value={make}>{make}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Модель</Label>
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Модель</Label>
         <Select value={filters.model} onValueChange={(value) => setFilters({ ...filters, model: value })} disabled={filters.make === "all" || availableModels.length === 0}>
-          <SelectTrigger className="border border-gray-200 bg-white h-9 text-sm rounded-lg"><SelectValue placeholder={filters.make === "all" ? "Сначала выберите марку" : "Выберите модель"} /></SelectTrigger>
-          <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder={filters.make === "all" ? "Сначала выберите марку" : "Выберите модель"} /></SelectTrigger>
+          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
             <SelectItem value="all">Все модели</SelectItem>
             {availableModels.map(model => <SelectItem key={model} value={model}>{model}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Цена ($)</Label>
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Цена ($)</Label>
         <div className="grid grid-cols-2 gap-2">
-          <Input type="number" placeholder="От" value={filters.priceFrom} onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })} className="border border-gray-200 bg-white h-9 text-sm rounded-lg" />
-          <Input type="number" placeholder="До" value={filters.priceTo} onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })} className="border border-gray-200 bg-white h-9 text-sm rounded-lg" />
+          <Input type="number" placeholder="От" value={filters.priceFrom} onChange={(e) => setFilters({ ...filters, priceFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
+          <Input type="number" placeholder="До" value={filters.priceTo} onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-gray-700">Год от</Label>
-          <Input type="number" placeholder="2010" value={filters.yearFrom} onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })} className="border border-gray-200 bg-white h-9 text-sm rounded-lg" />
+          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Год от</Label>
+          <Input type="number" placeholder="2010" value={filters.yearFrom} onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
         </div>
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-gray-700">Год до</Label>
-          <Input type="number" placeholder="2024" value={filters.yearTo} onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })} className="border border-gray-200 bg-white h-9 text-sm rounded-lg" />
+          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Год до</Label>
+          <Input type="number" placeholder="2024" value={filters.yearTo} onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
         </div>
       </div>
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Пробег (тыс. км)</Label>
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Пробег (тыс. км)</Label>
         <div className="grid grid-cols-2 gap-2">
-          <Input type="number" placeholder="От" value={filters.mileageFrom} onChange={(e) => setFilters({ ...filters, mileageFrom: e.target.value })} className="border border-gray-200 bg-white h-9 text-sm rounded-lg" />
-          <Input type="number" placeholder="До" value={filters.mileageTo} onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })} className="border border-gray-200 bg-white h-9 text-sm rounded-lg" />
+          <Input type="number" placeholder="От" value={filters.mileageFrom} onChange={(e) => setFilters({ ...filters, mileageFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
+          <Input type="number" placeholder="До" value={filters.mileageTo} onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
         </div>
       </div>
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Коробка передач</Label>
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Коробка передач</Label>
         <Select value={filters.transmission} onValueChange={(value) => setFilters({ ...filters, transmission: value })}>
-          <SelectTrigger className="border border-gray-200 bg-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любая" /></SelectTrigger>
-          <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любая" /></SelectTrigger>
+          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
             <SelectItem value="any">Любая</SelectItem>
             <SelectItem value="Механика">Механика</SelectItem>
             <SelectItem value="Автомат">Автомат</SelectItem>
@@ -186,10 +186,10 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
         </Select>
       </div>
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Тип топлива</Label>
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Тип топлива</Label>
         <Select value={filters.fuelType} onValueChange={(value) => setFilters({ ...filters, fuelType: value })}>
-          <SelectTrigger className="border border-gray-200 bg-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любой" /></SelectTrigger>
-          <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любой" /></SelectTrigger>
+          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
             <SelectItem value="any">Любой</SelectItem>
             <SelectItem value="Бензин">Бензин</SelectItem>
             <SelectItem value="Дизель">Дизель</SelectItem>
@@ -199,10 +199,10 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
         </Select>
       </div>
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700">Привод</Label>
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Привод</Label>
         <Select value={filters.driveTrain} onValueChange={(value) => setFilters({ ...filters, driveTrain: value })}>
-          <SelectTrigger className="border border-gray-200 bg-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любой" /></SelectTrigger>
-          <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любой" /></SelectTrigger>
+          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
             <SelectItem value="any">Любой</SelectItem>
             <SelectItem value="Передний">Передний</SelectItem>
             <SelectItem value="Задний">Задний</SelectItem>
@@ -211,7 +211,7 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
         </Select>
       </div>
       <div className="pt-3">
-        <Button onClick={applyFilters} className="w-full h-9 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors duration-200">Применить фильтры</Button>
+        <Button onClick={applyFilters} className="w-full h-9 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium rounded-lg transition-colors duration-200">Применить фильтры</Button>
       </div>
     </CardContent>
   </Card>
@@ -378,13 +378,13 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-black dark:to-gray-950">
       <div className="container px-4 py-8">
         <nav className="mb-6">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500">
-            <li><Link href="/" className="hover:text-blue-600 transition-colors" prefetch={true}>Главная</Link></li>
+          <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <li><Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={true}>Главная</Link></li>
             <li><ArrowRight className="h-3 w-3" /></li>
-            <li className="text-gray-900 font-medium">Каталог</li>
+            <li className="text-gray-900 dark:text-white font-medium">Каталог</li>
           </ol>
         </nav>
 
@@ -396,19 +396,19 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="border border-gray-200 bg-white h-12 text-base pl-12 rounded-lg w-full"
+              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-400 h-12 text-base pl-12 rounded-lg w-full"
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <Button onClick={handleSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-9 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-md transition-colors">Найти</Button>
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+            <Button onClick={handleSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-9 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium rounded-md transition-colors">Найти</Button>
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:hidden mb-6">
-            <Button variant="outline" className="w-full h-11 bg-white border-gray-200 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsFilterOpen(true)}>
+            <Button variant="outline" className="w-full h-11 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-white rounded-lg transition-colors" onClick={() => setIsFilterOpen(true)}>
               <Filter className="h-4 w-4 mr-2" />
               Фильтры
-              {hasActiveFilters() && <span className="ml-2 w-2 h-2 bg-slate-500 rounded-full"></span>}
+              {hasActiveFilters() && <span className="ml-2 w-2 h-2 bg-slate-500 dark:bg-blue-500 rounded-full"></span>}
             </Button>
             <UniversalDrawer open={isFilterOpen} onOpenChange={setIsFilterOpen} title="Фильтры поиска" footer={<MobileFiltersFooter applyFilters={applyFilters} resetFilters={resetFilters} setIsFilterOpen={setIsFilterOpen} />}><MobileFiltersContent filters={filters} setFilters={setFilters} availableMakes={availableMakes} availableModels={availableModels} /></UniversalDrawer>
           </div>
@@ -418,16 +418,16 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           <div className="flex-1">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Каталог автомобилей</h1>
-                <p className="text-gray-600">Найдено {loading ? <span className="inline-block bg-gray-200 rounded h-4 w-6 align-middle animate-pulse mx-2"></span> : filteredCars.length} автомобилей</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Каталог автомобилей</h1>
+                <p className="text-gray-600 dark:text-gray-400">Найдено {loading ? <span className="inline-block bg-gray-200 dark:bg-gray-700 rounded h-4 w-6 align-middle animate-pulse mx-2"></span> : filteredCars.length} автомобилей</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-1">
+                <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-1">
                   <div className="flex items-center space-x-2 px-3">
-                    <SlidersHorizontal className="h-4 w-4 text-gray-500" />
+                    <SlidersHorizontal className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-48 border-0 bg-transparent h-9 text-sm font-medium"><SelectValue /></SelectTrigger>
-                      <SelectContent className="border-gray-200 shadow-lg rounded-lg">
+                      <SelectTrigger className="w-48 border-0 bg-transparent dark:text-white h-9 text-sm font-medium"><SelectValue /></SelectTrigger>
+                      <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-lg rounded-lg">
                         <SelectItem value="date-desc">Новые объявления</SelectItem>
                         <SelectItem value="date-asc">Старые объявления</SelectItem>
                         <SelectItem value="year-asc">Год: сначала старые</SelectItem>
@@ -446,12 +446,12 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden animate-pulse">
-                    <div className="bg-gray-200 h-48"></div>
+                  <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden animate-pulse">
+                    <div className="bg-gray-200 dark:bg-gray-800 h-48"></div>
                     <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                      <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
                     </div>
                   </div>
                 ))}
@@ -463,28 +463,28 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                 </div>
                 {hasMore && (
                   <div className="flex justify-center pt-6">
-                    <button onClick={loadMoreCars} disabled={loadingMore} className="bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2">
-                      {loadingMore ? (<><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>Загружаем...</>) : (<>Показать ещё<span className="text-sm text-slate-300">({Math.min(carsPerPage, filteredCars.length - displayedCars.length)} из {filteredCars.length - displayedCars.length})</span></>)}
+                    <button onClick={loadMoreCars} disabled={loadingMore} className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 disabled:bg-slate-400 dark:disabled:bg-gray-600 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                      {loadingMore ? (<><div className="w-4 h-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin"></div>Загружаем...</>) : (<>Показать ещё<span className="text-sm text-slate-300 dark:text-gray-600">({Math.min(carsPerPage, filteredCars.length - displayedCars.length)} из {filteredCars.length - displayedCars.length})</span></>)}
                     </button>
                   </div>
                 )}
                 {!hasMore && displayedCars.length > 0 && displayedCars.length === filteredCars.length && (
-                  <div className="text-center pt-6"><p className="text-gray-500">Показаны все найденные автомобили ({filteredCars.length})</p></div>
+                  <div className="text-center pt-6"><p className="text-gray-500 dark:text-gray-400">Показаны все найденные автомобили ({filteredCars.length})</p></div>
                 )}
               </div>
             ) : (
               <div className="text-center py-16">
-                <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Filter className="h-12 w-12 text-gray-500" />
+                <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Filter className="h-12 w-12 text-gray-500 dark:text-gray-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                   {cars.length === 0 ? "Автомобили не добавлены в каталог" : "По вашим критериям автомобили не найдены"}
                 </h3>
-                <p className="text-gray-500 mb-6">
+                <p className="text-gray-500 dark:text-gray-400 mb-6">
                   {cars.length === 0 ? "Скоро здесь появятся новые автомобили" : "Попробуйте изменить параметры поиска"}
                 </p>
                 {cars.length > 0 && (
-                  <Button onClick={() => { resetFilters(); setCurrentPage(1); setHasMore(true) }} className="bg-slate-900 hover:bg-slate-800 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200">
+                  <Button onClick={() => { resetFilters(); setCurrentPage(1); setHasMore(true) }} className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200">
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Сбросить фильтры
                   </Button>
