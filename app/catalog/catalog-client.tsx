@@ -114,7 +114,7 @@ const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableMo
 
 const MobileFiltersFooter = ({ applyFilters, resetFilters, setIsFilterOpen }) => (
   <div className="flex space-x-3">
-    <Button onClick={() => { applyFilters(); setIsFilterOpen(false) }} className="flex-1 h-11 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium rounded-lg transition-colors">Применить</Button>
+    <Button onClick={() => { applyFilters(); setIsFilterOpen(false) }} className="flex-1 h-11 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">Применить</Button>
     <Button onClick={() => { resetFilters(); setIsFilterOpen(false) }} variant="outline" className="flex-1 h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"><RotateCcw className="h-4 w-4 mr-2" />Сбросить</Button>
   </div>
 );
@@ -211,7 +211,7 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
         </Select>
       </div>
       <div className="pt-3">
-        <Button onClick={applyFilters} className="w-full h-9 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium rounded-lg transition-colors duration-200">Применить фильтры</Button>
+        <Button onClick={applyFilters} className="w-full h-9 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">Применить фильтры</Button>
       </div>
     </CardContent>
   </Card>
@@ -399,7 +399,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
               className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-400 h-12 text-base pl-12 rounded-lg w-full"
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-            <Button onClick={handleSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-9 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium rounded-md transition-colors">Найти</Button>
+            <Button onClick={handleSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-9 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-md transition-colors">Найти</Button>
           </div>
         </div>
 
@@ -463,8 +463,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                 </div>
                 {hasMore && (
                   <div className="flex justify-center pt-6">
-                    <button onClick={loadMoreCars} disabled={loadingMore} className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 disabled:bg-slate-400 dark:disabled:bg-gray-600 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2">
-                      {loadingMore ? (<><div className="w-4 h-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin"></div>Загружаем...</>) : (<>Показать ещё<span className="text-sm text-slate-300 dark:text-gray-600">({Math.min(carsPerPage, filteredCars.length - displayedCars.length)} из {filteredCars.length - displayedCars.length})</span></>)}
+                    <button onClick={loadMoreCars} disabled={loadingMore} className="bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 disabled:bg-slate-400 dark:disabled:bg-blue-800 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                      {loadingMore ? (<><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>Загружаем...</>) : (<>Показать ещё<span className="text-sm text-slate-300 dark:text-blue-200">({Math.min(carsPerPage, filteredCars.length - displayedCars.length)} из {filteredCars.length - displayedCars.length})</span></>)}
                     </button>
                   </div>
                 )}
@@ -484,7 +484,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                   {cars.length === 0 ? "Скоро здесь появятся новые автомобили" : "Попробуйте изменить параметры поиска"}
                 </p>
                 {cars.length > 0 && (
-                  <Button onClick={() => { resetFilters(); setCurrentPage(1); setHasMore(true) }} className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200">
+                  <Button onClick={() => { resetFilters(); setCurrentPage(1); setHasMore(true) }} className="bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200">
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Сбросить фильтры
                   </Button>
