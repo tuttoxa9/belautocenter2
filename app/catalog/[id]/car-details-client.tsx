@@ -88,19 +88,19 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
     : '';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black flex items-center justify-center">
       <div className="text-center max-w-md mx-auto px-4">
         <div className="mb-6">
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-slate-900 mb-4">Автомобиль не найден</h1>
-          <p className="text-slate-600 mb-6">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Автомобиль не найден</h1>
+          <p className="text-slate-600 dark:text-gray-400 mb-6">
             К сожалению, автомобиль с указанным ID не существует или произошла ошибка при загрузке данных.
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Нужна помощь?</h3>
-          <p className="text-slate-600 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-slate-200 dark:border-gray-700 p-6 mb-6">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Нужна помощь?</h3>
+          <p className="text-slate-600 dark:text-gray-400 mb-4">Свяжитесь с нами для получения информации об автомобилях</p>
 
           {isLoading || isSettingsLoading ? (
             <div className="flex flex-col items-center space-y-4">
@@ -139,7 +139,7 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
 
         <Button
           onClick={() => window.location.href = '/catalog'}
-          className="w-full bg-slate-900 hover:bg-slate-800 text-white"
+          className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-gray-800 dark:hover:bg-gray-700 text-white"
         >
           Перейти к каталогу
         </Button>
@@ -747,36 +747,36 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black">
       <div className="container mx-auto px-1 sm:px-2 lg:px-4 py-4 sm:py-6 max-w-7xl">
         {/* Хлебные крошки */}
         <nav className="mb-4 sm:mb-6">
-          <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500">
+          <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500 dark:text-gray-400">
             <li>
               <button
                 onClick={() => router.push('/')}
-                className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100"
+                className="hover:text-slate-700 dark:hover:text-gray-200 transition-colors px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-gray-800"
               >
                 Главная
               </button>
             </li>
             <li>
-              <ChevronRight className="h-4 w-4 text-slate-400" />
+              <ChevronRight className="h-4 w-4 text-slate-400 dark:text-gray-600" />
             </li>
             <li>
               <button
                 onClick={() => router.push('/catalog')}
-                className="hover:text-slate-700 transition-colors px-2 py-1 rounded-md hover:bg-slate-100"
+                className="hover:text-slate-700 dark:hover:text-gray-200 transition-colors px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-gray-800"
               >
                 Каталог
               </button>
             </li>
             <li>
-              <ChevronRight className="h-4 w-4 text-slate-400" />
+              <ChevronRight className="h-4 w-4 text-slate-400 dark:text-gray-600" />
             </li>
-            <li className="text-slate-900 font-medium px-2 py-1 bg-slate-100 rounded-md">
+            <li className="text-slate-900 dark:text-white font-medium px-2 py-1 bg-slate-100 dark:bg-gray-800 rounded-md">
               {loading ? (
-                <div className="h-4 bg-slate-300 rounded w-20 animate-pulse inline-block"></div>
+                <div className="h-4 bg-slate-300 dark:bg-gray-700 rounded w-20 animate-pulse inline-block"></div>
               ) : (
                 `${car?.make || ''} ${car?.model || ''}`
               )}
@@ -785,48 +785,48 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
         </nav>
 
         {/* ЕДИНЫЙ ОСНОВНОЙ БЛОК */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 overflow-hidden" style={{ boxShadow: '0 8px 32px rgba(27, 40, 52, 0.07)' }}>
+        <div className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 dark:border-gray-700/50 overflow-hidden" style={{ boxShadow: '0 8px 32px rgba(27, 40, 52, 0.07)' }}>
           <div>
 
           {/* Заголовок и цена - компактный верхний блок */}
-          <div className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/50 p-3 sm:p-6">
+          <div className="bg-gradient-to-r from-slate-50 to-white dark:from-gray-800 dark:to-gray-800 border-b border-slate-200/50 dark:border-gray-700/50 p-3 sm:p-6">
             {/* Мобильная компоновка - горизонтальная для экономии места */}
             <div className="flex items-start justify-between gap-3 lg:gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                   {loading ? (
-                    <div className="h-8 sm:h-10 lg:h-12 bg-slate-300 rounded w-48 animate-pulse"></div>
+                    <div className="h-8 sm:h-10 lg:h-12 bg-slate-300 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
                   ) : (
-                    <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight">
+                    <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
                       {car?.make} {car?.model}
                     </h1>
                   )}
                   <div className="self-start sm:self-auto">
                     {loading ? (
-                      <div className="h-6 sm:h-7 bg-slate-300 rounded-full w-16 animate-pulse"></div>
+                      <div className="h-6 sm:h-7 bg-slate-300 dark:bg-gray-700 rounded-full w-16 animate-pulse"></div>
                     ) : car?.isAvailable ? (
-                      <div className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
+                      <div className="bg-green-500 dark:bg-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
                         В наличии
                       </div>
                     ) : (
-                      <div className="bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
+                      <div className="bg-red-500 dark:bg-red-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
                         Продан
                       </div>
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-600">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-gray-400">
                   {loading ? (
                     <>
-                      <div className="h-6 bg-slate-300 rounded-lg w-12 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 rounded-lg w-16 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 rounded-lg w-14 animate-pulse"></div>
+                      <div className="h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-12 animate-pulse"></div>
+                      <div className="h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-16 animate-pulse"></div>
+                      <div className="h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-14 animate-pulse"></div>
                     </>
                   ) : (
                     <>
-                      <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.year}</span>
-                      <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.color}</span>
-                      <span className="bg-slate-100 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium">{car?.bodyType}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium dark:text-gray-200">{car?.year}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium dark:text-gray-200">{car?.color}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium dark:text-gray-200">{car?.bodyType}</span>
                     </>
                   )}
                 </div>
@@ -836,13 +836,13 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               <div className="text-right flex-shrink-0">
                 {loading ? (
                   <>
-                    <div className="h-6 sm:h-8 lg:h-9 bg-slate-300 rounded w-24 mb-1 animate-pulse ml-auto"></div>
-                    <div className="h-4 sm:h-5 lg:h-6 bg-slate-300 rounded w-20 animate-pulse ml-auto"></div>
-                    <div className="h-3 sm:h-4 bg-slate-300 rounded w-16 mt-1 animate-pulse ml-auto"></div>
+                    <div className="h-6 sm:h-8 lg:h-9 bg-slate-300 dark:bg-gray-700 rounded w-24 mb-1 animate-pulse ml-auto"></div>
+                    <div className="h-4 sm:h-5 lg:h-6 bg-slate-300 dark:bg-gray-700 rounded w-20 animate-pulse ml-auto"></div>
+                    <div className="h-3 sm:h-4 bg-slate-300 dark:bg-gray-700 rounded w-16 mt-1 animate-pulse ml-auto"></div>
                   </>
                 ) : (
                   <>
-                    <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 mb-1 leading-tight">
+                    <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-1 leading-tight">
                       {car?.price ? new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "USD",
@@ -850,7 +850,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                       }).format(car.price) : 'Цена по запросу'}
                     </div>
                     {usdBynRate && car?.price && (
-                      <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600">
+                      <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600 dark:text-gray-400">
                         ≈ {new Intl.NumberFormat("ru-BY", {
                           style: "currency",
                           currency: "BYN",
@@ -858,7 +858,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                         }).format(car.price * usdBynRate)}
                       </div>
                     )}
-                    <div className="text-xs sm:text-sm text-slate-500 mt-1">
+                    <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-500 mt-1">
                       от {car?.price ? new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "USD",
@@ -875,8 +875,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
 
             {/* Левая колонка: Галерея */}
-            <div className="lg:col-span-8 lg:border-r border-slate-200/50">
-              <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden">
+            <div className="lg:col-span-8 lg:border-r border-slate-200/50 dark:border-gray-700/50">
+              <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-gray-800 dark:via-gray-800 dark:to-gray-700 rounded-lg sm:rounded-xl mx-1 sm:mx-2 lg:mx-3 my-1 sm:my-2 lg:my-3 overflow-hidden">
                 {loading ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="w-16 h-16 bg-slate-300 rounded-full animate-pulse"></div>
@@ -988,8 +988,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
               {/* Видеообзоры */}
               {(car?.tiktok_url || car?.youtube_url) && (
-                <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-200/50 lg:border-b-0 lg:border-t lg:border-slate-200/50">
-                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+                <div className="p-3 sm:p-4 lg:p-6 border-b border-slate-200/50 dark:border-gray-700/50 lg:border-b-0 lg:border-t lg:border-slate-200/50 dark:lg:border-gray-700/50">
+                  <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3">
                     Видеообзоры
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1020,16 +1020,16 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               )}
 
               {/* Описание под галереей для десктопов */}
-              <div className="hidden lg:block p-6 border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
-                <h4 className="text-lg font-bold text-slate-900 mb-3">
+              <div className="hidden lg:block p-6 border-slate-200/50 dark:border-gray-700/50 bg-[#F7F8FA] dark:bg-gray-800/50">
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-3">
                   Описание
                 </h4>
-                <div className="bg-white rounded-xl p-4 border border-slate-200/50">
+                <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-slate-200/50 dark:border-gray-700/50">
                   {loading ? (
                     <div className="space-y-2">
-                      <div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div>
-                      <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                      <div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div>
+                      <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-full animate-pulse"></div>
+                      <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-5/6 animate-pulse"></div>
+                      <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-4/6 animate-pulse"></div>
                     </div>
                   ) : car?.description ? (
                     <MarkdownRenderer
@@ -1037,23 +1037,23 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                       className="text-sm leading-relaxed"
                     />
                   ) : (
-                    <p className="text-slate-500 italic text-sm">Описание отсутствует</p>
+                    <p className="text-slate-500 dark:text-gray-500 italic text-sm">Описание отсутствует</p>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Описание для мобильных устройств под галереей */}
-            <div className="lg:hidden p-3 sm:p-4 border-b border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
-              <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+            <div className="lg:hidden p-3 sm:p-4 border-b border-slate-200/50 dark:border-gray-700/50 bg-[#F7F8FA] dark:bg-gray-800/50">
+              <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3">
                 Описание
               </h4>
-              <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200/50">
+              <div className="bg-white dark:bg-gray-900 rounded-xl p-3 sm:p-4 border border-slate-200/50 dark:border-gray-700/50">
                 {loading ? (
                   <div className="space-y-2">
-                    <div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div>
-                    <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                    <div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div>
+                    <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-5/6 animate-pulse"></div>
+                    <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-4/6 animate-pulse"></div>
                   </div>
                 ) : car?.description ? (
                   <MarkdownRenderer
@@ -1061,7 +1061,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                     className="text-sm leading-relaxed"
                   />
                 ) : (
-                  <p className="text-slate-500 italic text-sm">Описание отсутствует</p>
+                  <p className="text-slate-500 dark:text-gray-500 italic text-sm">Описание отсутствует</p>
                 )}
               </div>
             </div>
@@ -1072,61 +1072,61 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
                 {/* Основные характеристики - компактный стиль */}
                 <div>
-                  <h3 className="text-base lg:text-lg font-bold text-slate-900 mb-3 lg:mb-4">
+                  <h3 className="text-base lg:text-lg font-bold text-slate-900 dark:text-white mb-3 lg:mb-4">
                     Характеристики
                   </h3>
                   <div className="grid grid-cols-2 gap-2 lg:gap-3">
-                    <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                    <div className="relative bg-gradient-to-br from-blue-50 via-slate-50 to-slate-50 dark:from-blue-900/20 dark:via-gray-800 dark:to-gray-800 rounded-xl p-3 lg:p-4 border border-slate-200/50 dark:border-gray-700/50 overflow-hidden">
                       <div className="absolute top-2 right-2 opacity-10">
-                        <Gauge className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600" />
+                        <Gauge className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">Пробег</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400 font-medium mb-1">Пробег</div>
                         {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-20 animate-pulse"></div>
+                          <div className="h-5 lg:h-7 bg-slate-300 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
                         ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">{formatMileage(car?.mileage || 0)} км</div>
+                          <div className="text-sm lg:text-lg font-bold text-slate-900 dark:text-white">{formatMileage(car?.mileage || 0)} км</div>
                         )}
                       </div>
                     </div>
-                    <div className="relative bg-gradient-to-br from-green-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                    <div className="relative bg-gradient-to-br from-green-50 via-slate-50 to-slate-50 dark:from-green-900/20 dark:via-gray-800 dark:to-gray-800 rounded-xl p-3 lg:p-4 border border-slate-200/50 dark:border-gray-700/50 overflow-hidden">
                       <div className="absolute top-2 right-2 opacity-10">
-                        <Fuel className="h-6 w-6 lg:h-8 lg:w-8 text-green-600" />
+                        <Fuel className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 dark:text-green-400" />
                       </div>
                       <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">Двигатель</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400 font-medium mb-1">Двигатель</div>
                         {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-16 animate-pulse"></div>
+                          <div className="h-5 lg:h-7 bg-slate-300 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
                         ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">
+                          <div className="text-sm lg:text-lg font-bold text-slate-900 dark:text-white">
                             {car?.fuelType === "Электро" ? car.fuelType : `${formatEngineVolume(car?.engineVolume || 0)}л ${car?.fuelType}`}
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="relative bg-gradient-to-br from-purple-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                    <div className="relative bg-gradient-to-br from-purple-50 via-slate-50 to-slate-50 dark:from-purple-900/20 dark:via-gray-800 dark:to-gray-800 rounded-xl p-3 lg:p-4 border border-slate-200/50 dark:border-gray-700/50 overflow-hidden">
                       <div className="absolute top-2 right-2 opacity-10">
-                        <Settings className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600" />
+                        <Settings className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600 dark:text-purple-400" />
                       </div>
                       <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">КПП</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400 font-medium mb-1">КПП</div>
                         {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-12 animate-pulse"></div>
+                          <div className="h-5 lg:h-7 bg-slate-300 dark:bg-gray-700 rounded w-12 animate-pulse"></div>
                         ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.transmission}</div>
+                          <div className="text-sm lg:text-lg font-bold text-slate-900 dark:text-white">{car?.transmission}</div>
                         )}
                       </div>
                     </div>
-                    <div className="relative bg-gradient-to-br from-orange-50 via-slate-50 to-slate-50 rounded-xl p-3 lg:p-4 border border-slate-200/50 overflow-hidden">
+                    <div className="relative bg-gradient-to-br from-orange-50 via-slate-50 to-slate-50 dark:from-orange-900/20 dark:via-gray-800 dark:to-gray-800 rounded-xl p-3 lg:p-4 border border-slate-200/50 dark:border-gray-700/50 overflow-hidden">
                       <div className="absolute top-2 right-2 opacity-10">
-                        <Car className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
+                        <Car className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600 dark:text-orange-400" />
                       </div>
                       <div className="relative z-10">
-                        <div className="text-xs text-slate-500 font-medium mb-1">Привод</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400 font-medium mb-1">Привод</div>
                         {loading ? (
-                          <div className="h-5 lg:h-7 bg-slate-300 rounded w-14 animate-pulse"></div>
+                          <div className="h-5 lg:h-7 bg-slate-300 dark:bg-gray-700 rounded w-14 animate-pulse"></div>
                         ) : (
-                          <div className="text-sm lg:text-lg font-bold text-slate-900">{car?.driveTrain}</div>
+                          <div className="text-sm lg:text-lg font-bold text-slate-900 dark:text-white">{car?.driveTrain}</div>
                         )}
                       </div>
                     </div>
@@ -1136,30 +1136,30 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                 {/* Комплектация */}
                 {loading ? (
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3">
                       Комплектация
                     </h4>
                     <div className="space-y-2">
                       {Array.from({ length: 5 }).map((_, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-slate-300 rounded-full animate-pulse flex-shrink-0"></div>
-                          <div className="h-4 bg-slate-300 rounded w-32 animate-pulse"></div>
+                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 dark:bg-gray-800 rounded-xl border border-slate-200/50 dark:border-gray-700/50">
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-slate-300 dark:bg-gray-700 rounded-full animate-pulse flex-shrink-0"></div>
+                          <div className="h-4 bg-slate-300 dark:bg-gray-700 rounded w-32 animate-pulse"></div>
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : car?.features && car.features.length > 0 && (
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3">
                       Комплектация
                     </h4>
                     <div className="space-y-2">
                       {car.features.map((feature, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div key={index} className="flex items-center space-x-3 p-2 sm:p-3 bg-slate-50 dark:bg-gray-800 rounded-xl border border-slate-200/50 dark:border-gray-700/50">
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 dark:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                             <Check className="h-2 w-2 sm:h-3 sm:w-3 text-white" />
                           </div>
-                          <span className="text-slate-700 font-medium text-xs sm:text-sm">{feature}</span>
+                          <span className="text-slate-700 dark:text-gray-300 font-medium text-xs sm:text-sm">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -1169,28 +1169,28 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                 {/* Технические характеристики */}
                 {loading ? (
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3">
                       Технические данные
                     </h4>
                     <div className="space-y-1 sm:space-y-2">
                       {Array.from({ length: 4 }).map((_, index) => (
-                        <div key={index} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <div className="h-4 bg-slate-300 rounded w-20 animate-pulse"></div>
-                          <div className="h-4 bg-slate-300 rounded w-16 animate-pulse"></div>
+                        <div key={index} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 dark:bg-gray-800 rounded-xl border border-slate-200/50 dark:border-gray-700/50">
+                          <div className="h-4 bg-slate-300 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+                          <div className="h-4 bg-slate-300 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : car?.specifications && (
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3">
                       Технические данные
                     </h4>
                     <div className="space-y-1 sm:space-y-2">
                       {Object.entries(car.specifications).map(([key, value]) => (
-                        <div key={key} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 rounded-xl border border-slate-200/50">
-                          <span className="text-slate-600 font-medium text-xs sm:text-sm">{key}</span>
-                          <span className="text-slate-900 font-bold text-xs sm:text-sm">{value}</span>
+                        <div key={key} className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 bg-slate-50 dark:bg-gray-800 rounded-xl border border-slate-200/50 dark:border-gray-700/50">
+                          <span className="text-slate-600 dark:text-gray-400 font-medium text-xs sm:text-sm">{key}</span>
+                          <span className="text-slate-900 dark:text-white font-bold text-xs sm:text-sm">{value}</span>
                         </div>
                       ))}
                     </div>
@@ -1199,27 +1199,27 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
                 {/* Финансирование - компактный блок */}
                 <div>
-                  <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-3">
+                  <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3">
                     Финансирование
                   </h4>
-                  <div className="rounded-xl p-3 sm:p-4 border border-slate-200/50" style={{ backgroundColor: '#F7F8FA' }}>
+                  <div className="rounded-xl p-3 sm:p-4 border border-slate-200/50 dark:border-gray-700/50 bg-[#F7F8FA] dark:bg-gray-800/50">
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
-                        <div className="text-xs sm:text-sm text-slate-500 mb-1">Кредит от</div>
+                        <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-1">Кредит от</div>
                         {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
+                          <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-16 mx-auto animate-pulse"></div>
                         ) : (
-                          <div className="text-sm sm:text-lg font-bold text-slate-900">
+                          <div className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
                             {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
                           </div>
                         )}
                       </div>
                       <div className="text-center">
-                        <div className="text-xs sm:text-sm text-slate-500 mb-1">Лизинг от</div>
+                        <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-1">Лизинг от</div>
                         {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 rounded w-16 mx-auto animate-pulse"></div>
+                          <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-16 mx-auto animate-pulse"></div>
                         ) : (
-                          <div className="text-sm sm:text-lg font-bold text-slate-900">
+                          <div className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
                             {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес
                           </div>
                         )}
@@ -1227,7 +1227,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                     </div>
                     <Button
                       onClick={() => setFinancialAssistantOpen(true)}
-                      className="w-full bg-slate-900 hover:bg-black text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"
+                      className="w-full bg-slate-900 hover:bg-black dark:bg-gray-800 dark:hover:bg-gray-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"
                     >
                       <Calculator className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                       Рассчитать кредит/лизинг
@@ -1236,14 +1236,14 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                 </div>
 
                 {/* Кнопки действий */}
-                <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
+                <div className="pt-3 sm:pt-4 border-t border-slate-200/50 dark:border-gray-700/50">
                   <div className="grid grid-cols-1 gap-2 sm:gap-3">
-<Button onClick={() => setIsBookingOpen(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
+<Button onClick={() => setIsBookingOpen(true)} className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base">
   <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
   Записаться на просмотр
 </Button>
 
-<Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-transparent hover:bg-blue-600 text-blue-600 hover:text-white border-2 border-blue-600 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base transition-colors">
+<Button onClick={() => setIsCallbackOpen(true)} className="w-full bg-transparent hover:bg-blue-600 dark:hover:bg-blue-700 text-blue-600 dark:text-blue-400 hover:text-white border-2 border-blue-600 dark:border-blue-400 font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base transition-colors">
   <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
   Заказать звонок
 </Button>
@@ -1255,20 +1255,20 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
           </div>
 
           {/* Контактная информация внизу */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 sm:p-6 border-t border-slate-200/50">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-800 dark:to-blue-700 text-white p-4 sm:p-6 border-t border-slate-200/50 dark:border-gray-700/50">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center">
               <div className="text-center md:text-left">
                 {loading ? (
                   <div className="space-y-2">
-                    <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto md:mx-0 animate-pulse"></div>
-                    <div className="h-4 bg-blue-400/40 rounded w-52 mx-auto md:mx-0 animate-pulse"></div>
+                    <div className="h-5 bg-blue-400/40 dark:bg-blue-600/40 rounded w-40 mx-auto md:mx-0 animate-pulse"></div>
+                    <div className="h-4 bg-blue-400/40 dark:bg-blue-600/40 rounded w-52 mx-auto md:mx-0 animate-pulse"></div>
                   </div>
                 ) : (
                   <>
                     <div className="font-medium text-base sm:text-lg mb-1">
                       {settings?.main?.showroomInfo?.companyName || ""}
                     </div>
-                    <div className="text-blue-100 text-xs sm:text-sm">
+                    <div className="text-blue-100 dark:text-blue-200 text-xs sm:text-sm">
                       {settings?.main?.showroomInfo?.address || ""}
                     </div>
                   </>
@@ -1277,9 +1277,9 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
               <div className="text-center">
                 {loading ? (
-                  <div className="h-5 bg-blue-400/40 rounded w-40 mx-auto animate-pulse"></div>
+                  <div className="h-5 bg-blue-400/40 dark:bg-blue-600/40 rounded w-40 mx-auto animate-pulse"></div>
                 ) : (
-                  <div className="flex items-center justify-center space-x-2 text-blue-100 text-xs sm:text-sm">
+                  <div className="flex items-center justify-center space-x-2 text-blue-100 dark:text-blue-200 text-xs sm:text-sm">
                     <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                     <div>
                       <div>{settings?.main?.showroomInfo?.workingHours?.weekdays || ""}</div>
@@ -1291,8 +1291,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               <div className="text-center md:text-right">
                 {loading ? (
                   <div className="space-y-2">
-                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
-                    <div className="h-5 bg-blue-400/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
+                    <div className="h-5 bg-blue-400/40 dark:bg-blue-600/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
+                    <div className="h-5 bg-blue-400/40 dark:bg-blue-600/40 rounded w-32 mx-auto md:ml-auto animate-pulse"></div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center md:items-end space-y-1">
