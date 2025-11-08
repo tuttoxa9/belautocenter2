@@ -127,11 +127,19 @@ export default function Header() {
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
           <Image
-            src={theme === 'dark' ? '/logo_black.png' : '/logo4.png'}
+            src="/logo4.png"
             alt="Белавто Центр"
             width={120}
             height={40}
-            className="h-8 w-auto sm:h-10"
+            className="h-8 w-auto sm:h-10 block dark:hidden"
+            priority
+          />
+          <Image
+            src="/logo_black.png"
+            alt="Белавто Центр"
+            width={120}
+            height={40}
+            className="h-8 w-auto sm:h-10 hidden dark:block"
             priority
           />
           <span className="font-display font-bold text-sm sm:text-lg text-gray-900 dark:text-white tracking-tight">Белавто Центр</span>
@@ -164,11 +172,19 @@ export default function Header() {
             ) : (
               <div className="flex flex-col items-center">
                 <Image
-                  src={theme === 'dark' ? '/logo_black.png' : '/logo4.png'}
+                  src="/logo4.png"
                   alt="Белавто Центр"
                   width={120}
                   height={40}
-                  className="h-10 w-auto mb-2"
+                  className="h-10 w-auto mb-2 block dark:hidden"
+                  priority
+                />
+                <Image
+                  src="/logo_black.png"
+                  alt="Белавто Центр"
+                  width={120}
+                  height={40}
+                  className="h-10 w-auto mb-2 hidden dark:block"
                   priority
                 />
                 <div className="w-12 h-px bg-gray-300 dark:bg-gray-700"></div>
