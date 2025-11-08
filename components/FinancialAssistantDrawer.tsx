@@ -193,28 +193,28 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
   const renderContent = () => (
     <>
       {car && (
-        <div className="flex items-center space-x-4 p-3 bg-slate-50 rounded-xl border mb-5">
+        <div className="flex items-center space-x-4 p-3 bg-slate-50 dark:bg-gray-800 rounded-xl border border-slate-200 dark:border-gray-700 mb-5">
           <Image src={carImage} alt={carName} width={80} height={60} className="rounded-lg object-cover" />
           <div>
-            <p className="font-bold text-slate-900">{carName}</p>
-            <p className="text-slate-800 font-semibold">{new Intl.NumberFormat("ru-RU").format(car.price)} $</p>
+            <p className="font-bold text-slate-900 dark:text-white">{carName}</p>
+            <p className="text-slate-800 dark:text-gray-200 font-semibold">{new Intl.NumberFormat("ru-RU").format(car.price)} $</p>
           </div>
         </div>
       )}
-      <div className="flex items-center justify-center space-x-1 bg-slate-100 rounded-full p-1">
+      <div className="flex items-center justify-center space-x-1 bg-slate-100 dark:bg-gray-800 rounded-full p-1">
         {(['credit', 'leasing'] as const).map(type => (
           <button key={type} onClick={() => setFinanceType(type)}
-            className={`flex-1 text-sm font-semibold py-2 px-4 rounded-full transition-all ${financeType === type ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600'}`}>
+            className={`flex-1 text-sm font-semibold py-2 px-4 rounded-full transition-all ${financeType === type ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-600 dark:text-gray-400'}`}>
             {type === 'credit' ? 'Кредит' : 'Лизинг'}
           </button>
         ))}
       </div>
-      <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border mt-5">
+      <div className="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-gray-800 rounded-xl border border-slate-200 dark:border-gray-700 mt-5">
         <Checkbox id="currency-switch-drawer" checked={isBelarusianRubles} onCheckedChange={handleCurrencyChange as (checked: boolean) => void} />
-        <Label htmlFor="currency-switch-drawer" className="text-sm font-medium cursor-pointer">Расчет в белорусских рублях</Label>
+        <Label htmlFor="currency-switch-drawer" className="text-sm font-medium cursor-pointer dark:text-gray-200">Расчет в белорусских рублях</Label>
       </div>
       <div className="space-y-4 mt-5">
-        <h3 className="font-semibold text-lg text-slate-800">Калькулятор</h3>
+        <h3 className="font-semibold text-lg text-slate-800 dark:text-gray-100">Калькулятор</h3>
         {financeType === 'credit' ? (
           <div className="space-y-5">
             <div>
@@ -257,15 +257,15 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
           </div>
         )}
       </div>
-      <div className="space-y-4 pt-5 border-t mt-6">
-          <h3 className="font-semibold text-lg text-slate-900">Ваш расчет</h3>
-          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl shadow-xl p-5">
+      <div className="space-y-4 pt-5 border-t border-slate-200 dark:border-gray-700 mt-6">
+          <h3 className="font-semibold text-lg text-slate-900 dark:text-white">Ваш расчет</h3>
+          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 rounded-2xl shadow-xl p-5">
             {/* Декоративный фон */}
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
 
             {/* Логотип банка/компании в правом верхнем углу */}
             {financeType === 'credit' && selectedBank?.logoUrl && (
-              <div className="absolute top-8 right-8 bg-white rounded-lg p-2 shadow-md z-20">
+              <div className="absolute top-8 right-8 bg-white dark:bg-gray-800 rounded-lg p-2 shadow-md z-20">
                 <Image
                   src={getCachedImageUrl(selectedBank.logoUrl)}
                   alt={selectedBank.name}
@@ -276,7 +276,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
               </div>
             )}
             {financeType === 'leasing' && selectedLeasingCompany?.logoUrl && (
-              <div className="absolute top-8 right-8 bg-white rounded-lg p-2 shadow-md z-20">
+              <div className="absolute top-8 right-8 bg-white dark:bg-gray-800 rounded-lg p-2 shadow-md z-20">
                 <Image
                   src={getCachedImageUrl(selectedLeasingCompany.logoUrl)}
                   alt={selectedLeasingCompany.name}
@@ -292,7 +292,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <div className="flex items-baseline justify-between gap-2">
                   <div>
-                    <p className="text-xs text-slate-300 mb-1">Ежемесячный платеж</p>
+                    <p className="text-xs text-slate-300 dark:text-gray-300 mb-1">Ежемесячный платеж</p>
                     <p className="font-bold text-2xl sm:text-3xl text-white leading-tight">{formatPrice(financeType === 'credit' ? calculateMonthlyPayment() : calculateLeasingPayment())}</p>
                   </div>
                 </div>
@@ -301,30 +301,30 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
               {/* Детали расчёта */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                  <p className="text-xs text-slate-400 mb-1">{financeType === 'credit' ? 'Сумма кредита' : 'Сумма договора'}</p>
+                  <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">{financeType === 'credit' ? 'Сумма кредита' : 'Сумма договора'}</p>
                   <p className="font-semibold text-sm text-white">{formatPrice(financeType === 'credit' ? creditAmountValue : carPriceInCurrency)}</p>
                 </div>
 
                 <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                  <p className="text-xs text-slate-400 mb-1">Срок</p>
+                  <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">Срок</p>
                   <p className="font-semibold text-sm text-white">{financeType === 'credit' ? loanTerm[0] : leasingTerm[0]} мес.</p>
                 </div>
 
                 <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                  <p className="text-xs text-slate-400 mb-1">{financeType === 'credit' ? 'Первый взнос' : 'Аванс'}</p>
+                  <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">{financeType === 'credit' ? 'Первый взнос' : 'Аванс'}</p>
                   <p className="font-semibold text-sm text-white">{formatPrice(financeType === 'credit' ? downPayment[0] : leasingAdvance[0])}</p>
                 </div>
 
                 {financeType === 'credit' && selectedBank && (
                   <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                    <p className="text-xs text-slate-400 mb-1">Ставка</p>
+                    <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">Ставка</p>
                     <p className="font-semibold text-sm text-white">{selectedBank.rate || selectedBank.minRate}%</p>
                   </div>
                 )}
 
                 {financeType === 'leasing' && (
                   <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                    <p className="text-xs text-slate-400 mb-1">Остаточная</p>
+                    <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">Остаточная</p>
                     <p className="font-semibold text-sm text-white">{residualValue[0]}%</p>
                   </div>
                 )}
@@ -332,7 +332,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
 
               {/* Информация о партнёре */}
               <div className="pt-3 border-t border-white/10">
-                <p className="text-xs text-slate-400 mb-1">Партнёр</p>
+                <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">Партнёр</p>
                 <p className="text-sm font-medium text-white">
                   {financeType === 'credit' ? selectedBank?.name || 'Не выбран' : selectedLeasingCompany?.name || 'Не выбрана'}
                 </p>
@@ -340,8 +340,8 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
             </div>
           </div>
       </div>
-      <div className="space-y-4 pt-4 border-t mt-5">
-        <h3 className="font-semibold text-lg text-slate-800">Оформить заявку</h3>
+      <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-gray-700 mt-5">
+        <h3 className="font-semibold text-lg text-slate-800 dark:text-gray-100">Оформить заявку</h3>
         <div className="space-y-3">
           <div>
             <Label htmlFor="drawer-name">Имя</Label>
@@ -365,7 +365,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
       <Button onClick={handleCreditSubmit} className="w-full h-12 text-base" disabled={!isPhoneValid(creditForm.phone) || !creditForm.name || creditButtonState.isLoading}>
           {creditButtonState.isLoading ? 'Отправка...' : `Отправить заявку на ${financeType === 'credit' ? 'кредит' : 'лизинг'}`}
       </Button>
-      <p className="text-xs text-slate-500 mt-3 text-center">Нажимая кнопку, вы соглашаетесь с <a href="/privacy" className="underline hover:text-blue-600">политикой обработки персональных данных</a>.</p>
+      <p className="text-xs text-slate-500 dark:text-gray-400 mt-3 text-center">Нажимая кнопку, вы соглашаетесь с <a href="/privacy" className="underline hover:text-blue-600 dark:hover:text-blue-400">политикой обработки персональных данных</a>.</p>
     </>
   );
 

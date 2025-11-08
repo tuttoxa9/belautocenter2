@@ -25,14 +25,14 @@ export function UniversalDrawer({ open, onOpenChange, title, children, footer, c
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent side={side} className={`w-[600px] sm:max-w-[800px] p-0 flex flex-col ${className}`}>
-          <SheetHeader className="p-4 sm:p-6 border-b">
+          <SheetHeader className="p-4 sm:p-6 border-b border-slate-200 dark:border-gray-700">
             <SheetTitle>{title}</SheetTitle>
           </SheetHeader>
           <div className={`flex-1 overflow-y-auto ${noPadding ? '' : 'p-4 sm:p-6'}`}>
             {children}
           </div>
           {footer && (
-            <SheetFooter className="p-4 sm:p-6 border-t bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
+            <SheetFooter className="p-4 sm:p-6 border-t border-slate-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
               {footer}
             </SheetFooter>
           )}
@@ -55,7 +55,7 @@ export function UniversalDrawer({ open, onOpenChange, title, children, footer, c
           {children}
         </div>
         {footer && (
-          <DrawerFooter className="flex-shrink-0 border-t mt-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
+          <DrawerFooter className="flex-shrink-0 border-t border-slate-200 dark:border-gray-700 mt-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
             {footer}
           </DrawerFooter>
         )}
