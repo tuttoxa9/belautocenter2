@@ -127,7 +127,7 @@ export default function Header() {
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
           <Image
-            src="/logo4.png"
+            src={theme === 'dark' ? '/logo_black.png' : '/logo4.png'}
             alt="Белавто Центр"
             width={120}
             height={40}
@@ -164,7 +164,7 @@ export default function Header() {
             ) : (
               <div className="flex flex-col items-center">
                 <Image
-                  src="/logo4.png"
+                  src={theme === 'dark' ? '/logo_black.png' : '/logo4.png'}
                   alt="Белавто Центр"
                   width={120}
                   height={40}
