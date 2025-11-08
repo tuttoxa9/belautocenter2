@@ -32,7 +32,7 @@ export function UniversalDrawer({ open, onOpenChange, title, children, footer, c
             {children}
           </div>
           {footer && (
-            <SheetFooter className="p-4 sm:p-6 border-t bg-white/95 backdrop-blur-sm">
+            <SheetFooter className="p-4 sm:p-6 border-t bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
               {footer}
             </SheetFooter>
           )}
@@ -55,7 +55,7 @@ export function UniversalDrawer({ open, onOpenChange, title, children, footer, c
           {children}
         </div>
         {footer && (
-          <DrawerFooter className="flex-shrink-0 border-t mt-auto bg-white/95 backdrop-blur-sm">
+          <DrawerFooter className="flex-shrink-0 border-t mt-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
             {footer}
           </DrawerFooter>
         )}
