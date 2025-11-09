@@ -126,20 +126,20 @@ export default function PrivacyPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 dark:bg-black">
         {/* Header Skeleton */}
-        <div className="bg-white border-b border-slate-200">
+        <div className="bg-white dark:bg-gray-900/50 border-b border-slate-200 dark:border-gray-800">
           <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-4 lg:py-6">
             {/* Breadcrumbs */}
             <nav className="mb-3 lg:mb-4">
-              <ol className="flex items-center space-x-2 text-sm text-slate-500">
+              <ol className="flex items-center space-x-2 text-sm text-slate-500 dark:text-gray-400">
                 <li>
-                  <Link href="/" className="hover:text-blue-600 transition-colors" prefetch={true}>
+                  <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={true}>
                     Главная
                   </Link>
                 </li>
                 <li><ArrowRight className="h-3 w-3" /></li>
-                <li className="text-slate-900 font-medium">Политика конфиденциальности</li>
+                <li className="text-slate-900 dark:text-white font-medium">Политика конфиденциальности</li>
               </ol>
             </nav>
 
@@ -243,20 +243,20 @@ export default function PrivacyPage() {
   const activeContent = sections.find(section => section.id === activeSection)
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-black">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200">
+      <div className="bg-white dark:bg-gray-900/50 border-b border-slate-200 dark:border-gray-800">
         <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-4 lg:py-6">
           {/* Breadcrumbs */}
           <nav className="mb-3 lg:mb-4">
-            <ol className="flex items-center space-x-2 text-sm text-slate-500">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500 dark:text-gray-400">
               <li>
-                <Link href="/" className="hover:text-blue-600 transition-colors" prefetch={true}>
+                <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={true}>
                   Главная
                 </Link>
               </li>
               <li><ArrowRight className="h-3 w-3" /></li>
-              <li className="text-slate-900 font-medium">Политика конфиденциальности</li>
+              <li className="text-slate-900 dark:text-white font-medium">Политика конфиденциальности</li>
             </ol>
           </nav>
 
@@ -268,21 +268,21 @@ export default function PrivacyPage() {
             <div className="flex-1 min-w-0 h-12 flex flex-col justify-center">
               <div className="h-6 flex items-center">
                 {loading ? (
-                  <div className="h-5 bg-slate-200 rounded w-48 animate-pulse"></div>
+                  <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
                 ) : (
-                  <h1 className="text-xl font-bold text-slate-900 truncate leading-5">{privacyData.title}</h1>
+                  <h1 className="text-xl font-bold text-slate-900 dark:text-white truncate leading-5">{privacyData.title}</h1>
                 )}
               </div>
-              <div className="flex items-center space-x-2 mt-1 text-xs text-slate-600 h-4">
+              <div className="flex items-center space-x-2 mt-1 text-xs text-slate-600 dark:text-gray-400 h-4">
                 <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-sm"></div>
                 {loading ? (
-                  <div className="h-3 bg-slate-200 rounded w-32 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-gray-700 rounded w-32 animate-pulse"></div>
                 ) : (
                   <span>Обновлено: {privacyData.lastUpdated}</span>
                 )}
               </div>
             </div>
-            <div className="text-xs text-slate-500 bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 rounded-lg px-3 py-2 shadow-sm border border-indigo-200 h-8 flex items-center">
+            <div className="text-xs text-slate-500 dark:text-gray-400 bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-lg px-3 py-2 shadow-sm border border-indigo-200 dark:border-gray-700 h-8 flex items-center">
               {sections.length} разделов
             </div>
           </div>
@@ -296,15 +296,15 @@ export default function PrivacyPage() {
               <div className="h-16 flex flex-col justify-center">
                 <div className="h-8 flex items-center">
                   {loading ? (
-                    <div className="h-8 bg-slate-200 rounded w-64 animate-pulse"></div>
+                    <div className="h-8 bg-slate-200 dark:bg-gray-700 rounded w-64 animate-pulse"></div>
                   ) : (
-                    <h1 className="text-3xl font-bold text-slate-900 leading-8">{privacyData.title}</h1>
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white leading-8">{privacyData.title}</h1>
                   )}
                 </div>
-                <div className="flex items-center space-x-2 mt-2 text-sm text-slate-600 h-5">
+                <div className="flex items-center space-x-2 mt-2 text-sm text-slate-600 dark:text-gray-400 h-5">
                   <Clock className="h-4 w-4" />
                   {loading ? (
-                    <div className="h-4 bg-slate-200 rounded w-36 animate-pulse"></div>
+                    <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-36 animate-pulse"></div>
                   ) : (
                     <span>Обновлено: {privacyData.lastUpdated}</span>
                   )}
@@ -312,7 +312,7 @@ export default function PrivacyPage() {
               </div>
             </div>
             <div className="hidden sm:block h-8 flex items-center">
-              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg px-4 py-2 text-sm text-slate-600 shadow-sm h-8 flex items-center">
+              <div className="bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-800 dark:to-gray-700 rounded-lg px-4 py-2 text-sm text-slate-600 dark:text-gray-400 shadow-sm h-8 flex items-center">
                 {sections.length} разделов
               </div>
             </div>
@@ -329,11 +329,11 @@ export default function PrivacyPage() {
             const isExpanded = expandedSection === section.id
 
             return (
-              <Card key={section.id} className="border-0 shadow-sm overflow-hidden bg-gradient-to-br from-white to-slate-50">
+              <Card key={section.id} className="border-0 shadow-sm overflow-hidden bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-900">
                 <CardContent className="p-0">
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="w-full flex items-center space-x-3 p-4 hover:bg-gradient-to-br hover:from-slate-50 hover:to-slate-100 transition-all h-20"
+                    className="w-full flex items-center space-x-3 p-4 hover:bg-gradient-to-br hover:from-slate-50 hover:to-slate-100 dark:hover:from-gray-700 dark:hover:to-gray-800 transition-all h-20"
                   >
                     <div className={`w-12 h-12 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20`}>
                       <Icon className="h-6 w-6 text-white drop-shadow-sm" />
@@ -342,21 +342,21 @@ export default function PrivacyPage() {
                     <div className="flex-1 text-left min-w-0 h-12 flex items-center">
                       <div className="flex items-center justify-between w-full">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-slate-900 text-sm truncate leading-4">
+                          <h3 className="font-semibold text-slate-900 dark:text-white text-sm truncate leading-4">
                             {section.title}
                           </h3>
-                          <p className="text-xs text-slate-600 mt-0.5 truncate leading-3">
+                          <p className="text-xs text-slate-600 dark:text-gray-400 mt-0.5 truncate leading-3">
                             {section.description}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2 flex-shrink-0 ml-3">
-                          <span className="text-xs text-slate-500 bg-gradient-to-br from-slate-100 to-slate-200 rounded px-2 py-1 shadow-sm">
+                          <span className="text-xs text-slate-500 dark:text-gray-400 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-700 dark:to-gray-800 rounded px-2 py-1 shadow-sm">
                             {index + 1}
                           </span>
                           {isExpanded ? (
-                            <ChevronUp className="h-4 w-4 text-slate-500" />
+                            <ChevronUp className="h-4 w-4 text-slate-500 dark:text-gray-400" />
                           ) : (
-                            <ChevronDown className="h-4 w-4 text-slate-500" />
+                            <ChevronDown className="h-4 w-4 text-slate-500 dark:text-gray-400" />
                           )}
                         </div>
                       </div>
@@ -364,23 +364,23 @@ export default function PrivacyPage() {
                   </button>
 
                   {isExpanded && (
-                    <div className="border-t border-slate-100 bg-gradient-to-br from-slate-50 to-slate-100">
+                    <div className="border-t border-slate-100 dark:border-gray-700 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-black">
                       <div className="flex space-x-3 p-4">
                         <div className="w-10 flex-shrink-0"></div>
                         <div className="flex-1 min-w-0">
-                          <div className="prose prose-sm prose-slate max-w-none">
+                          <div className="prose prose-sm prose-slate dark:prose-invert max-w-none">
                             {loading ? (
                               <div className="space-y-3 min-h-[120px]">
-                                <div className="h-4 bg-slate-200 rounded animate-pulse"></div>
-                                <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                                <div className="h-4 bg-slate-200 rounded w-4/6 animate-pulse"></div>
-                                <div className="h-4 bg-slate-200 rounded w-3/4 animate-pulse"></div>
+                                <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-5/6 animate-pulse"></div>
+                                <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-4/6 animate-pulse"></div>
+                                <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-3/4 animate-pulse"></div>
                               </div>
                             ) : section.content ? (
                               <MarkdownRenderer content={section.content} className="text-sm" />
                             ) : (
                               <div className="min-h-[120px] flex items-center justify-center">
-                                <p className="text-slate-500 text-sm">Контент недоступен</p>
+                                <p className="text-slate-500 dark:text-gray-400 text-sm">Контент недоступен</p>
                               </div>
                             )}
                           </div>
@@ -399,9 +399,9 @@ export default function PrivacyPage() {
           {/* Sidebar navigation */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-900">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-slate-900 mb-4">Содержание</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-4">Содержание</h3>
                   <nav className="space-y-1">
                     {sections.map((section, index) => (
                       <button
@@ -409,28 +409,28 @@ export default function PrivacyPage() {
                         onClick={() => setActiveSection(section.id)}
                         className={`w-full text-left px-3 py-3 rounded-lg transition-all duration-200 group shadow-sm h-16 ${
                           activeSection === section.id
-                            ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white shadow-md'
-                            : 'bg-gradient-to-br from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700'
+                            ? 'bg-gradient-to-br from-slate-800 to-slate-900 dark:from-gray-700 dark:to-gray-800 text-white shadow-md'
+                            : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-700 dark:to-gray-800 hover:from-slate-200 hover:to-slate-300 dark:hover:from-gray-600 dark:hover:to-gray-700 text-slate-700 dark:text-gray-300'
                         }`}
                       >
                         <div className="flex items-center space-x-3">
                           <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 ${
                             activeSection === section.id
                               ? 'bg-gradient-to-br from-white/20 to-white/10 border border-white/20'
-                              : 'bg-gradient-to-br from-slate-200 to-slate-300 group-hover:from-slate-300 group-hover:to-slate-400 border border-slate-300/50'
+                              : 'bg-gradient-to-br from-slate-200 to-slate-300 dark:from-gray-600 dark:to-gray-700 group-hover:from-slate-300 group-hover:to-slate-400 dark:group-hover:from-gray-500 dark:group-hover:to-gray-600 border border-slate-300/50 dark:border-gray-600/50'
                           }`}>
                             <section.icon className={`h-3 w-3 ${
-                              activeSection === section.id ? 'text-white' : 'text-slate-600'
+                              activeSection === section.id ? 'text-white' : 'text-slate-600 dark:text-gray-300'
                             }`} />
                           </div>
                           <div className="min-w-0 h-10 flex flex-col justify-center">
                             <div className={`font-medium text-sm leading-4 ${
-                              activeSection === section.id ? 'text-white' : 'text-slate-900'
+                              activeSection === section.id ? 'text-white' : 'text-slate-900 dark:text-white'
                             }`}>
                               {section.title}
                             </div>
                             <div className={`text-xs leading-3 ${
-                              activeSection === section.id ? 'text-slate-300' : 'text-slate-500'
+                              activeSection === section.id ? 'text-slate-300 dark:text-gray-400' : 'text-slate-500 dark:text-gray-400'
                             }`}>
                               {section.description}
                             </div>
@@ -447,33 +447,33 @@ export default function PrivacyPage() {
           {/* Content area */}
           <div className="lg:col-span-3">
             {activeContent && (
-              <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-900">
                 <CardContent className="p-8">
                   <div className="flex items-center space-x-4 mb-6 h-16">
-                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
+                    <div className="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-gray-700 dark:to-gray-800 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 dark:border-gray-600/50">
                       <activeContent.icon className="h-5 w-5 text-white" />
                     </div>
                     <div className="h-16 flex flex-col justify-center">
-                      <h2 className="text-2xl font-bold text-slate-900 leading-8">{activeContent.title}</h2>
-                      <p className="text-slate-600 text-sm mt-1 leading-5">{activeContent.description}</p>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white leading-8">{activeContent.title}</h2>
+                      <p className="text-slate-600 dark:text-gray-400 text-sm mt-1 leading-5">{activeContent.description}</p>
                     </div>
                   </div>
 
-                  <div className="prose prose-slate max-w-none min-h-[300px]">
+                  <div className="prose prose-slate dark:prose-invert max-w-none min-h-[300px]">
                     {loading ? (
                       <div className="space-y-4">
-                        <div className="h-5 bg-slate-200 rounded animate-pulse"></div>
-                        <div className="h-5 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-                        <div className="h-5 bg-slate-200 rounded w-4/6 animate-pulse"></div>
-                        <div className="h-5 bg-slate-200 rounded w-3/4 animate-pulse"></div>
-                        <div className="h-5 bg-slate-200 rounded animate-pulse"></div>
-                        <div className="h-5 bg-slate-200 rounded w-2/3 animate-pulse"></div>
+                        <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                        <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded w-5/6 animate-pulse"></div>
+                        <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded w-4/6 animate-pulse"></div>
+                        <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded w-3/4 animate-pulse"></div>
+                        <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                        <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded w-2/3 animate-pulse"></div>
                       </div>
                     ) : activeContent.content ? (
                       <MarkdownRenderer content={activeContent.content} />
                     ) : (
                       <div className="min-h-[300px] flex items-center justify-center">
-                        <p className="text-slate-500">Контент недоступен</p>
+                        <p className="text-slate-500 dark:text-gray-400">Контент недоступен</p>
                       </div>
                     )}
                   </div>
@@ -482,7 +482,7 @@ export default function PrivacyPage() {
             )}
 
             {/* Bottom notice */}
-            <Card className="mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900">
+            <Card className="mt-8 border-0 shadow-sm bg-gradient-to-br from-slate-800 to-slate-900 dark:from-gray-800 dark:to-gray-900">
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4 min-h-[100px]">
                   <div className="w-8 h-8 bg-gradient-to-br from-white/20 to-white/10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-200 border border-white/20">
@@ -492,7 +492,7 @@ export default function PrivacyPage() {
                     <h3 className="font-semibold text-white mb-2 leading-6">
                       Согласие на обработку персональных данных
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed">
+                    <p className="text-slate-300 dark:text-gray-300 text-sm leading-relaxed">
                       Используя наш сайт и предоставляя персональные данные, вы выражаете согласие на их обработку
                       в соответствии с настоящей политикой. Мы гарантируем защиту ваших данных и их использование
                       исключительно для указанных целей.
@@ -505,7 +505,7 @@ export default function PrivacyPage() {
         </div>
 
         {/* Mobile Bottom notice - styled like CTA section */}
-        <section className="lg:hidden relative pt-8 pb-32 bg-gradient-to-br from-slate-950 to-blue-800 text-white rounded-t-[30px] -mb-20 overflow-hidden mt-6 -mx-4 min-h-[160px]">
+        <section className="lg:hidden relative pt-8 pb-32 bg-gradient-to-br from-slate-950 to-blue-800 dark:from-gray-900 dark:to-gray-950 text-white rounded-t-[30px] -mb-20 overflow-hidden mt-6 -mx-4 min-h-[160px]">
           <div className="max-w-4xl mx-auto px-4 relative z-10">
             <div className="text-center">
               <div className="flex items-center justify-center space-x-3 mb-4 h-10">
@@ -516,7 +516,7 @@ export default function PrivacyPage() {
                   Согласие на обработку данных
                 </h3>
               </div>
-              <p className="text-slate-300 text-sm leading-relaxed max-w-lg mx-auto">
+              <p className="text-slate-300 dark:text-gray-300 text-sm leading-relaxed max-w-lg mx-auto">
                 Используя наш сайт, вы соглашаетесь с обработкой персональных данных согласно данной политике.
               </p>
             </div>
