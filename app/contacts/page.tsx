@@ -71,7 +71,7 @@ const isPhoneValid = (phone: string) => {
 
 // Компонент скелетона для динамических данных с фиксированными размерами
 const DataSkeleton = ({ width = "w-32", height = "h-5" }: { width?: string, height?: string }) => (
-  <div className={`${height} ${width} bg-slate-200 rounded animate-pulse`}></div>
+  <div className={`${height} ${width} bg-slate-200 dark:bg-slate-700 rounded animate-pulse`}></div>
 )
 
 export default function ContactsPage() {
@@ -168,26 +168,26 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-black">
       {/* Header - статичный, не зависит от Firestore */}
-      <div className="bg-white border-b border-slate-200">
+      <div className="bg-white dark:bg-gray-900/50 border-b border-slate-200 dark:border-gray-800">
         <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-4 lg:py-6">
           {/* Breadcrumbs - статичные */}
           <nav className="mb-3 lg:mb-4">
-            <ol className="flex items-center space-x-2 text-sm text-slate-500">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500 dark:text-gray-400">
               <li>
-                <Link href="/" className="hover:text-blue-600 transition-colors" prefetch={true}>
+                <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={true}>
                   Главная
                 </Link>
               </li>
               <li><ArrowRight className="h-3 w-3" /></li>
-              <li className="text-slate-900 font-medium">Контакты</li>
+              <li className="text-slate-900 dark:text-white font-medium">Контакты</li>
             </ol>
           </nav>
 
           {/* Title - мобильная версия с фиксированными размерами */}
           <div className="lg:hidden flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 dark:from-blue-500 dark:via-purple-500 dark:to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10">
               <Phone className="h-6 w-6 text-white drop-shadow-sm" />
             </div>
             <div className="flex-1 min-w-0">
@@ -195,11 +195,11 @@ export default function ContactsPage() {
                 {loading ? (
                   <DataSkeleton width="w-24" height="h-5" />
                 ) : (
-                  <h1 className="text-xl font-bold text-slate-900 truncate leading-5">{contactsData.title || 'Контакты'}</h1>
+                  <h1 className="text-xl font-bold text-slate-900 dark:text-white truncate leading-5">{contactsData.title || 'Контакты'}</h1>
                 )}
               </div>
-              <div className="flex items-center space-x-2 text-xs text-slate-600 h-3">
-                <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-sm"></div>
+              <div className="flex items-center space-x-2 text-xs text-slate-600 dark:text-gray-400 h-3">
+                <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-400 dark:to-teal-500 rounded-full shadow-sm"></div>
                 <span>Свяжитесь с нами</span>
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function ContactsPage() {
           {/* Desktop Title - с фиксированными размерами */}
           <div className="hidden lg:flex items-start justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50">
+              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 dark:border-slate-600/50">
                 <Phone className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -216,14 +216,14 @@ export default function ContactsPage() {
                   {loading ? (
                     <DataSkeleton width="w-32" height="h-8" />
                   ) : (
-                    <h1 className="text-3xl font-bold text-slate-900 leading-8">{contactsData.title || 'Контакты'}</h1>
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white leading-8">{contactsData.title || 'Контакты'}</h1>
                   )}
                 </div>
                 <div className="h-5">
                   {loading ? (
                     <DataSkeleton width="w-64" height="h-5" />
                   ) : (
-                    <p className="text-slate-600 leading-5">{contactsData.subtitle || 'Свяжитесь с нами любым удобным способом'}</p>
+                    <p className="text-slate-600 dark:text-gray-400 leading-5">{contactsData.subtitle || 'Свяжитесь с нами любым удобным способом'}</p>
                   )}
                 </div>
               </div>
@@ -238,15 +238,15 @@ export default function ContactsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
 
           {/* Phone Card - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 h-[140px] md:h-[160px]">
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[140px] md:h-[160px]">
             <CardContent className="p-4 md:p-6 h-full flex flex-col">
               <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 flex-shrink-0">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-500 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10 flex-shrink-0">
                   <Phone className="h-5 w-5 md:h-6 md:w-6 text-white drop-shadow-sm" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-semibold text-slate-900 text-sm md:text-base">Телефон</h3>
-                  <p className="text-slate-600 text-xs md:text-sm truncate">Звоните в любое время</p>
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Телефон</h3>
+                  <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Звоните в любое время</p>
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-between">
@@ -258,7 +258,7 @@ export default function ContactsPage() {
                       {contactsData.phone && (
                         <a
                           href={`tel:${contactsData.phone.replace(/\s/g, '')}`}
-                          className="text-slate-700 hover:text-slate-900 font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
+                          className="text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
                         >
                           {contactsData.phone}
                         </a>
@@ -266,7 +266,7 @@ export default function ContactsPage() {
                       {contactsData.phone2 && (
                         <a
                           href={`tel:${contactsData.phone2.replace(/\s/g, '')}`}
-                          className="text-slate-700 hover:text-slate-900 font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
+                          className="text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
                         >
                           {contactsData.phone2}
                         </a>
@@ -278,7 +278,7 @@ export default function ContactsPage() {
                   {loading ? (
                     <DataSkeleton width="w-28" height="h-3 md:h-4" />
                   ) : contactsData.phoneNote ? (
-                    <p className="text-slate-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.phoneNote}</p>
+                    <p className="text-slate-500 dark:text-gray-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.phoneNote}</p>
                   ) : null}
                 </div>
               </div>
@@ -286,15 +286,15 @@ export default function ContactsPage() {
           </Card>
 
           {/* Email Card - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 h-[140px] md:h-[160px]">
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[140px] md:h-[160px]">
             <CardContent className="p-4 md:p-6 h-full flex flex-col">
               <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 flex-shrink-0">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 dark:from-blue-500 dark:via-purple-500 dark:to-indigo-600 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10 flex-shrink-0">
                   <Mail className="h-5 w-5 md:h-6 md:w-6 text-white drop-shadow-sm" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-semibold text-slate-900 text-sm md:text-base">Email</h3>
-                  <p className="text-slate-600 text-xs md:text-sm truncate">Напишите нам</p>
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Email</h3>
+                  <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Напишите нам</p>
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-between">
@@ -304,7 +304,7 @@ export default function ContactsPage() {
                   ) : contactsData.email ? (
                     <a
                       href={`mailto:${contactsData.email}`}
-                      className="text-slate-700 hover:text-slate-900 font-medium text-sm md:text-lg block transition-colors break-all leading-5 md:leading-6"
+                      className="text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white font-medium text-sm md:text-lg block transition-colors break-all leading-5 md:leading-6"
                     >
                       {contactsData.email}
                     </a>
@@ -314,7 +314,7 @@ export default function ContactsPage() {
                   {loading ? (
                     <DataSkeleton width="w-32" height="h-3 md:h-4" />
                   ) : contactsData.emailNote ? (
-                    <p className="text-slate-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.emailNote}</p>
+                    <p className="text-slate-500 dark:text-gray-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.emailNote}</p>
                   ) : null}
                 </div>
               </div>
@@ -322,15 +322,15 @@ export default function ContactsPage() {
           </Card>
 
           {/* Working Hours Card - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 md:col-span-2 lg:col-span-1 h-[140px] md:h-[160px]">
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 md:col-span-2 lg:col-span-1 h-[140px] md:h-[160px]">
             <CardContent className="p-4 md:p-6 h-full flex flex-col">
               <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 flex-shrink-0">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 dark:from-amber-400 dark:via-orange-400 dark:to-red-400 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10 flex-shrink-0">
                   <Clock className="h-5 w-5 md:h-6 md:w-6 text-white drop-shadow-sm" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-semibold text-slate-900 text-sm md:text-base">Время работы</h3>
-                  <p className="text-slate-600 text-xs md:text-sm truncate">Режим работы</p>
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Время работы</h3>
+                  <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Режим работы</p>
                 </div>
               </div>
               <div className="flex-1">
@@ -350,8 +350,8 @@ export default function ContactsPage() {
                     <>
                       {contactsData.workingHours.weekdays && (
                         <div className="flex justify-between text-xs md:text-sm h-3 md:h-4">
-                          <span className="text-slate-700 font-medium">Пн-Пт:</span>
-                          <span className="text-slate-600 text-right">{contactsData.workingHours.weekdays}</span>
+                          <span className="text-slate-700 dark:text-gray-300 font-medium">Пн-Пт:</span>
+                          <span className="text-slate-600 dark:text-gray-400 text-right">{contactsData.workingHours.weekdays}</span>
                         </div>
                       )}
 
@@ -367,11 +367,11 @@ export default function ContactsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
 
           {/* Map Section - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 h-[400px] md:h-[480px] lg:h-[520px]">
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[400px] md:h-[480px] lg:h-[520px]">
             <CardContent className="p-0 h-full flex flex-col">
               <div className="w-full h-48 md:h-64 lg:h-80 flex-shrink-0">
                 {loading ? (
-                  <div className="w-full h-full bg-slate-200 animate-pulse rounded-t-lg"></div>
+                  <div className="w-full h-full bg-slate-200 dark:bg-slate-700 animate-pulse rounded-t-lg"></div>
                 ) : contactsData.address ? (
                   <div className="w-full h-full overflow-hidden rounded-t-lg">
                     <YandexMap
@@ -380,19 +380,19 @@ export default function ContactsPage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-full h-full bg-slate-100 rounded-t-lg flex items-center justify-center">
-                    <MapPin className="h-12 w-12 text-slate-400" />
+                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 rounded-t-lg flex items-center justify-center">
+                    <MapPin className="h-12 w-12 text-slate-400 dark:text-slate-500" />
                   </div>
                 )}
               </div>
               <div className="p-4 md:p-6 flex-1 flex flex-col">
                 <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 flex-shrink-0">
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 dark:border-slate-600/50 flex-shrink-0">
                     <MapPin className="h-4 w-4 md:h-5 md:w-5 text-white" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-semibold text-slate-900 text-sm md:text-base">Наш адрес</h3>
-                    <p className="text-slate-600 text-xs md:text-sm truncate">Приезжайте к нам</p>
+                    <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Наш адрес</h3>
+                    <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Приезжайте к нам</p>
                   </div>
                 </div>
                 <div className="flex-1 flex flex-col justify-between">
@@ -400,14 +400,14 @@ export default function ContactsPage() {
                     {loading ? (
                       <DataSkeleton width="w-36" height="h-4 md:h-5" />
                     ) : contactsData.address ? (
-                      <p className="text-slate-700 font-medium text-sm md:text-base leading-4 md:leading-5">{contactsData.address}</p>
+                      <p className="text-slate-700 dark:text-gray-300 font-medium text-sm md:text-base leading-4 md:leading-5">{contactsData.address}</p>
                     ) : null}
                   </div>
                   <div className="h-3 md:h-4">
                     {loading ? (
                       <DataSkeleton width="w-32" height="h-3 md:h-4" />
                     ) : contactsData.addressNote ? (
-                      <p className="text-slate-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.addressNote}</p>
+                      <p className="text-slate-500 dark:text-gray-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.addressNote}</p>
                     ) : null}
                   </div>
                 </div>
@@ -416,10 +416,10 @@ export default function ContactsPage() {
           </Card>
 
           {/* Contact Form - статичная форма, фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 h-[400px] md:h-[480px] lg:h-[520px]">
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[400px] md:h-[480px] lg:h-[520px]">
             <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6 flex-shrink-0">
-              <CardTitle className="text-lg md:text-xl font-bold text-slate-900 flex items-center">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 mr-2 md:mr-3 flex-shrink-0">
+              <CardTitle className="text-lg md:text-xl font-bold text-slate-900 dark:text-white flex items-center">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 dark:border-slate-600/50 mr-2 md:mr-3 flex-shrink-0">
                   <MessageCircle className="h-4 w-4 md:h-5 md:w-5 text-white" />
                 </div>
                 Написать нам
@@ -428,7 +428,7 @@ export default function ContactsPage() {
             <CardContent className="px-4 md:px-6 pb-4 md:pb-6 flex-1 flex flex-col">
               <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 flex-1 flex flex-col">
                 <div>
-                  <Label htmlFor="name" className="text-slate-700 font-medium text-xs md:text-sm">
+                  <Label htmlFor="name" className="text-slate-700 dark:text-gray-300 font-medium text-xs md:text-sm">
                     Ваше имя
                   </Label>
                   <Input
@@ -436,13 +436,13 @@ export default function ContactsPage() {
                     value={contactForm.name}
                     onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                     placeholder="Введите ваше имя"
-                    className="mt-1 border-slate-200 focus:border-slate-400 focus:ring-0 text-sm"
+                    className="mt-1 border-slate-200 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 text-sm"
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="phone" className="text-slate-700 font-medium text-xs md:text-sm">
+                  <Label htmlFor="phone" className="text-slate-700 dark:text-gray-300 font-medium text-xs md:text-sm">
                     Номер телефона
                   </Label>
                   <div className="relative mt-1">
@@ -451,17 +451,17 @@ export default function ContactsPage() {
                       value={contactForm.phone}
                       onChange={(e) => setContactForm({ ...contactForm, phone: formatPhoneNumber(e.target.value) })}
                       placeholder="+375XXXXXXXXX"
-                      className="border-slate-200 focus:border-slate-400 focus:ring-0 pr-10 text-sm"
+                      className="border-slate-200 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 pr-10 text-sm"
                       required
                     />
                     {isPhoneValid(contactForm.phone) && (
-                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-green-500" />
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-green-500 dark:text-green-400" />
                     )}
                   </div>
                 </div>
 
                 <div className="flex-1 flex flex-col">
-                  <Label htmlFor="message" className="text-slate-700 font-medium text-xs md:text-sm">
+                  <Label htmlFor="message" className="text-slate-700 dark:text-gray-300 font-medium text-xs md:text-sm">
                     Ваше сообщение
                   </Label>
                   <Textarea
@@ -470,7 +470,7 @@ export default function ContactsPage() {
                     onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                     placeholder="Расскажите, чем мы можем помочь..."
                     rows={3}
-                    className="mt-1 border-slate-200 focus:border-slate-400 focus:ring-0 resize-none text-sm flex-1"
+                    className="mt-1 border-slate-200 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 resize-none text-sm flex-1"
                     required
                   />
                 </div>
@@ -480,7 +480,7 @@ export default function ContactsPage() {
                     type="submit"
                     size="lg"
                     state={submitButtonState.state}
-                    className="w-full bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm"
+                    className="w-full bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-900 hover:to-black dark:hover:from-slate-600 dark:hover:to-slate-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm"
                     loadingText="Отправляем..."
                     successText="Отправлено!"
                     errorText="Ошибка отправки"
@@ -539,18 +539,18 @@ export default function ContactsPage() {
                         href={contactsData.socialMedia.instagram.url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-pink-200 h-[88px]"
+                        className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-pink-200 dark:hover:border-pink-800 h-[88px]"
                       >
                         <div className="w-16 h-16 bg-gradient-to-br from-pink-400 via-pink-500 to-orange-400 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-pink-300/50 transition-all duration-500 flex-shrink-0">
                           <Instagram className="h-8 w-8 text-white" />
                         </div>
                         <div className="ml-5 flex-1 min-w-0">
-                          <h4 className="font-semibold text-slate-900 text-lg group-hover:text-pink-600 transition-colors truncate">Instagram</h4>
-                          <p className="text-slate-600 text-sm truncate">{contactsData.socialMedia.instagram.name}</p>
-                          <p className="text-slate-500 text-xs truncate">Фото и видео наших автомобилей</p>
+                          <h4 className="font-semibold text-slate-900 dark:text-white text-lg group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors truncate">Instagram</h4>
+                          <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.instagram.name}</p>
+                          <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Фото и видео наших автомобилей</p>
                         </div>
                         <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
@@ -562,7 +562,7 @@ export default function ContactsPage() {
                         href={contactsData.socialMedia.telegram.url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-blue-200 h-[88px]"
+                        className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-blue-200 h-[88px]"
                       >
                         <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-blue-300/50 transition-all duration-500 flex-shrink-0">
                           <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -570,12 +570,12 @@ export default function ContactsPage() {
                           </svg>
                         </div>
                         <div className="ml-5 flex-1 min-w-0">
-                          <h4 className="font-semibold text-slate-900 text-lg group-hover:text-blue-600 transition-colors truncate">Telegram</h4>
-                          <p className="text-slate-600 text-sm truncate">{contactsData.socialMedia.telegram.name}</p>
-                          <p className="text-slate-500 text-xs truncate">Быстрые консультации и уведомления</p>
+                          <h4 className="font-semibold text-slate-900 dark:text-white text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">Telegram</h4>
+                          <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.telegram.name}</p>
+                          <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Быстрые консультации и уведомления</p>
                         </div>
                         <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
@@ -587,7 +587,7 @@ export default function ContactsPage() {
                         href={contactsData.socialMedia.avby.url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-emerald-200 h-[88px]"
+                        className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-emerald-200 h-[88px]"
                       >
                         <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-emerald-300/50 transition-all duration-500 flex-shrink-0">
                           <Image
@@ -600,11 +600,11 @@ export default function ContactsPage() {
                         </div>
                         <div className="ml-5 flex-1 min-w-0">
                           <h4 className="font-semibold text-slate-900 text-lg group-hover:text-emerald-600 transition-colors truncate">av.by</h4>
-                          <p className="text-slate-600 text-sm truncate">{contactsData.socialMedia.avby.name}</p>
-                          <p className="text-slate-500 text-xs truncate">Наш официальный профиль на av.by</p>
+                          <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.avby.name}</p>
+                          <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Наш официальный профиль на av.by</p>
                         </div>
                         <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
@@ -616,7 +616,7 @@ export default function ContactsPage() {
                         href={contactsData.socialMedia.tiktok.url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 hover:bg-white hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-gray-300 h-[88px]"
+                        className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-gray-300 h-[88px]"
                       >
                         <div className="w-16 h-16 bg-gradient-to-br from-gray-700 via-gray-800 to-black rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-gray-400/50 transition-all duration-500 flex-shrink-0">
                           <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -625,11 +625,11 @@ export default function ContactsPage() {
                         </div>
                         <div className="ml-5 flex-1 min-w-0">
                           <h4 className="font-semibold text-slate-900 text-lg group-hover:text-gray-700 transition-colors truncate">TikTok</h4>
-                          <p className="text-slate-600 text-sm truncate">{contactsData.socialMedia.tiktok.name}</p>
-                          <p className="text-slate-500 text-xs truncate">Короткие видео и обзоры авто</p>
+                          <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.tiktok.name}</p>
+                          <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Короткие видео и обзоры авто</p>
                         </div>
                         <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
