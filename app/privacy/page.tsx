@@ -150,14 +150,14 @@ export default function PrivacyPage() {
               </div>
               <div className="flex-1 min-w-0 h-12 flex flex-col justify-center">
                 <div className="h-6 flex items-center">
-                  <div className="h-5 bg-slate-200 rounded w-48 animate-pulse"></div>
+                  <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
                 </div>
-                <div className="flex items-center space-x-2 mt-1 text-xs text-slate-600 h-4">
+                <div className="flex items-center space-x-2 mt-1 text-xs text-slate-600 dark:text-gray-400 h-4">
                   <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-sm"></div>
-                  <div className="h-3 bg-slate-200 rounded w-32 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-gray-700 rounded w-32 animate-pulse"></div>
                 </div>
               </div>
-              <div className="text-xs text-slate-500 bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 rounded-lg px-3 py-2 shadow-sm border border-indigo-200 h-8 flex items-center">
+              <div className="text-xs text-slate-500 dark:text-gray-400 bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-lg px-3 py-2 shadow-sm border border-indigo-200 dark:border-gray-700 h-8 flex items-center">
                 {sections.length} разделов
               </div>
             </div>
@@ -165,21 +165,21 @@ export default function PrivacyPage() {
             {/* Desktop Title Skeleton */}
             <div className="hidden lg:flex items-start justify-between h-16">
               <div className="flex items-center space-x-4 h-16">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center shadow-lg border border-slate-700/50">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-gray-700 dark:to-gray-800 rounded-xl flex items-center justify-center shadow-lg border border-slate-700/50 dark:border-gray-600/50">
                   <Shield className="h-6 w-6 text-white" />
                 </div>
                 <div className="h-16 flex flex-col justify-center">
                   <div className="h-8 flex items-center">
-                    <div className="h-8 bg-slate-200 rounded w-64 animate-pulse"></div>
+                    <div className="h-8 bg-slate-200 dark:bg-gray-700 rounded w-64 animate-pulse"></div>
                   </div>
-                  <div className="flex items-center space-x-2 mt-2 text-sm text-slate-600 h-5">
+                  <div className="flex items-center space-x-2 mt-2 text-sm text-slate-600 dark:text-gray-400 h-5">
                     <Clock className="h-4 w-4" />
-                    <div className="h-4 bg-slate-200 rounded w-36 animate-pulse"></div>
+                    <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-36 animate-pulse"></div>
                   </div>
                 </div>
               </div>
               <div className="hidden sm:block h-8 flex items-center">
-                <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg px-4 py-2 text-sm text-slate-600 shadow-sm h-8 flex items-center">
+                <div className="bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-700 dark:to-gray-800 rounded-lg px-4 py-2 text-sm text-slate-600 dark:text-gray-300 shadow-sm h-8 flex items-center">
                   {sections.length} разделов
                 </div>
               </div>
@@ -193,16 +193,16 @@ export default function PrivacyPage() {
             <div className="lg:col-span-1">
               <div className="space-y-1">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="h-16 bg-slate-200 rounded-lg animate-pulse" />
+                  <div key={i} className="h-16 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
                 ))}
               </div>
             </div>
             <div className="lg:col-span-3">
               <div className="space-y-6">
-                <div className="h-16 bg-slate-200 rounded-lg animate-pulse" />
+                <div className="h-16 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
                 <div className="space-y-4 min-h-[300px]">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="h-5 bg-slate-200 rounded animate-pulse" />
+                    <div key={i} className="h-5 bg-slate-200 dark:bg-gray-700 rounded animate-pulse" />
                   ))}
                 </div>
               </div>
@@ -212,18 +212,18 @@ export default function PrivacyPage() {
           {/* Mobile Loading skeleton */}
           <div className="lg:hidden space-y-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-lg shadow-sm h-20">
+              <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm h-20">
                 <div className="flex items-center space-x-3 p-4 h-20">
-                  <div className="w-12 h-12 bg-slate-200 rounded-xl animate-pulse flex-shrink-0" />
+                  <div className="w-12 h-12 bg-slate-200 dark:bg-gray-700 rounded-xl animate-pulse flex-shrink-0" />
                   <div className="flex-1 h-12 flex items-center">
                     <div className="flex items-center justify-between w-full">
                       <div className="flex-1 min-w-0">
-                        <div className="h-4 bg-slate-200 rounded w-24 mb-1 animate-pulse" />
-                        <div className="h-3 bg-slate-200 rounded w-32 animate-pulse" />
+                        <div className="h-4 bg-slate-200 dark:bg-gray-700 rounded w-24 mb-1 animate-pulse" />
+                        <div className="h-3 bg-slate-200 dark:bg-gray-700 rounded w-32 animate-pulse" />
                       </div>
                       <div className="flex items-center space-x-2 flex-shrink-0 ml-3">
-                        <div className="h-6 w-6 bg-slate-200 rounded animate-pulse" />
-                        <div className="h-4 w-4 bg-slate-200 rounded animate-pulse" />
+                        <div className="h-6 w-6 bg-slate-200 dark:bg-gray-700 rounded animate-pulse" />
+                        <div className="h-4 w-4 bg-slate-200 dark:bg-gray-700 rounded animate-pulse" />
                       </div>
                     </div>
                   </div>
