@@ -310,19 +310,19 @@ export default function CreditPage() {
   const overpayment = totalAmount - (calculator.carPrice[0] - calculator.downPayment[0])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:bg-black">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black">
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
 
         {/* Breadcrumbs - статичные, показываем всегда */}
         <nav className="mb-6 md:mb-8">
-          <ol className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
+          <ol className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-300">
             <li>
-              <Link href="/" className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors" prefetch={true}>
+              <Link href="/" className="hover:text-slate-900 dark:hover:text-white transition-colors" prefetch={true}>
                 Главная
               </Link>
             </li>
             <li><ChevronRight className="h-4 w-4" /></li>
-            <li className="text-slate-900 dark:text-slate-100 font-medium">Автокредит</li>
+            <li className="text-slate-900 dark:text-white font-medium">Автокредит</li>
           </ol>
         </nav>
 
