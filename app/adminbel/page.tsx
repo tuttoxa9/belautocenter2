@@ -8,21 +8,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LogOut, Settings, Car, FileText, MessageSquare, Users, Building, CreditCard, Star, Shield, Trash2, Target, Facebook } from "lucide-react"
+import { LogOut, Settings, Car, FileText, MessageSquare, Building, CreditCard, Star, Shield, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import AdminSettings from "@/components/admin/admin-settings"
 import AdminCars from "@/components/admin/admin-cars"
 import AdminStories from "@/components/admin/admin-stories"
-import AdminLeads from "@/components/admin/admin-leads"
 import AdminAbout from "@/components/admin/admin-about"
 import AdminCredit from "@/components/admin/admin-credit"
 import AdminContacts from "@/components/admin/admin-contacts"
 import AdminReviews from "@/components/admin/admin-reviews"
 import AdminPrivacy from "@/components/admin/admin-privacy"
 import AdminLeasing from "@/components/admin/admin-leasing"
-import AdminFunnel from "@/components/admin/admin-funnel"
-import AdminMetaLeads from "@/components/admin/admin-meta-leads"
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -268,13 +265,6 @@ export default function AdminPage() {
                   <span>Новости</span>
                 </TabsTrigger>
                 <TabsTrigger
-                  value="leads"
-                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
-                >
-                  <Users className="h-5 w-5 mb-1" />
-                  <span>Заявки</span>
-                </TabsTrigger>
-                <TabsTrigger
                   value="about"
                   className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
                 >
@@ -316,20 +306,6 @@ export default function AdminPage() {
                   <Building className="h-5 w-5 mb-1" />
                   <span>Лизинг</span>
                 </TabsTrigger>
-                <TabsTrigger
-                  value="funnel"
-                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
-                >
-                  <Target className="h-5 w-5 mb-1" />
-                  <span>Воронка</span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="meta-leads"
-                  className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
-                >
-                  <Facebook className="h-5 w-5 mb-1" />
-                  <span>Meta Ads</span>
-                </TabsTrigger>
               </TabsList>
             </div>
           </div>
@@ -357,13 +333,6 @@ export default function AdminPage() {
               >
                 <FileText className="h-4 w-4" />
                 <span className="hidden sm:inline">Новости</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="leads"
-                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-              >
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">Заявки</span>
               </TabsTrigger>
               <TabsTrigger
                 value="about"
@@ -407,20 +376,6 @@ export default function AdminPage() {
                 <Building className="h-4 w-4" />
                 <span className="hidden sm:inline">Лизинг</span>
               </TabsTrigger>
-              <TabsTrigger
-                value="funnel"
-                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-              >
-                <Target className="h-4 w-4" />
-                <span className="hidden sm:inline">Воронка</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="meta-leads"
-                className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
-              >
-                <Facebook className="h-4 w-4" />
-                <span className="hidden sm:inline">Meta Ads</span>
-              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -432,9 +387,6 @@ export default function AdminPage() {
           </TabsContent>
           <TabsContent value="stories" className="mt-6">
             <AdminStories />
-          </TabsContent>
-          <TabsContent value="leads" className="mt-6">
-            <AdminLeads />
           </TabsContent>
           <TabsContent value="about" className="mt-6">
             <AdminAbout />
@@ -453,12 +405,6 @@ export default function AdminPage() {
           </TabsContent>
           <TabsContent value="leasing" className="mt-6">
             <AdminLeasing />
-          </TabsContent>
-          <TabsContent value="funnel" className="mt-6">
-            <AdminFunnel />
-          </TabsContent>
-          <TabsContent value="meta-leads" className="mt-6">
-            <AdminMetaLeads />
           </TabsContent>
         </Tabs>
       </div>
