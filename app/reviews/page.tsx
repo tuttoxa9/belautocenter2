@@ -420,17 +420,17 @@ export default function ReviewsPage() {
 
           {/* Call to Action - мобильная адаптация */}
           {reviews.length > 0 && (
-            <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-50 to-white border-t border-slate-200/50 dark:border-gray-700/50">
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-50 to-white dark:from-gray-900/50 dark:to-gray-950/50 border-t border-slate-200/50 dark:border-gray-800">
               <div className="text-center">
                 <div className="flex items-center justify-center space-x-3 mb-3 sm:mb-4">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-100 dark:bg-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                    <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
+                    <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600 dark:text-gray-300" />
                   </div>
                   <div className="text-left flex-1 sm:flex-initial">
                     <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
                       Поделитесь своим опытом
                     </h3>
-                    <p className="text-slate-600 text-xs sm:text-sm">
+                    <p className="text-slate-600 dark:text-gray-300 text-xs sm:text-sm">
                       Ваш отзыв поможет другим клиентам
                     </p>
                   </div>
@@ -438,7 +438,7 @@ export default function ReviewsPage() {
                 <Link
                   href="/contacts"
                   prefetch={true}
-                  className="inline-flex items-center justify-center space-x-2 bg-slate-900 dark:bg-slate-800 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-colors w-full sm:w-auto text-sm sm:text-base"
+                  className="inline-flex items-center justify-center space-x-2 bg-slate-900 dark:bg-slate-800 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors w-full sm:w-auto text-sm sm:text-base"
                 >
                   <span>Связаться с нами</span>
                   <ArrowRight className="h-4 w-4" />
