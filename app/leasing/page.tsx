@@ -573,7 +573,7 @@ export default function LeasingPage() {
 
                   {/* Company Selection - со скелетоном для опций из БД */}
                 <div className="bg-slate-50 dark:bg-zinc-800/50 rounded-lg md:rounded-2xl p-2 md:p-6">
-                  <label className="text-xs md:text-sm font-semibold text-slate-900 mb-1 md:mb-4 block">Выберите лизинговую компанию</label>
+                  <label className="text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1 md:mb-4 block">Выберите лизинговую компанию</label>
                   <Select
                     value={manualInputs.selectedCompany}
                     onValueChange={handleCompanySelection}
