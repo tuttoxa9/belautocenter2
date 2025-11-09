@@ -653,13 +653,13 @@ export default function LeasingPage() {
             {/* Application Form - статичная форма */}
             <div className="lg:col-span-2">
               <div className="bg-gradient-to-br from-white to-slate-50 dark:from-zinc-900 dark:to-zinc-800/50 rounded-2xl md:rounded-3xl p-3 md:p-6 h-full shadow-lg border border-slate-200 dark:border-zinc-700">
-                <h2 className="text-lg md:text-xl font-bold text-slate-900 mb-3 md:mb-4">Подать заявку на лизинг</h2>
-                <p className="text-sm text-slate-600 mb-3 md:hidden">Заполните форму и мы свяжемся с вами</p>
+                <h2 className="text-lg md:text-xl font-bold text-slate-900 dark:text-slate-100 mb-3 md:mb-4">Подать заявку на лизинг</h2>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 md:hidden">Заполните форму и мы свяжемся с вами</p>
 
                 <form onSubmit={handleSubmit} className="space-y-3 md:space-y-3">
                   {/* Выбор типа клиента */}
                   <div>
-                    <Label className="text-sm font-medium text-slate-800 mb-2 block">Тип клиента</Label>
+                    <Label className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-2 block">Тип клиента</Label>
                     <div className="flex gap-4">
                       <label className="flex items-center space-x-2 cursor-pointer">
                         <input
@@ -669,7 +669,7 @@ export default function LeasingPage() {
                           onChange={(e) => setLeasingForm({ ...leasingForm, clientType: e.target.value })}
                           className="text-blue-600"
                         />
-                        <span className="text-sm">Организация</span>
+                        <span className="text-sm text-slate-700 dark:text-slate-300">Организация</span>
                       </label>
                       <label className="flex items-center space-x-2 cursor-pointer">
                         <input
@@ -679,7 +679,7 @@ export default function LeasingPage() {
                           onChange={(e) => setLeasingForm({ ...leasingForm, clientType: e.target.value })}
                           className="text-blue-600"
                         />
-                        <span className="text-sm">Физ. лицо</span>
+                        <span className="text-sm text-slate-700 dark:text-slate-300">Физ. лицо</span>
                       </label>
                     </div>
                   </div>
@@ -688,14 +688,14 @@ export default function LeasingPage() {
                   {leasingForm.clientType === "organization" && (
                     <>
                       <div>
-                        <Label htmlFor="companyName" className="text-sm font-medium text-slate-800 mb-1 block">
+                        <Label htmlFor="companyName" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                           Название организации
                         </Label>
                         <Input
                           id="companyName"
                           value={leasingForm.companyName}
                           onChange={(e) => setLeasingForm({ ...leasingForm, companyName: e.target.value })}
-                          className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                          className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                           placeholder="ООО 'Ваша компания'"
                           required
                         />
@@ -703,27 +703,27 @@ export default function LeasingPage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-2">
                         <div>
-                          <Label htmlFor="contactPerson" className="text-sm font-medium text-slate-800 mb-1 block">
+                          <Label htmlFor="contactPerson" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                             Контактное лицо
                           </Label>
                           <Input
                             id="contactPerson"
                             value={leasingForm.contactPerson}
                             onChange={(e) => setLeasingForm({ ...leasingForm, contactPerson: e.target.value })}
-                            className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                            className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                             placeholder="Иван Иванов"
                             required
                           />
                         </div>
                         <div>
-                          <Label htmlFor="unp" className="text-sm font-medium text-slate-800 mb-1 block">
+                          <Label htmlFor="unp" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                             УНП
                           </Label>
                           <Input
                             id="unp"
                             value={leasingForm.unp}
                             onChange={(e) => setLeasingForm({ ...leasingForm, unp: e.target.value })}
-                            className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                            className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                             placeholder="123456789"
                             required
                           />
@@ -735,14 +735,14 @@ export default function LeasingPage() {
                   {/* Поля для физ. лица */}
                   {leasingForm.clientType === "individual" && (
                     <div>
-                      <Label htmlFor="fullName" className="text-sm font-medium text-slate-800 mb-1 block">
+                      <Label htmlFor="fullName" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                         ФИО
                       </Label>
                       <Input
                         id="fullName"
                         value={leasingForm.fullName}
                         onChange={(e) => setLeasingForm({ ...leasingForm, fullName: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                        className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                         placeholder="Иванов Иван Иванович"
                         required
                       />
@@ -751,7 +751,7 @@ export default function LeasingPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-2">
                     <div>
-                      <Label htmlFor="phone" className="text-sm font-medium text-slate-800 mb-1 block">
+                      <Label htmlFor="phone" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                         Номер телефона
                       </Label>
                       <div className="relative">
@@ -759,7 +759,7 @@ export default function LeasingPage() {
                           id="phone"
                           value={leasingForm.phone}
                           onChange={(e) => setLeasingForm({ ...leasingForm, phone: formatPhoneNumber(e.target.value) })}
-                          className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg pr-10 h-10 text-sm transition-all duration-200"
+                          className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg pr-10 h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                           placeholder="+375XXXXXXXXX"
                           required
                         />
@@ -769,7 +769,7 @@ export default function LeasingPage() {
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="email" className="text-sm font-medium text-slate-800 mb-1 block">
+                      <Label htmlFor="email" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                         Email (необязательно)
                       </Label>
                       <Input
@@ -777,7 +777,7 @@ export default function LeasingPage() {
                         type="email"
                         value={leasingForm.email}
                         onChange={(e) => setLeasingForm({ ...leasingForm, email: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                        className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                         placeholder="your@company.com"
                       />
                     </div>
@@ -785,7 +785,7 @@ export default function LeasingPage() {
 
                   <div className="grid grid-cols-2 gap-3 md:gap-2">
                     <div>
-                      <Label htmlFor="carPrice" className="text-sm font-medium text-slate-800 mb-1 block">
+                      <Label htmlFor="carPrice" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                         Стоимость ($)
                       </Label>
                       <Input
@@ -793,13 +793,13 @@ export default function LeasingPage() {
                         type="number"
                         value={leasingForm.carPrice}
                         onChange={(e) => setLeasingForm({ ...leasingForm, carPrice: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                        className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                         placeholder="50000"
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="advance" className="text-sm font-medium text-slate-800 mb-1 block">
+                      <Label htmlFor="advance" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                         Авансовый ($)
                       </Label>
                       <Input
@@ -807,7 +807,7 @@ export default function LeasingPage() {
                         type="number"
                         value={leasingForm.advance}
                         onChange={(e) => setLeasingForm({ ...leasingForm, advance: e.target.value })}
-                        className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                        className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                         placeholder="15000"
                         required
                       />
@@ -816,14 +816,14 @@ export default function LeasingPage() {
 
                   <div className="grid grid-cols-2 gap-3 md:gap-2">
                     <div>
-                      <Label htmlFor="leasingTerm" className="text-sm font-medium text-slate-800 mb-1 block">
+                      <Label htmlFor="leasingTerm" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                         Срок
                       </Label>
                       <Select
                         value={leasingForm.leasingTerm}
                         onValueChange={(value) => setLeasingForm({ ...leasingForm, leasingTerm: value })}
                       >
-                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200">
+                        <SelectTrigger className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200">
                           <SelectValue placeholder="Месяцы" />
                         </SelectTrigger>
                         <SelectContent>
@@ -838,14 +838,14 @@ export default function LeasingPage() {
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="company" className="text-sm font-medium text-slate-800 mb-1 block">
+                      <Label htmlFor="company" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                         Компания
                       </Label>
                       <Select
                         value={leasingForm.company}
                         onValueChange={(value) => setLeasingForm({ ...leasingForm, company: value })}
                       >
-                        <SelectTrigger className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200">
+                        <SelectTrigger className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200">
                           <SelectValue placeholder="Любая" />
                         </SelectTrigger>
                         <SelectContent>
@@ -874,14 +874,14 @@ export default function LeasingPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="message" className="text-sm font-medium text-slate-800 mb-1 block">
+                    <Label htmlFor="message" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
                       Комментарий (необязательно)
                     </Label>
                     <Input
                       id="message"
                       value={leasingForm.message}
                       onChange={(e) => setLeasingForm({ ...leasingForm, message: e.target.value })}
-                      className="bg-white border border-slate-200 focus:border-blue-400 rounded-lg h-10 text-sm transition-all duration-200"
+                      className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
                       placeholder="Дополнительная информация..."
                     />
                   </div>
@@ -898,7 +898,7 @@ export default function LeasingPage() {
                     Отправить заявку на лизинг
                   </StatusButton>
 
-                  <p className="text-xs text-slate-600 leading-tight text-center">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-tight text-center">
                     Нажимая кнопку "Отправить заявку на лизинг", вы соглашаетесь с{" "}
                     <Link href="/privacy#data-processing" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline" prefetch={true}>
                       условиями обработки персональных данных
@@ -907,8 +907,8 @@ export default function LeasingPage() {
                   </p>
 
                   {/* Partners Section - со скелетонами для логотипов из БД */}
-                  <div className="hidden lg:block mt-4 pt-4 border-t border-slate-200">
-                    <h4 className="text-sm font-semibold text-slate-900 mb-3">Лизинговые компании</h4>
+                  <div className="hidden lg:block mt-4 pt-4 border-t border-slate-200 dark:border-zinc-700">
+                    <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Лизинговые компании</h4>
                     <div className="grid grid-cols-3 gap-2 justify-items-center">
                       {loading ? (
                         Array.from({ length: 6 }).map((_, index) => (
@@ -946,7 +946,7 @@ export default function LeasingPage() {
         {/* Карусель автомобилей - переместили выше преимуществ */}
         <div className="bg-white dark:bg-zinc-900 rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 dark:border-zinc-800 overflow-hidden mb-6 md:mb-8">
           <div className="p-4 md:p-8">
-            <h3 className="text-lg md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Доступные автомобили</h3>
+            <h3 className="text-lg md:text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-4 md:mb-6">Доступные автомобили</h3>
             <LeasingCarsCarousel />
           </div>
         </div>
@@ -954,7 +954,7 @@ export default function LeasingPage() {
         {/* Benefits Section - со скелетонами только для данных из БД */}
         <div className="bg-white dark:bg-zinc-900 rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 dark:border-zinc-800 overflow-hidden">
           <div className="p-4 md:p-8">
-            <h3 className="text-lg md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">Преимущества лизинга</h3>
+            <h3 className="text-lg md:text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-4 md:mb-6">Преимущества лизинга</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {loading ? (
@@ -982,8 +982,8 @@ export default function LeasingPage() {
                           <IconComponent className="h-5 w-5 md:h-6 md:w-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-slate-900 mb-1 md:mb-2 text-sm md:text-base leading-tight">{benefit.title}</h4>
-                          <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{benefit.description}</p>
+                          <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1 md:mb-2 text-sm md:text-base leading-tight">{benefit.title}</h4>
+                          <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{benefit.description}</p>
                         </div>
                       </div>
                     </div>
@@ -992,8 +992,8 @@ export default function LeasingPage() {
               )}
             </div>
 
-            <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-200">
-              <div className="bg-slate-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-slate-200">
+            <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-200 dark:border-zinc-700">
+              <div className="bg-slate-50 dark:bg-zinc-800/50 rounded-lg md:rounded-xl p-3 md:p-4 border border-slate-200 dark:border-zinc-700">
                 <LeasingConditions />
               </div>
             </div>
