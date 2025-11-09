@@ -125,7 +125,7 @@ export function CarsCarousel() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 dark:border-zinc-800 overflow-hidden">
         <div className="p-4 md:p-8">
           <div className="flex items-center justify-between mb-4 md:mb-6">
             <div className="flex items-center gap-3">
@@ -133,11 +133,11 @@ export function CarsCarousel() {
           </div>
           <div className="flex gap-3 md:gap-4 overflow-hidden">
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="min-w-[200px] md:min-w-[220px] bg-slate-100 rounded-xl p-2 md:p-3 animate-pulse">
-                <div className="h-24 md:h-32 bg-slate-200 rounded-lg mb-2"></div>
-                <div className="h-3 bg-slate-200 rounded w-3/4 mb-1"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2 mb-2"></div>
-                <div className="h-3 bg-slate-200 rounded w-full"></div>
+              <div key={index} className="min-w-[200px] md:min-w-[220px] bg-slate-100 dark:bg-zinc-800 rounded-xl p-2 md:p-3 animate-pulse">
+                <div className="h-24 md:h-32 bg-slate-200 dark:bg-zinc-700 rounded-lg mb-2"></div>
+                <div className="h-3 bg-slate-200 dark:bg-zinc-700 rounded w-3/4 mb-1"></div>
+                <div className="h-4 bg-slate-200 dark:bg-zinc-700 rounded w-1/2 mb-2"></div>
+                <div className="h-3 bg-slate-200 dark:bg-zinc-700 rounded w-full"></div>
               </div>
             ))}
           </div>
@@ -148,9 +148,9 @@ export function CarsCarousel() {
 
   if (cars.length === 0) {
     return (
-      <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 dark:border-zinc-800 overflow-hidden">
         <div className="p-4 md:p-8">
-          <div className="text-center text-slate-500">
+          <div className="text-center text-slate-500 dark:text-slate-400">
             {loading ? 'Загружаем автомобили...' : 'Автомобили не найдены'}
           </div>
         </div>
@@ -159,7 +159,7 @@ export function CarsCarousel() {
   }
 
   return (
-    <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+    <div className="bg-white dark:bg-zinc-900 rounded-2xl md:rounded-3xl shadow-lg border border-slate-100 dark:border-zinc-800 overflow-hidden">
       <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-4 md:mb-6">
           <div className="flex items-center gap-3">
@@ -170,17 +170,17 @@ export function CarsCarousel() {
           {/* Левая стрелочка */}
           <button
             onClick={prevSlide}
-            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 hover:bg-white shadow-lg rounded-full items-center justify-center transition-all duration-200 border border-slate-200 hover:shadow-xl"
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 dark:bg-zinc-800/90 hover:bg-white dark:hover:bg-zinc-800 shadow-lg rounded-full items-center justify-center transition-all duration-200 border border-slate-200 dark:border-zinc-700 hover:shadow-xl"
           >
-            <ArrowLeft className="h-5 w-5 text-slate-700" />
+            <ArrowLeft className="h-5 w-5 text-slate-700 dark:text-slate-300" />
           </button>
 
           {/* Правая стрелочка */}
           <button
             onClick={nextSlide}
-            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 hover:bg-white shadow-lg rounded-full items-center justify-center transition-all duration-200 border border-slate-200 hover:shadow-xl"
+            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 dark:bg-zinc-800/90 hover:bg-white dark:hover:bg-zinc-800 shadow-lg rounded-full items-center justify-center transition-all duration-200 border border-slate-200 dark:border-zinc-700 hover:shadow-xl"
           >
-            <ArrowRight className="h-5 w-5 text-slate-700" />
+            <ArrowRight className="h-5 w-5 text-slate-700 dark:text-slate-300" />
           </button>
 
           <div
@@ -196,11 +196,11 @@ export function CarsCarousel() {
             const monthlyPayment = calculateMonthlyPayment(car.price)
 
             return (
-              <Card key={car.id} className="min-w-[200px] md:min-w-[220px] max-w-[200px] md:max-w-[220px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 bg-white group hover:border-slate-300">
+              <Card key={car.id} className="min-w-[200px] md:min-w-[220px] max-w-[200px] md:max-w-[220px] overflow-hidden hover:shadow-lg transition-all duration-200 border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 group hover:border-slate-300 dark:hover:border-zinc-600">
                 <Link href={`/catalog/${car.id}`} className="block" prefetch={true}>
                   {/* Image Section */}
                   <div className="relative">
-                    <div className="relative overflow-hidden bg-slate-100 h-24 md:h-32">
+                    <div className="relative overflow-hidden bg-slate-100 dark:bg-zinc-900 h-24 md:h-32">
                       <Image
                         src={getCachedImageUrl(car.imageUrls?.[0] || "/placeholder.svg?height=160&width=280")}
                         alt={`${car.make} ${car.model}`}
@@ -219,17 +219,17 @@ export function CarsCarousel() {
                   {/* Content Section */}
                   <CardContent className="p-2 md:p-3">
                     <div className="mb-2">
-                      <h4 className="font-semibold text-slate-900 text-sm leading-tight mb-1 group-hover:text-slate-700 transition-colors">
+                      <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-sm leading-tight mb-1 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
                         {car.make} {car.model}
                       </h4>
-                      <div className="font-bold text-slate-900 text-base">
+                      <div className="font-bold text-slate-900 dark:text-slate-100 text-base">
                         {formatCurrency(car.price)}
                       </div>
                     </div>
 
                     {/* Monthly Payment - Simplified */}
-                    <div className="bg-green-50 rounded-lg p-2">
-                      <div className="text-xs text-green-700 mb-1">от {formatCurrency(monthlyPayment)}/мес</div>
+                    <div className="bg-green-50 dark:bg-green-900/30 rounded-lg p-2">
+                      <div className="text-xs text-green-700 dark:text-green-400 mb-1">от {formatCurrency(monthlyPayment)}/мес</div>
                     </div>
                   </CardContent>
                 </Link>
@@ -246,7 +246,7 @@ export function CarsCarousel() {
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-2 h-2 rounded-full transition-colors ${
-                index === activeIndex ? 'bg-blue-600' : 'bg-slate-300'
+                index === activeIndex ? 'bg-blue-600 dark:bg-blue-500' : 'bg-slate-300 dark:bg-zinc-600'
               }`}
             />
           ))}
@@ -256,7 +256,7 @@ export function CarsCarousel() {
           <Link
             href="/catalog"
             prefetch={true}
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
+            className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium text-sm transition-colors"
           >
             Смотреть все автомобили
             <ArrowRight className="h-4 w-4" />

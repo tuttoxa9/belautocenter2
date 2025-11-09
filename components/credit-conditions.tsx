@@ -96,15 +96,15 @@ export default function CreditConditions() {
     return (
       <div className="space-y-3 md:space-y-4">
         <div>
-          <div className="w-36 h-5 bg-slate-200 rounded-lg animate-pulse mb-2"></div>
-          <div className="w-48 h-3 bg-slate-200 rounded animate-pulse mb-3"></div>
+          <div className="w-36 h-5 bg-slate-200 dark:bg-zinc-700 rounded-lg animate-pulse mb-2"></div>
+          <div className="w-48 h-3 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse mb-3"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="flex items-center space-x-2 md:space-x-3 p-2 md:p-3 bg-slate-50 rounded-lg md:rounded-xl">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-slate-200 rounded-lg animate-pulse flex-shrink-0"></div>
+            <div key={index} className="flex items-center space-x-2 md:space-x-3 p-2 md:p-3 bg-slate-50 dark:bg-zinc-800 rounded-lg md:rounded-xl">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-slate-200 dark:bg-zinc-700 rounded-lg animate-pulse flex-shrink-0"></div>
               <div className="flex-1 space-y-1">
-                <div className="w-3/4 h-3 bg-slate-200 rounded animate-pulse"></div>
+                <div className="w-3/4 h-3 bg-slate-200 dark:bg-zinc-700 rounded animate-pulse"></div>
               </div>
             </div>
           ))}
@@ -120,8 +120,8 @@ export default function CreditConditions() {
   return (
     <div className="space-y-2 md:space-y-4">
       <div>
-        <h2 className="text-base md:text-xl font-semibold text-slate-900 mb-1 md:mb-2">Условия кредитования</h2>
-        <p className="text-slate-600 text-xs md:text-sm">
+        <h2 className="text-base md:text-xl font-semibold text-slate-900 dark:text-slate-100 mb-1 md:mb-2">Условия кредитования</h2>
+        <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm">
           Основные условия получения автокредита
         </p>
       </div>
@@ -130,29 +130,29 @@ export default function CreditConditions() {
         {conditions.map((condition) => (
           <div
             key={condition.id}
-            className="flex items-center space-x-2 md:space-x-3 p-2 md:p-3 bg-slate-50 rounded-md md:rounded-xl hover:bg-slate-100 transition-colors duration-200"
+            className="flex items-center space-x-2 md:space-x-3 p-2 md:p-3 bg-slate-50 dark:bg-zinc-800 rounded-md md:rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors duration-200"
           >
-            <div className="w-5 h-5 md:w-8 md:h-8 bg-slate-200 rounded-md md:rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-5 h-5 md:w-8 md:h-8 bg-slate-200 dark:bg-zinc-700 rounded-md md:rounded-xl flex items-center justify-center flex-shrink-0">
               {(() => {
                 const IconComponent = getIcon(condition.icon)
-                return <IconComponent className="h-3 w-3 md:h-4 md:w-4 text-slate-700" />
+                return <IconComponent className="h-3 w-3 md:h-4 md:w-4 text-slate-700 dark:text-slate-300" />
               })()}
             </div>
-            <p className="text-slate-700 text-xs md:text-sm leading-relaxed flex-1">
+            <p className="text-slate-700 dark:text-slate-300 text-xs md:text-sm leading-relaxed flex-1">
               {condition.condition}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-md md:rounded-xl p-2 md:p-4 border border-slate-200">
+      <div className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-zinc-800 dark:to-zinc-700 rounded-md md:rounded-xl p-2 md:p-4 border border-slate-200 dark:border-zinc-700">
         <div className="flex items-center space-x-2 md:space-x-3">
-          <div className="w-4 h-4 md:w-6 md:h-6 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
-            <CheckCircle className="h-2.5 w-2.5 md:h-3.5 md:w-3.5 text-slate-700" />
+          <div className="w-4 h-4 md:w-6 md:h-6 bg-slate-200 dark:bg-zinc-700 rounded-full flex items-center justify-center flex-shrink-0">
+            <CheckCircle className="h-2.5 w-2.5 md:h-3.5 md:w-3.5 text-slate-700 dark:text-slate-300" />
           </div>
           <div>
-            <h4 className="font-semibold text-slate-900 text-xs md:text-sm mb-0.5 md:mb-1">Индивидуальный подход</h4>
-            <p className="text-slate-600 text-xs leading-relaxed">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-xs md:text-sm mb-0.5 md:mb-1">Индивидуальный подход</h4>
+            <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
               Каждая заявка рассматривается индивидуально для поиска оптимального решения
             </p>
           </div>
