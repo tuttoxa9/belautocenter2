@@ -262,13 +262,19 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         setSearchQuery(state.searchQuery)
         setCurrentPage(state.currentPage)
         
-        // Восстанавливаем позицию скролла после небольшой задержки
-        setTimeout(() => {
-          if (state.scrollPosition) {
-            window.scrollTo(0, state.scrollPosition)
-          }
-          setIsRestoringState(false)
-        }, 100)
+        // Восстанавливаем позицию скролла после загрузки контента
+        // Используем requestAnimationFrame для гарантии, что DOM обновлен
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            if (state.scrollPosition) {
+              window.scrollTo({
+                top: state.scrollPosition,
+                behavior: 'instant'
+              })
+            }
+            setIsRestoringState(false)
+          }, 300)
+        })
       } catch (error) {
         console.error('Error restoring catalog state:', error)
         setIsRestoringState(false)
@@ -289,6 +295,13 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     const uniqueModels = [...new Set(cars.map(car => car.model))].sort()
     setAvailableModels(uniqueModels)
   }, [cars])
+
+  // Применяем фильтры после восстановления состояния
+  useEffect(() => {
+    if (!isRestoringState && cars.length > 0) {
+      applyFilters()
+    }
+  }, [isRestoringState, cars, applyFilters])
 
   useEffect(() => {
     if (filters.make === "all") {
