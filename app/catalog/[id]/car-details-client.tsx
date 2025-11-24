@@ -765,7 +765,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
             </li>
             <li>
               <button
-                onClick={() => router.push('/catalog')}
+                onClick={() => router.back()}
                 className="hover:text-slate-700 dark:hover:text-gray-200 transition-colors px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-gray-800"
               >
                 Каталог

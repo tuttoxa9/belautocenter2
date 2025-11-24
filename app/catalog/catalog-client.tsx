@@ -244,6 +244,34 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [sortBy, setSortBy] = useState("date-desc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [isRestoringState, setIsRestoringState] = useState(true)
+
+  // Восстановление состояния из sessionStorage при загрузке
+  useEffect(() => {
+    const savedState = sessionStorage.getItem('catalogState')
+    if (savedState) {
+      try {
+        const state = JSON.parse(savedState)
+        setFilters(state.filters)
+        setSortBy(state.sortBy)
+        setSearchQuery(state.searchQuery)
+        setCurrentPage(state.currentPage)
+        
+        // Восстанавливаем позицию скролла после небольшой задержки
+        setTimeout(() => {
+          if (state.scrollPosition) {
+            window.scrollTo(0, state.scrollPosition)
+          }
+          setIsRestoringState(false)
+        }, 100)
+      } catch (error) {
+        console.error('Error restoring catalog state:', error)
+        setIsRestoringState(false)
+      }
+    } else {
+      setIsRestoringState(false)
+    }
+  }, [])
 
   useEffect(() => {
     setCars(initialCars)
@@ -274,7 +302,9 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     if (!cars || cars.length === 0) {
       setFilteredCars([]);
       setDisplayedCars([]);
-      setCurrentPage(1);
+      if (!isRestoringState) {
+        setCurrentPage(1);
+      }
       setHasMore(false);
       return;
     }
@@ -327,11 +357,17 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     })
 
     setFilteredCars(filtered)
-    setCurrentPage(1)
-    const initialDisplayed = filtered.slice(0, carsPerPage)
+    
+    // При восстановлении состояния используем сохраненную страницу
+    const pageToUse = isRestoringState ? currentPage : 1
+    if (!isRestoringState) {
+      setCurrentPage(1)
+    }
+    
+    const initialDisplayed = filtered.slice(0, carsPerPage * pageToUse)
     setDisplayedCars(initialDisplayed)
-    setHasMore(filtered.length > carsPerPage)
-  }, [cars, filters, sortBy, carsPerPage, searchQuery])
+    setHasMore(filtered.length > carsPerPage * pageToUse)
+  }, [cars, filters, sortBy, carsPerPage, searchQuery, isRestoringState, currentPage])
 
   useEffect(() => {
     applyFilters()
@@ -376,6 +412,36 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
            filters.mileageFrom !== "" || filters.mileageTo !== "" || filters.transmission !== "any" ||
            filters.fuelType !== "any" || filters.driveTrain !== "any" || searchQuery !== ""
   }
+
+  // Функция для сохранения состояния каталога
+  const saveCatalogState = useCallback(() => {
+    const state = {
+      filters,
+      sortBy,
+      searchQuery,
+      currentPage,
+      scrollPosition: window.scrollY
+    }
+    sessionStorage.setItem('catalogState', JSON.stringify(state))
+  }, [filters, sortBy, searchQuery, currentPage])
+
+  // Сохраняем состояние при изменении фильтров, сортировки или страницы
+  useEffect(() => {
+    if (!isRestoringState) {
+      saveCatalogState()
+    }
+  }, [filters, sortBy, searchQuery, currentPage, saveCatalogState, isRestoringState])
+
+  // Очищаем состояние при размонтировании компонента (если пользователь уходит не на страницу автомобиля)
+  useEffect(() => {
+    return () => {
+      // Проверяем, переходит ли пользователь на страницу автомобиля
+      const isNavigatingToCarDetails = window.location.pathname.includes('/catalog/')
+      if (!isNavigatingToCarDetails) {
+        sessionStorage.removeItem('catalogState')
+      }
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-black dark:to-gray-950">
