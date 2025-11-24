@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useLayoutEffect } from "react"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -218,6 +219,10 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
 );
 
 export default function CatalogClient({ initialCars }: CatalogClientProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+
   const [cars, setCars] = useState<Car[]>(initialCars)
   const [filteredCars, setFilteredCars] = useState<Car[]>(initialCars)
   const [displayedCars, setDisplayedCars] = useState<Car[]>([])
@@ -228,27 +233,62 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [hasMore, setHasMore] = useState(true)
   const [availableMakes, setAvailableMakes] = useState<string[]>([])
   const [availableModels, setAvailableModels] = useState<string[]>([])
-  const [filters, setFilters] = useState({
-    priceFrom: "",
-    priceTo: "",
-    make: "all",
-    model: "all",
-    yearFrom: "",
-    yearTo: "",
-    mileageFrom: "",
-    mileageTo: "",
-    transmission: "any",
-    fuelType: "any",
-    driveTrain: "any",
+
+  const [filters, setFilters] = useState(() => {
+    const params = new URLSearchParams(searchParams)
+    return {
+      priceFrom: params.get("priceFrom") || "",
+      priceTo: params.get("priceTo") || "",
+      make: params.get("make") || "all",
+      model: params.get("model") || "all",
+      yearFrom: params.get("yearFrom") || "",
+      yearTo: params.get("yearTo") || "",
+      mileageFrom: params.get("mileageFrom") || "",
+      mileageTo: params.get("mileageTo") || "",
+      transmission: params.get("transmission") || "any",
+      fuelType: params.get("fuelType") || "any",
+      driveTrain: params.get("driveTrain") || "any",
+    }
   })
-  const [sortBy, setSortBy] = useState("date-desc")
+
+  const [sortBy, setSortBy] = useState(() => {
+    const params = new URLSearchParams(searchParams)
+    return params.get("sortBy") || "date-desc"
+  })
+
+  const [searchQuery, setSearchQuery] = useState(() => {
+    const params = new URLSearchParams(searchParams)
+    return params.get("search") || ""
+  })
+
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     setCars(initialCars)
     setFilteredCars(initialCars)
   }, [initialCars])
+
+  // Save scroll position on unmount
+  useEffect(() => {
+    return () => {
+      sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+      sessionStorage.setItem('searchParams', searchParams.toString());
+    };
+  }, [searchParams]);
+
+  // Restore scroll position on mount if the search params match
+  useLayoutEffect(() => {
+    const savedPosition = sessionStorage.getItem('scrollPosition');
+    const savedParams = sessionStorage.getItem('searchParams');
+
+    if (savedPosition && savedParams === searchParams.toString()) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedPosition, 10));
+        sessionStorage.removeItem('scrollPosition');
+        sessionStorage.removeItem('searchParams');
+      }, 100);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const uniqueMakes = [...new Set(cars.map(car => car.make))].sort()
@@ -271,6 +311,29 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   }, [filters.make, cars, filters.model])
 
   const applyFilters = useCallback(() => {
+    const params = new URLSearchParams()
+
+    // Filters
+    if (filters.priceFrom) params.set("priceFrom", filters.priceFrom)
+    if (filters.priceTo) params.set("priceTo", filters.priceTo)
+    if (filters.make !== "all") params.set("make", filters.make)
+    if (filters.model !== "all") params.set("model", filters.model)
+    if (filters.yearFrom) params.set("yearFrom", filters.yearFrom)
+    if (filters.yearTo) params.set("yearTo", filters.yearTo)
+    if (filters.mileageFrom) params.set("mileageFrom", filters.mileageFrom)
+    if (filters.mileageTo) params.set("mileageTo", filters.mileageTo)
+    if (filters.transmission !== "any") params.set("transmission", filters.transmission)
+    if (filters.fuelType !== "any") params.set("fuelType", filters.fuelType)
+    if (filters.driveTrain !== "any") params.set("driveTrain", filters.driveTrain)
+
+    // Sorting
+    if (sortBy !== "date-desc") params.set("sortBy", sortBy)
+
+    // Search query
+    if (searchQuery) params.set("search", searchQuery)
+
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+
     if (!cars || cars.length === 0) {
       setFilteredCars([]);
       setDisplayedCars([]);
@@ -363,7 +426,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       transmission: "any", fuelType: "any", driveTrain: "any",
     })
     setSearchQuery("")
-    applyFilters()
+    router.push(pathname, { scroll: false })
   }
 
   const handleSearch = () => {

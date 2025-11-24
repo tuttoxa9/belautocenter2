@@ -70,7 +70,7 @@ export default function CarCard({ car }: CarCardProps) {
   }, [car.imageUrls])
 
   return (
-    <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/60 rounded-2xl h-full group transition-all duration-200 dark:border dark:border-gray-800">
+    <Card ref={cardRef} data-testid="car-card" className="overflow-hidden border-0 bg-white/70 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/60 rounded-2xl h-full group transition-all duration-200 dark:border dark:border-gray-800">
       <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={true}>
         {/* Image Section */}
         <div className="relative">
