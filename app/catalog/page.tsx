@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import CatalogClient from './catalog-client'
 
 // ISR: кэширование на 24 часа
@@ -73,5 +74,16 @@ export default async function CatalogPage() {
   }
 
   // Передаем данные в клиентский компонент
-  return <CatalogClient initialCars={cars} />
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-black dark:to-gray-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-slate-200 border-t-slate-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600 dark:text-gray-400">Загрузка каталога...</p>
+        </div>
+      </div>
+    }>
+      <CatalogClient initialCars={cars} />
+    </Suspense>
+  )
 }

@@ -248,6 +248,11 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
 
   // Восстановление состояния из sessionStorage при загрузке
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      setIsRestoringState(false)
+      return
+    }
+    
     const savedState = sessionStorage.getItem('catalogState')
     if (savedState) {
       try {
@@ -415,6 +420,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
 
   // Функция для сохранения состояния каталога
   const saveCatalogState = useCallback(() => {
+    if (typeof window === 'undefined') return
+    
     const state = {
       filters,
       sortBy,
@@ -435,6 +442,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   // Очищаем состояние при размонтировании компонента (если пользователь уходит не на страницу автомобиля)
   useEffect(() => {
     return () => {
+      if (typeof window === 'undefined') return
+      
       // Проверяем, переходит ли пользователь на страницу автомобиля
       const isNavigatingToCarDetails = window.location.pathname.includes('/catalog/')
       if (!isNavigatingToCarDetails) {

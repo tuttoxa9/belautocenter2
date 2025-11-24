@@ -71,6 +71,8 @@ export default function CarCard({ car }: CarCardProps) {
 
   // Сохраняем позицию скролла перед переходом на страницу автомобиля
   const handleCardClick = () => {
+    if (typeof window === 'undefined') return
+    
     const catalogState = sessionStorage.getItem('catalogState')
     if (catalogState) {
       const state = JSON.parse(catalogState)
