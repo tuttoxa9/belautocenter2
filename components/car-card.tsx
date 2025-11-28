@@ -26,6 +26,7 @@ interface CarCardProps {
     transmission: string
     imageUrls: string[]
     isAvailable: boolean
+    noMileageInRb?: boolean
   }
 }
 
@@ -123,6 +124,15 @@ export default function CarCard({ car }: CarCardProps) {
                 </span>
               )}
             </div>
+
+            {/* "Из Европы" Badge */}
+            {car.noMileageInRb && (
+              <div className="absolute top-3 left-3">
+                <Badge variant="default" className="bg-blue-600 text-white text-xs font-semibold px-2 py-1">
+                  Из Европы
+                </Badge>
+              </div>
+            )}
           </div>
         </div>
 

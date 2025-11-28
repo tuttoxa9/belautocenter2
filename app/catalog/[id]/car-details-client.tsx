@@ -169,6 +169,7 @@ interface Car {
   specifications: Record<string, string>;
   tiktok_url?: string;
   youtube_url?: string;
+  noMileageInRb?: boolean;
 }
 
 interface PartnerBank {

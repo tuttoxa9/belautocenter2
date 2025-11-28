@@ -22,6 +22,7 @@ interface Car {
   transmission: string;
   fuelType: string;
   driveTrain: string;
+  noMileageInRb?: boolean;
 }
 
 interface CatalogClientProps {
@@ -108,6 +109,18 @@ const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableMo
           <SelectItem value="Полный" className="text-base py-3">Полный</SelectItem>
         </SelectContent>
       </Select>
+    </div>
+    <div className="flex items-center space-x-2 pt-2">
+      <input
+        type="checkbox"
+        id="noMileageInRb-mobile"
+        checked={filters.noMileageInRb}
+        onChange={(e) => setFilters({ ...filters, noMileageInRb: e.target.checked })}
+        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+      />
+      <Label htmlFor="noMileageInRb-mobile" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Без пробега по РБ
+      </Label>
     </div>
   </div>
 );
@@ -210,6 +223,18 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
           </SelectContent>
         </Select>
       </div>
+    <div className="flex items-center space-x-2 pt-2">
+      <input
+        type="checkbox"
+        id="noMileageInRb-desktop"
+        checked={filters.noMileageInRb}
+        onChange={(e) => setFilters({ ...filters, noMileageInRb: e.target.checked })}
+        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+      />
+      <Label htmlFor="noMileageInRb-desktop" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Без пробега по РБ
+      </Label>
+    </div>
       <div className="pt-3">
         <Button onClick={applyFilters} className="w-full h-9 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">Применить фильтры</Button>
       </div>
@@ -240,6 +265,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     transmission: "any",
     fuelType: "any",
     driveTrain: "any",
+    noMileageInRb: false,
   })
   const [sortBy, setSortBy] = useState("date-desc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -356,7 +382,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         (filters.mileageTo === "" || mileageTo === 0 || carMileage <= mileageTo) &&
         (filters.transmission === "any" || car.transmission === filters.transmission) &&
         (filters.fuelType === "any" || car.fuelType === filters.fuelType) &&
-        (filters.driveTrain === "any" || car.driveTrain === filters.driveTrain)
+        (filters.driveTrain === "any" || car.driveTrain === filters.driveTrain) &&
+        (!filters.noMileageInRb || car.noMileageInRb)
       )
     })
 
@@ -414,7 +441,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     setFilters({
       priceFrom: "", priceTo: "", make: "all", model: "all",
       yearFrom: "", yearTo: "", mileageFrom: "", mileageTo: "",
-      transmission: "any", fuelType: "any", driveTrain: "any",
+      transmission: "any", fuelType: "any", driveTrain: "any", noMileageInRb: false,
     })
     setSearchQuery("")
     applyFilters()
@@ -428,7 +455,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     return filters.priceFrom !== "" || filters.priceTo !== "" || filters.make !== "all" ||
            filters.model !== "all" || filters.yearFrom !== "" || filters.yearTo !== "" ||
            filters.mileageFrom !== "" || filters.mileageTo !== "" || filters.transmission !== "any" ||
-           filters.fuelType !== "any" || filters.driveTrain !== "any" || searchQuery !== ""
+           filters.fuelType !== "any" || filters.driveTrain !== "any" || searchQuery !== "" || filters.noMileageInRb
   }
 
   // Функция для сохранения состояния каталога

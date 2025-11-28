@@ -51,6 +51,7 @@ export default function AdminCars() {
     imageUrls: [""],
     isAvailable: true,
     showOnHomepage: false,
+    noMileageInRb: false,
     specifications: {
       "Двигатель": "",
       "Разгон 0-100": "",
@@ -139,6 +140,7 @@ export default function AdminCars() {
       specifications: car.specifications || {},
       features: car.features || [],
       showOnHomepage: car.showOnHomepage || false,
+      noMileageInRb: car.noMileageInRb || false,
       tiktok_url: car.tiktok_url || "",
       youtube_url: car.youtube_url || "",
     })
@@ -174,6 +176,7 @@ export default function AdminCars() {
       imageUrls: [""],
       isAvailable: true,
       showOnHomepage: false,
+      noMileageInRb: false,
       specifications: {
         "Двигатель": "",
         "Разгон 0-100": "",
@@ -618,6 +621,16 @@ export default function AdminCars() {
                       />
                       <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
                     </div>
+
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="noMileageInRb"
+                        checked={!!carForm.noMileageInRb}
+                        onChange={(e) => setCarForm({ ...carForm, noMileageInRb: e.target.checked })}
+                      />
+                      <Label htmlFor="noMileageInRb">Без пробега по РБ</Label>
+                    </div>
                   </div>
 
                   <div>
@@ -814,6 +827,7 @@ export default function AdminCars() {
                         imageUrls: carForm.imageUrls.filter(url => url.trim() !== ""),
                         isAvailable: carForm.isAvailable,
                         showOnHomepage: carForm.showOnHomepage,
+                        noMileageInRb: carForm.noMileageInRb,
                         specifications: carForm.specifications,
                         features: carForm.features,
                         tiktok_url: carForm.tiktok_url,
