@@ -62,6 +62,7 @@ export default function AdminCars() {
     features: [],
     tiktok_url: "",
     youtube_url: "",
+    fromEurope: false,
   })
 
   useEffect(() => {
@@ -100,6 +101,7 @@ export default function AdminCars() {
         engineVolume: carForm.fuelType === "Электро" ? 0 : parseFloat(carForm.engineVolume),
         year: Number(carForm.year),
         imageUrls: carForm.imageUrls.filter((url) => url.trim() !== ""),
+        fromEurope: carForm.fromEurope,
         createdAt: editingCar ? editingCar.createdAt : new Date(),
         updatedAt: new Date(),
       }
@@ -139,6 +141,7 @@ export default function AdminCars() {
       specifications: car.specifications || {},
       features: car.features || [],
       showOnHomepage: car.showOnHomepage || false,
+      fromEurope: car.fromEurope || false,
       tiktok_url: car.tiktok_url || "",
       youtube_url: car.youtube_url || "",
     })
@@ -174,6 +177,7 @@ export default function AdminCars() {
       imageUrls: [""],
       isAvailable: true,
       showOnHomepage: false,
+      fromEurope: false,
       specifications: {
         "Двигатель": "",
         "Разгон 0-100": "",
@@ -617,6 +621,16 @@ export default function AdminCars() {
                         onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
                       />
                       <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="fromEurope"
+                        checked={carForm.fromEurope}
+                        onChange={(e) => setCarForm({ ...carForm, fromEurope: e.target.checked })}
+                      />
+                      <Label htmlFor="fromEurope">Без пробега по РБ</Label>
                     </div>
                   </div>
 

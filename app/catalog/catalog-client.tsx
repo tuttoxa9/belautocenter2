@@ -109,6 +109,15 @@ const MobileFiltersContent = ({ filters, setFilters, availableMakes, availableMo
         </SelectContent>
       </Select>
     </div>
+    <div className="flex items-center space-x-2">
+      <input
+        type="checkbox"
+        id="fromEuropeOnly"
+        checked={filters.fromEuropeOnly}
+        onChange={(e) => setFilters({ ...filters, fromEuropeOnly: e.target.checked })}
+      />
+      <Label htmlFor="fromEuropeOnly">Без пробега по РБ</Label>
+    </div>
   </div>
 );
 
@@ -210,6 +219,15 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
           </SelectContent>
         </Select>
       </div>
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          id="fromEuropeOnlyDesktop"
+          checked={filters.fromEuropeOnly}
+          onChange={(e) => setFilters({ ...filters, fromEuropeOnly: e.target.checked })}
+        />
+        <Label htmlFor="fromEuropeOnlyDesktop">Без пробега по РБ</Label>
+      </div>
       <div className="pt-3">
         <Button onClick={applyFilters} className="w-full h-9 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">Применить фильтры</Button>
       </div>
@@ -240,6 +258,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     transmission: "any",
     fuelType: "any",
     driveTrain: "any",
+    fromEuropeOnly: false,
   })
   const [sortBy, setSortBy] = useState("date-desc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -308,7 +327,8 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
         (filters.mileageTo === "" || mileageTo === 0 || carMileage <= mileageTo) &&
         (filters.transmission === "any" || car.transmission === filters.transmission) &&
         (filters.fuelType === "any" || car.fuelType === filters.fuelType) &&
-        (filters.driveTrain === "any" || car.driveTrain === filters.driveTrain)
+        (filters.driveTrain === "any" || car.driveTrain === filters.driveTrain) &&
+        (!filters.fromEuropeOnly || car.fromEurope)
       )
     })
 
@@ -361,6 +381,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       priceFrom: "", priceTo: "", make: "all", model: "all",
       yearFrom: "", yearTo: "", mileageFrom: "", mileageTo: "",
       transmission: "any", fuelType: "any", driveTrain: "any",
+      fromEuropeOnly: false,
     })
     setSearchQuery("")
     applyFilters()
@@ -374,7 +395,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     return filters.priceFrom !== "" || filters.priceTo !== "" || filters.make !== "all" ||
            filters.model !== "all" || filters.yearFrom !== "" || filters.yearTo !== "" ||
            filters.mileageFrom !== "" || filters.mileageTo !== "" || filters.transmission !== "any" ||
-           filters.fuelType !== "any" || filters.driveTrain !== "any" || searchQuery !== ""
+           filters.fuelType !== "any" || filters.driveTrain !== "any" || searchQuery !== "" || filters.fromEuropeOnly
   }
 
   return (

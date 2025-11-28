@@ -26,6 +26,7 @@ interface CarCardProps {
     transmission: string
     imageUrls: string[]
     isAvailable: boolean
+    fromEurope?: boolean
   }
 }
 
@@ -173,6 +174,12 @@ export default function CarCard({ car }: CarCardProps) {
                   <span className="text-slate-600 dark:text-gray-400">КПП</span>
                   <span className="font-medium text-slate-900 dark:text-white">{car.transmission}</span>
                 </div>
+                {car.fromEurope && (
+                  <div className="flex items-center justify-between text-xs mt-1">
+                    <span className="text-slate-600 dark:text-gray-400">Происхождение</span>
+                    <span className="font-medium text-slate-900 dark:text-white">Из Европы</span>
+                  </div>
+                )}
               </div>
             </>
           )}
