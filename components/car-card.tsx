@@ -145,9 +145,16 @@ export default function CarCard({ car }: CarCardProps) {
             <>
               {/* Header - более компактный */}
               <div className="mb-2">
-                <h3 className="font-semibold text-slate-900 dark:text-white text-base leading-tight mb-1 group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors">
-                  {car.make} {car.model}
-                </h3>
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-base leading-tight group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors flex-1">
+                    {car.make} {car.model}
+                  </h3>
+                  {car.fromEurope && (
+                    <span className="mt-0.5 flex-shrink-0 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded-full">
+                      Из Европы
+                    </span>
+                  )}
+                </div>
                 <div className="font-bold text-slate-900 dark:text-white text-lg">
                   {car?.price ? formattedPrice : 'Цена по запросу'}
                 </div>
@@ -174,12 +181,6 @@ export default function CarCard({ car }: CarCardProps) {
                   <span className="text-slate-600 dark:text-gray-400">КПП</span>
                   <span className="font-medium text-slate-900 dark:text-white">{car.transmission}</span>
                 </div>
-                {car.fromEurope && (
-                  <div className="flex items-center justify-between text-xs mt-1">
-                    <span className="text-slate-600 dark:text-gray-400">Происхождение</span>
-                    <span className="font-medium text-slate-900 dark:text-white">Из Европы</span>
-                  </div>
-                )}
               </div>
             </>
           )}
