@@ -486,17 +486,17 @@ export default function SalePage() {
       </section>
 
       {/* Combined Section - Social Media + Contact Form */}
-      <section id="contact-form" className="py-20 md:py-28 bg-gradient-to-b from-white to-blue-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* Левая половина - Активное продвижение в соцсетях */}
-            <div className="bg-gradient-to-br from-blue-600 to-emerald-600 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl">
+      <section id="contact-form" className="bg-gradient-to-b from-white to-blue-50">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          {/* Левая половина - Активное продвижение в соцсетях */}
+          <div className="bg-gradient-to-br from-blue-600 to-emerald-600 p-8 md:p-12 lg:p-16 relative overflow-hidden flex items-center">
+            <div className="w-full">
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
               </div>
 
-              <div className="relative z-10">
+              <div className="relative z-10 max-w-2xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                   Активное продвижение в соцсетях
                 </h2>
@@ -542,9 +542,11 @@ export default function SalePage() {
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Правая половина - Давайте попробуем с заявкой */}
-            <div className="space-y-6">
+          {/* Правая половина - Давайте попробуем с заявкой */}
+          <div className="p-8 md:p-12 lg:p-16 flex items-center">
+            <div className="w-full max-w-2xl mx-auto space-y-6">
               {/* Заголовок с эмодзи */}
               <div className="text-center">
                 <div className="flex items-center justify-center gap-4 mb-6">
