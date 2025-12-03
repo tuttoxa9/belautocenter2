@@ -35,10 +35,21 @@ import {
   Facebook,
   TrendingDown,
   Sparkles,
-  ArrowDown,
-  Video,
-  Globe
+  ArrowDown
 } from "lucide-react"
+
+// Кастомные иконки для социальных сетей
+const TikTokIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
+  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+  </svg>
+)
+
+const VKIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
+  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.183 14.683h-1.224c-.417 0-.546-.332-1.297-1.09-.652-.631-1.044-.706-1.297-.706-.264 0-.34.075-.34.443v.991c0 .265-.08.419-1.229.419-1.92 0-4.05-1.166-5.547-3.343-2.253-3.19-2.86-5.557-2.86-6.044 0-.252.076-.486.443-.486h1.225c.33 0 .456.151.584.505.66 1.869 1.767 3.51 2.223 3.51.173 0 .252-.08.252-.518v-2.018c-.057-.955-.561-1.036-.561-1.376 0-.21.171-.419.444-.419h1.922c.278 0 .38.152.38.481v2.669c0 .279.125.38.203.38.173 0 .312-.101.627-.419 1.002-1.125 1.72-2.865 1.72-2.865.095-.203.247-.404.577-.404h1.225c.367 0 .447.189.367.447-.174.854-1.87 3.663-1.87 3.663-.145.239-.202.345 0 .614.145.203.627.613 .95.988.588.594 1.042 1.09 1.164 1.435.125.346-.068.52-.435.52z"/>
+  </svg>
+)
 
 const advantages = [
   {
@@ -147,9 +158,9 @@ const services = [
 
 const socialPlatforms = [
   { name: 'Instagram', icon: Instagram, color: '#E4405F' },
-  { name: 'TikTok', icon: Video, color: '#000000' },
+  { name: 'TikTok', icon: TikTokIcon, color: '#000000' },
   { name: 'Google Ads', icon: Target, color: '#4285F4' },
-  { name: 'VK', icon: Globe, color: '#0077FF' },
+  { name: 'VK', icon: VKIcon, color: '#0077FF' },
   { name: 'Facebook', icon: Facebook, color: '#1877F2' }
 ]
 
