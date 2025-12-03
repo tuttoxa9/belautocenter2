@@ -292,11 +292,6 @@ export default function SalePage() {
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="white"/>
-          </svg>
-        </div>
       </section>
 
       {/* Advantages Section */}
@@ -423,43 +418,73 @@ export default function SalePage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-20 md:py-28 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block relative mb-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
-                Как мы работаем
-              </h2>
-              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full"></div>
-            </div>
-            <p className="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
+              Как мы работаем
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Простой и прозрачный процесс продажи вашего автомобиля
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              {/* Вертикальная линия на десктопе */}
+              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-200 via-purple-200 to-emerald-200 transform -translate-x-1/2"></div>
+
               {dealSteps.map((step, index) => {
                 const IconComponent = step.icon
+                const colors = [
+                  { bg: 'from-blue-500 to-blue-600', icon: 'bg-blue-500', border: 'border-blue-200', text: 'text-blue-600' },
+                  { bg: 'from-purple-500 to-purple-600', icon: 'bg-purple-500', border: 'border-purple-200', text: 'text-purple-600' },
+                  { bg: 'from-pink-500 to-pink-600', icon: 'bg-pink-500', border: 'border-pink-200', text: 'text-pink-600' },
+                  { bg: 'from-orange-500 to-orange-600', icon: 'bg-orange-500', border: 'border-orange-200', text: 'text-orange-600' },
+                  { bg: 'from-emerald-500 to-emerald-600', icon: 'bg-emerald-500', border: 'border-emerald-200', text: 'text-emerald-600' },
+                  { bg: 'from-teal-500 to-teal-600', icon: 'bg-teal-500', border: 'border-teal-200', text: 'text-teal-600' }
+                ]
+                const color = colors[index % colors.length]
+                const isEven = index % 2 === 0
+
                 return (
-                  <div key={step.id} className="relative">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-3 shadow-lg">
-                        <IconComponent className="h-8 w-8 text-white" />
+                  <div key={step.id} className={`relative mb-12 md:mb-16 ${
+                    isEven ? 'md:pr-1/2' : 'md:pl-1/2'
+                  }`}>
+                    {/* Карточка */}
+                    <div className={`md:w-1/2 ${
+                      isEven ? 'md:ml-0' : 'md:ml-auto'
+                    }`}>
+                      <div className={`bg-white rounded-2xl p-6 shadow-xl border-2 ${color.border} hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
+                        <div className="flex items-start gap-4">
+                          {/* Иконка */}
+                          <div className={`flex-shrink-0 w-16 h-16 bg-gradient-to-br ${color.bg} rounded-xl flex items-center justify-center shadow-lg relative`}>
+                            <IconComponent className="h-8 w-8 text-white" />
+                            <div className={`absolute -top-2 -right-2 w-7 h-7 ${color.icon} text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md`}>
+                              {step.id}
+                            </div>
+                          </div>
+
+                          {/* Контент */}
+                          <div className="flex-1">
+                            <h4 className={`font-bold text-xl mb-2 ${color.text}`}>
+                              {step.title}
+                            </h4>
+                            <p className="text-gray-600 text-sm leading-relaxed">
+                              {step.description}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
-                        {step.id}
-                      </div>
-                      <h4 className="font-bold text-blue-900 mb-1 text-sm">
-                        {step.title}
-                      </h4>
-                      <p className="text-xs text-gray-600">
-                        {step.description}
-                      </p>
                     </div>
+
+                    {/* Точка на линии (только на десктопе) */}
+                    <div className={`hidden md:block absolute top-8 left-1/2 transform -translate-x-1/2 w-4 h-4 ${color.icon} rounded-full border-4 border-white shadow-lg z-10`}></div>
+
+                    {/* Стрелка вниз (только на мобильной версии) */}
                     {index < dealSteps.length - 1 && (
-                      <div className="hidden lg:block absolute top-8 left-full w-full">
-                        <ArrowRight className="h-5 w-5 text-blue-300 mx-auto" />
+                      <div className="md:hidden flex justify-center my-4">
+                        <ArrowDown className={`h-6 w-6 ${color.text} animate-bounce`} />
                       </div>
                     )}
                   </div>
