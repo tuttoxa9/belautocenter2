@@ -422,35 +422,30 @@ export default function SalePage() {
         </div>
       </section>
 
-      {/* Process Section - Компактная версия */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+      {/* Process Section - Минималистичная версия */}
+      <section className="py-16 md:py-20 bg-white border-t border-gray-100">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-3">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Как мы работаем
             </h2>
-            <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              6 простых шагов до успешной продажи
+            <p className="text-gray-600 max-w-xl mx-auto">
+              Прозрачный процесс от заявки до продажи
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            {/* Мобильная версия - вертикальный список */}
-            <div className="block md:hidden space-y-4">
+          <div className="max-w-6xl mx-auto">
+            {/* Мобильная версия */}
+            <div className="block md:hidden space-y-3">
               {dealSteps.map((step) => {
                 const IconComponent = step.icon
                 return (
-                  <div key={step.id} className="flex items-start gap-4 bg-white rounded-xl p-4 shadow-md">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <IconComponent className="h-5 w-5 text-white" />
+                  <div key={step.id} className="flex items-start gap-4 border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center justify-center w-8 h-8 rounded bg-gray-900 text-white font-semibold text-sm flex-shrink-0">
+                      {step.id}
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                          {step.id}
-                        </span>
-                        <h4 className="font-bold text-blue-900">{step.title}</h4>
-                      </div>
+                      <h4 className="font-semibold text-gray-900 mb-1">{step.title}</h4>
                       <p className="text-sm text-gray-600">{step.description}</p>
                     </div>
                   </div>
@@ -458,31 +453,29 @@ export default function SalePage() {
               })}
             </div>
 
-            {/* Десктопная версия - горизонтальный timeline */}
-            <div className="hidden md:block relative">
-              {/* Линия между шагами */}
-              <div className="absolute top-8 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-emerald-200 to-blue-200"></div>
+            {/* Десктопная версия */}
+            <div className="hidden md:block">
+              <div className="grid grid-cols-6 gap-6 relative">
+                {/* Соединительная линия */}
+                <div className="absolute top-6 left-0 right-0 h-px bg-gray-200" style={{ left: '8.33%', right: '8.33%' }}></div>
 
-              <div className="grid grid-cols-6 gap-2 relative">
-                {dealSteps.map((step, index) => {
+                {dealSteps.map((step) => {
                   const IconComponent = step.icon
                   return (
-                    <div key={step.id} className="flex flex-col items-center group">
-                      {/* Иконка с номером */}
-                      <div className="relative z-10 mb-4">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <IconComponent className="h-7 w-7 text-white" />
-                        </div>
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center text-xs font-bold border-2 border-white">
-                          {step.id}
-                        </div>
+                    <div key={step.id} className="flex flex-col items-center text-center relative">
+                      {/* Номер */}
+                      <div className="w-12 h-12 rounded-full border-2 border-gray-900 bg-white flex items-center justify-center mb-3 relative z-10">
+                        <span className="text-lg font-bold text-gray-900">{step.id}</span>
+                      </div>
+
+                      {/* Иконка */}
+                      <div className="mb-3">
+                        <IconComponent className="h-5 w-5 text-gray-500" />
                       </div>
 
                       {/* Текст */}
-                      <div className="text-center">
-                        <h4 className="font-bold text-sm text-blue-900 mb-1">{step.title}</h4>
-                        <p className="text-xs text-gray-600 leading-tight">{step.description}</p>
-                      </div>
+                      <h4 className="font-semibold text-gray-900 text-sm mb-1">{step.title}</h4>
+                      <p className="text-xs text-gray-500 leading-snug">{step.description}</p>
                     </div>
                   )
                 })}
