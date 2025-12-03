@@ -245,46 +245,41 @@ export default function SalePage() {
   const canSubmit = formData.name.trim() && formData.phone.length >= 13
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-emerald-50">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-emerald-600">
-        <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] opacity-10 bg-cover bg-center"></div>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className={`text-center max-w-4xl mx-auto transform transition-all duration-1000 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
           }`}>
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-6">
-              <Sparkles className="h-5 w-5 text-yellow-300" />
-              <span className="font-semibold text-white">Продайте автомобиль выгоднее</span>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-lg px-4 py-2 mb-6 border border-white/20">
+              <span className="text-sm font-medium text-white">Продайте автомобиль выгоднее</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white leading-tight">
               Комиссия всего{' '}
-              <span className="relative inline-block">
-                <span className="text-yellow-300">450$</span>
-                <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 200 8" fill="none">
-                  <path d="M2 5C50 2 150 2 198 5" stroke="#fde047" strokeWidth="4" strokeLinecap="round"/>
-                </svg>
-              </span>
+              <span className="text-yellow-400">450$</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-4 text-blue-100 font-medium">
+            <p className="text-xl md:text-2xl mb-4 text-white/90 font-semibold">
               Пока у конкурентов начинается от 800$
             </p>
-            <p className="text-lg md:text-xl mb-10 text-blue-50 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl mb-10 text-white/70 max-w-2xl mx-auto">
               Продаём быстро и эффективно, используя рекламу в Instagram, TikTok, Google, VK, Facebook и активно ведём соцсети
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-yellow-400 text-blue-900 hover:bg-yellow-300 text-lg px-10 py-7 rounded-2xl font-bold shadow-2xl hover:shadow-yellow-400/50 transition-all duration-300 transform hover:scale-105"
+                className="bg-yellow-400 text-gray-900 hover:bg-yellow-500 text-lg px-8 py-6 rounded-lg font-bold shadow-lg transition-all duration-300"
                 onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Оставить заявку
-                <ArrowRight className="ml-2 h-6 w-6" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-blue-900 text-lg px-10 py-7 rounded-2xl font-bold transition-all duration-300"
+                className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-6 rounded-lg font-semibold transition-all duration-300"
                 onClick={() => document.getElementById('advantages')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Узнать подробнее
@@ -300,15 +295,13 @@ export default function SalePage() {
       </section>
 
       {/* Advantages Section */}
-      <section id="advantages" className="py-20 md:py-28 bg-white">
+      <section id="advantages" className="py-20 md:py-28 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block relative mb-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
-                Наши преимущества
-              </h2>
-            </div>
-            <p className="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Наши преимущества
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Почему клиенты выбирают нас для продажи своих автомобилей
             </p>
           </div>
@@ -319,25 +312,28 @@ export default function SalePage() {
               return (
                 <div
                   key={advantage.id}
-                  className={`relative bg-gradient-to-br from-white to-blue-50 rounded-3xl p-8 border-2 border-blue-100 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 ${
+                  className={`relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 ${
                     isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                   }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
+                  style={{
+                    transitionDelay: `${index * 150}ms`,
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.06)'
+                  }}
                 >
-                  <div className="absolute -top-6 left-8">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
-                      <IconComponent className="h-8 w-8 text-white" />
+                  <div className="mb-6">
+                    <div className="w-14 h-14 bg-blue-900 rounded-xl flex items-center justify-center">
+                      <IconComponent className="h-7 w-7 text-white" />
                     </div>
                   </div>
-                  <div className="mt-8">
-                    <h3 className="text-2xl font-bold text-blue-900 mb-3">
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">
                       {advantage.title}
                     </h3>
                     <p className="text-gray-600 mb-4">
                       {advantage.description}
                     </p>
-                    <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-semibold text-sm">
-                      <CheckCircle className="h-4 w-4" />
+                    <div className="flex items-center gap-2 text-gray-900 font-bold">
+                      <CheckCircle className="h-5 w-5 text-blue-900" />
                       {advantage.highlight}
                     </div>
                   </div>
@@ -349,16 +345,13 @@ export default function SalePage() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 md:py-28 bg-gradient-to-b from-blue-50 to-white">
+      <section id="services" className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block relative mb-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
-                Все наши услуги
-              </h2>
-              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full"></div>
-            </div>
-            <p className="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Все наши услуги
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Полный спектр автомобильных услуг с индивидуальным подходом
             </p>
           </div>
@@ -371,33 +364,34 @@ export default function SalePage() {
               return (
                 <div
                   key={service.id}
-                  className={`group relative bg-white rounded-3xl p-6 border-2 transition-all duration-300 cursor-pointer ${
+                  className={`group relative bg-white rounded-2xl p-6 border transition-all duration-300 cursor-pointer ${
                     isSelected
-                      ? 'border-emerald-500 shadow-2xl shadow-emerald-200'
-                      : 'border-gray-200 hover:border-blue-300 shadow-lg hover:shadow-xl'
+                      ? 'border-blue-900 shadow-lg'
+                      : 'border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
                   }`}
                   onClick={() => setSelectedService(isSelected ? '' : service.id)}
+                  style={{ boxShadow: isSelected ? '0 4px 24px rgba(0,0,0,0.08)' : '0 4px 24px rgba(0,0,0,0.04)' }}
                 >
                   {/* Price Badge */}
                   {service.price && (
-                    <div className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg transform rotate-6">
+                    <div className="absolute -top-3 -right-3 bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold text-sm shadow-md">
                       {service.price}
                     </div>
                   )}
 
                   {/* Selection Indicator */}
                   <div className={`absolute top-4 right-4 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
-                    isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-gray-300'
+                    isSelected ? 'border-blue-900 bg-blue-900' : 'border-gray-300'
                   }`}>
                     {isSelected && <CheckCircle className="h-5 w-5 text-white" />}
                   </div>
 
                   {/* Icon */}
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 bg-blue-900 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                     <IconComponent className="h-7 w-7 text-white" />
                   </div>
 
-                  <h3 className="text-xl font-bold text-blue-900 mb-2">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {service.title}
                   </h3>
                   <p className="text-gray-600 text-sm mb-4">
@@ -406,10 +400,9 @@ export default function SalePage() {
 
                   <div className="space-y-2">
                     {service.features.map((feature, idx) => {
-                      const FeatureIcon = feature.icon
                       return (
                         <div key={idx} className="flex items-center gap-2">
-                          <FeatureIcon className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                          <CheckCircle className="h-4 w-4 text-blue-900 flex-shrink-0" />
                           <span className="text-sm text-gray-700">{feature.text}</span>
                         </div>
                       )
@@ -423,30 +416,30 @@ export default function SalePage() {
       </section>
 
       {/* Process Section - Минималистичная версия */}
-      <section className="py-16 md:py-20 bg-white border-t border-gray-100">
+      <section className="py-20 md:py-28 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Как мы работаем
             </h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Прозрачный процесс от заявки до продажи
             </p>
           </div>
 
           <div className="max-w-6xl mx-auto">
             {/* Мобильная версия */}
-            <div className="block md:hidden space-y-3">
+            <div className="block md:hidden space-y-4">
               {dealSteps.map((step) => {
                 const IconComponent = step.icon
                 return (
-                  <div key={step.id} className="flex items-start gap-4 border border-gray-200 rounded-lg p-4">
-                    <div className="flex items-center justify-center w-8 h-8 rounded bg-gray-900 text-white font-semibold text-sm flex-shrink-0">
+                  <div key={step.id} className="flex items-start gap-5 bg-white rounded-xl p-6 shadow-sm" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-900 text-white font-bold text-lg flex-shrink-0">
                       {step.id}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 mb-1">{step.title}</h4>
-                      <p className="text-sm text-gray-600">{step.description}</p>
+                      <h4 className="font-bold text-gray-900 text-lg mb-2">{step.title}</h4>
+                      <p className="text-gray-600">{step.description}</p>
                     </div>
                   </div>
                 )
@@ -455,27 +448,27 @@ export default function SalePage() {
 
             {/* Десктопная версия */}
             <div className="hidden md:block">
-              <div className="grid grid-cols-6 gap-6 relative">
+              <div className="grid grid-cols-6 gap-8 relative">
                 {/* Соединительная линия */}
-                <div className="absolute top-6 left-0 right-0 h-px bg-gray-200" style={{ left: '8.33%', right: '8.33%' }}></div>
+                <div className="absolute top-8 left-0 right-0 h-0.5 bg-gray-200" style={{ left: '8.33%', right: '8.33%' }}></div>
 
                 {dealSteps.map((step) => {
                   const IconComponent = step.icon
                   return (
                     <div key={step.id} className="flex flex-col items-center text-center relative">
                       {/* Номер */}
-                      <div className="w-12 h-12 rounded-full border-2 border-gray-900 bg-white flex items-center justify-center mb-3 relative z-10">
-                        <span className="text-lg font-bold text-gray-900">{step.id}</span>
+                      <div className="w-16 h-16 rounded-xl bg-blue-900 flex items-center justify-center mb-4 relative z-10">
+                        <span className="text-2xl font-bold text-white">{step.id}</span>
                       </div>
 
                       {/* Иконка */}
                       <div className="mb-3">
-                        <IconComponent className="h-5 w-5 text-gray-500" />
+                        <IconComponent className="h-6 w-6 text-blue-900" />
                       </div>
 
                       {/* Текст */}
-                      <h4 className="font-semibold text-gray-900 text-sm mb-1">{step.title}</h4>
-                      <p className="text-xs text-gray-500 leading-snug">{step.description}</p>
+                      <h4 className="font-bold text-gray-900 text-base mb-2">{step.title}</h4>
+                      <p className="text-sm text-gray-600 leading-relaxed">{step.description}</p>
                     </div>
                   )
                 })}
@@ -486,57 +479,52 @@ export default function SalePage() {
       </section>
 
       {/* Combined Section - Social Media + Contact Form */}
-      <section id="contact-form" className="bg-gradient-to-b from-white to-blue-50">
+      <section id="contact-form" className="bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Левая половина - Активное продвижение в соцсетях */}
-          <div className="bg-gradient-to-br from-blue-600 to-emerald-600 p-8 md:p-12 lg:p-16 relative overflow-hidden flex items-center">
+          <div className="bg-blue-900 p-8 md:p-12 lg:p-16 relative overflow-hidden flex items-center">
             <div className="w-full">
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
-              </div>
-
               <div className="relative z-10 max-w-2xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
                   Активное продвижение в соцсетях
                 </h2>
-                <p className="text-lg text-blue-100 mb-8">
+                <p className="text-lg text-white/80 mb-10">
                   Мы используем все современные каналы для максимально быстрой продажи вашего автомобиля
                 </p>
 
-                <div className="space-y-4 mb-8">
+                <div className="grid grid-cols-2 gap-4 mb-10">
                   {socialPlatforms.map((platform, index) => {
                     const IconComponent = platform.icon
                     return (
                       <div
                         key={platform.name}
-                        className={`bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl px-6 py-4 flex items-center gap-4 transform transition-all duration-300 hover:scale-105 hover:bg-white/20 ${
+                        className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-3 flex items-center gap-3 transform transition-all duration-300 ${
                           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                         }`}
                         style={{ transitionDelay: `${index * 100}ms` }}
                       >
-                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-                          <IconComponent className="h-6 w-6" style={{ color: platform.color }} />
+                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                          <IconComponent className="h-5 w-5" style={{ color: platform.color }} />
                         </div>
-                        <span className="text-white font-bold text-lg">{platform.name}</span>
+                        <span className="text-white font-semibold text-base">{platform.name}</span>
                       </div>
                     )
                   })}
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-md border-2 border-white/20 rounded-3xl p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div className="bg-white rounded-2xl p-8 shadow-xl">
+                  <div className="grid grid-cols-3 gap-6 text-center">
                     <div>
-                      <div className="text-4xl font-bold text-yellow-300 mb-2">100K+</div>
-                      <div className="text-blue-100 text-sm">Охват аудитории</div>
+                      <div className="text-4xl md:text-5xl font-bold text-blue-900 mb-2">100K+</div>
+                      <div className="text-gray-600 text-sm font-medium">Охват аудитории</div>
                     </div>
                     <div>
-                      <div className="text-4xl font-bold text-yellow-300 mb-2">15+</div>
-                      <div className="text-blue-100 text-sm">Площадок размещения</div>
+                      <div className="text-4xl md:text-5xl font-bold text-blue-900 mb-2">15+</div>
+                      <div className="text-gray-600 text-sm font-medium">Площадок размещения</div>
                     </div>
                     <div>
-                      <div className="text-4xl font-bold text-yellow-300 mb-2">7-14</div>
-                      <div className="text-blue-100 text-sm">Дней до продажи</div>
+                      <div className="text-4xl md:text-5xl font-bold text-blue-900 mb-2">7-14</div>
+                      <div className="text-gray-600 text-sm font-medium">Дней до продажи</div>
                     </div>
                   </div>
                 </div>
@@ -544,33 +532,28 @@ export default function SalePage() {
             </div>
           </div>
 
-          {/* Правая половина - Давайте попробуем с заявкой */}
-          <div className="p-8 md:p-12 lg:p-16 flex items-center">
+          {/* Правая половина - Форма с заявкой */}
+          <div className="p-8 md:p-12 lg:p-16 flex items-center bg-gray-50">
             <div className="w-full max-w-2xl mx-auto space-y-6">
-              {/* Заголовок с эмодзи */}
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-4 mb-6">
-                  <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
-                    Давайте попробуем?
-                  </h2>
-                  <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl">
-                    😊
-                  </div>
-                </div>
-                <div className="flex justify-center mb-8">
-                  <ArrowDown className="h-10 w-10 text-emerald-500 animate-bounce" />
-                </div>
+              {/* Заголовок */}
+              <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                  Бесплатная оценка авто<br />за 15 минут
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Оставьте заявку и получите предложение
+                </p>
               </div>
 
               {/* Форма */}
-              <div className="bg-white rounded-3xl p-8 shadow-2xl border-2 border-blue-100">
+              <div className="bg-white rounded-2xl p-8 shadow-lg" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
                 {selectedService && (
-                  <div className="mb-6 p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl">
+                  <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <CheckCircle className="h-6 w-6 text-emerald-600" />
+                      <CheckCircle className="h-5 w-5 text-blue-900" />
                       <div>
-                        <span className="font-semibold text-emerald-900 block">Выбранная услуга:</span>
-                        <p className="text-emerald-700">{services.find(s => s.id === selectedService)?.title}</p>
+                        <span className="font-semibold text-gray-900 block text-sm">Выбранная услуга:</span>
+                        <p className="text-gray-700">{services.find(s => s.id === selectedService)?.title}</p>
                       </div>
                     </div>
                   </div>
@@ -578,38 +561,38 @@ export default function SalePage() {
 
                 <div className="space-y-5">
                   <div>
-                    <Label htmlFor="name" className="text-sm font-semibold text-blue-900 mb-2 block">
+                    <Label htmlFor="name" className="text-sm font-semibold text-gray-900 mb-2 block">
                       Ваше имя *
                     </Label>
                     <Input
                       id="name"
                       value={formData.name}
                       onChange={(e) => handleFormChange('name', e.target.value)}
-                      className="h-14 bg-blue-50 border-2 border-blue-200 text-blue-900 placeholder:text-blue-400 rounded-xl focus:border-emerald-500 focus:ring-emerald-500"
+                      className="h-12 bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-lg focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
                       placeholder="Введите ваше имя"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="phone" className="text-sm font-semibold text-blue-900 mb-2 block">
+                    <Label htmlFor="phone" className="text-sm font-semibold text-gray-900 mb-2 block">
                       Номер телефона *
                     </Label>
                     <Input
                       id="phone"
                       value={formData.phone}
                       onChange={(e) => handleFormChange('phone', e.target.value)}
-                      className="h-14 bg-blue-50 border-2 border-blue-200 text-blue-900 placeholder:text-blue-400 rounded-xl focus:border-emerald-500 focus:ring-emerald-500"
+                      className="h-12 bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-lg focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
                       placeholder="+375 (XX) XXX-XX-XX"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="message" className="text-sm font-semibold text-blue-900 mb-2 block">
+                    <Label htmlFor="message" className="text-sm font-semibold text-gray-900 mb-2 block">
                       Комментарий
                     </Label>
                     <Textarea
                       id="message"
                       value={formData.message}
                       onChange={(e) => handleFormChange('message', e.target.value)}
-                      className="bg-blue-50 border-2 border-blue-200 text-blue-900 placeholder:text-blue-400 rounded-xl resize-none focus:border-emerald-500 focus:ring-emerald-500"
+                      className="bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-lg resize-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
                       placeholder="Расскажите о вашем автомобиле..."
                       rows={4}
                     />
@@ -618,55 +601,55 @@ export default function SalePage() {
                     {...submitButtonState}
                     onClick={handleSubmit}
                     disabled={!canSubmit}
-                    className="w-full h-14 text-lg rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-white hover:from-emerald-600 hover:to-blue-600 font-bold shadow-lg hover:shadow-xl transition-all"
+                    className="w-full h-12 text-base rounded-lg bg-yellow-400 text-gray-900 hover:bg-yellow-500 font-bold shadow-md transition-all"
                   >
-                    Отправить заявку
-                    <ArrowRight className="ml-2 h-6 w-6" />
+                    Получить предложение
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </StatusButton>
                   <p className="text-center text-xs text-gray-500">
                     Нажимая кнопку, вы соглашаетесь с{' '}
-                    <a href="/privacy" className="underline hover:text-blue-600">политикой конфиденциальности</a>
+                    <a href="/privacy" className="underline hover:text-gray-900">политикой конфиденциальности</a>
                   </p>
                 </div>
               </div>
 
               {/* Контактная информация */}
-              <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-blue-100">
-                <h3 className="text-xl font-bold text-blue-900 mb-6">
+              <div className="bg-white rounded-2xl p-8 shadow-lg" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">
                   Или свяжитесь с нами напрямую
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center flex-shrink-0">
                       <Phone className="h-6 w-6 text-white" />
                     </div>
-                    <div className="bg-white/50 backdrop-blur-sm border-2 border-blue-200 rounded-2xl px-6 py-3 flex-1">
+                    <div className="border border-gray-200 rounded-lg px-6 py-3 flex-1">
                       <a
                         href="tel:+375293596000"
-                        className="text-blue-900 font-bold text-lg hover:text-emerald-600 transition-colors"
+                        className="text-gray-900 font-bold text-lg hover:text-blue-900 transition-colors"
                       >
                         +375 29 359-60-00
                       </a>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center flex-shrink-0">
                       <Clock className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <p className="text-blue-900 font-semibold">Режим работы</p>
+                      <p className="text-gray-900 font-semibold">Режим работы</p>
                       <p className="text-gray-600">Пн-Вс: 9:00 - 21:00</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-8 shadow-xl text-white">
+              <div className="bg-blue-900 rounded-2xl p-8 shadow-lg text-white">
                 <div className="flex items-start gap-4">
-                  <Sparkles className="h-8 w-8 flex-shrink-0" />
+                  <Star className="h-8 w-8 flex-shrink-0 text-yellow-400" />
                   <div>
                     <h4 className="text-xl font-bold mb-2">Специальное предложение</h4>
-                    <p className="text-orange-100">
+                    <p className="text-white/80">
                       Оставьте заявку сегодня и получите бесплатную профессиональную фотосъемку вашего автомобиля!
                     </p>
                   </div>
