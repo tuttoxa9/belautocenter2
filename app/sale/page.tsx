@@ -485,81 +485,81 @@ export default function SalePage() {
         </div>
       </section>
 
-      {/* Social Media Marketing Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-br from-blue-600 to-emerald-600 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Активное продвижение в соцсетях
-            </h2>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Мы используем все современные каналы для максимально быстрой продажи вашего автомобиля
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-6 mb-12">
-            {socialPlatforms.map((platform, index) => {
-              const IconComponent = platform.icon
-              return (
-                <div
-                  key={platform.name}
-                  className={`bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl px-8 py-6 flex items-center gap-4 transform transition-all duration-300 hover:scale-110 hover:bg-white/20 ${
-                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                  }`}
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-                    <IconComponent className="h-7 w-7" style={{ color: platform.color }} />
-                  </div>
-                  <span className="text-white font-bold text-lg">{platform.name}</span>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-md border-2 border-white/20 rounded-3xl p-8 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div>
-                <div className="text-5xl font-bold text-yellow-300 mb-2">100K+</div>
-                <div className="text-blue-100">Охват аудитории</div>
-              </div>
-              <div>
-                <div className="text-5xl font-bold text-yellow-300 mb-2">15+</div>
-                <div className="text-blue-100">Площадок размещения</div>
-              </div>
-              <div>
-                <div className="text-5xl font-bold text-yellow-300 mb-2">7-14</div>
-                <div className="text-blue-100">Дней до продажи</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section id="contact-form" className="py-20 md:py-32 bg-gradient-to-b from-white to-blue-50">
+      {/* Combined Section - Social Media + Contact Form */}
+      <section id="contact-form" className="py-20 md:py-28 bg-gradient-to-b from-white to-blue-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            {/* Заголовок с эмодзи */}
-            <div className="text-center mb-12">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
-                  Давайте попробуем?
-                </h2>
-                <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-3xl">
-                  😊
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* Левая половина - Активное продвижение в соцсетях */}
+            <div className="bg-gradient-to-br from-blue-600 to-emerald-600 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
               </div>
-              <div className="flex justify-center mb-8">
-                <ArrowDown className="h-10 w-10 text-emerald-500 animate-bounce" />
+
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  Активное продвижение в соцсетях
+                </h2>
+                <p className="text-lg text-blue-100 mb-8">
+                  Мы используем все современные каналы для максимально быстрой продажи вашего автомобиля
+                </p>
+
+                <div className="space-y-4 mb-8">
+                  {socialPlatforms.map((platform, index) => {
+                    const IconComponent = platform.icon
+                    return (
+                      <div
+                        key={platform.name}
+                        className={`bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl px-6 py-4 flex items-center gap-4 transform transition-all duration-300 hover:scale-105 hover:bg-white/20 ${
+                          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                        }`}
+                        style={{ transitionDelay: `${index * 100}ms` }}
+                      >
+                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
+                          <IconComponent className="h-6 w-6" style={{ color: platform.color }} />
+                        </div>
+                        <span className="text-white font-bold text-lg">{platform.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md border-2 border-white/20 rounded-3xl p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div>
+                      <div className="text-4xl font-bold text-yellow-300 mb-2">100K+</div>
+                      <div className="text-blue-100 text-sm">Охват аудитории</div>
+                    </div>
+                    <div>
+                      <div className="text-4xl font-bold text-yellow-300 mb-2">15+</div>
+                      <div className="text-blue-100 text-sm">Площадок размещения</div>
+                    </div>
+                    <div>
+                      <div className="text-4xl font-bold text-yellow-300 mb-2">7-14</div>
+                      <div className="text-blue-100 text-sm">Дней до продажи</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Правая половина - Давайте попробуем с заявкой */}
+            <div className="space-y-6">
+              {/* Заголовок с эмодзи */}
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
+                    Давайте попробуем?
+                  </h2>
+                  <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl">
+                    😊
+                  </div>
+                </div>
+                <div className="flex justify-center mb-8">
+                  <ArrowDown className="h-10 w-10 text-emerald-500 animate-bounce" />
+                </div>
+              </div>
+
               {/* Форма */}
               <div className="bg-white rounded-3xl p-8 shadow-2xl border-2 border-blue-100">
                 {selectedService && (
@@ -629,46 +629,44 @@ export default function SalePage() {
               </div>
 
               {/* Контактная информация */}
-              <div className="space-y-6">
-                <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-blue-100">
-                  <h3 className="text-2xl font-bold text-blue-900 mb-6">
-                    Или свяжитесь с нами напрямую
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-6 w-6 text-white" />
-                      </div>
-                      <div className="bg-white/50 backdrop-blur-sm border-2 border-blue-200 rounded-2xl px-6 py-3 flex-1">
-                        <a
-                          href="tel:+375293596000"
-                          className="text-blue-900 font-bold text-lg hover:text-emerald-600 transition-colors"
-                        >
-                          +375 29 359-60-00
-                        </a>
-                      </div>
+              <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-blue-100">
+                <h3 className="text-xl font-bold text-blue-900 mb-6">
+                  Или свяжитесь с нами напрямую
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Phone className="h-6 w-6 text-white" />
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <p className="text-blue-900 font-semibold">Режим работы</p>
-                        <p className="text-gray-600">Пн-Вс: 9:00 - 21:00</p>
-                      </div>
+                    <div className="bg-white/50 backdrop-blur-sm border-2 border-blue-200 rounded-2xl px-6 py-3 flex-1">
+                      <a
+                        href="tel:+375293596000"
+                        className="text-blue-900 font-bold text-lg hover:text-emerald-600 transition-colors"
+                      >
+                        +375 29 359-60-00
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Clock className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-blue-900 font-semibold">Режим работы</p>
+                      <p className="text-gray-600">Пн-Вс: 9:00 - 21:00</p>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-8 shadow-xl text-white">
-                  <div className="flex items-start gap-4">
-                    <Sparkles className="h-8 w-8 flex-shrink-0" />
-                    <div>
-                      <h4 className="text-xl font-bold mb-2">Специальное предложение</h4>
-                      <p className="text-orange-100">
-                        Оставьте заявку сегодня и получите бесплатную профессиональную фотосъемку вашего автомобиля!
-                      </p>
-                    </div>
+              <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-8 shadow-xl text-white">
+                <div className="flex items-start gap-4">
+                  <Sparkles className="h-8 w-8 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Специальное предложение</h4>
+                    <p className="text-orange-100">
+                      Оставьте заявку сегодня и получите бесплатную профессиональную фотосъемку вашего автомобиля!
+                    </p>
                   </div>
                 </div>
               </div>
