@@ -37,19 +37,7 @@ import {
   Sparkles,
   ArrowDown
 } from "lucide-react"
-
-// Кастомные иконки для социальных сетей
-const TikTokIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-  </svg>
-)
-
-const VKIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.183 14.683h-1.224c-.417 0-.546-.332-1.297-1.09-.652-.631-1.044-.706-1.297-.706-.264 0-.34.075-.34.443v.991c0 .265-.08.419-1.229.419-1.92 0-4.05-1.166-5.547-3.343-2.253-3.19-2.86-5.557-2.86-6.044 0-.252.076-.486.443-.486h1.225c.33 0 .456.151.584.505.66 1.869 1.767 3.51 2.223 3.51.173 0 .252-.08.252-.518v-2.018c-.057-.955-.561-1.036-.561-1.376 0-.21.171-.419.444-.419h1.922c.278 0 .38.152.38.481v2.669c0 .279.125.38.203.38.173 0 .312-.101.627-.419 1.002-1.125 1.72-2.865 1.72-2.865.095-.203.247-.404.577-.404h1.225c.367 0 .447.189.367.447-.174.854-1.87 3.663-1.87 3.663-.145.239-.202.345 0 .614.145.203.627.613 .95.988.588.594 1.042 1.09 1.164 1.435.125.346-.068.52-.435.52z"/>
-  </svg>
-)
+import { FaTiktok, FaVk } from "react-icons/fa"
 
 const advantages = [
   {
@@ -158,9 +146,9 @@ const services = [
 
 const socialPlatforms = [
   { name: 'Instagram', icon: Instagram, color: '#E4405F' },
-  { name: 'TikTok', icon: TikTokIcon, color: '#000000' },
+  { name: 'TikTok', icon: FaTiktok, color: '#000000' },
   { name: 'Google Ads', icon: Target, color: '#4285F4' },
-  { name: 'VK', icon: VKIcon, color: '#0077FF' },
+  { name: 'VK', icon: FaVk, color: '#0077FF' },
   { name: 'Facebook', icon: Facebook, color: '#1877F2' }
 ]
 
@@ -434,41 +422,71 @@ export default function SalePage() {
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="py-20 md:py-28 bg-white">
+      {/* Process Section - Компактная версия */}
+      <section className="py-16 md:py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-3">
               Как мы работаем
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Простой и прозрачный процесс продажи вашего автомобиля
+            <p className="text-lg text-gray-600 max-w-xl mx-auto">
+              6 простых шагов до успешной продажи
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="max-w-5xl mx-auto">
+            {/* Мобильная версия - вертикальный список */}
+            <div className="block md:hidden space-y-4">
               {dealSteps.map((step) => {
                 const IconComponent = step.icon
                 return (
-                  <div key={step.id} className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-2xl p-6 border border-blue-100">
-                    <div className="flex items-center gap-4 mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <IconComponent className="h-6 w-6 text-white" />
-                      </div>
-                      <div className="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                        {step.id}
-                      </div>
+                  <div key={step.id} className="flex items-start gap-4 bg-white rounded-xl p-4 shadow-md">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <IconComponent className="h-5 w-5 text-white" />
                     </div>
-                    <h4 className="font-bold text-lg text-blue-900 mb-2">
-                      {step.title}
-                    </h4>
-                    <p className="text-gray-600 text-sm">
-                      {step.description}
-                    </p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                          {step.id}
+                        </span>
+                        <h4 className="font-bold text-blue-900">{step.title}</h4>
+                      </div>
+                      <p className="text-sm text-gray-600">{step.description}</p>
+                    </div>
                   </div>
                 )
               })}
+            </div>
+
+            {/* Десктопная версия - горизонтальный timeline */}
+            <div className="hidden md:block relative">
+              {/* Линия между шагами */}
+              <div className="absolute top-8 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-emerald-200 to-blue-200"></div>
+
+              <div className="grid grid-cols-6 gap-2 relative">
+                {dealSteps.map((step, index) => {
+                  const IconComponent = step.icon
+                  return (
+                    <div key={step.id} className="flex flex-col items-center group">
+                      {/* Иконка с номером */}
+                      <div className="relative z-10 mb-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          <IconComponent className="h-7 w-7 text-white" />
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center text-xs font-bold border-2 border-white">
+                          {step.id}
+                        </div>
+                      </div>
+
+                      {/* Текст */}
+                      <div className="text-center">
+                        <h4 className="font-bold text-sm text-blue-900 mb-1">{step.title}</h4>
+                        <p className="text-xs text-gray-600 leading-tight">{step.description}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
