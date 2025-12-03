@@ -33,10 +33,11 @@ import {
   BarChart3,
   Instagram,
   Facebook,
-  MessageCircle,
   TrendingDown,
   Sparkles,
-  ArrowDown
+  ArrowDown,
+  Video,
+  Globe
 } from "lucide-react"
 
 const advantages = [
@@ -146,9 +147,9 @@ const services = [
 
 const socialPlatforms = [
   { name: 'Instagram', icon: Instagram, color: '#E4405F' },
-  { name: 'TikTok', icon: MessageCircle, color: '#000000' },
+  { name: 'TikTok', icon: Video, color: '#000000' },
   { name: 'Google Ads', icon: Target, color: '#4285F4' },
-  { name: 'VK', icon: Users, color: '#0077FF' },
+  { name: 'VK', icon: Globe, color: '#0077FF' },
   { name: 'Facebook', icon: Facebook, color: '#1877F2' }
 ]
 
@@ -292,6 +293,11 @@ export default function SalePage() {
             </div>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="white"/>
+          </svg>
+        </div>
       </section>
 
       {/* Advantages Section */}
@@ -418,9 +424,9 @@ export default function SalePage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
               Как мы работаем
             </h2>
@@ -429,64 +435,26 @@ export default function SalePage() {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto">
-            <div className="relative">
-              {/* Вертикальная линия на десктопе */}
-              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-200 via-purple-200 to-emerald-200 transform -translate-x-1/2"></div>
-
-              {dealSteps.map((step, index) => {
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {dealSteps.map((step) => {
                 const IconComponent = step.icon
-                const colors = [
-                  { bg: 'from-blue-500 to-blue-600', icon: 'bg-blue-500', border: 'border-blue-200', text: 'text-blue-600' },
-                  { bg: 'from-purple-500 to-purple-600', icon: 'bg-purple-500', border: 'border-purple-200', text: 'text-purple-600' },
-                  { bg: 'from-pink-500 to-pink-600', icon: 'bg-pink-500', border: 'border-pink-200', text: 'text-pink-600' },
-                  { bg: 'from-orange-500 to-orange-600', icon: 'bg-orange-500', border: 'border-orange-200', text: 'text-orange-600' },
-                  { bg: 'from-emerald-500 to-emerald-600', icon: 'bg-emerald-500', border: 'border-emerald-200', text: 'text-emerald-600' },
-                  { bg: 'from-teal-500 to-teal-600', icon: 'bg-teal-500', border: 'border-teal-200', text: 'text-teal-600' }
-                ]
-                const color = colors[index % colors.length]
-                const isEven = index % 2 === 0
-
                 return (
-                  <div key={step.id} className={`relative mb-12 md:mb-16 ${
-                    isEven ? 'md:pr-1/2' : 'md:pl-1/2'
-                  }`}>
-                    {/* Карточка */}
-                    <div className={`md:w-1/2 ${
-                      isEven ? 'md:ml-0' : 'md:ml-auto'
-                    }`}>
-                      <div className={`bg-white rounded-2xl p-6 shadow-xl border-2 ${color.border} hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
-                        <div className="flex items-start gap-4">
-                          {/* Иконка */}
-                          <div className={`flex-shrink-0 w-16 h-16 bg-gradient-to-br ${color.bg} rounded-xl flex items-center justify-center shadow-lg relative`}>
-                            <IconComponent className="h-8 w-8 text-white" />
-                            <div className={`absolute -top-2 -right-2 w-7 h-7 ${color.icon} text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md`}>
-                              {step.id}
-                            </div>
-                          </div>
-
-                          {/* Контент */}
-                          <div className="flex-1">
-                            <h4 className={`font-bold text-xl mb-2 ${color.text}`}>
-                              {step.title}
-                            </h4>
-                            <p className="text-gray-600 text-sm leading-relaxed">
-                              {step.description}
-                            </p>
-                          </div>
-                        </div>
+                  <div key={step.id} className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-2xl p-6 border border-blue-100">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <IconComponent className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                        {step.id}
                       </div>
                     </div>
-
-                    {/* Точка на линии (только на десктопе) */}
-                    <div className={`hidden md:block absolute top-8 left-1/2 transform -translate-x-1/2 w-4 h-4 ${color.icon} rounded-full border-4 border-white shadow-lg z-10`}></div>
-
-                    {/* Стрелка вниз (только на мобильной версии) */}
-                    {index < dealSteps.length - 1 && (
-                      <div className="md:hidden flex justify-center my-4">
-                        <ArrowDown className={`h-6 w-6 ${color.text} animate-bounce`} />
-                      </div>
-                    )}
+                    <h4 className="font-bold text-lg text-blue-900 mb-2">
+                      {step.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      {step.description}
+                    </p>
                   </div>
                 )
               })}
