@@ -70,10 +70,10 @@ const services = [
     description: 'Профессиональная продажа вашего автомобиля с полным сопровождением',
     icon: Shield,
     features: [
-      { text: 'Фотосъемка в студии', icon: Eye },
-      { text: 'Размещение на 15+ площадках', icon: BarChart3 },
-      { text: 'Проверка покупателей', icon: Users },
-      { text: 'Юридическое сопровождение', icon: FileText }
+      { text: 'Съёмка видео обзора', icon: Eye },
+      { text: 'Красивые фотографии', icon: Eye },
+      { text: '450$ входит в стоимость авто', icon: DollarSign },
+      { text: 'Размещение на 15+ площадках', icon: BarChart3 }
     ],
     price: '450$'
   },
@@ -92,11 +92,11 @@ const services = [
   },
   {
     id: 'credit',
-    title: 'Автокредит от 9%',
+    title: 'Автокредит от 18%',
     description: 'Минимальная ставка и быстрое одобрение без отказов',
     icon: CreditCard,
     features: [
-      { text: 'Ставка от 9% годовых', icon: TrendingDown },
+      { text: 'Ставка от 18% годовых', icon: TrendingDown },
       { text: 'Одобрение 99%', icon: CheckCircle },
       { text: 'Решение за 30 минут', icon: Clock },
       { text: 'Без справок о доходах', icon: FileText }
@@ -307,10 +307,9 @@ export default function SalePage() {
               <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
                 Наши преимущества
               </h2>
-              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full"></div>
             </div>
             <p className="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
-              Почему тысячи клиентов выбирают нас для продажи своих автомобилей
+              Почему клиенты выбирают нас для продажи своих автомобилей
             </p>
           </div>
 
