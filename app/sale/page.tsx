@@ -27,108 +27,167 @@ import {
   Handshake,
   Settings,
   Trophy,
-  ChevronDown
+  Zap,
+  Target,
+  Users,
+  BarChart3,
+  Instagram,
+  Facebook,
+  MessageCircle,
+  TrendingDown,
+  Sparkles,
+  ArrowDown
 } from "lucide-react"
+
+const advantages = [
+  {
+    id: 'commission',
+    icon: DollarSign,
+    title: 'Комиссия всего 450$',
+    description: 'В то время как конкуренты берут от 800$',
+    highlight: 'Экономия до 350$'
+  },
+  {
+    id: 'speed',
+    icon: Zap,
+    title: 'Быстрая продажа',
+    description: 'Эффективная реклама на всех площадках',
+    highlight: 'Результат за 7-14 дней'
+  },
+  {
+    id: 'reach',
+    icon: Target,
+    title: 'Максимальный охват',
+    description: 'Instagram, TikTok, Google, VK, Facebook',
+    highlight: '100,000+ потенциальных покупателей'
+  }
+]
 
 const services = [
   {
     id: 'commission',
     title: 'Комиссионная продажа',
-    description: 'Продадим ваш автомобиль быстро и по выгодной цене',
+    description: 'Профессиональная продажа вашего автомобиля с полным сопровождением',
     icon: Shield,
-    features: ['Профессиональная фотосъемка', 'Размещение на площадках', 'Сопровождение сделки'],
-    image: '/car_credit3new.png',
-    gradient: 'from-indigo-700 to-indigo-800'
+    features: [
+      { text: 'Фотосъемка в студии', icon: Eye },
+      { text: 'Размещение на 15+ площадках', icon: BarChart3 },
+      { text: 'Проверка покупателей', icon: Users },
+      { text: 'Юридическое сопровождение', icon: FileText }
+    ],
+    price: '450$'
   },
   {
     id: 'leasing',
     title: 'Лизинг автомобилей',
-    description: 'Выгодные условия лизинга с минимальным первоначальным взносом от 10%',
+    description: 'Выгодные лизинговые программы для бизнеса и физических лиц',
     icon: Car,
-    features: ['От 10% первоначальный взнос', 'Срок до 5 лет', 'Быстрое оформление'],
-    image: '/car_credit.png',
-    gradient: 'from-slate-700 to-slate-800'
+    features: [
+      { text: 'Первый взнос от 10%', icon: DollarSign },
+      { text: 'Срок до 5 лет', icon: Clock },
+      { text: 'Без скрытых платежей', icon: Shield },
+      { text: 'Оформление за 1 день', icon: Zap }
+    ],
+    price: null
   },
   {
     id: 'credit',
-    title: 'Кредит от 9%',
-    description: 'Автокредит по минимальной ставке от 9% годовых без отказов',
+    title: 'Автокредит от 9%',
+    description: 'Минимальная ставка и быстрое одобрение без отказов',
     icon: CreditCard,
-    features: ['От 9% годовых', 'Без отказов', 'Решение за 30 минут'],
-    image: '/car_credit2.png',
-    gradient: 'from-gray-700 to-gray-800'
+    features: [
+      { text: 'Ставка от 9% годовых', icon: TrendingDown },
+      { text: 'Одобрение 99%', icon: CheckCircle },
+      { text: 'Решение за 30 минут', icon: Clock },
+      { text: 'Без справок о доходах', icon: FileText }
+    ],
+    price: null
   },
   {
     id: 'tradein',
     title: 'Trade-in (Трейд-ин)',
-    description: 'Обмен вашего старого автомобиля на новый с доплатой',
+    description: 'Обмен старого авто на новое с выгодной доплатой',
     icon: RefreshCw,
-    features: ['Оценка за 15 минут', 'Юридическая чистота', 'Выгодная цена'],
-    image: '/car_credit3.png',
-    gradient: 'from-zinc-700 to-zinc-800'
+    features: [
+      { text: 'Оценка за 15 минут', icon: Clock },
+      { text: 'Максимальная цена за ваш авто', icon: DollarSign },
+      { text: 'Проверка юридической чистоты', icon: Shield },
+      { text: 'Помощь в выборе нового авто', icon: Car }
+    ],
+    price: null
   },
   {
     id: 'exchange',
     title: 'Обмен автомобилей',
-    description: 'Обмен автомобиля на автомобиль без денежных операций',
+    description: 'Прямой обмен автомобиля на автомобиль',
     icon: TrendingUp,
-    features: ['Равноценный обмен', 'Проверка истории', 'Безопасная сделка'],
-    image: '/audi-bg.jpg',
-    gradient: 'from-neutral-700 to-neutral-800'
+    features: [
+      { text: 'Равноценный обмен', icon: DollarSign },
+      { text: 'Проверка истории авто', icon: FileText },
+      { text: 'Юридическая безопасность', icon: Shield },
+      { text: 'Без денежных операций', icon: CheckCircle }
+    ],
+    price: null
   },
   {
     id: 'buyout',
     title: 'Выкуп автомобилей',
-    description: 'Быстрый выкуп вашего автомобиля по рыночной стоимости',
+    description: 'Быстрый выкуп вашего автомобиля по честной цене',
     icon: DollarSign,
-    features: ['Оценка в день обращения', 'Расчет наличными', 'Все документы'],
-    image: '/mercedes-bg.jpg',
-    gradient: 'from-stone-700 to-stone-800'
+    features: [
+      { text: 'Оценка в день обращения', icon: Clock },
+      { text: 'Расчет наличными сразу', icon: DollarSign },
+      { text: 'Все документы за наш счет', icon: FileText },
+      { text: 'Выкуп в любом состоянии', icon: Car }
+    ],
+    price: null
   }
+]
+
+const socialPlatforms = [
+  { name: 'Instagram', icon: Instagram, color: '#E4405F' },
+  { name: 'TikTok', icon: MessageCircle, color: '#000000' },
+  { name: 'Google Ads', icon: Target, color: '#4285F4' },
+  { name: 'VK', icon: Users, color: '#0077FF' },
+  { name: 'Facebook', icon: Facebook, color: '#1877F2' }
 ]
 
 const dealSteps = [
   {
     id: 1,
-    title: 'Визит или звонок',
+    title: 'Заявка',
     icon: Phone,
-    description: 'Свяжитесь с нами удобным для вас способом или приезжайте к нам в офис по адресу в Минске. Наши специалисты готовы ответить на все ваши вопросы.',
+    description: 'Оставьте заявку или позвоните нам'
   },
   {
     id: 2,
-    title: 'Осмотр машины',
-    icon: Eye,
-    description: 'Если вы находитесь не в Минске, мы можем организовать выезд нашего специалиста к вам для осмотра автомобиля и составления договора на месте.',
+    title: 'Оценка',
+    icon: Calculator,
+    description: 'Проведем осмотр и оценим авто'
   },
   {
     id: 3,
-    title: 'Согласование стоимости',
-    icon: DollarSign,
-    description: 'Определяем справедливую рыночную цену вашего автомобиля. В процессе оценки учитываем текущее состояние, пробег и рыночную ситуацию.',
+    title: 'Договор',
+    icon: FileText,
+    description: 'Подпишем договор комиссии'
   },
   {
     id: 4,
-    title: 'Подготовка документов',
-    icon: FileText,
-    description: 'Все документы оформляются максимально прозрачно. Составляем акт приема-передачи, а также заключаем с вами договор, где прописываем все условия для обеих сторон.',
+    title: 'Подготовка',
+    icon: Settings,
+    description: 'Фото, детейлинг, размещение'
   },
   {
     id: 5,
-    title: 'Подготовка авто',
-    icon: Settings,
-    description: 'Организуем предпродажную подготовку: чистку и полировку, устранение мелких недостатков, диагностику и устранение технических проблем.',
+    title: 'Реклама',
+    icon: BarChart3,
+    description: 'Продвижение на всех площадках'
   },
   {
     id: 6,
-    title: 'Реализация',
-    icon: Trophy,
-    description: 'Активно занимаемся рекламой и общаемся с потенциальными покупателями. При необходимости помогаем покупателям с оформлением кредита или лизинга.',
-  },
-  {
-    id: 7,
-    title: 'Завершение сделки',
+    title: 'Продажа',
     icon: Handshake,
-    description: 'Вы (или доверенное лицо) получаете оговоренную ранее сумму на руки либо на расчетный лицевой счет.',
+    description: 'Найдем покупателя и закроем сделку'
   }
 ]
 
@@ -140,32 +199,16 @@ export default function SalePage() {
     message: ''
   })
   const [isVisible, setIsVisible] = useState(false)
-  const [activeTab, setActiveTab] = useState<'services' | 'process'>('services')
-  const [expandedServices, setExpandedServices] = useState<string[]>([])
 
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
 
   useEffect(() => {
     setIsVisible(true)
-
-    // Fix for footer corner color on dark pages
-    document.body.classList.add('bg-slate-900');
-    return () => {
-      document.body.classList.remove('bg-slate-900');
-    };
   }, [])
 
   const handleFormChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
-  }
-
-  const toggleServiceExpansion = (serviceId: string) => {
-    setExpandedServices(prev =>
-      prev.includes(serviceId)
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
-    )
   }
 
   const handleSubmit = async () => {
@@ -202,360 +245,417 @@ export default function SalePage() {
   const canSubmit = formData.name.trim() && formData.phone.length >= 13
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      {/* New Hero Section */}
-      <section className="relative overflow-hidden bg-slate-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className={`transform transition-all duration-1000 ${
-              isVisible ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
-            }`}>
-              <div className="inline-flex items-center gap-2 bg-slate-700 rounded-full px-4 py-2 mb-6 text-sm">
-                <Star className="h-4 w-4 text-yellow-400" />
-                <span className="font-medium text-slate-200">Премиальные автоуслуги для вас</span>
-              </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight">
-                Продайте ваш автомобиль
-                <span className="block text-yellow-400">
-                  быстро и выгодно
-                </span>
-              </h1>
-              <p className="text-lg md:text-xl mb-6 md:mb-10 max-w-lg text-slate-300">
-                Мы предлагаем полный комплекс услуг по выкупу, обмену и комиссионной продаже автомобилей с гарантией лучшей цены и юридической чистоты.
-              </p>
-              <div className="flex flex-col gap-4">
-                {/* Кнопки для мобильных - в колонку */}
-                <div className="flex flex-col sm:hidden w-full gap-3">
-                  <Button
-                    size="lg"
-                    className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-yellow-400/30 transition-all duration-300 w-full"
-                    onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                  >
-                    Начать продажу
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    className="bg-slate-700 text-white hover:bg-slate-600 text-base px-8 py-6 rounded-xl font-semibold w-full"
-                    onClick={() => {
-                      setActiveTab('process');
-                      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    Как это работает?
-                  </Button>
-                </div>
-{/* Кнопки для десктопа - в ряд */}
-                <div className="hidden sm:flex items-center gap-4">
-                  <Button
-                    size="lg"
-                    className="bg-yellow-400 text-slate-900 hover:bg-yellow-300 text-base px-8 py-6 rounded-xl font-semibold shadow-lg hover:shadow-yellow-400/30 transition-all duration-300"
-                    onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                  >
-                    Начать продажу
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    className="bg-slate-700 text-white hover:bg-slate-600 text-base px-8 py-6 rounded-xl font-semibold"
-                    onClick={() => {
-                      setActiveTab('process');
-                      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    Как это работает?
-                  </Button>
-                </div>
+    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-emerald-50">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-emerald-600">
+        <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] opacity-10 bg-cover bg-center"></div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 relative z-10">
+          <div className={`text-center max-w-4xl mx-auto transform transition-all duration-1000 ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+          }`}>
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-6">
+              <Sparkles className="h-5 w-5 text-yellow-300" />
+              <span className="font-semibold text-white">Продайте автомобиль выгоднее</span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
+              Комиссия всего{' '}
+              <span className="relative inline-block">
+                <span className="text-yellow-300">450$</span>
+                <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 200 8" fill="none">
+                  <path d="M2 5C50 2 150 2 198 5" stroke="#fde047" strokeWidth="4" strokeLinecap="round"/>
+                </svg>
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-4 text-blue-100 font-medium">
+              Пока у конкурентов начинается от 800$
+            </p>
+            <p className="text-lg md:text-xl mb-10 text-blue-50 max-w-2xl mx-auto">
+              Продаём быстро и эффективно, используя рекламу в Instagram, TikTok, Google, VK, Facebook и активно ведём соцсети
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-yellow-400 text-blue-900 hover:bg-yellow-300 text-lg px-10 py-7 rounded-2xl font-bold shadow-2xl hover:shadow-yellow-400/50 transition-all duration-300 transform hover:scale-105"
+                onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Оставить заявку
+                <ArrowRight className="ml-2 h-6 w-6" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-blue-900 text-lg px-10 py-7 rounded-2xl font-bold transition-all duration-300"
+                onClick={() => document.getElementById('advantages')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Узнать подробнее
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="white"/>
+          </svg>
+        </div>
+      </section>
 
-                {/* Номер телефона - теперь под кнопками */}
-                <div className="mt-2">
-                  <div className="bg-transparent border border-slate-600/50 rounded-3xl px-4 py-2 backdrop-blur-sm w-fit">
-                    <a
-                      href="tel:+375293596000"
-                      className="text-white font-semibold text-base hover:text-gray-200 transition-colors flex items-center gap-2"
-                    >
-                      <Phone className="h-4 w-4" />
-                      +375 29 359-60-00
-                    </a>
+      {/* Advantages Section */}
+      <section id="advantages" className="py-20 md:py-28 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-block relative mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
+                Наши преимущества
+              </h2>
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full"></div>
+            </div>
+            <p className="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
+              Почему тысячи клиентов выбирают нас для продажи своих автомобилей
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {advantages.map((advantage, index) => {
+              const IconComponent = advantage.icon
+              return (
+                <div
+                  key={advantage.id}
+                  className={`relative bg-gradient-to-br from-white to-blue-50 rounded-3xl p-8 border-2 border-blue-100 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 ${
+                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  <div className="absolute -top-6 left-8">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
+                      <IconComponent className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <h3 className="text-2xl font-bold text-blue-900 mb-3">
+                      {advantage.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      {advantage.description}
+                    </p>
+                    <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-semibold text-sm">
+                      <CheckCircle className="h-4 w-4" />
+                      {advantage.highlight}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className={`relative h-64 md:h-auto transform transition-all duration-1000 delay-300 ${
-              isVisible ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
-            }`}>
-              <Image
-                src="/mercedes-new-bg.jpg"
-                alt="Продажа автомобиля"
-                width={800}
-                height={600}
-                className="rounded-2xl shadow-2xl object-cover"
-                priority
-              />
-            </div>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* Modern Services Section */}
-      <section id="services" className="py-16 md:py-24 bg-slate-800/50">
-        <div className="container mx-auto max-w-7xl">
-          {/* Section Header */}
-          <div className={`text-center mb-8 md:mb-12 transform transition-all duration-1000 delay-300 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            <div className="inline-flex items-center gap-2 bg-slate-700 rounded-full px-4 py-2 mb-4">
-              <Car className="h-4 w-4 text-yellow-400" />
-              <span className="text-sm font-medium text-slate-200">Наши услуги</span>
+      {/* Services Section */}
+      <section id="services" className="py-20 md:py-28 bg-gradient-to-b from-blue-50 to-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-block relative mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
+                Все наши услуги
+              </h2>
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full"></div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white leading-tight">
-              Что мы предлагаем
-            </h2>
-            <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              Мы предлагаем полный спектр автомобильных услуг с индивидуальным подходом к каждому клиенту, гарантируя прозрачность и высокое качество на каждом этапе.
+            <p className="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
+              Полный спектр автомобильных услуг с индивидуальным подходом
             </p>
           </div>
 
-          {/* Tab Navigation */}
-          <div className={`flex justify-center mb-6 md:mb-8 transform transition-all duration-1000 delay-500 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            <div className="bg-slate-800 rounded-xl md:rounded-2xl p-1 md:p-2">
-              <button
-                onClick={() => setActiveTab('services')}
-                className={`px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-medium transition-all duration-300 text-sm md:text-base ${
-                  activeTab === 'services'
-                    ? 'bg-slate-700 text-white shadow-lg'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Услуги
-              </button>
-              <button
-                onClick={() => setActiveTab('process')}
-                className={`px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-medium transition-all duration-300 text-sm md:text-base ${
-                  activeTab === 'process'
-                    ? 'bg-slate-700 text-white shadow-lg'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Процесс работы
-              </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {services.map((service, index) => {
+              const IconComponent = service.icon
+              const isSelected = selectedService === service.id
+
+              return (
+                <div
+                  key={service.id}
+                  className={`group relative bg-white rounded-3xl p-6 border-2 transition-all duration-300 cursor-pointer ${
+                    isSelected
+                      ? 'border-emerald-500 shadow-2xl shadow-emerald-200'
+                      : 'border-gray-200 hover:border-blue-300 shadow-lg hover:shadow-xl'
+                  }`}
+                  onClick={() => setSelectedService(isSelected ? '' : service.id)}
+                >
+                  {/* Price Badge */}
+                  {service.price && (
+                    <div className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg transform rotate-6">
+                      {service.price}
+                    </div>
+                  )}
+
+                  {/* Selection Indicator */}
+                  <div className={`absolute top-4 right-4 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
+                    isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-gray-300'
+                  }`}>
+                    {isSelected && <CheckCircle className="h-5 w-5 text-white" />}
+                  </div>
+
+                  {/* Icon */}
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <IconComponent className="h-7 w-7 text-white" />
+                  </div>
+
+                  <h3 className="text-xl font-bold text-blue-900 mb-2">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    {service.description}
+                  </p>
+
+                  <div className="space-y-2">
+                    {service.features.map((feature, idx) => {
+                      const FeatureIcon = feature.icon
+                      return (
+                        <div key={idx} className="flex items-center gap-2">
+                          <FeatureIcon className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">{feature.text}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section className="py-20 md:py-28 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-block relative mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
+                Как мы работаем
+              </h2>
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full"></div>
             </div>
+            <p className="text-xl text-gray-600 mt-6 max-w-2xl mx-auto">
+              Простой и прозрачный процесс продажи вашего автомобиля
+            </p>
           </div>
 
-          {/* Services Grid */}
-          {activeTab === 'services' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-              {services.map((service, index) => {
-                const IconComponent = service.icon
-                const isSelected = selectedService === service.id
-                const isExpanded = expandedServices.includes(service.id)
-
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {dealSteps.map((step, index) => {
+                const IconComponent = step.icon
                 return (
-                  <div
-                    key={service.id}
-                    className={`group relative rounded-2xl border-2 overflow-hidden transform transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-yellow-400/10 hover:border-yellow-400/30 ${
-                      isSelected
-                        ? 'bg-slate-700/50 border-yellow-400 shadow-xl shadow-yellow-400/20'
-                        : 'bg-slate-800 border-slate-700'
-                    }`}
-                    style={{ transitionDelay: `${200 + index * 100}ms` }}
-                    onClick={() => {
-                      // Только переключаем развернутое состояние
-                      toggleServiceExpansion(service.id)
-                    }}
-                  >
-                    {/* Мобильная версия (свернутая) */}
-                    <div className="md:hidden">
-                      <div className="p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-slate-900/50 rounded-lg flex items-center justify-center group-hover:bg-yellow-400/10 transition-colors">
-                            <IconComponent className="h-5 w-5 text-yellow-400" />
-                          </div>
-                          <h3 className="text-lg font-bold text-white">
-                            {service.title}
-                          </h3>
-                        </div>
-                        <ChevronDown
-                          className={`h-5 w-5 text-slate-400 transition-transform duration-300 ${
-                            isExpanded ? 'rotate-180' : ''
-                          }`}
-                        />
+                  <div key={step.id} className="relative">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-3 shadow-lg">
+                        <IconComponent className="h-8 w-8 text-white" />
                       </div>
-                      {/* Развернутое содержимое для мобильных */}
-                      <div className={`overflow-hidden transition-all duration-300 ${
-                        isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                      }`}>
-                        <div className="px-4 pb-4 border-t border-slate-700">
-                          <p className="text-slate-400 mb-3 text-sm mt-3">
-                            {service.description}
-                          </p>
-                          <div className="space-y-2">
-                            {service.features.map((feature, idx) => (
-                              <div key={idx} className="flex items-center gap-3">
-                                <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-                                <span className="text-sm text-slate-300">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                          {/* Кнопка выбора услуги в развернутом блоке */}
-                          <div className="mt-4 flex justify-center">
-                            <div
-                              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105"
-                              style={{
-                                backgroundColor: isSelected ? '#facc15' : '#475569',
-                                color: isSelected ? '#0f172a' : '#f8fafc'
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setSelectedService(isSelected ? '' : service.id)
-                              }}
-                            >
-                              <CheckCircle className="h-4 w-4" />
-                              <span className="text-sm font-medium">
-                                {isSelected ? 'Услуга выбрана' : 'Выбрать услугу'}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
+                        {step.id}
                       </div>
-                    </div>
-
-                    {/* Десктопная версия (обычная) */}
-                    <div className="hidden md:block p-6 flex flex-col items-start text-left h-full">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-slate-900/50 rounded-lg flex items-center justify-center group-hover:bg-yellow-400/10 transition-colors">
-                          <IconComponent className="h-6 w-6 text-yellow-400" />
-                        </div>
-                        <h3 className="text-xl font-bold text-white">
-                          {service.title}
-                        </h3>
-                      </div>
-                      <p className="text-slate-400 mb-4 text-sm min-h-[60px] flex-grow">
-                        {service.description}
+                      <h4 className="font-bold text-blue-900 mb-1 text-sm">
+                        {step.title}
+                      </h4>
+                      <p className="text-xs text-gray-600">
+                        {step.description}
                       </p>
-                      <div className="space-y-2 w-full">
-                        {service.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-center gap-3">
-                            <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-                            <span className="text-sm text-slate-300">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                      {/* Галочка выбора для десктопа */}
-                      <div
-                        className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all duration-200 hover:scale-110"
-                        style={{ backgroundColor: isSelected ? '#facc15' : 'transparent', border: '2px solid #facc15' }}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedService(isSelected ? '' : service.id)
-                        }}
-                      >
-                        {isSelected && <CheckCircle className="h-5 w-5 text-slate-900" />}
-                      </div>
                     </div>
-
-
+                    {index < dealSteps.length - 1 && (
+                      <div className="hidden lg:block absolute top-8 left-full w-full">
+                        <ArrowRight className="h-5 w-5 text-blue-300 mx-auto" />
+                      </div>
+                    )}
                   </div>
                 )
               })}
             </div>
-          )}
-
-          {/* Process Steps */}
-          {activeTab === 'process' && (
-            <div className="max-w-3xl mx-auto">
-              <div className="relative">
-                {/* Vertical line */}
-                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-700"></div>
-
-                <div className="space-y-12">
-                  {dealSteps.map((step, index) => {
-                    const IconComponent = step.icon
-                    return (
-                      <div key={step.id} className={`relative flex items-start gap-6 transform transition-all duration-700 ${
-                        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                      }`} style={{ transitionDelay: `${200 + index * 100}ms` }}>
-                        <div className="relative z-10 flex flex-col items-center">
-                          <div className={`w-12 h-12 bg-slate-800 border-2 border-yellow-400 text-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                            <IconComponent className="h-6 w-6" />
-                          </div>
-                        </div>
-                        <div className="flex-1 pt-1 bg-slate-800 p-6 rounded-2xl border-2 border-slate-700 hover:border-yellow-400/50 transition-colors">
-                          <h4 className="text-lg font-bold text-white mb-2">
-                            Шаг {step.id}: {step.title}
-                          </h4>
-                          <p className="text-slate-400 text-sm leading-relaxed">
-                            {step.description}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </section>
 
-      {/* Modern Contact Section */}
-      <section id="contact-form" className="py-16 md:py-24 bg-slate-800/50">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-            {/* Left side - Info */}
-            <div className={`transform transition-all duration-1000 delay-300 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}>
-              <div className="inline-flex items-center gap-2 bg-slate-700 rounded-full px-4 py-2 mb-4">
-                <Phone className="h-4 w-4 text-yellow-400" />
-                <span className="text-sm font-medium text-slate-200">Свяжитесь с нами</span>
+      {/* Social Media Marketing Section */}
+      <section className="py-20 md:py-28 bg-gradient-to-br from-blue-600 to-emerald-600 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Активное продвижение в соцсетях
+            </h2>
+            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+              Мы используем все современные каналы для максимально быстрой продажи вашего автомобиля
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-6 mb-12">
+            {socialPlatforms.map((platform, index) => {
+              const IconComponent = platform.icon
+              return (
+                <div
+                  key={platform.name}
+                  className={`bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl px-8 py-6 flex items-center gap-4 transform transition-all duration-300 hover:scale-110 hover:bg-white/20 ${
+                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
+                    <IconComponent className="h-7 w-7" style={{ color: platform.color }} />
+                  </div>
+                  <span className="text-white font-bold text-lg">{platform.name}</span>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-md border-2 border-white/20 rounded-3xl p-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div>
+                <div className="text-5xl font-bold text-yellow-300 mb-2">100K+</div>
+                <div className="text-blue-100">Охват аудитории</div>
               </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
-                Готовы обсудить ваши потребности?
-              </h3>
-              <p className="text-lg text-slate-400 mb-6 leading-relaxed">
-                Оставьте заявку, и наш менеджер свяжется с вами в течение 15 минут, чтобы предложить лучшие условия.
-              </p>
+              <div>
+                <div className="text-5xl font-bold text-yellow-300 mb-2">15+</div>
+                <div className="text-blue-100">Площадок размещения</div>
+              </div>
+              <div>
+                <div className="text-5xl font-bold text-yellow-300 mb-2">7-14</div>
+                <div className="text-blue-100">Дней до продажи</div>
+              </div>
             </div>
-            {/* Right side - Form */}
-            <div className={`transform transition-all duration-1000 delay-500 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}>
-              <div className="bg-slate-800 rounded-2xl border-2 border-slate-700 p-6 md:p-8">
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section id="contact-form" className="py-20 md:py-32 bg-gradient-to-b from-white to-blue-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Заголовок с эмодзи */}
+            <div className="text-center mb-12">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <h2 className="text-4xl md:text-5xl font-bold text-blue-900">
+                  Давайте попробуем?
+                </h2>
+                <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-3xl">
+                  😊
+                </div>
+              </div>
+              <div className="flex justify-center mb-8">
+                <ArrowDown className="h-10 w-10 text-emerald-500 animate-bounce" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              {/* Форма */}
+              <div className="bg-white rounded-3xl p-8 shadow-2xl border-2 border-blue-100">
                 {selectedService && (
-                  <div className="mb-6 p-3 bg-slate-700 rounded-xl">
+                  <div className="mb-6 p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl">
                     <div className="flex items-center gap-3">
-                      <CheckCircle className="h-5 w-5 text-yellow-400" />
+                      <CheckCircle className="h-6 w-6 text-emerald-600" />
                       <div>
-                        <span className="font-semibold text-white text-sm">Выбранная услуга:</span>
-                        <p className="text-slate-300 text-sm">{services.find(s => s.id === selectedService)?.title}</p>
+                        <span className="font-semibold text-emerald-900 block">Выбранная услуга:</span>
+                        <p className="text-emerald-700">{services.find(s => s.id === selectedService)?.title}</p>
                       </div>
                     </div>
                   </div>
                 )}
-                <div className="space-y-4">
+
+                <div className="space-y-5">
                   <div>
-                    <Label htmlFor="name" className="text-sm font-medium text-slate-300 mb-2 block">Ваше имя *</Label>
-                    <Input id="name" value={formData.name} onChange={(e) => handleFormChange('name', e.target.value)} className="h-12 bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 rounded-lg" placeholder="Введите ваше имя" />
+                    <Label htmlFor="name" className="text-sm font-semibold text-blue-900 mb-2 block">
+                      Ваше имя *
+                    </Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleFormChange('name', e.target.value)}
+                      className="h-14 bg-blue-50 border-2 border-blue-200 text-blue-900 placeholder:text-blue-400 rounded-xl focus:border-emerald-500 focus:ring-emerald-500"
+                      placeholder="Введите ваше имя"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="phone" className="text-sm font-medium text-slate-300 mb-2 block">Номер телефона *</Label>
-                    <Input id="phone" value={formData.phone} onChange={(e) => handleFormChange('phone', e.target.value)} className="h-12 bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 rounded-lg" placeholder="+375 (XX) XXX-XX-XX" />
+                    <Label htmlFor="phone" className="text-sm font-semibold text-blue-900 mb-2 block">
+                      Номер телефона *
+                    </Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone}
+                      onChange={(e) => handleFormChange('phone', e.target.value)}
+                      className="h-14 bg-blue-50 border-2 border-blue-200 text-blue-900 placeholder:text-blue-400 rounded-xl focus:border-emerald-500 focus:ring-emerald-500"
+                      placeholder="+375 (XX) XXX-XX-XX"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="message" className="text-sm font-medium text-slate-300 mb-2 block">Комментарий (необязательно)</Label>
-                    <Textarea id="message" value={formData.message} onChange={(e) => handleFormChange('message', e.target.value)} className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 rounded-lg resize-none" placeholder="Расскажите подробнее..." rows={3} />
+                    <Label htmlFor="message" className="text-sm font-semibold text-blue-900 mb-2 block">
+                      Комментарий
+                    </Label>
+                    <Textarea
+                      id="message"
+                      value={formData.message}
+                      onChange={(e) => handleFormChange('message', e.target.value)}
+                      className="bg-blue-50 border-2 border-blue-200 text-blue-900 placeholder:text-blue-400 rounded-xl resize-none focus:border-emerald-500 focus:ring-emerald-500"
+                      placeholder="Расскажите о вашем автомобиле..."
+                      rows={4}
+                    />
                   </div>
-                  <StatusButton {...submitButtonState} onClick={handleSubmit} disabled={!canSubmit} className="w-full h-12 text-base rounded-lg bg-yellow-400 text-slate-900 hover:bg-yellow-300 font-semibold">
+                  <StatusButton
+                    {...submitButtonState}
+                    onClick={handleSubmit}
+                    disabled={!canSubmit}
+                    className="w-full h-14 text-lg rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-white hover:from-emerald-600 hover:to-blue-600 font-bold shadow-lg hover:shadow-xl transition-all"
+                  >
                     Отправить заявку
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-6 w-6" />
                   </StatusButton>
-                  <p className="text-center text-xs text-slate-500">
+                  <p className="text-center text-xs text-gray-500">
                     Нажимая кнопку, вы соглашаетесь с{' '}
-                    <a href="/privacy" className="underline hover:text-white">политикой конфиденциальности</a>
+                    <a href="/privacy" className="underline hover:text-blue-600">политикой конфиденциальности</a>
                   </p>
+                </div>
+              </div>
+
+              {/* Контактная информация */}
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-blue-100">
+                  <h3 className="text-2xl font-bold text-blue-900 mb-6">
+                    Или свяжитесь с нами напрямую
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Phone className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="bg-white/50 backdrop-blur-sm border-2 border-blue-200 rounded-2xl px-6 py-3 flex-1">
+                        <a
+                          href="tel:+375293596000"
+                          className="text-blue-900 font-bold text-lg hover:text-emerald-600 transition-colors"
+                        >
+                          +375 29 359-60-00
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Clock className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-blue-900 font-semibold">Режим работы</p>
+                        <p className="text-gray-600">Пн-Вс: 9:00 - 21:00</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-8 shadow-xl text-white">
+                  <div className="flex items-start gap-4">
+                    <Sparkles className="h-8 w-8 flex-shrink-0" />
+                    <div>
+                      <h4 className="text-xl font-bold mb-2">Специальное предложение</h4>
+                      <p className="text-orange-100">
+                        Оставьте заявку сегодня и получите бесплатную профессиональную фотосъемку вашего автомобиля!
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
