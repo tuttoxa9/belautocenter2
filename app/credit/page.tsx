@@ -66,12 +66,11 @@ export default function CreditPage() {
   const [creditForm, setCreditForm] = useState({
     name: "",
     phone: "+375",
-    email: "",
     carPrice: "",
     downPayment: "",
     loanTerm: "",
     bank: "",
-    message: "",
+    isBelarusianRubles: false,
   })
 
   const [isCalculatorExpanded, setIsCalculatorExpanded] = useState(false)
@@ -207,7 +206,7 @@ export default function CreditPage() {
         setCalculator({ ...calculator, downPayment: [clampedDownPayment] })
         break
       case 'loanTerm':
-        const clampedTerm = Math.max(12, Math.min(84, numValue))
+        const clampedTerm = Math.max(12, Math.min(120, numValue))
         setCalculator({ ...calculator, loanTerm: [clampedTerm] })
         break
       case 'interestRate':
@@ -292,12 +291,11 @@ export default function CreditPage() {
       setCreditForm({
         name: "",
         phone: "+375",
-        email: "",
         carPrice: "",
         downPayment: "",
         loanTerm: "",
         bank: "",
-        message: "",
+        isBelarusianRubles: false,
       })
       showSuccess(
         "Заявка на кредит успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время."
@@ -508,7 +506,7 @@ export default function CreditPage() {
                       setCalculator({ ...calculator, loanTerm: value })
                       setManualInputs({ ...manualInputs, loanTerm: value[0].toString() })
                     }}
-                    max={84}
+                    max={120}
                     min={12}
                     step={3}
                     className="mb-1 md:mb-4"
@@ -670,20 +668,19 @@ export default function CreditPage() {
                         )}
                       </div>
                     </div>
-
-                    <div>
-                      <Label htmlFor="email" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
-                        Email (необязательно)
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={creditForm.email}
-                        onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
-                        className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-zinc-500 dark:text-slate-100 rounded-lg h-10 text-sm transition-all duration-200"
-                        placeholder="your@email.com"
-                      />
-                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="currency-form"
+                      checked={creditForm.isBelarusianRubles}
+                      onCheckedChange={(checked: boolean) =>
+                        setCreditForm({ ...creditForm, isBelarusianRubles: checked })
+                      }
+                      className="data-[state=checked]:bg-slate-900 dark:data-[state=checked]:bg-slate-100"
+                    />
+                    <Label htmlFor="currency-form" className="text-xs md:text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                      В белорусских рублях
+                    </Label>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 md:gap-2">
@@ -720,25 +717,25 @@ export default function CreditPage() {
                   <div className="grid grid-cols-2 gap-3 md:gap-2">
                     <div>
                       <Label htmlFor="loanTerm" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
-                        Срок
+                        Срок (мес.)
                       </Label>
-                      <Select
+                      <Input
+                        id="loanTerm"
+                        type="number"
                         value={creditForm.loanTerm}
-                        onValueChange={(value) => setCreditForm({ ...creditForm, loanTerm: value })}
-                      >
-                        <SelectTrigger className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-zinc-500 dark:text-slate-100 rounded-lg h-10 text-sm transition-all duration-200">
-                          <SelectValue placeholder="Месяцы" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="12">12 мес</SelectItem>
-                          <SelectItem value="24">24 мес</SelectItem>
-                          <SelectItem value="36">36 мес</SelectItem>
-                          <SelectItem value="48">48 мес</SelectItem>
-                          <SelectItem value="60">60 мес</SelectItem>
-                          <SelectItem value="72">72 мес</SelectItem>
-                          <SelectItem value="84">84 мес</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (parseInt(value) > 120) {
+                            setCreditForm({ ...creditForm, loanTerm: "120" });
+                          } else {
+                            setCreditForm({ ...creditForm, loanTerm: value });
+                          }
+                        }}
+                        className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-zinc-500 dark:text-slate-100 rounded-lg h-10 text-sm transition-all duration-200"
+                        placeholder="до 120"
+                        max="120"
+                        required
+                      />
                     </div>
                     <div>
                       <Label htmlFor="bank" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
@@ -774,19 +771,6 @@ export default function CreditPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
-                      Комментарий (необязательно)
-                    </Label>
-                    <Input
-                      id="message"
-                      value={creditForm.message}
-                      onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
-                      className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-zinc-500 dark:text-slate-100 rounded-lg h-10 text-sm transition-all duration-200"
-                      placeholder="Дополнительная информация..."
-                    />
                   </div>
 
                   <StatusButton
