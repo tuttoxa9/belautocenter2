@@ -43,7 +43,7 @@ interface CreditPageSettings {
 export default function CreditPage() {
   const [settings, setSettings] = useState<CreditPageSettings | null>(null)
   const [loading, setLoading] = useState(true)
-  const [isBelarusianRubles, setIsBelarusianRubles] = useState(false)
+  const [isBelarusianRubles, setIsBelarusianRubles] = useState(true)
   const usdBynRate = useUsdBynRate()
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
@@ -201,13 +201,13 @@ export default function CreditPage() {
         setCalculator({ ...calculator, carPrice: [clampedCarPrice] })
         break
       case 'downPayment':
-        const minDown = calculator.carPrice[0] * 0.1
+        const minDown = 0
         const maxDown = calculator.carPrice[0] * 0.8
         const clampedDownPayment = Math.max(minDown, Math.min(maxDown, numValue))
         setCalculator({ ...calculator, downPayment: [clampedDownPayment] })
         break
       case 'loanTerm':
-        const clampedTerm = Math.max(12, Math.min(84, numValue))
+        const clampedTerm = Math.max(12, Math.min(120, numValue))
         setCalculator({ ...calculator, loanTerm: [clampedTerm] })
         break
       case 'interestRate':
@@ -423,7 +423,7 @@ export default function CreditPage() {
                   )}
                 </div>
                 {isMounted && (
-                  <div className="hidden md:flex items-center space-x-2">
+                  <div className="flex items-center space-x-2">
                     <Checkbox
                       id="currency"
                       checked={isBelarusianRubles}
@@ -483,7 +483,7 @@ export default function CreditPage() {
                       setManualInputs({ ...manualInputs, downPayment: value[0].toString() })
                     }}
                     max={calculator.carPrice[0] * 0.8}
-                    min={calculator.carPrice[0] * 0.1}
+                    min={0}
                     step={isBelarusianRubles ? 200 : 500}
                     className="mb-1 md:mb-4"
                   />
@@ -508,7 +508,7 @@ export default function CreditPage() {
                       setCalculator({ ...calculator, loanTerm: value })
                       setManualInputs({ ...manualInputs, loanTerm: value[0].toString() })
                     }}
-                    max={84}
+                    max={120}
                     min={12}
                     step={3}
                     className="mb-1 md:mb-4"
@@ -670,20 +670,6 @@ export default function CreditPage() {
                         )}
                       </div>
                     </div>
-
-                    <div>
-                      <Label htmlFor="email" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
-                        Email (необязательно)
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={creditForm.email}
-                        onChange={(e) => setCreditForm({ ...creditForm, email: e.target.value })}
-                        className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-zinc-500 dark:text-slate-100 rounded-lg h-10 text-sm transition-all duration-200"
-                        placeholder="your@email.com"
-                      />
-                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 md:gap-2">
@@ -737,6 +723,9 @@ export default function CreditPage() {
                           <SelectItem value="60">60 мес</SelectItem>
                           <SelectItem value="72">72 мес</SelectItem>
                           <SelectItem value="84">84 мес</SelectItem>
+                          <SelectItem value="96">96 мес</SelectItem>
+                          <SelectItem value="108">108 мес</SelectItem>
+                          <SelectItem value="120">120 мес</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -774,19 +763,6 @@ export default function CreditPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
-                      Комментарий (необязательно)
-                    </Label>
-                    <Input
-                      id="message"
-                      value={creditForm.message}
-                      onChange={(e) => setCreditForm({ ...creditForm, message: e.target.value })}
-                      className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-zinc-500 dark:text-slate-100 rounded-lg h-10 text-sm transition-all duration-200"
-                      placeholder="Дополнительная информация..."
-                    />
                   </div>
 
                   <StatusButton

@@ -44,7 +44,7 @@ interface LeasingPageSettings {
 export default function LeasingPage() {
   const [settings, setSettings] = useState<LeasingPageSettings | null>(null)
   const [loading, setLoading] = useState(true)
-  const [isBelarusianRubles, setIsBelarusianRubles] = useState(false)
+  const [isBelarusianRubles, setIsBelarusianRubles] = useState(true)
   const usdBynRate = useUsdBynRate()
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
@@ -200,13 +200,13 @@ export default function LeasingPage() {
         setCalculator({ ...calculator, carPrice: [clampedCarPrice] })
         break
       case 'advance':
-        const minAdvance = calculator.carPrice[0] * 0.1
+        const minAdvance = 0
         const maxAdvance = calculator.carPrice[0] * 0.8
         const clampedAdvance = Math.max(minAdvance, Math.min(maxAdvance, numValue))
         setCalculator({ ...calculator, advance: [clampedAdvance] })
         break
       case 'leasingTerm':
-        const clampedTerm = Math.max(12, Math.min(84, numValue))
+        const clampedTerm = Math.max(12, Math.min(120, numValue))
         setCalculator({ ...calculator, leasingTerm: [clampedTerm] })
         break
       case 'residualValue':
@@ -445,7 +445,7 @@ export default function LeasingPage() {
                   )}
                 </div>
                 {isMounted && (
-                  <div className="hidden md:flex items-center space-x-2">
+                  <div className="flex items-center space-x-2">
                     <Checkbox
                       id="currency"
                       checked={isBelarusianRubles}
@@ -505,7 +505,7 @@ export default function LeasingPage() {
                       setManualInputs({ ...manualInputs, advance: value[0].toString() })
                     }}
                     max={calculator.carPrice[0] * 0.8}
-                    min={calculator.carPrice[0] * 0.1}
+                    min={0}
                     step={isBelarusianRubles ? 200 : 500}
                     className="mb-1 md:mb-4"
                   />
@@ -530,7 +530,7 @@ export default function LeasingPage() {
                       setCalculator({ ...calculator, leasingTerm: value })
                       setManualInputs({ ...manualInputs, leasingTerm: value[0].toString() })
                     }}
-                    max={84}
+                    max={120}
                     min={12}
                     step={3}
                     className="mb-1 md:mb-4"
@@ -768,19 +768,6 @@ export default function LeasingPage() {
                         )}
                       </div>
                     </div>
-                    <div>
-                      <Label htmlFor="email" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
-                        Email (необязательно)
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={leasingForm.email}
-                        onChange={(e) => setLeasingForm({ ...leasingForm, email: e.target.value })}
-                        className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
-                        placeholder="your@company.com"
-                      />
-                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 md:gap-2">
@@ -834,6 +821,9 @@ export default function LeasingPage() {
                           <SelectItem value="60">60 мес</SelectItem>
                           <SelectItem value="72">72 мес</SelectItem>
                           <SelectItem value="84">84 мес</SelectItem>
+                          <SelectItem value="96">96 мес</SelectItem>
+                          <SelectItem value="108">108 мес</SelectItem>
+                          <SelectItem value="120">120 мес</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -871,19 +861,6 @@ export default function LeasingPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">
-                      Комментарий (необязательно)
-                    </Label>
-                    <Input
-                      id="message"
-                      value={leasingForm.message}
-                      onChange={(e) => setLeasingForm({ ...leasingForm, message: e.target.value })}
-                      className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:border-blue-400 dark:focus:border-blue-500 rounded-lg h-10 text-sm text-slate-900 dark:text-slate-100 transition-all duration-200"
-                      placeholder="Дополнительная информация..."
-                    />
                   </div>
 
                   <StatusButton
