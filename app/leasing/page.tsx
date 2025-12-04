@@ -89,6 +89,12 @@ export default function LeasingPage() {
   }, [])
 
   useEffect(() => {
+    if (isCalculatorExpanded && !isBelarusianRubles) {
+      handleCurrencyChange(true);
+    }
+  }, [isCalculatorExpanded]);
+
+  useEffect(() => {
     loadSettings()
   }, [])
 
@@ -199,7 +205,7 @@ export default function LeasingPage() {
         setCalculator({ ...calculator, carPrice: [clampedCarPrice] })
         break
       case 'advance':
-        const minAdvance = calculator.carPrice[0] * 0.1
+        const minAdvance = 0
         const maxAdvance = calculator.carPrice[0] * 0.8
         const clampedAdvance = Math.max(minAdvance, Math.min(maxAdvance, numValue))
         setCalculator({ ...calculator, advance: [clampedAdvance] })
@@ -298,7 +304,6 @@ export default function LeasingPage() {
           companyName: leasingForm.companyName,
           unp: leasingForm.unp,
           type: "leasing_request",
-          isBelarusianRubles: leasingForm.isBelarusianRubles,
         }),
       })
 
@@ -502,7 +507,7 @@ export default function LeasingPage() {
                       setManualInputs({ ...manualInputs, advance: value[0].toString() })
                     }}
                     max={calculator.carPrice[0] * 0.8}
-                    min={calculator.carPrice[0] * 0.1}
+                    min={0}
                     step={isBelarusianRubles ? 200 : 500}
                     className="mb-1 md:mb-4"
                   />
@@ -779,7 +784,6 @@ export default function LeasingPage() {
                       В белорусских рублях
                     </Label>
                   </div>
-
                   <div className="grid grid-cols-2 gap-3 md:gap-2">
                     <div>
                       <Label htmlFor="carPrice" className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1 block">

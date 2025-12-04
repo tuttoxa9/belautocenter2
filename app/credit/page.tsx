@@ -81,6 +81,12 @@ export default function CreditPage() {
   }, [])
 
   useEffect(() => {
+    if (isCalculatorExpanded && !isBelarusianRubles) {
+      handleCurrencyChange(true);
+    }
+  }, [isCalculatorExpanded]);
+
+  useEffect(() => {
     loadSettings()
   }, [])
 
@@ -200,7 +206,7 @@ export default function CreditPage() {
         setCalculator({ ...calculator, carPrice: [clampedCarPrice] })
         break
       case 'downPayment':
-        const minDown = calculator.carPrice[0] * 0.1
+        const minDown = 0
         const maxDown = calculator.carPrice[0] * 0.8
         const clampedDownPayment = Math.max(minDown, Math.min(maxDown, numValue))
         setCalculator({ ...calculator, downPayment: [clampedDownPayment] })
@@ -481,7 +487,7 @@ export default function CreditPage() {
                       setManualInputs({ ...manualInputs, downPayment: value[0].toString() })
                     }}
                     max={calculator.carPrice[0] * 0.8}
-                    min={calculator.carPrice[0] * 0.1}
+                    min={0}
                     step={isBelarusianRubles ? 200 : 500}
                     className="mb-1 md:mb-4"
                   />
