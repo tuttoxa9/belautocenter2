@@ -206,9 +206,15 @@ export default function AdminCars() {
         return
       }
 
+      // Маппинг noMileageInRB -> fromEurope (для обратной совместимости)
+      const fromEuropeValue = parsedData.fromEurope !== undefined
+        ? parsedData.fromEurope
+        : (parsedData.noMileageInRB !== undefined ? parsedData.noMileageInRB : false)
+
       // Преобразуем поля, если они не соответствуют ожидаемому типу
       const processedData = {
-        ...parsedData,
+        make: parsedData.make || "",
+        model: parsedData.model || "",
         price: parsedData.price ? parsedData.price.toString() : "",
         mileage: parsedData.mileage ? parsedData.mileage.toString() : "",
         engineVolume: parsedData.engineVolume ? parsedData.engineVolume.toString() : "",
@@ -217,6 +223,8 @@ export default function AdminCars() {
           ? parsedData.imageUrls
           : [""],
         isAvailable: typeof parsedData.isAvailable === 'boolean' ? parsedData.isAvailable : true,
+        showOnHomepage: typeof parsedData.showOnHomepage === 'boolean' ? parsedData.showOnHomepage : false,
+        fromEurope: fromEuropeValue,
         specifications: parsedData.specifications || {
           "Двигатель": "",
           "Разгон 0-100": "",
@@ -225,10 +233,18 @@ export default function AdminCars() {
           "Коробка передач": "",
           "Мощность": ""
         },
-        features: Array.isArray(parsedData.features) ? parsedData.features : []
+        features: Array.isArray(parsedData.features) ? parsedData.features : [],
+        fuelType: parsedData.fuelType || "",
+        transmission: parsedData.transmission || "",
+        driveTrain: parsedData.driveTrain || "",
+        bodyType: parsedData.bodyType || "",
+        color: parsedData.color || "",
+        description: parsedData.description || "",
+        tiktok_url: parsedData.tiktok_url || "",
+        youtube_url: parsedData.youtube_url || ""
       }
 
-      // Устанавливаем данные в форму
+      // Устанавливаем данные в форму (без createdAt и updatedAt - они устанавливаются автоматически)
       setCarForm(processedData)
       setJsonError("")
     } catch (error) {
