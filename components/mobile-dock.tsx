@@ -15,7 +15,7 @@ export default function MobileDock() {
   const pathname = usePathname()
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-slate-200/50 dark:border-gray-800/50 rounded-2xl shadow-2xl shadow-slate-900/25 dark:shadow-black/60 md:hidden">
+    <div className="fixed bottom-4 left-4 right-4 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-slate-200/50 dark:border-gray-800/50 rounded-2xl shadow-[0_0_35px_0px_rgba(0,0,0,0.4)] dark:shadow-[0_0_35px_0px_rgba(0,0,0,0.8)] md:hidden">
       <div className="grid grid-cols-4 p-2">
         {dockItems.map((item) => {
           const isActive = pathname === item.href
