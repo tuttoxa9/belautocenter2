@@ -12,8 +12,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Car, Code, Search } from "lucide-react"
+import { Plus, Edit, Trash2, Car, Code, Search, Eye } from "lucide-react"
 import ImageUpload from "@/components/admin/image-upload"
+import Link from "next/link"
 import { useButtonState } from "@/hooks/use-button-state"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MarkdownRenderer from "@/components/markdown-renderer"
@@ -956,8 +957,11 @@ export default function AdminCars() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {filteredCars && filteredCars.map((car) => (
-          <Card key={car.id}>
+          <Card key={car.id} className="relative">
             <CardContent className="p-3 md:p-4">
+              <Link href={`/catalog/${car.id}`} target="_blank" className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow-md hover:bg-gray-100 transition-all">
+                <Eye className="h-4 w-4 text-gray-700" />
+              </Link>
               {car.imageUrls && car.imageUrls.length > 0 && car.imageUrls[0] && (
                 <div className="mb-3">
                   <img
