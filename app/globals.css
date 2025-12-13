@@ -58,6 +58,36 @@
   .animate-fade-from-white {
     animation: fadeFromWhite 0.7s ease-out forwards;
   }
+
+  @keyframes blurIn {
+    from {
+      filter: blur(20px);
+      opacity: 0;
+    }
+    to {
+      filter: blur(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes blurOut {
+    from {
+      filter: blur(0);
+      opacity: 1;
+    }
+    to {
+      filter: blur(20px);
+      opacity: 0;
+    }
+  }
+
+  .blur-in {
+    animation: blurIn 1s ease-out forwards;
+  }
+
+  .blur-out {
+    animation: blurOut 1s ease-in forwards;
+  }
 }
 
 @layer base {
