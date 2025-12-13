@@ -43,6 +43,30 @@ export default function HomePage() {
   const [isMounted, setIsMounted] = useState(true)
   const [showSaleModal, setShowSaleModal] = useState(false)
 
+  const animatedTexts = [
+    "Поможем с приобретением и продажей автомобиля",
+    "Все автомобили доступны в кредит до 10 лет",
+    "Быстрое оформление документов за 1 час",
+    "Выгодный Trade-in: обменяйте свой старый авто на новый",
+    "Подберем автомобиль под ваш бюджет и запрос",
+    "Гарантия юридической чистоты каждой сделки",
+  ]
+  const [currentTextIndex, setCurrentTextIndex] = useState(0)
+  const [textAnimationClass, setTextAnimationClass] = useState("blur-in")
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTextAnimationClass("blur-out") // Start fade out animation
+
+      setTimeout(() => {
+        setCurrentTextIndex((prevIndex) => (prevIndex + 1) % animatedTexts.length)
+        setTextAnimationClass("blur-in") // Start fade in animation
+      }, 1000) // Duration of the fade-out animation
+    }, 4000) // 3 seconds for text visibility + 1 second for transition
+
+    return () => clearInterval(interval)
+  }, [animatedTexts.length])
+
   // Состояния для видео
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const [videosLoaded, setVideosLoaded] = useState(false)
@@ -357,8 +381,8 @@ export default function HomePage() {
         </div>
 
         <div className="relative z-30 text-center text-white max-w-4xl mx-auto px-4 pb-40 sm:pb-32 md:pb-24 lg:pb-32 xl:pb-20 hero-content">
-          <h1 className="text-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 leading-tight">
-            Поможем с приобретением и продажей автомобиля
+          <h1 className={`text-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 leading-tight ${textAnimationClass}`}>
+            {animatedTexts[currentTextIndex]}
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 md:mb-16 lg:mb-20 xl:mb-24 text-gray-100 font-medium leading-relaxed">
             {settings.heroSubtitle}
