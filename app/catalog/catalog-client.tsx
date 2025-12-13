@@ -299,21 +299,22 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     }
 
     const filtered = cars.filter((car) => {
-      if (!car) return false;
-      const carPrice = car.price || 0;
-      const carYear = car.year || 0;
-      const carMileage = car.mileage || 0;
-      const priceFrom = filters.priceFrom ? Number.parseInt(filters.priceFrom) || 0 : 0;
-      const priceTo = filters.priceTo ? Number.parseInt(filters.priceTo) || 0 : 0;
-      const yearFrom = filters.yearFrom ? Number.parseInt(filters.yearFrom) || 0 : 0;
-      const yearTo = filters.yearTo ? Number.parseInt(filters.yearTo) || 0 : 0;
-      const mileageFrom = filters.mileageFrom ? Number.parseInt(filters.mileageFrom) || 0 : 0;
-      const mileageTo = filters.mileageTo ? Number.parseInt(filters.mileageTo) || 0 : 0;
+      if (!car) return false
+
+      const carPrice = car.price || 0
+      const carYear = car.year || 0
+      const carMileage = car.mileage || 0
+      const priceFrom = filters.priceFrom ? parseInt(filters.priceFrom, 10) || 0 : 0
+      const priceTo = filters.priceTo ? parseInt(filters.priceTo, 10) || 0 : 0
+      const yearFrom = filters.yearFrom ? parseInt(filters.yearFrom, 10) || 0 : 0
+      const yearTo = filters.yearTo ? parseInt(filters.yearTo, 10) || 0 : 0
+      const mileageFrom = filters.mileageFrom ? parseInt(filters.mileageFrom, 10) || 0 : 0
+      const mileageTo = filters.mileageTo ? parseInt(filters.mileageTo, 10) || 0 : 0
 
       const matchesSearchQuery =
         !searchQuery ||
-        car.make.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        car.model.toLowerCase().includes(searchQuery.toLowerCase());
+        (car.make && car.make.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (car.model && car.model.toLowerCase().includes(searchQuery.toLowerCase()))
 
       return (
         matchesSearchQuery &&

@@ -40,34 +40,50 @@ const convertFieldValue = (value: any): any => {
 }
 
 export default async function CatalogPage() {
-  let cars = []
+  let cars: any[] = []
 
   try {
-    // Прямой запрос к Firestore REST API
+    const allCars: any[] = []
+    let pageToken: string | undefined = undefined
     const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
-    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars`
+    const baseFirestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars`
 
-    const response = await fetch(firestoreUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'NextJS-Direct-Firestore/1.0'
-      },
-      next: { revalidate: 86400 }
-    })
+    do {
+      let firestoreUrl = `${baseFirestoreUrl}?pageSize=100`
+      if (pageToken) {
+        firestoreUrl += `&pageToken=${pageToken}`
+      }
 
-    if (response.ok) {
-      const data = await response.json()
+      const response = await fetch(firestoreUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'NextJS-Direct-Firestore/1.0'
+        },
+        next: { revalidate: 86400 }
+      })
 
-      // Парсим документы Firestore
-      cars = data.documents?.map((doc: any) => {
-        const id = doc.name.split('/').pop() || ''
-        const fields = parseFirestoreDoc(doc)
-        return { id, ...fields }
-      }) || []
+      if (response.ok) {
+        const data = await response.json()
 
-      // Фильтруем только доступные автомобили
-      cars = cars.filter((car: any) => car.isAvailable !== false)
-    }
+        // Парсим документы Firestore
+        const newDocs = data.documents?.map((doc: any) => {
+          const id = doc.name.split('/').pop() || ''
+          const fields = parseFirestoreDoc(doc)
+          return { id, ...fields }
+        }) || []
+        allCars.push(...newDocs)
+
+        // Получаем токен для следующей страницы
+        pageToken = data.nextPageToken
+      } else {
+        // Если запрос не удался, выходим из цикла
+        pageToken = undefined
+      }
+    } while (pageToken)
+
+    // Фильтруем только доступные автомобили
+    cars = allCars.filter((car: any) => car.isAvailable !== false)
+
   } catch (error) {
     console.error('Error loading cars:', error)
   }
