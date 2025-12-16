@@ -52,6 +52,17 @@ export function UsdBynRateProvider({ children }: { children: React.ReactNode }) 
         return;
       }
 
+      if (settings?.finance.rateSource === 'hybrid') {
+        const nbrbRate = await fetchNbrbRate();
+        if (nbrbRate) {
+          const finalRate = nbrbRate + (settings.finance.hybridMarkup || 0);
+          setUsdBynRate(finalRate);
+        } else {
+          setUsdBynRate(null); // Или какое-то значение по умолчанию
+        }
+        return;
+      }
+
       // Логика для курса НБРБ с кэшированием
       if (typeof window !== 'undefined') {
         try {
