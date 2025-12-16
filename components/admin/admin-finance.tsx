@@ -27,6 +27,19 @@ export default function AdminFinance() {
   })
   const [customRateInput, setCustomRateInput] = useState("3.25")
   const [hybridMarkupInput, setHybridMarkupInput] = useState("0.1")
+  const [nbrbRate, setNbrbRate] = useState<number | null>(null)
+
+  const fetchNbrbRate = async () => {
+    try {
+      const res = await fetch('https://api.nbrb.by/exrates/rates/431');
+      if (res.ok) {
+        const data = await res.json();
+        setNbrbRate(data.Cur_OfficialRate);
+      }
+    } catch (error) {
+      console.error("Failed to fetch NBRB rate", error);
+    }
+  };
 
   const loadSettings = useCallback(async () => {
     setLoading(true)
@@ -48,6 +61,7 @@ export default function AdminFinance() {
 
   useEffect(() => {
     loadSettings()
+    fetchNbrbRate()
   }, [loadSettings])
 
   const saveSettings = async () => {
@@ -113,13 +127,14 @@ export default function AdminFinance() {
           Сохранить
         </Button>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Курс валют для отображения цен</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <RadioGroup
-            value={settings.rateSource}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Курс валют для отображения цен</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <RadioGroup
+              value={settings.rateSource}
             onValueChange={handleRateSourceChange}
           >
             <div className="flex items-center space-x-2">
@@ -147,9 +162,6 @@ export default function AdminFinance() {
                 className="max-w-xs mt-1"
                 placeholder="Например: 3.25"
               />
-              <p className="text-sm text-gray-500 mt-2">
-                Введите число, на которое будет умножаться цена в долларах.
-              </p>
             </div>
           )}
 
@@ -164,13 +176,23 @@ export default function AdminFinance() {
                 className="max-w-xs mt-1"
                 placeholder="Например: 0.1"
               />
-              <p className="text-sm text-gray-500 mt-2">
-                Это значение будет добавлено к курсу Нацбанка. Например, если курс 2.95, а наценка 0.1, итоговый курс будет 3.05.
-              </p>
             </div>
           )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+                <CardTitle>Курс НБРБ на сегодня</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {nbrbRate ? (
+                    <div className="text-4xl font-bold text-blue-600">{nbrbRate}</div>
+                ) : (
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                )}
+            </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
