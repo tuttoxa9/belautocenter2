@@ -49,9 +49,15 @@ export default function AdminFinance() {
   const saveSettings = async () => {
     setSaving(true)
     try {
-      // Убедимся, что customRate - это число
-      const rateToSave = parseFloat(String(settings.customRate)) || 0
-      await setDoc(doc(db, "settings", "finance"), { ...settings, customRate: rateToSave })
+      // Преобразуем значение из поля ввода в число
+      const rateToSave = parseFloat(customRateInput) || 0
+      const newSettings = { ...settings, customRate: rateToSave }
+
+      await setDoc(doc(db, "settings", "finance"), newSettings)
+
+      // Обновляем основное состояние после успешного сохранения
+      setSettings(newSettings)
+
       toast.success("Финансовые настройки сохранены!")
     } catch (error) {
       console.error("Error saving finance settings:", error)
