@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LogOut, Settings, Car, FileText, MessageSquare, Building, CreditCard, Star, Shield, Trash2, Database, DollarSign } from "lucide-react"
+import { LogOut, Settings, Car, FileText, MessageSquare, Building, CreditCard, Star, Shield, Trash2, Database, Landmark } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import AdminSettings from "@/components/admin/admin-settings"
@@ -319,7 +319,7 @@ export default function AdminPage() {
                   value="finance"
                   className="flex flex-col items-center justify-center min-w-[80px] h-16 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600 text-xs px-2"
                 >
-                  <DollarSign className="h-5 w-5 mb-1" />
+                  <Landmark className="h-5 w-5 mb-1" />
                   <span>Финансы</span>
                 </TabsTrigger>
               </TabsList>
@@ -403,7 +403,7 @@ export default function AdminPage() {
                 value="finance"
                 className="flex items-center space-x-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-600"
               >
-                <DollarSign className="h-4 w-4" />
+                <Landmark className="h-4 w-4" />
                 <span className="hidden sm:inline">Финансы</span>
               </TabsTrigger>
             </TabsList>
