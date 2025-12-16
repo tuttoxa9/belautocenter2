@@ -29,8 +29,14 @@ interface MainSettings {
   showroomInfo: ShowroomInfo
 }
 
+interface FinanceSettings {
+  rateSource: "nbrb" | "custom";
+  customRate: number;
+}
+
 interface Settings {
   main: MainSettings
+  finance: FinanceSettings
 }
 
 export function useSettings() {
@@ -45,7 +51,10 @@ export function useSettings() {
   const loadSettings = async () => {
     try {
       setLoading(true)
-      const mainDoc = await getDoc(doc(db, "settings", "main"))
+      const [mainDoc, financeDoc] = await Promise.all([
+        getDoc(doc(db, "settings", "main")),
+        getDoc(doc(db, "settings", "finance")),
+      ]);
 
       // Дефолтные значения
       const defaultSettings = {
@@ -72,33 +81,25 @@ export function useSettings() {
         }
       }
 
-      if (mainDoc.exists()) {
-        const rawData = mainDoc.data()
-        // Очистка данных от несериализуемых объектов Firestore
-        const firestoreData = JSON.parse(JSON.stringify(rawData)) as Partial<MainSettings>
-        setSettings({
-          main: {
-            ...defaultSettings,
-            ...firestoreData,
-            socialMedia: {
-              ...defaultSettings.socialMedia,
-              ...(firestoreData.socialMedia || {})
-            },
-            showroomInfo: {
-              ...defaultSettings.showroomInfo,
-              ...(firestoreData.showroomInfo || {}),
-              workingHours: {
-                ...defaultSettings.showroomInfo.workingHours,
-                ...(firestoreData.showroomInfo && firestoreData.showroomInfo.workingHours ? firestoreData.showroomInfo.workingHours : {})
-              }
-            }
-          }
-        })
-      } else {
-        setSettings({
-          main: defaultSettings
-        })
-      }
+      const defaultFinanceSettings: FinanceSettings = {
+        rateSource: "nbrb",
+        customRate: 3.25,
+      };
+
+      const mainSettings = mainDoc.exists()
+        ? { ...defaultSettings, ...JSON.parse(JSON.stringify(mainDoc.data())) }
+        : defaultSettings;
+
+      const financeSettings = financeDoc.exists()
+        ? { ...defaultFinanceSettings, ...JSON.parse(JSON.stringify(financeDoc.data())) }
+        : defaultFinanceSettings;
+
+
+      setSettings({
+        main: mainSettings,
+        finance: financeSettings,
+      });
+
     } catch (err) {
       setError("Ошибка загрузки настроек")
     } finally {
