@@ -178,43 +178,45 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
           <Input type="number" placeholder="До" value={filters.mileageTo} onChange={(e) => setFilters({ ...filters, mileageTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
         </div>
       </div>
-      <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Коробка передач</Label>
-        <Select value={filters.transmission} onValueChange={(value) => setFilters({ ...filters, transmission: value })}>
-          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любая" /></SelectTrigger>
-          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
-            <SelectItem value="any">Любая</SelectItem>
-            <SelectItem value="Механика">Механика</SelectItem>
-            <SelectItem value="Автомат">Автомат</SelectItem>
-            <SelectItem value="Вариатор">Вариатор</SelectItem>
-            <SelectItem value="Робот">Робот</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Тип топлива</Label>
-        <Select value={filters.fuelType} onValueChange={(value) => setFilters({ ...filters, fuelType: value })}>
-          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любой" /></SelectTrigger>
-          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
-            <SelectItem value="any">Любой</SelectItem>
-            <SelectItem value="Бензин">Бензин</SelectItem>
-            <SelectItem value="Дизель">Дизель</SelectItem>
-            <SelectItem value="Гибрид">Гибрид</SelectItem>
-            <SelectItem value="Электро">Электро</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="space-y-2">
-        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Привод</Label>
-        <Select value={filters.driveTrain} onValueChange={(value) => setFilters({ ...filters, driveTrain: value })}>
-          <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="Любой" /></SelectTrigger>
-          <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
-            <SelectItem value="any">Любой</SelectItem>
-            <SelectItem value="Передний">Передний</SelectItem>
-            <SelectItem value="Задний">Задний</SelectItem>
-            <SelectItem value="Полный">Полный</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="grid grid-cols-3 gap-2">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Коробка</Label>
+          <Select value={filters.transmission} onValueChange={(value) => setFilters({ ...filters, transmission: value })}>
+            <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="-" /></SelectTrigger>
+            <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
+              <SelectItem value="any">Любая</SelectItem>
+              <SelectItem value="Механика">Механика</SelectItem>
+              <SelectItem value="Автомат">Автомат</SelectItem>
+              <SelectItem value="Вариатор">Вариатор</SelectItem>
+              <SelectItem value="Робот">Робот</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Топливо</Label>
+          <Select value={filters.fuelType} onValueChange={(value) => setFilters({ ...filters, fuelType: value })}>
+            <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="-" /></SelectTrigger>
+            <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
+              <SelectItem value="any">Любой</SelectItem>
+              <SelectItem value="Бензин">Бензин</SelectItem>
+              <SelectItem value="Дизель">Дизель</SelectItem>
+              <SelectItem value="Гибрид">Гибрид</SelectItem>
+              <SelectItem value="Электро">Электро</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Привод</Label>
+          <Select value={filters.driveTrain} onValueChange={(value) => setFilters({ ...filters, driveTrain: value })}>
+            <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="-" /></SelectTrigger>
+            <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
+              <SelectItem value="any">Любой</SelectItem>
+              <SelectItem value="Передний">Передний</SelectItem>
+              <SelectItem value="Задний">Задний</SelectItem>
+              <SelectItem value="Полный">Полный</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       <div className="flex items-center space-x-2">
         <input
@@ -432,7 +434,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
             <UniversalDrawer open={isFilterOpen} onOpenChange={setIsFilterOpen} title="Фильтры поиска" footer={<MobileFiltersFooter applyFilters={applyFilters} resetFilters={resetFilters} setIsFilterOpen={setIsFilterOpen} />}><MobileFiltersContent filters={filters} setFilters={setFilters} availableMakes={availableMakes} availableModels={availableModels} /></UniversalDrawer>
           </div>
 
-          <div className="lg:w-80 hidden lg:block"><DesktopFilters filters={filters} setFilters={setFilters} availableMakes={availableMakes} availableModels={availableModels} hasActiveFilters={hasActiveFilters} resetFilters={resetFilters} applyFilters={applyFilters} /></div>
+          <div className="lg:w-96 hidden lg:block"><DesktopFilters filters={filters} setFilters={setFilters} availableMakes={availableMakes} availableModels={availableModels} hasActiveFilters={hasActiveFilters} resetFilters={resetFilters} applyFilters={applyFilters} /></div>
 
           <div className="flex-1">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
