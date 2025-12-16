@@ -181,16 +181,43 @@ export default function AdminFinance() {
           </CardContent>
         </Card>
         <Card>
-            <CardHeader>
-                <CardTitle>Курс НБРБ на сегодня</CardTitle>
-            </CardHeader>
-            <CardContent>
-                {nbrbRate ? (
-                    <div className="text-4xl font-bold text-blue-600">{nbrbRate}</div>
-                ) : (
-                    <Loader2 className="h-8 w-8 animate-spin" />
+          <CardHeader>
+            <CardTitle>
+              {settings.rateSource === 'hybrid' ? 'Расчет гибридного курса' : 'Курс НБРБ на сегодня'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {!nbrbRate ? (
+              <Loader2 className="h-8 w-8 animate-spin" />
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-sm text-gray-500">Курс НБРБ</span>
+                  <span className="text-2xl font-bold">{nbrbRate}</span>
+                </div>
+
+                {settings.rateSource === 'hybrid' && (
+                  <>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm text-gray-500">Ваша наценка</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold">+</span>
+                        <span className="text-2xl font-bold">{parseFloat(hybridMarkupInput) || 0}</span>
+                      </div>
+                    </div>
+                    <div className="border-t pt-2 mt-2">
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-sm text-gray-500">Итоговый курс</span>
+                        <span className="text-3xl font-bold text-blue-600">
+                          = {(nbrbRate + (parseFloat(hybridMarkupInput) || 0)).toFixed(4)}
+                        </span>
+                      </div>
+                    </div>
+                  </>
                 )}
-            </CardContent>
+              </div>
+            )}
+          </CardContent>
         </Card>
       </div>
     </div>
