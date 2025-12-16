@@ -136,7 +136,7 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
         {hasActiveFilters() && <Button onClick={resetFilters} variant="ghost" size="sm" className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 h-8 w-8 p-0 rounded-lg"><X className="h-4 w-4" /></Button>}
       </CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4 p-4">
+    <CardContent className="space-y-3 p-4">
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Марка</Label>
         <Select value={filters.make} onValueChange={(value) => setFilters({ ...filters, make: value })} disabled={availableMakes.length === 0}>
@@ -164,14 +164,11 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
           <Input type="number" placeholder="До" value={filters.priceTo} onChange={(e) => setFilters({ ...filters, priceTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Год от</Label>
-          <Input type="number" placeholder="2010" value={filters.yearFrom} onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
-        </div>
-        <div className="space-y-2">
-          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Год до</Label>
-          <Input type="number" placeholder="2024" value={filters.yearTo} onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Год выпуска</Label>
+        <div className="grid grid-cols-2 gap-2">
+          <Input type="number" placeholder="От" value={filters.yearFrom} onChange={(e) => setFilters({ ...filters, yearFrom: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
+          <Input type="number" placeholder="До" value={filters.yearTo} onChange={(e) => setFilters({ ...filters, yearTo: e.target.value })} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 h-9 text-sm rounded-lg" />
         </div>
       </div>
       <div className="space-y-2">
