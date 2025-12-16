@@ -30,8 +30,9 @@ interface MainSettings {
 }
 
 interface FinanceSettings {
-  rateSource: "nbrb" | "custom";
+  rateSource: "nbrb" | "custom" | "hybrid";
   customRate: number;
+  hybridMarkup: number;
 }
 
 interface Settings {
@@ -84,6 +85,7 @@ export function useSettings() {
       const defaultFinanceSettings: FinanceSettings = {
         rateSource: "nbrb",
         customRate: 3.25,
+        hybridMarkup: 0.1,
       };
 
       const mainSettings = mainDoc.exists()

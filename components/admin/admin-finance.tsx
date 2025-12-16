@@ -12,8 +12,9 @@ import { Save, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 interface FinanceSettings {
-  rateSource: "nbrb" | "custom"
-  customRate: number
+  rateSource: "nbrb" | "custom" | "hybrid";
+  customRate: number;
+  hybridMarkup: number;
 }
 
 export default function AdminFinance() {
@@ -22,8 +23,10 @@ export default function AdminFinance() {
   const [settings, setSettings] = useState<FinanceSettings>({
     rateSource: "nbrb",
     customRate: 3.25,
+    hybridMarkup: 0.1,
   })
   const [customRateInput, setCustomRateInput] = useState("3.25")
+  const [hybridMarkupInput, setHybridMarkupInput] = useState("0.1")
 
   const loadSettings = useCallback(async () => {
     setLoading(true)
@@ -32,7 +35,8 @@ export default function AdminFinance() {
       if (financeDoc.exists()) {
         const data = financeDoc.data() as FinanceSettings
         setSettings(data)
-        setCustomRateInput(String(data.customRate))
+        setCustomRateInput(String(data.customRate || "3.25"))
+        setHybridMarkupInput(String(data.hybridMarkup || "0.1"))
       }
     } catch (error) {
       console.error("Error loading finance settings:", error)
@@ -49,13 +53,16 @@ export default function AdminFinance() {
   const saveSettings = async () => {
     setSaving(true)
     try {
-      // Преобразуем значение из поля ввода в число
       const rateToSave = parseFloat(customRateInput) || 0
-      const newSettings = { ...settings, customRate: rateToSave }
+      const markupToSave = parseFloat(hybridMarkupInput) || 0
+      const newSettings = {
+        ...settings,
+        customRate: rateToSave,
+        hybridMarkup: markupToSave
+      }
 
       await setDoc(doc(db, "settings", "finance"), newSettings)
 
-      // Обновляем основное состояние после успешного сохранения
       setSettings(newSettings)
 
       toast.success("Финансовые настройки сохранены!")
@@ -73,9 +80,15 @@ export default function AdminFinance() {
 
   const handleCustomRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    // Разрешаем ввод только чисел и одной точки
     if (/^\d*\.?\d*$/.test(value)) {
       setCustomRateInput(value)
+    }
+  }
+
+  const handleHybridMarkupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (/^\d*\.?\d*$/.test(value)) {
+      setHybridMarkupInput(value)
     }
   }
 
@@ -117,6 +130,10 @@ export default function AdminFinance() {
               <RadioGroupItem value="custom" id="custom" />
               <Label htmlFor="custom">Использовать свой курс</Label>
             </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="hybrid" id="hybrid" />
+              <Label htmlFor="hybrid">Гибридный (курс НБ РБ + наценка)</Label>
+            </div>
           </RadioGroup>
 
           {settings.rateSource === "custom" && (
@@ -130,8 +147,25 @@ export default function AdminFinance() {
                 className="max-w-xs mt-1"
                 placeholder="Например: 3.25"
               />
-               <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-500 mt-2">
                 Введите число, на которое будет умножаться цена в долларах.
+              </p>
+            </div>
+          )}
+
+          {settings.rateSource === "hybrid" && (
+            <div className="pl-6 pt-2">
+              <Label htmlFor="hybridMarkupInput">Ваша наценка</Label>
+              <Input
+                id="hybridMarkupInput"
+                type="text"
+                value={hybridMarkupInput}
+                onChange={handleHybridMarkupChange}
+                className="max-w-xs mt-1"
+                placeholder="Например: 0.1"
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Это значение будет добавлено к курсу Нацбанка. Например, если курс 2.95, а наценка 0.1, итоговый курс будет 3.05.
               </p>
             </div>
           )}
