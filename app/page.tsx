@@ -47,7 +47,6 @@ export default function HomePage() {
     "Поможем с приобретением и продажей автомобиля",
     "Все автомобили доступны в кредит до 10 лет",
     "Быстрое оформление документов за 1 час",
-    "Выгодный Trade-in: обменяйте свой старый авто на новый",
     "Подберем автомобиль под ваш бюджет и запрос",
     "Гарантия юридической чистоты каждой сделки",
   ]
@@ -380,7 +379,7 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="relative z-30 text-center text-white max-w-4xl mx-auto px-4 pb-40 sm:pb-32 md:pb-24 lg:pb-32 xl:pb-20 hero-content">
+        <div className="relative z-30 text-center text-white max-w-4xl mx-auto px-4 pb-20 sm:pb-20 md:pb-20 lg:pb-20 xl:pb-20 hero-content">
           <h1 className={`text-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 leading-tight ${textAnimationClass}`}>
             {animatedTexts[currentTextIndex]}
           </h1>
