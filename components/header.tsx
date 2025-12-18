@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
+import Garland from "./garland"
 
 const navigation = [
   { name: "Главная", href: "/" },
@@ -378,6 +379,7 @@ export default function Header() {
           </UniversalDrawer>
         </div>
       </div>
+      <Garland />
     </header>
   )
 }
