@@ -154,7 +154,7 @@ export default function Header() {
             size="icon"
             onClick={toggleSnow}
             className="mr-1"
-            aria-label="Toggle snow"
+            aria-label="Переключить снег"
           >
             <Snowflake className={`h-5 w-5 transition-colors ${isSnowing ? 'text-blue-500' : 'text-gray-700 dark:text-gray-300'}`} />
           </Button>
@@ -162,7 +162,7 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={() => setIsMobileMenuOpen(true)}
-            aria-label="Open menu"
+            aria-label="Открыть меню"
           >
             <Menu className="h-5 w-5" />
           </Button>
@@ -342,7 +342,7 @@ export default function Header() {
             variant="outline"
             className="rounded-full p-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={toggleSnow}
-            aria-label="Toggle snow"
+            aria-label="Переключить снег"
           >
             <Snowflake className={`h-4 w-4 transition-colors ${isSnowing ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`} />
           </Button>
@@ -352,7 +352,7 @@ export default function Header() {
             variant="outline"
             className="rounded-full p-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            aria-label="Toggle theme"
+            aria-label="Переключить тему"
           >
             {theme === 'dark' ? (
               <Sun className="h-4 w-4 text-gray-900 dark:text-white" />

@@ -2,6 +2,14 @@
 
 import React, { useRef, useEffect } from "react"
 
+// --- Animation Constants ---
+const SNOWFLAKE_DENSITY_DIVISOR = 10000 // Lower number = more snowflakes
+const MIN_RADIUS = 0.5
+const MAX_RADIUS = 2.5
+const BASE_SPEED_MULTIPLIER = 5.0 // Higher number = faster snowflakes
+const SWAY_FREQUENCY = 50 // Lower number = more frequent sway
+const SWAY_AMPLITUDE = 0.5 // Higher number = wider sway
+
 const Snowfall: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationFrameId = useRef<number>()
@@ -24,15 +32,17 @@ const Snowfall: React.FC = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
 
-      const snowflakeCount = Math.floor((canvas.width * canvas.height) / 15000)
+      const snowflakeCount = Math.floor(
+        (canvas.width * canvas.height) / SNOWFLAKE_DENSITY_DIVISOR
+      )
       snowflakes = []
       for (let i = 0; i < snowflakeCount; i++) {
-        const radius = Math.random() * 2.5 + 0.5 // 0.5 to 3px
+        const radius = Math.random() * MAX_RADIUS + MIN_RADIUS
         snowflakes.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: radius,
-          speed: (1 / (radius + 1)) * 2.5, // Smaller radius = higher speed
+          speed: (1 / (radius + 1)) * BASE_SPEED_MULTIPLIER, // Smaller radius = higher speed
         })
       }
     }
@@ -55,7 +65,7 @@ const Snowfall: React.FC = () => {
         // Update position
         flake.y += flake.speed
         // Add a slight horizontal sway
-        flake.x += Math.sin(flake.y / 50) * 0.5
+        flake.x += Math.sin(flake.y / SWAY_FREQUENCY) * SWAY_AMPLITUDE
 
         // If snowflake reaches the bottom, reset it to the top
         if (flake.y > canvas.height) {
