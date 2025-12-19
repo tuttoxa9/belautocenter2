@@ -13,9 +13,10 @@ import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun } from "lucide-react"
+import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun, Snowflake } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSnow } from "@/components/providers/snow-provider"
 
 const navigation = [
   { name: "Главная", href: "/" },
@@ -39,6 +40,7 @@ interface Settings {
 export default function Header() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+  const { isSnowing, toggleSnow } = useSnow()
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [formData, setFormData] = useState({ name: "", phone: "+375" })
@@ -146,14 +148,25 @@ export default function Header() {
         </Link>
 
         {/* Мобильное меню (справа) */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          onClick={() => setIsMobileMenuOpen(true)}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSnow}
+            className="mr-1"
+            aria-label="Переключить снег"
+          >
+            <Snowflake className={`h-5 w-5 transition-colors ${isSnowing ? 'text-blue-500' : 'text-gray-700 dark:text-gray-300'}`} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Открыть меню"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </div>
 
         <UniversalDrawer
           open={isMobileMenuOpen}
@@ -328,7 +341,18 @@ export default function Header() {
             size="sm"
             variant="outline"
             className="rounded-full p-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={toggleSnow}
+            aria-label="Переключить снег"
+          >
+            <Snowflake className={`h-4 w-4 transition-colors ${isSnowing ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`} />
+          </Button>
+
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-full p-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            aria-label="Переключить тему"
           >
             {theme === 'dark' ? (
               <Sun className="h-4 w-4 text-gray-900 dark:text-white" />
