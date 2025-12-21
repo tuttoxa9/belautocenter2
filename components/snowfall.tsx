@@ -92,9 +92,15 @@ const Snowfall: React.FC = () => {
     }
   }, [])
 
+  const [opacity, setOpacity] = React.useState(0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setOpacity(1), 100) // Small delay for transition to trigger
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
-    <canvas
-      ref={canvasRef}
+    <div
       style={{
         position: "fixed",
         top: 0,
@@ -103,8 +109,18 @@ const Snowfall: React.FC = () => {
         height: "100%",
         pointerEvents: "none",
         zIndex: 9999,
+        opacity: opacity,
+        transition: "opacity 2s ease-in-out",
       }}
-    />
+    >
+      <canvas
+        ref={canvasRef}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      />
+    </div>
   )
 }
 

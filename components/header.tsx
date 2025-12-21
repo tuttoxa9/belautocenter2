@@ -41,6 +41,7 @@ export default function Header() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const { isSnowing, toggleSnow } = useSnow()
+  const [isSnowButtonPulsating, setIsSnowButtonPulsating] = useState(false)
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [formData, setFormData] = useState({ name: "", phone: "+375" })
@@ -52,6 +53,16 @@ export default function Header() {
   useEffect(() => {
     loadSettings()
   }, [])
+
+  useEffect(() => {
+    if (isSnowing) {
+      setIsSnowButtonPulsating(true)
+      const timer = setTimeout(() => {
+        setIsSnowButtonPulsating(false)
+      }, 6000)
+      return () => clearTimeout(timer)
+    }
+  }, [isSnowing])
 
   const loadSettings = async () => {
     try {
@@ -153,7 +164,7 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={toggleSnow}
-            className="mr-1"
+            className={`mr-1 ${isSnowButtonPulsating ? 'pulse-glow-animation rounded-full' : ''}`}
             aria-label="Переключить снег"
           >
             <Snowflake className={`h-5 w-5 transition-colors ${isSnowing ? 'text-blue-500' : 'text-gray-700 dark:text-gray-300'}`} />
@@ -340,7 +351,7 @@ export default function Header() {
           <Button
             size="sm"
             variant="outline"
-            className="rounded-full p-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className={`rounded-full p-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 ${isSnowButtonPulsating ? 'pulse-glow-animation' : ''}`}
             onClick={toggleSnow}
             aria-label="Переключить снег"
           >
