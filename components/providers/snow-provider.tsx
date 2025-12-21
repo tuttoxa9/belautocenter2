@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, useMemo } from "react"
+import React, { createContext, useContext, useState, useMemo, useEffect } from "react"
 
 interface SnowContextType {
   isSnowing: boolean
@@ -11,6 +11,13 @@ const SnowContext = createContext<SnowContextType | undefined>(undefined)
 
 export const SnowProvider = ({ children }: { children: React.ReactNode }) => {
   const [isSnowing, setIsSnowing] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsSnowing(true)
+    }, 3000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const toggleSnow = () => {
     setIsSnowing((prev) => !prev)
