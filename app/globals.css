@@ -212,16 +212,15 @@
   }
 
   /* Fix for dark pages - fill the background behind footer rounded corners */
-  .bg-slate-900 .footer-corner-fill::before {
+  .dark .footer-corner-fill::before {
     content: '';
     position: absolute;
-    top: -50px;
+    top: 0;
     left: 0;
     width: 100%;
-    bottom: -100px;
-    background: #0f172a; /* slate-900 */
+    height: 50px;
+    background: #000000;
     z-index: -1;
-    border-radius: 50px 50px 0 0;
   }
 
   .text-shadow-strong {
