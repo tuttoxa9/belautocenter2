@@ -21,6 +21,7 @@ import { useSnow } from "@/components/providers/snow-provider"
 const navigation = [
   { name: "Главная", href: "/" },
   { name: "Каталог", href: "/catalog" },
+  { name: "Гарантия", href: "/warranty" },
   { name: "Выкуп", href: "https://vikup.belautocenter.by" },
   { name: "Кредит", href: "/credit" },
   { name: "Лизинг", href: "/leasing" },
