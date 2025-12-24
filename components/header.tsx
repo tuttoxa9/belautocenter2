@@ -21,6 +21,7 @@ import { useSnow } from "@/components/providers/snow-provider"
 const navigation = [
   { name: "Главная", href: "/" },
   { name: "Каталог", href: "/catalog" },
+  { name: "Гарантия", href: "/warranty" },
   { name: "Выкуп", href: "https://vikup.belautocenter.by" },
   { name: "Кредит", href: "/credit" },
   { name: "Лизинг", href: "/leasing" },
@@ -302,16 +303,16 @@ export default function Header() {
         </UniversalDrawer>
 
         {/* Десктопное меню */}
-        <nav className="hidden md:flex items-center space-x-6 flex-1 justify-start ml-8">
+        <nav className="hidden md:flex items-center space-x-3 lg:space-x-4 flex-1 justify-start ml-4">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               prefetch={true}
-              className={`text-sm font-bold tracking-wide transition-colors ${
+              className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap ${
                 pathname === item.href
                   ? "bg-blue-600 text-white px-3 py-2 rounded-md"
-                  : "text-gray-700 dark:text-gray-300"
+                  : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
               }`}
             >
               {item.name}
