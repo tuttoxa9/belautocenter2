@@ -63,14 +63,16 @@ export default function WarrantyPage() {
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
-                <div className="absolute bottom-6 left-6 right-6 text-white">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Shield className="w-5 h-5 text-white fill-white/20" />
-                    <span className="font-medium text-sm tracking-wider uppercase text-white">Официальная защита</span>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="bg-black/40 backdrop-blur-md rounded-2xl p-6 text-white border border-white/10 shadow-lg max-w-md">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Shield className="w-5 h-5 text-white fill-white/20" />
+                      <span className="font-medium text-sm tracking-wider uppercase text-white">Официальная защита</span>
+                    </div>
+                    <p className="text-lg md:text-xl font-light opacity-95 leading-relaxed">
+                      Ваше спокойствие — наша ответственность.
+                    </p>
                   </div>
-                  <p className="text-lg md:text-xl font-light opacity-90">
-                    Ваше спокойствие — наша ответственность.
-                  </p>
                 </div>
               </div>
             </div>
