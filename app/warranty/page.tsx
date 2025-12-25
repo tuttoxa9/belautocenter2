@@ -65,8 +65,8 @@ export default function WarrantyPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
                 <div className="absolute bottom-6 left-6 right-6 text-white">
                   <div className="flex items-center gap-2 mb-2">
-                    <Shield className="w-5 h-5 text-yellow-400 fill-yellow-400/20" />
-                    <span className="font-medium text-sm tracking-wider uppercase text-yellow-400">Официальная защита</span>
+                    <Shield className="w-5 h-5 text-white fill-white/20" />
+                    <span className="font-medium text-sm tracking-wider uppercase text-white">Официальная защита</span>
                   </div>
                   <p className="text-lg md:text-xl font-light opacity-90">
                     Ваше спокойствие — наша ответственность.
@@ -90,30 +90,9 @@ export default function WarrantyPage() {
                 </span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-lg">
-                Официальная программа защиты автомобиля от БелАвтоЦентр и DrivePolis.
+                Официальная программа защиты автомобиля от Белавто Центр и DrivePolis.
                 Мы покрываем ремонт узлов и выручаем в любой ситуации в пути.
               </p>
-
-              <div className="flex flex-wrap gap-4 pt-4">
-                <div className="flex items-center gap-3 bg-card/50 backdrop-blur-sm p-4 rounded-2xl border shadow-sm">
-                  <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
-                    <Car className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-lg">100+</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wide">СТО-партнеров</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 bg-card/50 backdrop-blur-sm p-4 rounded-2xl border shadow-sm">
-                  <div className="p-2.5 bg-green-100 dark:bg-green-900/30 rounded-xl text-green-600 dark:text-green-400">
-                    <Clock className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-lg">15 мин</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Время реакции</div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
