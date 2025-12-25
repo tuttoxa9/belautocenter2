@@ -373,14 +373,15 @@ export default function WarrantyPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="container px-4 md:px-6 max-w-4xl">
+      <section className="pt-20 pb-20 bg-muted/30 relative">
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-muted/30" />
+        <div className="container px-4 md:px-6 max-w-4xl relative z-10">
           <div className="flex items-center gap-3 mb-8">
             <HelpCircle className="w-8 h-8 text-primary" />
             <h2 className="text-3xl font-bold">Часто задаваемые вопросы</h2>
           </div>
 
-          <div className="bg-card rounded-[2rem] shadow-xl p-6 md:p-8 border">
+          <div className="bg-card rounded-[2rem] shadow-xl p-6 md:p-8 border mb-12">
             <Accordion type="single" collapsible className="w-full">
               {[
                 { q: "Как быстро приедет помощь?", a: "Время прибытия зависит от дорожной ситуации и вашего местоположения, но мы стараемся обеспечить максимально быструю реакцию. В среднем по городу — 30-40 минут." },
