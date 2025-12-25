@@ -76,6 +76,9 @@ export default function Footer() {
               <Link href="/leasing" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Лизинг
               </Link>
+              <Link href="/warranty" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+                Гарантия
+              </Link>
               <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 О нас
               </Link>

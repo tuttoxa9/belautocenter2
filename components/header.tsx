@@ -24,6 +24,7 @@ const navigation = [
   { name: "Выкуп", href: "https://vikup.belautocenter.by" },
   { name: "Кредит", href: "/credit" },
   { name: "Лизинг", href: "/leasing" },
+  { name: "Гарантия", href: "/warranty" },
   { name: "О нас", href: "/about" },
   { name: "Контакты", href: "/contacts" },
   { name: "Отзывы", href: "/reviews" },
@@ -302,7 +303,7 @@ export default function Header() {
         </UniversalDrawer>
 
         {/* Десктопное меню */}
-        <nav className="hidden md:flex items-center space-x-6 flex-1 justify-start ml-8">
+        <nav className="hidden md:flex items-center space-x-6 xl:space-x-8 flex-1 justify-start ml-6 xl:ml-10">
           {navigation.map((item) => (
             <Link
               key={item.name}
