@@ -137,7 +137,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md dark:shadow-gray-950">
-      <div className="container flex h-14 items-center justify-between px-4">
+      <div className="container flex h-14 items-center justify-between px-2 md:px-4">
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
           <Image
@@ -303,13 +303,13 @@ export default function Header() {
         </UniversalDrawer>
 
         {/* Десктопное меню */}
-        <nav className="hidden md:flex items-center space-x-6 xl:space-x-8 flex-1 justify-start ml-6 xl:ml-10">
+        <nav className="hidden md:flex items-center space-x-4 lg:space-x-6 xl:space-x-8 flex-1 justify-start ml-2 lg:ml-6">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               prefetch={true}
-              className={`text-sm font-bold tracking-wide transition-colors ${
+              className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap ${
                 pathname === item.href
                   ? "bg-blue-600 text-white px-3 py-2 rounded-md"
                   : "text-gray-700 dark:text-gray-300"
