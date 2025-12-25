@@ -95,6 +95,17 @@ export default function WarrantyPage() {
                 Официальная программа защиты автомобиля от Белавто Центр и DrivePolis.
                 Мы покрываем ремонт узлов и выручаем в любой ситуации в пути.
               </p>
+
+              <div className="pt-4">
+                <div className="relative h-12 w-48 opacity-80 dark:opacity-100">
+                  <Image
+                    src="/logo_polis.png"
+                    alt="DrivePolis"
+                    fill
+                    className="object-contain object-left dark:invert-0 invert"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
