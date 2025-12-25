@@ -303,7 +303,7 @@ export default function Header() {
         </UniversalDrawer>
 
         {/* Десктопное меню */}
-        <nav className="hidden md:flex items-center space-x-4 xl:space-x-6 flex-1 justify-start ml-4 xl:ml-8">
+        <nav className="hidden md:flex items-center space-x-6 xl:space-x-8 flex-1 justify-start ml-6 xl:ml-10">
           {navigation.map((item) => (
             <Link
               key={item.name}
