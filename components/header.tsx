@@ -303,7 +303,7 @@ export default function Header() {
         </UniversalDrawer>
 
         {/* Десктопное меню */}
-        <nav className="hidden md:flex items-center space-x-4 lg:space-x-6 xl:space-x-8 flex-1 justify-start ml-2 lg:ml-6">
+        <nav className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6 flex-1 justify-start ml-2 lg:ml-4">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -321,7 +321,7 @@ export default function Header() {
         </nav>
 
         {/* Контакты и кнопка звонка для десктопа */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-4 lg:-mr-4 xl:-mr-8">
           <div className="hidden lg:flex items-center text-right mr-2">
             {loading ? (
               <div className="flex flex-col items-end">
