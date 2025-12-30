@@ -1227,7 +1227,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                     </div>
                     <Button
                       onClick={() => setFinancialAssistantOpen(true)}
-                      className="w-full bg-slate-900 hover:bg-black dark:bg-gray-800 dark:hover:bg-gray-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base"
+                      className="w-full bg-slate-900 hover:bg-black dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold rounded-xl py-2 sm:py-3 text-sm sm:text-base transition-colors shadow-lg dark:shadow-blue-900/20"
                     >
                       <Calculator className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                       Рассчитать кредит/лизинг
