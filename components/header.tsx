@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -13,6 +12,7 @@ import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { BlurImage } from "@/components/ui/blur-image"
 import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun, Snowflake } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
@@ -140,20 +140,22 @@ export default function Header() {
       <div className="container flex h-14 items-center justify-between px-2 md:px-4">
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
-          <Image
+          <BlurImage
             src="/logo4.png"
             alt="Белавто Центр"
             width={120}
             height={40}
-            className="h-8 w-auto sm:h-10 block dark:hidden"
+            containerClassName="block dark:hidden"
+            className="h-8 w-auto sm:h-10 object-contain"
             priority
           />
-          <Image
+          <BlurImage
             src="/logo_black.png"
             alt="Белавто Центр"
             width={120}
             height={40}
-            className="h-8 w-auto sm:h-10 hidden dark:block"
+            containerClassName="hidden dark:block"
+            className="h-8 w-auto sm:h-10 object-contain"
             priority
           />
           <span className="font-display font-bold text-sm sm:text-lg text-gray-900 dark:text-white tracking-tight">Белавто Центр</span>
@@ -196,20 +198,22 @@ export default function Header() {
               </div>
             ) : (
               <div className="flex flex-col items-center">
-                <Image
+                <BlurImage
                   src="/logo4.png"
                   alt="Белавто Центр"
                   width={120}
                   height={40}
-                  className="h-10 w-auto mb-2 block dark:hidden"
+                  containerClassName="block dark:hidden mb-2"
+                  className="h-10 w-auto object-contain"
                   priority
                 />
-                <Image
+                <BlurImage
                   src="/logo_black.png"
                   alt="Белавто Центр"
                   width={120}
                   height={40}
-                  className="h-10 w-auto mb-2 hidden dark:block"
+                  containerClassName="hidden dark:block mb-2"
+                  className="h-10 w-auto object-contain"
                   priority
                 />
                 <div className="w-12 h-px bg-gray-300 dark:bg-gray-700"></div>
