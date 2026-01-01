@@ -18,10 +18,14 @@ interface Car {
   model: string;
   year: number;
   price: number;
+  currency: string;
   mileage: number;
-  transmission: string;
+  engineVolume: number;
   fuelType: string;
-  driveTrain: string;
+  transmission: string;
+  imageUrls: string[];
+  isAvailable: boolean;
+  fromEurope?: boolean;
 }
 
 interface CatalogClientProps {
@@ -440,7 +444,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Каталог автомобилей</h1>
-                <p className="text-gray-600 dark:text-gray-400">Найдено {loading ? <span className="inline-block bg-gray-200 dark:bg-gray-700 rounded h-4 w-6 align-middle animate-pulse mx-2"></span> : filteredCars.length} автомобилей</p>
+                <p className="text-gray-600 dark:text-gray-400">Найдено {loading ? <span className="inline-block bg-gray-200 dark:bg-zinc-800 rounded h-4 w-6 align-middle animate-pulse mx-2"></span> : filteredCars.length} автомобилей</p>
               </div>
               <div className="flex items-center gap-2">
                 <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-1">
@@ -468,11 +472,11 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden animate-pulse">
-                    <div className="bg-gray-200 dark:bg-gray-800 h-48"></div>
+                    <div className="bg-gray-200 dark:bg-zinc-800 h-48"></div>
                     <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-zinc-800 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-zinc-800 rounded w-1/2"></div>
+                      <div className="h-6 bg-gray-200 dark:bg-zinc-800 rounded w-1/3"></div>
                     </div>
                   </div>
                 ))}
