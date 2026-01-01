@@ -82,12 +82,12 @@ export default function CarCard({ car }: CarCardProps) {
                 fill
                 quality={75}
                 containerClassName="h-full w-full"
-                className="object-cover group-hover:scale-105 duration-500"
+                className="object-cover duration-500"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             ) : (
-              <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-                <div className="w-12 h-12 bg-slate-300 rounded-full animate-pulse" />
+              <div className="w-full h-full bg-slate-200 dark:bg-zinc-800 flex items-center justify-center">
+                <div className="w-12 h-12 bg-slate-300 dark:bg-zinc-700 rounded-full animate-pulse" />
               </div>
             )}
 
@@ -96,7 +96,7 @@ export default function CarCard({ car }: CarCardProps) {
             {/* Year - скелетон или данные */}
             <div className="absolute top-3 right-3">
               {!dataReady ? (
-                <div className="h-6 w-12 bg-slate-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                <div className="h-6 w-12 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
               ) : (
                 <span className="bg-black/75 dark:bg-gray-700/90 text-white text-xs font-medium px-2 py-1 rounded">
                   {car.year}
@@ -112,22 +112,22 @@ export default function CarCard({ car }: CarCardProps) {
             // Скелетон до готовности данных
             <>
               <div className="mb-2">
-                <div className="h-5 bg-slate-200 rounded w-32 animate-pulse mb-1"></div>
-                <div className="h-6 bg-slate-200 rounded w-20 animate-pulse mb-1"></div>
-                <div className="h-4 bg-slate-200 rounded w-24 animate-pulse"></div>
+                <div className="h-5 bg-slate-200 dark:bg-zinc-800 rounded w-32 animate-pulse mb-1"></div>
+                <div className="h-6 bg-slate-200 dark:bg-zinc-800 rounded w-20 animate-pulse mb-1"></div>
+                <div className="h-4 bg-slate-200 dark:bg-zinc-800 rounded w-24 animate-pulse"></div>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between">
-                  <div className="h-3 bg-slate-200 rounded w-12 animate-pulse"></div>
-                  <div className="h-3 bg-slate-200 rounded w-16 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-12 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-16 animate-pulse"></div>
                 </div>
                 <div className="flex justify-between">
-                  <div className="h-3 bg-slate-200 rounded w-16 animate-pulse"></div>
-                  <div className="h-3 bg-slate-200 rounded w-14 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-16 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-14 animate-pulse"></div>
                 </div>
                 <div className="flex justify-between">
-                  <div className="h-3 bg-slate-200 rounded w-8 animate-pulse"></div>
-                  <div className="h-3 bg-slate-200 rounded w-12 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-8 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-12 animate-pulse"></div>
                 </div>
               </div>
             </>
