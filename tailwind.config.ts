@@ -109,13 +109,24 @@ const config: Config = {
   					'background-position': '200% 0'
   				}
   			},
-
+			'blur-in': {
+				'0%': {
+					filter: 'blur(10px)',
+					opacity: '0',
+					transform: 'scale(0.98)'
+				},
+				'100%': {
+					filter: 'blur(0)',
+					opacity: '1',
+					transform: 'scale(1)'
+				}
+			},
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
-  			'shimmer': 'shimmer 1.5s ease-in-out infinite'
-
+			'shimmer': 'shimmer 1.5s ease-in-out infinite',
+			'blur-in': 'blur-in 0.6s ease-out forwards',
   		}
   	}
   },

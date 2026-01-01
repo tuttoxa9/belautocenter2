@@ -88,7 +88,7 @@ const CarNotFoundComponent = ({ contactPhone, contactPhone2 }: { contactPhone: s
     : '';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black flex items-center justify-center animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black flex items-center justify-center animate-blur-in">
       <div className="text-center max-w-md mx-auto px-4">
         <div className="mb-6">
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
@@ -747,7 +747,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black animate-blur-in">
       <div className="container mx-auto px-1 sm:px-2 lg:px-4 py-4 sm:py-6 max-w-7xl">
         {/* Хлебные крошки */}
         <nav className="mb-4 sm:mb-6">
