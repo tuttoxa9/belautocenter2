@@ -126,7 +126,7 @@ const config: Config = {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
 			'shimmer': 'shimmer 1.5s ease-in-out infinite',
-			'blur-in': 'blur-in 0.6s ease-out forwards',
+			'blur-in': 'blur-in 0.4s ease-out forwards',
   		}
   	}
   },
