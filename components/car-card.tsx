@@ -82,7 +82,7 @@ export default function CarCard({ car }: CarCardProps) {
                 fill
                 quality={75}
                 containerClassName="h-full w-full"
-                className="object-cover group-hover:scale-105 duration-500"
+                className="object-cover duration-500"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             ) : (
