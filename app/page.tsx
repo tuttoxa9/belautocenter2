@@ -10,6 +10,7 @@ import { StatusButton } from "@/components/ui/status-button"
 import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
+import DealOfTheDay from "@/components/deal-of-the-day"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import SaleModal from "@/app/sale/sale-modal"
@@ -446,6 +447,11 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
+          )}
+
+          {/* Блок Авто дня */}
+          {!loadingCars && cars.length > 0 && (
+            <DealOfTheDay cars={cars} />
           )}
 
           <div className="text-center mt-12">
