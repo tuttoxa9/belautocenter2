@@ -145,6 +145,22 @@ export async function POST(request: NextRequest) {
         }
         break
 
+      case 'warranty_request':
+        message = `🛡 <b>Новая заявка на гарантию</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}`
+        if (body.program) {
+           message += `\n📑 <b>Программа:</b> ${body.program}`
+        }
+        if (body.price) {
+           message += `\n💰 <b>Стоимость:</b> ${body.price}`
+        }
+        if (body.car) {
+           message += `\n🚘 <b>Авто:</b> ${body.car}`
+        }
+        if (body.comment) {
+           message += `\n📝 <b>Комментарий:</b> ${body.comment}`
+        }
+        break
+
       default:
         message = `📝 <b>Новая заявка</b>\n\n👤 <b>Имя:</b> ${name}\n📞 <b>Телефон:</b> ${phone}`
         if (email) {
