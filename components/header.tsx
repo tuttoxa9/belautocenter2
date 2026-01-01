@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -140,22 +141,20 @@ export default function Header() {
       <div className="container flex h-14 items-center justify-between px-2 md:px-4">
         {/* Логотип слева на всех устройствах */}
         <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
-          <BlurImage
+          <Image
             src="/logo4.png"
             alt="Белавто Центр"
             width={120}
             height={40}
-            containerClassName="block dark:hidden"
-            className="h-8 w-auto sm:h-10 object-contain"
+            className="h-8 w-auto sm:h-10 block dark:hidden object-contain"
             priority
           />
-          <BlurImage
+          <Image
             src="/logo_black.png"
             alt="Белавто Центр"
             width={120}
             height={40}
-            containerClassName="hidden dark:block"
-            className="h-8 w-auto sm:h-10 object-contain"
+            className="h-8 w-auto sm:h-10 hidden dark:block object-contain"
             priority
           />
           <span className="font-display font-bold text-sm sm:text-lg text-gray-900 dark:text-white tracking-tight">Белавто Центр</span>
@@ -198,22 +197,20 @@ export default function Header() {
               </div>
             ) : (
               <div className="flex flex-col items-center">
-                <BlurImage
+                <Image
                   src="/logo4.png"
                   alt="Белавто Центр"
                   width={120}
                   height={40}
-                  containerClassName="block dark:hidden mb-2"
-                  className="h-10 w-auto object-contain"
+                  className="h-10 w-auto mb-2 block dark:hidden object-contain"
                   priority
                 />
-                <BlurImage
+                <Image
                   src="/logo_black.png"
                   alt="Белавто Центр"
                   width={120}
                   height={40}
-                  containerClassName="hidden dark:block mb-2"
-                  className="h-10 w-auto object-contain"
+                  className="h-10 w-auto mb-2 hidden dark:block object-contain"
                   priority
                 />
                 <div className="w-12 h-px bg-gray-300 dark:bg-gray-700"></div>
