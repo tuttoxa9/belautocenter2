@@ -310,10 +310,10 @@ export default function Header() {
               key={item.name}
               href={item.href}
               prefetch={true}
-              className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md ${
+              className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md border ${
                 pathname === item.href
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 border-transparent"
               }`}
             >
               {item.name}
