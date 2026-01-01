@@ -54,11 +54,15 @@ export function WarrantyDrawer({ open, onOpenChange, programTitle, programPrice 
       };
 
       // Send to Telegram (fire and forget for UI speed, but good to await for error handling if critical)
-      await fetch('/api/send-telegram', {
+      const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to send request');
+      }
 
       showSuccess("Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
       onOpenChange(false);
