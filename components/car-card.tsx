@@ -5,10 +5,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 
-import Image from "next/image"
 import { useState, useEffect, useMemo } from "react"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useIntersectionObserverV2 } from "@/hooks/use-intersection-observer"
+import { BlurImage } from "@/components/ui/blur-image"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
 
@@ -32,7 +32,6 @@ interface CarCardProps {
 
 export default function CarCard({ car }: CarCardProps) {
   const usdBynRate = useUsdBynRate()
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [dataReady, setDataReady] = useState(false)
 
   // Используем оптимизированный хук для IntersectionObserver
@@ -77,23 +76,15 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="relative">
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-800/90 dark:to-black/90 rounded-t-2xl h-56">
             {isIntersecting ? (
-              <>
-                {!isImageLoaded && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse" />
-                )}
-                <Image
-                  src={primaryImageUrl || "/placeholder.svg?height=200&width=280"}
-                  alt={`${car.make} ${car.model}`}
-                  fill
-                  quality={75}
-                  className={`object-cover group-hover:scale-102 transition-all duration-300 ${
-                    isImageLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
-                  onLoad={() => setIsImageLoaded(true)}
-                  onError={() => setIsImageLoaded(true)}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-              </>
+              <BlurImage
+                src={primaryImageUrl || "/placeholder.svg?height=200&width=280"}
+                alt={`${car.make} ${car.model}`}
+                fill
+                quality={75}
+                containerClassName="h-full w-full"
+                className="object-cover group-hover:scale-105 duration-500"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
             ) : (
               <div className="w-full h-full bg-slate-200 flex items-center justify-center">
                 <div className="w-12 h-12 bg-slate-300 rounded-full animate-pulse" />
