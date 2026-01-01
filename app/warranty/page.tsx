@@ -61,7 +61,7 @@ export default function WarrantyPage() {
       />
 
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] md:h-[85vh] w-full overflow-hidden flex items-center justify-center pb-16 md:pb-0">
+      <section className="relative min-h-[65vh] md:h-[85vh] w-full overflow-hidden flex items-center justify-center pb-8 md:pb-0">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -75,33 +75,33 @@ export default function WarrantyPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/60" />
           <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
           {/* Blend to page background at the very bottom */}
-          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-zinc-50 dark:from-black to-transparent" />
+          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-zinc-50 dark:from-black to-transparent" />
         </div>
 
         {/* Hero Content */}
-        <div className="container relative z-10 px-4 md:px-6 text-center text-white space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 pt-20 md:pt-0">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium tracking-wide">
-            <Shield className="w-4 h-4 text-blue-400" />
-            <span className="uppercase tracking-widest text-xs">Официальная защита</span>
+        <div className="container relative z-10 px-4 md:px-6 text-center text-white space-y-5 md:space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 pt-24 md:pt-0">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs md:text-sm font-medium tracking-wide">
+            <Shield className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-400" />
+            <span className="uppercase tracking-widest text-[10px] md:text-xs">Официальная защита</span>
           </div>
 
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1] md:leading-[0.9]">
+          <h1 className="text-3xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1] md:leading-[0.9]">
             Абсолютная <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">
               уверенность
             </span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-base md:text-xl text-zinc-200 font-light leading-relaxed">
+          <p className="max-w-xl mx-auto text-sm md:text-xl text-zinc-200 font-light leading-relaxed px-2">
             Премиальная программа защиты автомобиля от Белавто Центр и DrivePolis.
             Мы берем на себя ответственность за техническое состояние вашего авто.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 pt-4 relative z-20 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 pt-2 md:pt-4 relative z-20 w-full sm:w-auto px-4 md:px-0">
             <Button size="lg" className="w-full sm:w-auto rounded-full px-8 h-12 md:h-14 bg-white text-black hover:bg-zinc-200 text-base md:text-lg font-medium transition-all hover:scale-105" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
               Выбрать программу
             </Button>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full px-8 h-12 md:h-14 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm text-base md:text-lg font-medium" asChild>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full px-8 h-12 md:h-14 bg-transparent border-white/30 text-white hover:bg-white/10 backdrop-blur-sm text-base md:text-lg font-medium" asChild>
               <a href="tel:+375291234567">
                 <Phone className="w-5 h-5 mr-2" />
                 Связаться с нами
@@ -109,60 +109,64 @@ export default function WarrantyPage() {
             </Button>
           </div>
 
-          <div className="pt-8 md:pt-12 opacity-90 relative z-10">
-            <p className="text-xs uppercase tracking-widest text-zinc-400 mb-4">Партнер программы</p>
+          <div className="pt-6 md:pt-12 opacity-90 relative z-10">
+            <p className="text-[10px] md:text-xs uppercase tracking-widest text-zinc-300 mb-3 md:mb-4">Партнер программы</p>
             <div className="relative h-10 md:h-12 w-32 md:w-48 mx-auto">
                <Image
                 src="/logo_polis.png"
                 alt="DrivePolis"
                 fill
-                className="object-contain hover:scale-105 transition-transform"
+                className="object-contain hover:scale-105 transition-transform brightness-0 invert"
               />
             </div>
           </div>
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
+        <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50 hidden md:block">
            <ChevronDown className="w-8 h-8 text-white" />
         </div>
       </section>
 
       {/* Stats / Features Grid - Floating over hero */}
-      <section className="relative z-20 -mt-8 md:-mt-20 container px-4 md:px-6">
+      <section className="relative z-20 -mt-6 md:-mt-20 container px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8">
           {[
             { icon: Clock, title: "24/7 Поддержка", desc: "Круглосуточная помощь на дорогах Беларуси" },
             { icon: BadgeCheck, title: "Официальный договор", desc: "Юридическая гарантия всех обязательств" },
             { icon: Wrench, title: "Любые СТО", desc: "Ремонт на сертифицированных станциях" }
           ].map((item, i) => (
-             <div key={i} className="bg-white/95 dark:bg-black/80 backdrop-blur-xl border border-zinc-200 dark:border-white/10 p-6 md:p-8 rounded-[2rem] shadow-xl text-zinc-900 dark:text-white hover:-translate-y-2 transition-transform duration-300">
-               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-blue-50 dark:bg-zinc-900 border border-blue-100 dark:border-white/5 flex items-center justify-center mb-4 md:mb-6">
-                 <item.icon className="w-6 h-6 md:w-7 md:h-7 text-blue-600 dark:text-blue-400" />
+             <div key={i} className="bg-white/95 dark:bg-black/80 backdrop-blur-xl border border-zinc-200 dark:border-white/10 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-xl text-zinc-900 dark:text-white hover:-translate-y-2 transition-transform duration-300">
+               <div className="flex items-center gap-4 md:block">
+                 <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-blue-50 dark:bg-zinc-900 border border-blue-100 dark:border-white/5 flex items-center justify-center md:mb-6 shrink-0">
+                   <item.icon className="w-5 h-5 md:w-7 md:h-7 text-blue-600 dark:text-blue-400" />
+                 </div>
+                 <div>
+                   <h3 className="text-base md:text-xl font-bold mb-1 md:mb-2">{item.title}</h3>
+                   <p className="text-sm md:text-base text-muted-foreground dark:text-zinc-400 leading-relaxed">{item.desc}</p>
+                 </div>
                </div>
-               <h3 className="text-lg md:text-xl font-bold mb-2">{item.title}</h3>
-               <p className="text-sm md:text-base text-muted-foreground dark:text-zinc-400 leading-relaxed">{item.desc}</p>
              </div>
           ))}
         </div>
       </section>
 
       {/* Programs Section */}
-      <section id="programs" className="py-12 md:py-32 relative">
+      <section id="programs" className="py-8 md:py-32 relative">
          {/* Decorative background blobs */}
          <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl -translate-x-1/2 pointer-events-none" />
          <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl translate-x-1/2 pointer-events-none" />
 
         <div className="container px-4 md:px-6 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">Выберите уровень защиты</h2>
-            <p className="text-lg md:text-xl text-muted-foreground">
+          <div className="text-center max-w-3xl mx-auto mb-6 md:mb-16 space-y-3 md:space-y-4">
+            <h2 className="text-2xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">Выберите уровень защиты</h2>
+            <p className="text-base md:text-xl text-muted-foreground">
               Индивидуальные решения для каждого автомобиля и бюджета
             </p>
           </div>
 
           <Tabs defaultValue="help" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="flex justify-start md:justify-center mb-8 md:mb-16 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="flex justify-start md:justify-center mb-6 md:mb-16 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
               <TabsList className="h-auto w-auto flex-nowrap bg-zinc-100 dark:bg-zinc-900/50 p-1.5 rounded-full border border-zinc-200 dark:border-zinc-800">
                 <ModernTabTrigger value="help" label="Помощь" active={activeTab === "help"} />
                 <ModernTabTrigger value="pro" label="Гарантия" active={activeTab === "pro"} />
@@ -201,7 +205,7 @@ export default function WarrantyPage() {
                     onSelect={() => handleSelectProgram("Драйв-HELP VIP", "1 599 BYN")}
                   />
                 </ProgramContent>
-                <div className="flex justify-center mt-12">
+                <div className="flex justify-center mt-8 md:mt-12">
                    <DetailsDialog title="Программа Драйв-HELP" color="orange"><HelpDetails /></DetailsDialog>
                 </div>
               </TabsContent>
@@ -238,7 +242,7 @@ export default function WarrantyPage() {
                     onSelect={() => handleSelectProgram("Драйв-PRO Премиум", "3 116 BYN")}
                   />
                 </ProgramContent>
-                <div className="flex justify-center mt-12">
+                <div className="flex justify-center mt-8 md:mt-12">
                    <DetailsDialog title="Программа Драйв-PRO" color="blue"><ProDetails /></DetailsDialog>
                 </div>
               </TabsContent>
@@ -275,42 +279,42 @@ export default function WarrantyPage() {
                     onSelect={() => handleSelectProgram("Драйв-EL Премиум", "4 370 BYN")}
                   />
                 </ProgramContent>
-                <div className="flex justify-center mt-12">
+                <div className="flex justify-center mt-8 md:mt-12">
                    <DetailsDialog title="Программа Драйв-EL" color="green"><ElDetails /></DetailsDialog>
                 </div>
               </TabsContent>
 
               <TabsContent value="old" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-8 duration-500">
-                 <div className="max-w-5xl mx-auto bg-zinc-100 dark:bg-zinc-900 rounded-[2.5rem] p-6 md:p-12 border border-zinc-200 dark:border-zinc-800 relative overflow-hidden group">
+                 <div className="max-w-5xl mx-auto bg-zinc-100 dark:bg-zinc-900 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-12 border border-zinc-200 dark:border-zinc-800 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-b from-purple-500/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
                     <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center relative z-10">
                        <div className="space-y-6 md:space-y-8">
                           <div>
                             <Badge variant="outline" className="mb-4 text-purple-600 border-purple-200 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-300">Для авто с пробегом</Badge>
-                            <h3 className="text-2xl md:text-4xl font-bold mb-4">Драйв-OLD</h3>
-                            <p className="text-base md:text-lg text-muted-foreground">
+                            <h3 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Драйв-OLD</h3>
+                            <p className="text-sm md:text-lg text-muted-foreground">
                               Специальное решение для автомобилей старше 10 лет. Мы понимаем риски и готовы их разделить.
                             </p>
                           </div>
 
-                          <div className="space-y-4">
-                             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-black/40 border border-zinc-200 dark:border-zinc-800">
-                                <div className="w-12 h-12 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
-                                   <Shield className="w-6 h-6" />
+                          <div className="space-y-3 md:space-y-4">
+                             <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white dark:bg-black/40 border border-zinc-200 dark:border-zinc-800">
+                                <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                                   <Shield className="w-5 h-5 md:w-6 md:h-6" />
                                 </div>
                                 <div>
-                                   <p className="font-bold text-lg">Только важное</p>
-                                   <p className="text-sm text-muted-foreground">ДВС, КПП, Мосты, Рулевое</p>
+                                   <p className="font-bold text-base md:text-lg">Только важное</p>
+                                   <p className="text-xs md:text-sm text-muted-foreground">ДВС, КПП, Мосты, Рулевое</p>
                                 </div>
                              </div>
-                             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-black/40 border border-zinc-200 dark:border-zinc-800">
-                                <div className="w-12 h-12 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
-                                   <Clock className="w-6 h-6" />
+                             <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white dark:bg-black/40 border border-zinc-200 dark:border-zinc-800">
+                                <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                                   <Clock className="w-5 h-5 md:w-6 md:h-6" />
                                 </div>
                                 <div>
-                                   <p className="font-bold text-lg">До 20 лет</p>
-                                   <p className="text-sm text-muted-foreground">Возраст автомобиля</p>
+                                   <p className="font-bold text-base md:text-lg">До 20 лет</p>
+                                   <p className="text-xs md:text-sm text-muted-foreground">Возраст автомобиля</p>
                                 </div>
                              </div>
                           </div>
@@ -352,24 +356,24 @@ export default function WarrantyPage() {
       </section>
 
       {/* Steps Section */}
-      <section className="py-12 md:py-24 bg-zinc-100 dark:bg-zinc-900/50 relative overflow-hidden">
+      <section className="py-8 md:py-24 bg-zinc-100 dark:bg-zinc-900/50 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-300 dark:via-zinc-700 to-transparent" />
 
         <div className="container px-4 md:px-6 relative z-10">
-           <div className="mb-10 md:mb-16 md:text-center">
-              <h2 className="text-2xl md:text-4xl font-bold mb-4">Как это работает</h2>
-              <p className="text-muted-foreground text-base md:text-lg">Прозрачный процесс от покупки до получения выплаты</p>
+           <div className="mb-8 md:mb-16 md:text-center">
+              <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Как это работает</h2>
+              <p className="text-muted-foreground text-sm md:text-lg">Прозрачный процесс от покупки до получения выплаты</p>
            </div>
 
-           <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+           <div className="grid md:grid-cols-3 gap-4 md:gap-8">
               {[
                  { step: "01", title: "Оформление", desc: "При покупке автомобиля выберите подходящий пакет гарантии. Договор подписывается на месте." },
                  { step: "02", title: "Обращение", desc: "При наступлении гарантийного случая позвоните в круглосуточный контакт-центр." },
                  { step: "03", title: "Ремонт", desc: "Направим на сертифицированную СТО. Все расходы на запчасти и работы мы берем на себя." }
               ].map((item, i) => (
-                 <div key={i} className="group relative bg-background rounded-[2rem] p-6 md:p-8 border border-zinc-200 dark:border-zinc-800 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg">
-                    <div className="text-5xl md:text-6xl font-bold text-zinc-100 dark:text-zinc-800 mb-6 group-hover:text-blue-50 dark:group-hover:text-blue-900/20 transition-colors duration-300">{item.step}</div>
-                    <h3 className="text-xl md:text-2xl font-bold mb-4 relative z-10">{item.title}</h3>
+                 <div key={i} className="group relative bg-background rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 border border-zinc-200 dark:border-zinc-800 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg">
+                    <div className="text-4xl md:text-6xl font-bold text-zinc-100 dark:text-zinc-800 mb-4 md:mb-6 group-hover:text-blue-50 dark:group-hover:text-blue-900/20 transition-colors duration-300">{item.step}</div>
+                    <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-4 relative z-10">{item.title}</h3>
                     <p className="text-sm md:text-base text-muted-foreground relative z-10">{item.desc}</p>
                  </div>
               ))}
@@ -378,13 +382,13 @@ export default function WarrantyPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-12 md:py-24 bg-zinc-50 dark:bg-black relative">
+      <section className="py-8 md:py-24 bg-zinc-50 dark:bg-black relative">
         <div className="container px-4 md:px-6 max-w-4xl relative z-10">
-           <div className="text-center mb-10 md:mb-16">
+           <div className="text-center mb-8 md:mb-16">
               <h2 className="text-2xl md:text-4xl font-bold mb-4">Частые вопросы</h2>
            </div>
 
-           <div className="space-y-4">
+           <div className="space-y-3 md:space-y-4">
             {[
               { q: "Как быстро приедет помощь?", a: "Время прибытия зависит от дорожной ситуации и вашего местоположения, но мы стараемся обеспечить максимально быструю реакцию. В среднем по городу — 30-40 минут." },
               { q: "Действует ли услуга за пределами моего города?", a: "Да, покрытие действует на всей территории Республики Беларусь." },
@@ -394,10 +398,10 @@ export default function WarrantyPage() {
             ].map((item, i) => (
                <Accordion key={i} type="single" collapsible>
                   <AccordionItem value={`item-${i}`} className="border-b border-zinc-200 dark:border-zinc-800">
-                     <AccordionTrigger className="text-base md:text-lg font-medium hover:text-blue-600 text-left py-6">
+                     <AccordionTrigger className="text-sm md:text-lg font-medium hover:text-blue-600 text-left py-4 md:py-6">
                         {item.q}
                      </AccordionTrigger>
-                     <AccordionContent className="text-muted-foreground text-sm md:text-base leading-relaxed pb-6">
+                     <AccordionContent className="text-muted-foreground text-sm md:text-base leading-relaxed pb-4 md:pb-6">
                         {item.a}
                      </AccordionContent>
                   </AccordionItem>
@@ -420,7 +424,7 @@ function ModernTabTrigger({ value, label, active }: { value: string, label: stri
       <TabsTrigger
          value={value}
          className={cn(
-            "rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 z-10",
+            "rounded-full px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium transition-all duration-300 z-10 min-w-[90px] md:min-w-0",
             active
                ? "bg-white dark:bg-zinc-800 text-black dark:text-white shadow-lg scale-105"
                : "text-muted-foreground hover:text-foreground hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
@@ -440,12 +444,12 @@ function ProgramContent({ title, subtitle, children, theme }: any) {
    }
 
    return (
-      <div className="space-y-12">
-         <div className="text-center space-y-4 px-2">
-            <h3 className="text-2xl md:text-4xl font-bold">{title}</h3>
+      <div className="space-y-6 md:space-y-12">
+         <div className="text-center space-y-3 md:space-y-4 px-2">
+            <h3 className="text-xl md:text-4xl font-bold">{title}</h3>
             <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">{subtitle}</p>
          </div>
-         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+         <div className="grid md:grid-cols-3 gap-4 lg:gap-8">
             {children}
          </div>
       </div>
@@ -469,27 +473,27 @@ function ModernPricingCard({ title, price, limit, features, isPopular, theme, on
 
    return (
       <div className={cn(
-         "group relative flex flex-col p-6 md:p-8 rounded-[2rem] bg-background border border-zinc-200 dark:border-zinc-800 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2",
+         "group relative flex flex-col p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] bg-background border border-zinc-200 dark:border-zinc-800 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2",
          borderColors[theme],
          isPopular ? "shadow-xl ring-1 ring-zinc-200 dark:ring-zinc-700" : ""
       )}>
          {isPopular && (
             <div className="absolute top-0 inset-x-0 flex justify-center -mt-3">
-               <Badge className={cn("px-4 py-1 text-xs font-bold uppercase tracking-wider text-white border-0", badgeColors[theme])}>
+               <Badge className={cn("px-4 py-1 text-[10px] md:text-xs font-bold uppercase tracking-wider text-white border-0", badgeColors[theme])}>
                   Популярный выбор
                </Badge>
             </div>
          )}
 
-         <div className="mb-6">
-            <h4 className="text-xl font-bold mb-2">{title}</h4>
+         <div className="mb-4 md:mb-6">
+            <h4 className="text-lg md:text-xl font-bold mb-1 md:mb-2">{title}</h4>
             <div className="flex items-baseline gap-1">
-               <span className="text-3xl font-bold">{price}</span>
+               <span className="text-2xl md:text-3xl font-bold">{price}</span>
             </div>
-            {limit && <p className="text-sm text-muted-foreground mt-1">Лимит: {limit}</p>}
+            {limit && <p className="text-xs md:text-sm text-muted-foreground mt-1">Лимит: {limit}</p>}
          </div>
 
-         <ul className="space-y-4 flex-grow mb-8">
+         <ul className="space-y-3 md:space-y-4 flex-grow mb-6 md:mb-8">
             {features.map((feature: string, i: number) => (
                <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
                   <CheckCircle2 className={cn("w-5 h-5 shrink-0", isPopular ? "text-foreground" : "text-muted-foreground/50")} />
@@ -500,7 +504,7 @@ function ModernPricingCard({ title, price, limit, features, isPopular, theme, on
 
          <Button
             variant={isPopular ? "default" : "outline"}
-            className="w-full rounded-xl h-12 font-medium"
+            className="w-full rounded-xl h-10 md:h-12 font-medium"
             onClick={onSelect}
          >
             Выбрать
@@ -528,10 +532,10 @@ function DetailsDialog({ title, children, color, variant = "default" }: any) {
            Подробнее <Info className="ml-2 w-4 h-4" />
          </Button>
        </DialogTrigger>
-       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-[2rem] modal-content sm:p-10">
-         <DialogHeader className="mb-6">
-           <DialogTitle className="text-2xl md:text-3xl font-bold">{title}</DialogTitle>
-           <DialogDescription className="text-base">
+       <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-y-auto rounded-[1.5rem] md:rounded-[2rem] modal-content p-6 sm:p-10">
+         <DialogHeader className="mb-4 md:mb-6">
+           <DialogTitle className="text-xl md:text-3xl font-bold">{title}</DialogTitle>
+           <DialogDescription className="text-sm md:text-base">
              Подробная информация о предоставляемых услугах и условиях.
            </DialogDescription>
          </DialogHeader>
@@ -543,31 +547,31 @@ function DetailsDialog({ title, children, color, variant = "default" }: any) {
 
 function HelpDetails() {
    return (
-     <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+     <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-8">
        <div>
-         <h4 className="font-semibold text-lg mb-4 text-orange-600 flex items-center gap-2">
+         <h4 className="font-semibold text-lg mb-3 md:mb-4 text-orange-600 flex items-center gap-2">
            <Phone className="w-5 h-5" /> Сервис и Консультации
          </h4>
-         <ul className="space-y-3">
-           <li className="flex gap-3 text-sm"><span className="font-bold min-w-[140px]">Автосправка 24/7:</span> Консультации по любым вопросам.</li>
-           <li className="flex gap-3 text-sm"><span className="font-bold min-w-[140px]">Юрист/Европротокол:</span> Помощь в оформлении ДТП.</li>
-           <li className="flex gap-3 text-sm"><span className="font-bold min-w-[140px]">Механик онлайн:</span> Диагностика по телефону.</li>
+         <ul className="space-y-2 md:space-y-3">
+           <li className="flex gap-2 md:gap-3 text-sm"><span className="font-bold min-w-[120px] md:min-w-[140px]">Автосправка 24/7:</span> Консультации по любым вопросам.</li>
+           <li className="flex gap-2 md:gap-3 text-sm"><span className="font-bold min-w-[120px] md:min-w-[140px]">Юрист/Европротокол:</span> Помощь в оформлении ДТП.</li>
+           <li className="flex gap-2 md:gap-3 text-sm"><span className="font-bold min-w-[120px] md:min-w-[140px]">Механик онлайн:</span> Диагностика по телефону.</li>
          </ul>
        </div>
        <div>
-         <h4 className="font-semibold text-lg mb-4 text-orange-600 flex items-center gap-2">
+         <h4 className="font-semibold text-lg mb-3 md:mb-4 text-orange-600 flex items-center gap-2">
            <Car className="w-5 h-5" /> Эвакуация и Техпомощь
          </h4>
-         <ul className="space-y-3">
-           <li className="flex gap-3 text-sm"><span className="font-bold min-w-[140px]">Эвакуация при ДТП:</span> До СТО или дома.</li>
-           <li className="flex gap-3 text-sm"><span className="font-bold min-w-[140px]">Замена колеса:</span> Установка запаски.</li>
-           <li className="flex gap-3 text-sm"><span className="font-bold min-w-[140px]">Подвоз топлива:</span> До 10 литров (Премиум+).</li>
-           <li className="flex gap-3 text-sm"><span className="font-bold min-w-[140px]">Запуск двигателя:</span> Прикуривание (Премиум+).</li>
+         <ul className="space-y-2 md:space-y-3">
+           <li className="flex gap-2 md:gap-3 text-sm"><span className="font-bold min-w-[120px] md:min-w-[140px]">Эвакуация при ДТП:</span> До СТО или дома.</li>
+           <li className="flex gap-2 md:gap-3 text-sm"><span className="font-bold min-w-[120px] md:min-w-[140px]">Замена колеса:</span> Установка запаски.</li>
+           <li className="flex gap-2 md:gap-3 text-sm"><span className="font-bold min-w-[120px] md:min-w-[140px]">Подвоз топлива:</span> До 10 литров (Премиум+).</li>
+           <li className="flex gap-2 md:gap-3 text-sm"><span className="font-bold min-w-[120px] md:min-w-[140px]">Запуск двигателя:</span> Прикуривание (Премиум+).</li>
          </ul>
        </div>
        <div className="md:col-span-2 p-4 bg-orange-50 dark:bg-orange-950/20 rounded-xl border border-orange-100 dark:border-orange-900/50">
          <h4 className="font-semibold mb-2">VIP Услуги</h4>
-         <div className="grid sm:grid-cols-3 gap-4 text-sm">
+         <div className="grid sm:grid-cols-3 gap-3 md:gap-4 text-sm">
             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-orange-500"/> Трезвый водитель</div>
             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-orange-500"/> Такси с места ДТП</div>
             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-orange-500"/> Трансфер в аэропорт</div>
@@ -579,24 +583,24 @@ function HelpDetails() {
 
  function ProDetails() {
    return (
-     <div className="space-y-8">
+     <div className="space-y-6 md:space-y-8">
        <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-100 dark:border-blue-900/50">
          <h4 className="font-semibold mb-2">Условия участия</h4>
-         <div className="grid sm:grid-cols-2 gap-4 text-sm">
+         <div className="grid sm:grid-cols-2 gap-3 md:gap-4 text-sm">
             <div><span className="font-bold">Иномарки:</span> до 20 лет, до 200 000 км</div>
             <div><span className="font-bold">Российские ТС:</span> до 10 лет, до 100 000 км</div>
          </div>
        </div>
 
-       <div className="grid md:grid-cols-2 gap-6">
+       <div className="grid md:grid-cols-2 gap-4 md:gap-6">
           {[
             { title: "Двигатель", items: ["Блок цилиндров", "ГБЦ", "Поршневая", "Турбина", "Топливная"] },
             { title: "Трансмиссия", items: ["МКПП / АКПП", "Робот / Вариатор", "Гидротрансформатор", "Шестерни и валы"] },
             { title: "Ходовая и Рулевое", items: ["Мосты и редукторы", "Карданный вал", "Рулевая рейка", "Насос ГУР/ЭУР"] },
             { title: "Электрика и Климат", items: ["Стартер / Генератор", "Компрессор кондиционера", "Моторы стеклоочистителей", "ЭБУ"] },
           ].map((group, i) => (
-            <div key={i} className="border p-4 rounded-xl">
-              <h5 className="font-bold text-blue-600 mb-2">{group.title}</h5>
+            <div key={i} className="border p-3 md:p-4 rounded-xl">
+              <h5 className="font-bold text-blue-600 mb-1 md:mb-2">{group.title}</h5>
               <ul className="text-sm space-y-1 text-muted-foreground">
                 {group.items.map((item, j) => <li key={j}>• {item}</li>)}
               </ul>
@@ -609,15 +613,15 @@ function HelpDetails() {
 
  function ElDetails() {
    return (
-     <div className="space-y-8">
+     <div className="space-y-6 md:space-y-8">
        <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-xl border border-green-100 dark:border-green-900/50">
          <h4 className="font-semibold mb-2">Условия участия</h4>
-         <div className="grid sm:grid-cols-2 gap-4 text-sm">
+         <div className="grid sm:grid-cols-2 gap-3 md:gap-4 text-sm">
             <div><span className="font-bold">Электро и Гибриды:</span> до 3 лет, до 100 000 км</div>
          </div>
        </div>
 
-       <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+       <div className="grid md:grid-cols-2 gap-x-8 gap-y-4 md:gap-y-6">
          <div className="flex gap-4">
            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg h-fit text-green-600"><Battery /></div>
            <div>
@@ -654,12 +658,12 @@ function HelpDetails() {
  function OldDetails() {
    return (
      <div className="space-y-6">
-       <p className="text-lg">
+       <p className="text-base md:text-lg">
          Программа разработана специально для подержанных автомобилей, где вероятность поломки выше.
          Мы покрываем <span className="font-bold text-foreground">только самое дорогое</span>.
        </p>
 
-       <div className="grid sm:grid-cols-2 gap-4">
+       <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
          <Card>
            <CardContent className="p-4 pt-4">
              <div className="font-bold mb-1">Двигатель (ДВС)</div>
