@@ -94,7 +94,7 @@ export default function WarrantyPage() {
             Мы берем на себя ответственность за техническое состояние вашего авто.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 relative z-20">
             <Button size="lg" className="rounded-full px-8 h-14 bg-white text-black hover:bg-zinc-200 text-lg font-medium transition-all hover:scale-105" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
               Выбрать программу
             </Button>
@@ -106,7 +106,7 @@ export default function WarrantyPage() {
             </Button>
           </div>
 
-          <div className="pt-12 opacity-90">
+          <div className="pt-12 opacity-90 relative z-10">
             <p className="text-xs uppercase tracking-widest text-zinc-500 mb-4">Партнер программы</p>
             <div className="relative h-12 w-48 mx-auto">
                <Image
@@ -133,12 +133,12 @@ export default function WarrantyPage() {
             { icon: BadgeCheck, title: "Официальный договор", desc: "Юридическая гарантия всех обязательств" },
             { icon: Wrench, title: "Любые СТО", desc: "Ремонт на сертифицированных станциях" }
           ].map((item, i) => (
-             <div key={i} className="glass-dark rounded-[2rem] p-8 text-white backdrop-blur-xl border border-white/10 shadow-2xl hover:-translate-y-2 transition-transform duration-300">
-               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center mb-6 border border-white/5">
-                 <item.icon className="w-7 h-7 text-blue-400" />
+             <div key={i} className="bg-white/80 dark:bg-black/40 backdrop-blur-xl border border-zinc-200 dark:border-white/10 p-8 rounded-[2rem] shadow-xl text-zinc-900 dark:text-white hover:-translate-y-2 transition-transform duration-300">
+               <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-zinc-900 border border-blue-100 dark:border-white/5 flex items-center justify-center mb-6">
+                 <item.icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
                </div>
                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-               <p className="text-zinc-400 leading-relaxed">{item.desc}</p>
+               <p className="text-muted-foreground dark:text-zinc-400 leading-relaxed">{item.desc}</p>
              </div>
           ))}
         </div>
@@ -361,7 +361,7 @@ export default function WarrantyPage() {
                  { step: "03", title: "Ремонт", desc: "Направим на сертифицированную СТО. Все расходы на запчасти и работы мы берем на себя." }
               ].map((item, i) => (
                  <div key={i} className="group relative bg-background rounded-[2rem] p-8 border border-zinc-200 dark:border-zinc-800 hover:border-blue-500/50 transition-colors duration-300">
-                    <div className="text-6xl font-bold text-zinc-100 dark:text-zinc-800 mb-6 group-hover:text-blue-50 dark:group-hover:text-blue-900/20 transition-colors duration-300">{item.step}</div>
+                    <div className="text-6xl font-bold text-zinc-200 dark:text-zinc-800 mb-6 group-hover:text-blue-50 dark:group-hover:text-blue-900/20 transition-colors duration-300">{item.step}</div>
                     <h3 className="text-2xl font-bold mb-4 relative z-10">{item.title}</h3>
                     <p className="text-muted-foreground relative z-10">{item.desc}</p>
                  </div>

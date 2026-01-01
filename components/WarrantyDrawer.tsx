@@ -93,7 +93,7 @@ export function WarrantyDrawer({ open, onOpenChange, programTitle, programPrice 
       footer={footer}
     >
       <div className="space-y-6">
-        <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-200 dark:border-zinc-700">
+        <div className="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-2xl border border-zinc-200 dark:border-zinc-700">
           <h4 className="text-sm font-medium text-muted-foreground mb-1">Выбранная программа</h4>
           <div className="flex items-baseline justify-between">
              <span className="text-lg font-bold text-foreground">{programTitle}</span>
