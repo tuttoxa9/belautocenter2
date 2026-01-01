@@ -39,12 +39,27 @@ import {
 } from "@/components/ui/dialog"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { WarrantyDrawer } from "@/components/WarrantyDrawer"
 
 export default function WarrantyPage() {
   const [activeTab, setActiveTab] = useState("help")
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [selectedProgram, setSelectedProgram] = useState<{title: string, price: string}>({ title: "", price: "" })
+
+  const handleSelectProgram = (title: string, price: string) => {
+    setSelectedProgram({ title, price })
+    setDrawerOpen(true)
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-500/30 font-sans">
+      <WarrantyDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        programTitle={selectedProgram.title}
+        programPrice={selectedProgram.price}
+      />
+
       {/* Hero Section */}
       <section className="relative h-[85vh] w-full overflow-hidden flex items-center justify-center">
         {/* Background Image with Overlay */}
@@ -91,14 +106,14 @@ export default function WarrantyPage() {
             </Button>
           </div>
 
-          <div className="pt-12 opacity-80">
+          <div className="pt-12 opacity-90">
             <p className="text-xs uppercase tracking-widest text-zinc-500 mb-4">Партнер программы</p>
-            <div className="relative h-10 w-40 mx-auto">
+            <div className="relative h-12 w-48 mx-auto">
                <Image
                 src="/logo_polis.png"
                 alt="DrivePolis"
                 fill
-                className="object-contain invert opacity-70 hover:opacity-100 transition-opacity"
+                className="object-contain hover:scale-105 transition-transform"
               />
             </div>
           </div>
@@ -161,6 +176,7 @@ export default function WarrantyPage() {
                     price="789 BYN"
                     features={["Базовая помощь 24/7", "Эвакуация при ДТП", "Запуск двигателя"]}
                     theme="orange"
+                    onSelect={() => handleSelectProgram("Драйв-HELP Стандарт", "789 BYN")}
                   />
                   <ModernPricingCard
                     title="Премиум"
@@ -168,12 +184,14 @@ export default function WarrantyPage() {
                     features={["Расширенная эвакуация", "Подвоз топлива", "Такси с места ДТП", "Юридическая помощь"]}
                     isPopular
                     theme="orange"
+                    onSelect={() => handleSelectProgram("Драйв-HELP Премиум", "1 199 BYN")}
                   />
                   <ModernPricingCard
                     title="VIP"
                     price="1 599 BYN"
                     features={["Безлимитная эвакуация", "Трезвый водитель", "Трансфер в аэропорт", "Персональный менеджер"]}
                     theme="orange"
+                    onSelect={() => handleSelectProgram("Драйв-HELP VIP", "1 599 BYN")}
                   />
                 </ProgramContent>
                 <div className="flex justify-center mt-12">
@@ -193,6 +211,7 @@ export default function WarrantyPage() {
                     limit="27 000 BYN"
                     features={["Двигатель", "Коробка передач", "Мосты и редукторы"]}
                     theme="blue"
+                    onSelect={() => handleSelectProgram("Драйв-PRO Стандарт", "1 800 BYN")}
                   />
                   <ModernPricingCard
                     title="Стандарт +"
@@ -201,6 +220,7 @@ export default function WarrantyPage() {
                     features={["Всё из Стандарт", "Рулевое управление", "Тормозная система", "Система охлаждения"]}
                     isPopular
                     theme="blue"
+                    onSelect={() => handleSelectProgram("Драйв-PRO Стандарт +", "2 500 BYN")}
                   />
                   <ModernPricingCard
                     title="Премиум"
@@ -208,6 +228,7 @@ export default function WarrantyPage() {
                     limit="58 000 BYN"
                     features={["Максимальное покрытие", "Электрика и климат", "Топливная система", "Турбонагнетатель"]}
                     theme="blue"
+                    onSelect={() => handleSelectProgram("Драйв-PRO Премиум", "3 116 BYN")}
                   />
                 </ProgramContent>
                 <div className="flex justify-center mt-12">
@@ -227,6 +248,7 @@ export default function WarrantyPage() {
                     limit="57 985 BYN"
                     features={["Тяговые двигатели", "Редуктор", "Лимит на ВВБ: 13 644 BYN"]}
                     theme="green"
+                    onSelect={() => handleSelectProgram("Драйв-EL Стандарт", "2 570 BYN")}
                   />
                   <ModernPricingCard
                     title="Стандарт +"
@@ -235,6 +257,7 @@ export default function WarrantyPage() {
                     features={["Инвертор", "Блок зарядки", "Лимит на ВВБ: 17 055 BYN"]}
                     isPopular
                     theme="green"
+                    onSelect={() => handleSelectProgram("Драйв-EL Стандарт +", "3 370 BYN")}
                   />
                   <ModernPricingCard
                     title="Премиум"
@@ -242,6 +265,7 @@ export default function WarrantyPage() {
                     limit="90 390 BYN"
                     features={["Максимальная защита", "Электроника", "Лимит на ВВБ: 20 466 BYN"]}
                     theme="green"
+                    onSelect={() => handleSelectProgram("Драйв-EL Премиум", "4 370 BYN")}
                   />
                 </ProgramContent>
                 <div className="flex justify-center mt-12">
@@ -303,7 +327,10 @@ export default function WarrantyPage() {
                                       </li>
                                    ))}
                                 </ul>
-                                <Button className="w-full h-12 rounded-xl text-lg bg-purple-600 hover:bg-purple-700 text-white">
+                                <Button
+                                  className="w-full h-12 rounded-xl text-lg bg-purple-600 hover:bg-purple-700 text-white"
+                                  onClick={() => handleSelectProgram("Драйв-OLD", "1 650 BYN")}
+                                >
                                    Оформить сейчас
                                 </Button>
                              </CardContent>
@@ -372,29 +399,6 @@ export default function WarrantyPage() {
            </div>
         </div>
 
-        {/* Footer Blend Element - Crucial for "Black Spots" fix */}
-        {/* This element sits at the bottom and has the same color as the footer (gray-900) */}
-        {/* It acts as a background for the rounded corners of the footer to sit on top of,
-            preventing the page background from showing through the corners if they gap,
-            or visually transitioning if the footer floats.
-            Since footer has rounded-t-[50px], we want the background BEHIND those corners to be...
-            Actually, if the footer is rounded-top, the background behind the corners IS this section.
-            If this section is black (dark mode), and footer is gray-900, the corners will look black.
-            If the user wants "no spots", maybe they want the footer to look like it merges?
-            Or maybe they want the background behind the footer corners to be the SAME color as the footer? No that defeats the purpose of rounded corners.
-            Usually "black spots" means the corner gaps show a contrasting background.
-            If I make this section's bottom padding large, and ensure the background is solid.
-            The user said "внизу так же видишь есть закругление, вот там в углах не должно быть чёрных пятен всё должно быть ровно."
-            If the footer is rounded, the "spots" are the area OUTSIDE the rounding.
-            If the footer is Gray-900, and the body is Black. The "spots" are Black.
-            If the user wants it "rovno" (smooth/even), maybe they want the background behind the corners to MATCH the footer?
-            i.e. effectively removing the rounded visual? No, "there is rounding... corners shouldn't have spots".
-            Maybe they mean the area BEHIND the rounded footer should be the same color as the SECTION ABOVE it?
-            Yes. The footer sits ON TOP of the content. The content background should extend down.
-            My code `bg-zinc-50 dark:bg-black` does this.
-            However, `footer-corner-fill` class in global css tries to fix this by adding a pseudo element.
-            Let's rely on the design. I will add a gradient fade at the bottom just in case.
-        */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-zinc-50 dark:from-black to-transparent pointer-events-none" />
       </section>
 
@@ -443,7 +447,7 @@ function ProgramContent({ title, subtitle, children, theme }: any) {
    )
 }
 
-function ModernPricingCard({ title, price, limit, features, isPopular, theme }: any) {
+function ModernPricingCard({ title, price, limit, features, isPopular, theme, onSelect }: any) {
    const borderColors: any = {
       orange: "group-hover:border-orange-500/50",
       blue: "group-hover:border-blue-500/50",
@@ -489,7 +493,11 @@ function ModernPricingCard({ title, price, limit, features, isPopular, theme }: 
             ))}
          </ul>
 
-         <Button variant={isPopular ? "default" : "outline"} className="w-full rounded-xl h-12 font-medium">
+         <Button
+            variant={isPopular ? "default" : "outline"}
+            className="w-full rounded-xl h-12 font-medium"
+            onClick={onSelect}
+         >
             Выбрать
          </Button>
       </div>
