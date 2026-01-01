@@ -304,16 +304,16 @@ export default function Header() {
         </UniversalDrawer>
 
         {/* Десктопное меню */}
-        <nav className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6 flex-1 justify-start ml-2 lg:ml-4">
+        <nav className="hidden md:flex items-center space-x-0 lg:space-x-1 flex-1 justify-start ml-2 lg:ml-4">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               prefetch={true}
-              className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap ${
+              className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md ${
                 pathname === item.href
-                  ? "bg-blue-600 text-white px-3 py-2 rounded-md"
-                  : "text-gray-700 dark:text-gray-300"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               }`}
             >
               {item.name}
