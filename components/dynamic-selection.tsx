@@ -2,11 +2,12 @@
 
 import { useState, useMemo } from "react"
 import CarCard from "@/components/car-card"
+import MobileCarStack from "@/components/mobile-car-stack"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ArrowRight, Sparkles, Zap, CircleDollarSign, ShieldCheck } from "lucide-react"
 
-interface Car {
+export interface Car {
   id: string
   make: string
   model: string
@@ -19,7 +20,7 @@ interface Car {
   imageUrls: string[]
   isAvailable: boolean
   fromEurope?: boolean
-  status?: string // Added status field
+  status?: string
   createdAt?: { seconds: number } | any
   [key: string]: any
 }
@@ -137,7 +138,9 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
         <div className="min-h-[400px]">
            {categories.map((cat) => (
              <div key={cat.id} className={activeTab === cat.id ? "block animate-in fade-in zoom-in-95 duration-500" : "hidden"}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+
+                {/* Desktop View: Grid */}
+                <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                   {cat.filter(availableCars).length > 0 ? (
                     cat.filter(availableCars).map((car) => (
                       <CarCard key={`${cat.id}-${car.id}`} car={car} />
@@ -160,14 +163,50 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
                   )}
                 </div>
 
+                {/* Mobile View: Swipeable Stack */}
+                <div className="md:hidden">
+                  {cat.filter(availableCars).length > 0 ? (
+                    <MobileCarStack cars={cat.filter(availableCars)} />
+                  ) : (
+                    <div className="py-12 text-center bg-gray-50 dark:bg-zinc-900/30 rounded-[2rem] border border-gray-100 dark:border-zinc-800/50">
+                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white dark:bg-zinc-800 shadow-sm mb-4">
+                        <cat.icon className="w-8 h-8 text-gray-300 dark:text-gray-600" />
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        Пусто
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 px-4">
+                        В этой категории пока нет авто.
+                      </p>
+                      <Button variant="outline" size="sm" className="mt-4 rounded-xl" asChild>
+                        <Link href="/catalog">В каталог</Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
                 {cat.filter(availableCars).length > 0 && (
-                  <div className="mt-10 flex justify-center">
+                  <div className="mt-10 flex justify-center hidden md:flex">
                     <Button
                       className="gap-2 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-xl px-8 py-6 text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
                       asChild
                     >
                       <Link href="/catalog">
                         Смотреть все предложения <ArrowRight className="w-5 h-5" />
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+
+                {cat.filter(availableCars).length > 0 && (
+                  <div className="mt-6 flex justify-center md:hidden">
+                    <Button
+                      variant="outline"
+                      className="gap-2 rounded-xl px-6 py-5 text-sm font-semibold w-full max-w-xs"
+                      asChild
+                    >
+                      <Link href="/catalog">
+                        Смотреть все <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>
                   </div>
