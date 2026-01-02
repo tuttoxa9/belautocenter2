@@ -120,6 +120,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
             src={mainImage}
             alt={`${dealCar.make} ${dealCar.model}`}
             fill
+            containerClassName="h-full w-full"
             className="object-cover transition-transform duration-700 hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
