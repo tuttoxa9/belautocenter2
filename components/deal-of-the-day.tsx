@@ -34,6 +34,11 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
   const dealCar = useMemo(() => {
     if (!cars || cars.length === 0) return null
 
+    // Фильтруем только доступные автомобили (не проданные)
+    const availableCars = cars.filter(car => car.isAvailable !== false)
+
+    if (availableCars.length === 0) return null
+
     // Используем дату как seed
     const today = new Date()
     const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()
@@ -45,8 +50,8 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     }
 
     // Выбираем индекс
-    const index = Math.floor(pseudoRandom(seed) * cars.length)
-    return cars[index]
+    const index = Math.floor(pseudoRandom(seed) * availableCars.length)
+    return availableCars[index]
   }, [cars])
 
   const usdBynRate = useUsdBynRate()
@@ -78,7 +83,14 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     const annuityFactor = (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
     const payment = priceByn * annuityFactor;
 
-    return Math.round(payment);
+    const roundedPayment = Math.round(payment);
+
+    // Проверяем на NaN и возвращаем null если результат некорректный
+    if (isNaN(roundedPayment) || !isFinite(roundedPayment)) {
+      return null;
+    }
+
+    return roundedPayment;
   }, [dealCar, usdBynRate]);
 
   useEffect(() => {
@@ -209,7 +221,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
                  <div className="relative z-10">
                     <div className="text-blue-100 text-sm font-medium mb-1">В кредит без взноса</div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold">от {creditPayment}</span>
+                      <span className="text-4xl font-bold">от {creditPayment?.toLocaleString('ru-RU')}</span>
                       <span className="text-xl">BYN/мес</span>
                     </div>
                     <div className="mt-3 flex items-center gap-2 text-xs text-blue-100/80">

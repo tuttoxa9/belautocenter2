@@ -11,7 +11,9 @@ import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
 import DealOfTheDay from "@/components/deal-of-the-day"
+import DealOfTheDaySkeleton from "@/components/deal-of-the-day-skeleton"
 import DynamicSelection from "@/components/dynamic-selection"
+import DynamicSelectionSkeleton from "@/components/dynamic-selection-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import SaleModal from "@/app/sale/sale-modal"
@@ -453,12 +455,16 @@ export default function HomePage() {
           )}
 
           {/* Блок Динамическая подборка */}
-          {!loadingCars && allCars.length > 0 && (
-             <DynamicSelection cars={allCars} />
+          {loadingCars ? (
+            <DynamicSelectionSkeleton />
+          ) : allCars.length > 0 && (
+            <DynamicSelection cars={allCars} />
           )}
 
           {/* Блок Авто дня */}
-          {!loadingCars && allCars.length > 0 && (
+          {loadingCars ? (
+            <DealOfTheDaySkeleton />
+          ) : allCars.length > 0 && (
             <DealOfTheDay cars={allCars} />
           )}
 
