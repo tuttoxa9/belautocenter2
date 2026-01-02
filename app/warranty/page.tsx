@@ -1,7 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { firestoreApi } from "@/lib/firestore-api"
 import {
   Shield,
   Car,
@@ -45,6 +46,19 @@ export default function WarrantyPage() {
   const [activeTab, setActiveTab] = useState("help")
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedProgram, setSelectedProgram] = useState<{title: string, price: string}>({ title: "", price: "" })
+  const [settings, setSettings] = useState<any>(null)
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await firestoreApi.getDocument("settings", "main")
+        setSettings(data)
+      } catch (error) {
+        console.error("Failed to fetch settings:", error)
+      }
+    }
+    fetchSettings()
+  }, [])
 
   const handleSelectProgram = (title: string, price: string) => {
     setSelectedProgram({ title, price })
@@ -52,7 +66,7 @@ export default function WarrantyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-500/30 font-sans">
+    <div className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-500/30 font-sans overflow-x-hidden">
       <WarrantyDrawer
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
@@ -102,7 +116,7 @@ export default function WarrantyPage() {
               Выбрать программу
             </Button>
             <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full px-8 h-12 md:h-14 bg-black/20 backdrop-blur-md border-white/30 text-white hover:bg-white/10 text-base md:text-lg font-medium" asChild>
-              <a href="tel:+375291234567">
+              <a href={`tel:${settings?.phone?.replace(/\s/g, "") || "+375291234567"}`}>
                 <Phone className="w-5 h-5 mr-2" />
                 Связаться с нами
               </a>
@@ -166,7 +180,7 @@ export default function WarrantyPage() {
           </div>
 
           <Tabs defaultValue="help" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="flex justify-start md:justify-center mb-4 md:mb-16 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="flex justify-start md:justify-center mb-4 md:mb-16 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth">
               <TabsList className="h-auto w-auto flex-nowrap bg-zinc-100 dark:bg-zinc-900/50 p-1 rounded-full border border-zinc-200 dark:border-zinc-800">
                 <ModernTabTrigger value="help" label="Помощь" active={activeTab === "help"} />
                 <ModernTabTrigger value="pro" label="Гарантия" active={activeTab === "pro"} />
