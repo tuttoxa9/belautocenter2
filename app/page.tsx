@@ -11,7 +11,9 @@ import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
 import DealOfTheDay from "@/components/deal-of-the-day"
+import DealOfTheDaySkeleton from "@/components/deal-of-the-day-skeleton"
 import DynamicSelection from "@/components/dynamic-selection"
+import DynamicSelectionSkeleton from "@/components/dynamic-selection-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import SaleModal from "@/app/sale/sale-modal"
@@ -116,7 +118,7 @@ export default function HomePage() {
       // Если нет авто с showOnHomepage, берем последние по дате
       if (featuredCars.length === 0) {
         featuredCars = allCars
-          .filter(car => car.isAvailable !== false)
+          .filter(car => car.isAvailable !== false && car.status !== 'sold')
           .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
           .slice(0, 4)
       } else {
@@ -453,14 +455,18 @@ export default function HomePage() {
           )}
 
           {/* Блок Динамическая подборка */}
-          {!loadingCars && allCars.length > 0 && (
+          {loadingCars ? (
+             <DynamicSelectionSkeleton />
+          ) : allCars.length > 0 ? (
              <DynamicSelection cars={allCars} />
-          )}
+          ) : null}
 
           {/* Блок Авто дня */}
-          {!loadingCars && allCars.length > 0 && (
+          {loadingCars ? (
+            <DealOfTheDaySkeleton />
+          ) : allCars.length > 0 ? (
             <DealOfTheDay cars={allCars} />
-          )}
+          ) : null}
 
           <div className="text-center mt-12">
             <Button

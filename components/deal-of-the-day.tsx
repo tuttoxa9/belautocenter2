@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Clock, Gauge, Calendar, Fuel, Wallet, ChevronRight } from "lucide-react"
 import { BlurImage } from "@/components/ui/blur-image"
 import { getCachedImageUrl } from "@/lib/image-cache"
-import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
-import { convertUsdToByn } from "@/lib/utils"
+import { useCreditCalculator } from "@/hooks/use-credit-calculator"
+import DealOfTheDaySkeleton from "@/components/deal-of-the-day-skeleton"
 
 interface Car {
   id: string
@@ -18,7 +18,7 @@ interface Car {
   mileage: number
   fuelType?: string
   images: string[]
-  imageUrls?: string[] // В CarCard используется imageUrls, добавим для совместимости
+  imageUrls?: string[]
   [key: string]: any
 }
 
@@ -56,13 +56,10 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     return availableCars[index]
   }, [cars])
 
-  const usdBynRate = useUsdBynRate()
-
   // Получаем и кэшируем URL изображения
   const mainImage = useMemo(() => {
     if (!dealCar) return '/placeholder-car.jpg'
 
-    // Проверяем imageUrls (как в CarCard) и images
     const rawUrl = (dealCar.imageUrls && dealCar.imageUrls.length > 0)
       ? dealCar.imageUrls[0]
       : (dealCar.images && dealCar.images.length > 0)
@@ -72,22 +69,8 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     return getCachedImageUrl(rawUrl)
   }, [dealCar])
 
-  // Расчет кредита
-  const creditPayment = useMemo(() => {
-    if (!dealCar || !usdBynRate) return null;
-
-    // Считаем цену в BYN как число
-    const priceByn = dealCar.price * usdBynRate;
-    const months = 120;
-    const rate = 13.5; // Самая низкая ставка
-
-    // Аннуитетный платеж
-    const monthlyRate = rate / 12 / 100;
-    const annuityFactor = (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-    const payment = priceByn * annuityFactor;
-
-    return Math.round(payment);
-  }, [dealCar, usdBynRate]);
+  // Расчет кредита с использованием хука
+  const creditData = useCreditCalculator(dealCar ? dealCar.price : 0)
 
   useEffect(() => {
     setMounted(true)
@@ -112,9 +95,11 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     return () => clearInterval(timer)
   }, [])
 
-  if (!mounted || !dealCar) return null
+  if (!mounted || !dealCar) {
+    return <DealOfTheDaySkeleton />
+  }
 
-  // Форматирование цены
+  // Форматирование цены в USD
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
@@ -208,7 +193,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
             </div>
 
             {/* Credit Offer Block */}
-            {creditPayment && (
+            {!creditData.loading && creditData.monthlyPayment > 0 && (
               <div className="mb-8 p-5 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-3xl shadow-lg relative overflow-hidden group/credit">
                  <div className="absolute top-0 right-0 p-3 opacity-10">
                     <Wallet className="w-24 h-24" />
@@ -217,12 +202,12 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
                  <div className="relative z-10">
                     <div className="text-blue-100 text-sm font-medium mb-1">В кредит без взноса</div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold">от {creditPayment}</span>
+                      <span className="text-4xl font-bold">от {creditData.monthlyPayment}</span>
                       <span className="text-xl">BYN/мес</span>
                     </div>
                     <div className="mt-3 flex items-center gap-2 text-xs text-blue-100/80">
-                       <span className="bg-white/20 px-2 py-0.5 rounded">120 мес</span>
-                       <span className="bg-white/20 px-2 py-0.5 rounded">13.5%</span>
+                       <span className="bg-white/20 px-2 py-0.5 rounded">{creditData.termMonths} мес</span>
+                       <span className="bg-white/20 px-2 py-0.5 rounded">{creditData.rate}%</span>
                        <span className="bg-white/20 px-2 py-0.5 rounded">0% аванс</span>
                     </div>
                  </div>
