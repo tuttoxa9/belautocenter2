@@ -11,6 +11,7 @@ import Stories from "@/components/stories"
 import CarCard from "@/components/car-card"
 import CarCardSkeleton from "@/components/car-card-skeleton"
 import DealOfTheDay from "@/components/deal-of-the-day"
+import DynamicSelection from "@/components/dynamic-selection"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import SaleModal from "@/app/sale/sale-modal"
@@ -77,6 +78,7 @@ export default function HomePage() {
   const video2MobileRef = useRef<HTMLVideoElement>(null)
 
   const [cars, setCars] = useState<Array<any>>([])
+  const [allCars, setAllCars] = useState<Array<any>>([])
   const [loadingCars, setLoadingCars] = useState(true)
   const [settings, setSettings] = useState<HomepageSettings>({
     heroTitle: "Найди свой автомобиль надежным способом",
@@ -127,6 +129,7 @@ export default function HomePage() {
 
       if (isMounted) {
         setCars(featuredCars)
+        setAllCars(allCars)
         setLoadingCars(false)
       }
     } catch (error) {
@@ -449,9 +452,14 @@ export default function HomePage() {
             </div>
           )}
 
+          {/* Блок Динамическая подборка */}
+          {!loadingCars && allCars.length > 0 && (
+             <DynamicSelection cars={allCars} />
+          )}
+
           {/* Блок Авто дня */}
-          {!loadingCars && cars.length > 0 && (
-            <DealOfTheDay cars={cars} />
+          {!loadingCars && allCars.length > 0 && (
+            <DealOfTheDay cars={allCars} />
           )}
 
           <div className="text-center mt-12">
