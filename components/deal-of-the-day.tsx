@@ -69,7 +69,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
   const creditPayment = useMemo(() => {
     if (!dealCar || !usdBynRate) return null;
 
-    const priceByn = convertUsdToByn(dealCar.price, usdBynRate);
+    const priceByn = (Number(dealCar.price) || 0) * usdBynRate;
     const months = 120;
     const rate = 13.5; // Самая низкая ставка
 
@@ -78,7 +78,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     const annuityFactor = (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
     const payment = priceByn * annuityFactor;
 
-    return Math.round(payment);
+    return Math.round(payment).toLocaleString('ru-RU');
   }, [dealCar, usdBynRate]);
 
   useEffect(() => {
