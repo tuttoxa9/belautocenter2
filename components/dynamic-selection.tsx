@@ -19,6 +19,7 @@ interface Car {
   imageUrls: string[]
   isAvailable: boolean
   fromEurope?: boolean
+  status?: string // Added status field
   createdAt?: { seconds: number } | any
   [key: string]: any
 }
@@ -30,7 +31,9 @@ interface DynamicSelectionProps {
 export default function DynamicSelection({ cars }: DynamicSelectionProps) {
   // Фильтруем только доступные автомобили
   const availableCars = useMemo(() => {
-    return cars.filter(car => car.isAvailable !== false)
+    return cars.filter(car =>
+      car.isAvailable !== false && car.status !== 'sold'
+    )
   }, [cars])
 
   // Функция для получения "случайных" авто, которые меняются раз в сутки
