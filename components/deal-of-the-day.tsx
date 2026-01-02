@@ -95,8 +95,13 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     return () => clearInterval(timer)
   }, [])
 
-  if (!mounted || !dealCar) {
+  if (!mounted) {
     return <DealOfTheDaySkeleton />
+  }
+
+  // Если нет машины дня, скрываем компонент полностью
+  if (!dealCar) {
+    return null
   }
 
   // Форматирование цены в USD
