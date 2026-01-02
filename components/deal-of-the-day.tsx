@@ -34,6 +34,13 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
   const dealCar = useMemo(() => {
     if (!cars || cars.length === 0) return null
 
+    // Фильтруем только доступные автомобили
+    const availableCars = cars.filter(car =>
+      car.status !== 'sold' && car.isAvailable !== false
+    )
+
+    if (availableCars.length === 0) return null
+
     // Используем дату как seed
     const today = new Date()
     const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()
@@ -45,8 +52,8 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
     }
 
     // Выбираем индекс
-    const index = Math.floor(pseudoRandom(seed) * cars.length)
-    return cars[index]
+    const index = Math.floor(pseudoRandom(seed) * availableCars.length)
+    return availableCars[index]
   }, [cars])
 
   const usdBynRate = useUsdBynRate()
@@ -69,7 +76,8 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
   const creditPayment = useMemo(() => {
     if (!dealCar || !usdBynRate) return null;
 
-    const priceByn = convertUsdToByn(dealCar.price, usdBynRate);
+    // Считаем цену в BYN как число
+    const priceByn = dealCar.price * usdBynRate;
     const months = 120;
     const rate = 13.5; // Самая низкая ставка
 

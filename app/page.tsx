@@ -108,7 +108,7 @@ export default function HomePage() {
         setLoadingCars(true)
       }
 
-      const allCars = await firestoreApi.getCollection("cars")
+      let allCars = await firestoreApi.getCollection("cars")
 
       // Сначала фильтруем авто, отмеченные для показа на главной
       let featuredCars = allCars.filter(car => car.showOnHomepage === true)
