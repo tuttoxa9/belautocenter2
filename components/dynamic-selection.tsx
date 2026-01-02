@@ -13,7 +13,9 @@ export interface Car {
   model: string
   year: number
   price: number
+  currency: string
   mileage: number
+  engineVolume: number
   fuelType: string
   transmission: string
   bodyType?: string
@@ -142,9 +144,10 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
                 {/* Desktop View: Grid */}
                 <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                   {cat.filter(availableCars).length > 0 ? (
-                    cat.filter(availableCars).map((car) => (
-                      <CarCard key={`${cat.id}-${car.id}`} car={car} />
-                    ))
+                    cat.filter(availableCars).map((car) => {
+                       const safeCar = { ...car, currency: car.currency || 'USD', engineVolume: Number(car.engineVolume) || 0 };
+                       return <CarCard key={`${cat.id}-${car.id}`} car={safeCar} />
+                    })
                   ) : (
                     <div className="col-span-full py-20 text-center bg-gray-50 dark:bg-zinc-900/30 rounded-[2rem] border border-gray-100 dark:border-zinc-800/50">
                       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white dark:bg-zinc-800 shadow-sm mb-6">
