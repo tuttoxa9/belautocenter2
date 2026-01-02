@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import CarCard from "@/components/car-card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowRight, CarFront, Zap, CircleDollarSign, ShieldCheck } from "lucide-react"
+import { ArrowRight, Sparkles, Zap, CircleDollarSign, ShieldCheck } from "lucide-react"
 
 interface Car {
   id: string
@@ -33,37 +33,62 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
     return cars.filter(car => car.isAvailable !== false)
   }, [cars])
 
+  // Функция для получения "случайных" авто, которые меняются раз в сутки
+  const getDailyRandomCars = (filteredCars: Car[], count: number = 4) => {
+    if (filteredCars.length <= count) return filteredCars;
+
+    // Используем дату как seed
+    const today = new Date();
+    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+    // Перемешиваем массив детерминированно
+    const shuffled = [...filteredCars].sort((a, b) => {
+      // Простой хеш от ID + seed
+      const hashA = (a.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + seed) % 100;
+      const hashB = (b.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + seed) % 100;
+      return hashA - hashB;
+    });
+
+    return shuffled.slice(0, count);
+  };
+
   // Категории (tabs) - обновленные критерии
   const categories = [
     {
       id: "suv",
       label: "Внедорожники",
       icon: ShieldCheck,
-      filter: (cars: Car[]) => cars.filter(car =>
+      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
         (car.bodyType?.toLowerCase().includes("внедорожник") || car.bodyType?.toLowerCase().includes("кроссовер") || car.bodyType?.toLowerCase().includes("suv"))
-      ).slice(0, 4)
+      ))
     },
     {
-      id: "sedan",
-      label: "Седаны",
-      icon: CarFront,
-      filter: (cars: Car[]) => cars.filter(car =>
-        car.bodyType?.toLowerCase().includes("седан")
-      ).slice(0, 4)
+      id: "fresh",
+      label: "Свежие",
+      icon: Sparkles,
+      filter: (cars: Car[]) => {
+        // Свежие сортируем по году и дате добавления, тут не нужен рандом, нужны САМЫЕ новые
+        return [...cars].sort((a, b) => {
+          if (b.year !== a.year) return b.year - a.year; // Сначала по году
+          const timeA = a.createdAt?.seconds || 0;
+          const timeB = b.createdAt?.seconds || 0;
+          return timeB - timeA; // Потом по дате добавления
+        }).slice(0, 4);
+      }
     },
     {
       id: "electric",
       label: "Электро и Гибриды",
       icon: Zap,
-      filter: (cars: Car[]) => cars.filter(car =>
+      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
         ["электро", "гибрид"].includes(car.fuelType?.toLowerCase())
-      ).slice(0, 4)
+      ))
     },
     {
       id: "budget",
-      label: "До 20 000 $",
+      label: "До 6 000 $",
       icon: CircleDollarSign,
-      filter: (cars: Car[]) => cars.filter(car => car.price <= 20000).slice(0, 4)
+      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car => car.price <= 6000))
     }
   ]
 
