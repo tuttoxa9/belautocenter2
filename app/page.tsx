@@ -101,26 +101,6 @@ export default function HomePage() {
   }, [isMounted])
 
   const loadFeaturedCars = useCallback(async () => {
-    // MOCK DATA START - FOR VISUAL VERIFICATION ONLY
-    if (isMounted) {
-      setCars([{
-        id: "mock-1",
-        make: "BMW",
-        model: "M5 F90",
-        year: 2021,
-        price: 95000,
-        mileage: 35000,
-        fuelType: "Бензин",
-        images: ["/hero-bg.jpg"],
-        imageUrls: ["/hero-bg.jpg"],
-        createdAt: { seconds: Date.now() / 1000 },
-        showOnHomepage: true
-      }]);
-      setLoadingCars(false);
-      return;
-    }
-    // MOCK DATA END
-
     try {
       if (isMounted) {
         setLoadingCars(true)
