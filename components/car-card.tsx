@@ -10,9 +10,10 @@ import { getCachedImageUrl } from "@/lib/image-cache"
 import { useIntersectionObserverV2 } from "@/hooks/use-intersection-observer"
 import { BlurImage } from "@/components/ui/blur-image"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
-import { convertUsdToByn } from "@/lib/utils"
+import { convertUsdToByn, cn } from "@/lib/utils"
 
 interface CarCardProps {
+  disableImageBlur?: boolean
   car: {
     id: string
     make: string
@@ -30,7 +31,7 @@ interface CarCardProps {
   }
 }
 
-export default function CarCard({ car }: CarCardProps) {
+export default function CarCard({ car, disableImageBlur }: CarCardProps) {
   const usdBynRate = useUsdBynRate()
   const [dataReady, setDataReady] = useState(false)
 
@@ -82,7 +83,10 @@ export default function CarCard({ car }: CarCardProps) {
                 fill
                 quality={75}
                 containerClassName="h-full w-full"
-                className="object-cover duration-500"
+                className={cn(
+                  "object-cover duration-500",
+                  disableImageBlur && "blur-0 grayscale-0 scale-100"
+                )}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             ) : (
