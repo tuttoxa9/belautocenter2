@@ -151,7 +151,7 @@ function CardItem({ car, index, total, onSwipe }: { car: Car, index: number, tot
            {/* Prevent clicks on links when dragging is handled by checking movement,
                but here we rely on pointer-events-auto.
                We simply render the card. */}
-           <CarCard car={safeCar} />
+           <CarCard car={safeCar} disableImageBlur={true} />
 
            {/* Overlay for inactive cards to darken them further */}
            {!isTop && (
