@@ -207,7 +207,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
                  <div className="relative z-10">
                     <div className="text-blue-100 text-sm font-medium mb-1">В кредит без взноса</div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold">от {creditData.monthlyPayment}</span>
+                      <span className="text-4xl font-bold">{creditData.monthlyPayment}</span>
                       <span className="text-xl">BYN/мес</span>
                     </div>
                     <div className="mt-3 flex items-center gap-2 text-xs text-blue-100/80">
