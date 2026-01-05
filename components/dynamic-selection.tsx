@@ -40,7 +40,7 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
   }, [cars])
 
   // Функция для получения "случайных" авто, которые меняются раз в сутки
-  const getDailyRandomCars = (filteredCars: Car[], count: number = 4) => {
+  const getDailyRandomCars = (filteredCars: Car[], count: number = 5) => {
     if (filteredCars.length <= count) return filteredCars;
 
     // Используем дату как seed
@@ -61,12 +61,10 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
   // Категории (tabs) - обновленные критерии
   const categories = [
     {
-      id: "suv",
-      label: "Внедорожники",
-      icon: ShieldCheck,
-      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
-        (car.bodyType?.toLowerCase().includes("внедорожник") || car.bodyType?.toLowerCase().includes("кроссовер") || car.bodyType?.toLowerCase().includes("suv"))
-      ))
+      id: "budget",
+      label: "До 6 000 $",
+      icon: CircleDollarSign,
+      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car => car.price <= 6000))
     },
     {
       id: "fresh",
@@ -79,8 +77,16 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
           const timeA = a.createdAt?.seconds || 0;
           const timeB = b.createdAt?.seconds || 0;
           return timeB - timeA; // Потом по дате добавления
-        }).slice(0, 4);
+        }).slice(0, 5);
       }
+    },
+    {
+      id: "suv",
+      label: "Внедорожники",
+      icon: ShieldCheck,
+      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
+        (car.bodyType?.toLowerCase().includes("внедорожник") || car.bodyType?.toLowerCase().includes("кроссовер") || car.bodyType?.toLowerCase().includes("suv"))
+      ))
     },
     {
       id: "electric",
@@ -89,16 +95,10 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
       filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
         ["электро", "гибрид"].includes(car.fuelType?.toLowerCase())
       ))
-    },
-    {
-      id: "budget",
-      label: "До 6 000 $",
-      icon: CircleDollarSign,
-      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car => car.price <= 6000))
     }
   ]
 
-  const [activeTab, setActiveTab] = useState("suv")
+  const [activeTab, setActiveTab] = useState("budget")
 
   return (
     <section className="py-16 bg-white dark:bg-black relative overflow-hidden">
@@ -107,18 +107,40 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
       <div className="container px-4 mx-auto relative z-10">
-        <div className="flex flex-col items-center justify-center mb-10 text-center">
+        <div className="flex flex-col items-center justify-center mb-8 md:mb-10 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
             Подобрали для вас
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 max-w-xl">
-            Мы собрали лучшие предложения в самых популярных категориях для вашего удобства
+          <p className="text-gray-500 dark:text-gray-400 max-w-xl text-sm md:text-base">
+            Мы собрали лучшие предложения в самых популярных категориях
           </p>
         </div>
 
         {/* Improved Tabs UI */}
-        <div className="flex justify-center mb-12">
-          <div className="inline-flex flex-wrap justify-center gap-2 p-1.5 bg-gray-100 dark:bg-zinc-900 rounded-[1.5rem] border border-gray-200 dark:border-zinc-800">
+        <div className="flex justify-center mb-8 md:mb-12">
+          {/* Mobile: Scrollable container */}
+          <div className="md:hidden w-full overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 flex justify-start snap-x">
+             <div className="flex flex-nowrap gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveTab(cat.id)}
+                    className={`
+                      snap-start shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border
+                      ${activeTab === cat.id
+                        ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-transparent shadow-md"
+                        : "bg-gray-100 dark:bg-zinc-900 text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-zinc-800"}
+                    `}
+                  >
+                    <cat.icon className={`w-4 h-4 ${activeTab === cat.id ? "text-white dark:text-gray-900" : "opacity-70"}`} />
+                    {cat.label}
+                  </button>
+                ))}
+             </div>
+          </div>
+
+          {/* Desktop: Centered wrapped container */}
+          <div className="hidden md:inline-flex flex-wrap justify-center gap-2 p-1.5 bg-gray-100 dark:bg-zinc-900 rounded-[1.5rem] border border-gray-200 dark:border-zinc-800">
             {categories.map((cat) => (
               <button
                 key={cat.id}
