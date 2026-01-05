@@ -166,7 +166,7 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
                 {/* Desktop View: Grid */}
                 <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                   {cat.filter(availableCars).length > 0 ? (
-                    cat.filter(availableCars).map((car) => {
+                    cat.filter(availableCars).slice(0, 4).map((car) => {
                        const safeCar = { ...car, currency: car.currency || 'USD', engineVolume: Number(car.engineVolume) || 0 };
                        return <CarCard key={`${cat.id}-${car.id}`} car={safeCar} />
                     })
