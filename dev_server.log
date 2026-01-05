@@ -1,0 +1,5 @@
+
+> autobel@1.0.0 dev
+> next dev -H 0.0.0.0
+
+sh: 1: next: not found
