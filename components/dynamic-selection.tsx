@@ -61,12 +61,10 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
   // Категории (tabs) - обновленные критерии
   const categories = [
     {
-      id: "suv",
-      label: "Внедорожники",
-      icon: ShieldCheck,
-      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
-        (car.bodyType?.toLowerCase().includes("внедорожник") || car.bodyType?.toLowerCase().includes("кроссовер") || car.bodyType?.toLowerCase().includes("suv"))
-      ))
+      id: "budget",
+      label: "До 6 000 $",
+      icon: CircleDollarSign,
+      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car => car.price <= 6000))
     },
     {
       id: "fresh",
@@ -83,22 +81,24 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
       }
     },
     {
+      id: "suv",
+      label: "Внедорожники",
+      icon: ShieldCheck,
+      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
+        (car.bodyType?.toLowerCase().includes("внедорожник") || car.bodyType?.toLowerCase().includes("кроссовер") || car.bodyType?.toLowerCase().includes("suv"))
+      ))
+    },
+    {
       id: "electric",
       label: "Электро и Гибриды",
       icon: Zap,
       filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car =>
         ["электро", "гибрид"].includes(car.fuelType?.toLowerCase())
       ))
-    },
-    {
-      id: "budget",
-      label: "До 6 000 $",
-      icon: CircleDollarSign,
-      filter: (cars: Car[]) => getDailyRandomCars(cars.filter(car => car.price <= 6000))
     }
   ]
 
-  const [activeTab, setActiveTab] = useState("suv")
+  const [activeTab, setActiveTab] = useState("budget")
 
   return (
     <section className="py-16 bg-white dark:bg-black relative overflow-hidden">
