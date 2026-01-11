@@ -240,6 +240,7 @@ export default function Footer() {
                 settings?.companyName || "Компания"
               )}. Все права защищены.
             </p>
+            <p className="text-white font-medium text-sm">Ася я тебя люблю ❤️</p>
             <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
               Политика конфиденциальности
             </Link>
