@@ -158,12 +158,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </noscript>
 
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           <SnowProvider>
             <UsdBynRateProvider>
               <NotificationProvider>
                 <Header />
-                <main className="flex-1 flex flex-col bg-white dark:bg-black">
+                <main className="flex-1 flex flex-col">
                   {children}
                 </main>
                 <Footer />
