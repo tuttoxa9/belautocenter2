@@ -849,14 +849,18 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                         minimumFractionDigits: 0,
                       }).format(car.price) : 'Цена по запросу'}
                     </div>
-                    {usdBynRate && car?.price && (
-                      <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600 dark:text-gray-400">
-                        ≈ {new Intl.NumberFormat("ru-BY", {
-                          style: "currency",
-                          currency: "BYN",
-                          minimumFractionDigits: 0,
-                        }).format(car.price * usdBynRate)}
-                      </div>
+                    {car?.price && (
+                      usdBynRate ? (
+                        <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600 dark:text-gray-400">
+                          ≈ {new Intl.NumberFormat("ru-BY", {
+                            style: "currency",
+                            currency: "BYN",
+                            minimumFractionDigits: 0,
+                          }).format(car.price * usdBynRate)}
+                        </div>
+                      ) : (
+                        <div className="h-5 w-32 bg-slate-200 dark:bg-gray-700 rounded animate-pulse mt-1 ml-auto"></div>
+                      )
                     )}
                     <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-500 mt-1">
                       от {car?.price ? new Intl.NumberFormat("en-US", {
@@ -1206,8 +1210,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-1">Кредит от</div>
-                        {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-16 mx-auto animate-pulse"></div>
+                        {loading || (!usdBynRate && car?.price) ? (
+                          <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-24 mx-auto animate-pulse"></div>
                         ) : (
                           <div className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
                             {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
@@ -1216,8 +1220,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                       </div>
                       <div className="text-center">
                         <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-1">Лизинг от</div>
-                        {loading ? (
-                          <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-16 mx-auto animate-pulse"></div>
+                        {loading || (!usdBynRate && car?.price) ? (
+                          <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-24 mx-auto animate-pulse"></div>
                         ) : (
                           <div className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
                             {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.7 / 36)) : '0'}/мес
