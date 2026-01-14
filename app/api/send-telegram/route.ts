@@ -66,7 +66,13 @@ export async function POST(request: NextRequest) {
         if (carId) {
           message += `\n🔗 <b>Ссылка:</b> https://belautocenter.by/catalog/${carId}`
         }
-        message += `\n💰 <b>Стоимость авто:</b> ${carPrice}\n💵 <b>Первый взнос:</b> ${downPayment}\n📅 <b>Срок кредита:</b> ${loanTerm} мес.\n🏦 <b>Банк:</b> ${bank}`
+
+        // Handle potentially missing fields to prevent "undefined" in message
+        const displayCarPrice = carPrice || 'Не указана'
+        const displayBank = bank || body.selectedBank || 'Не выбран'
+        const displayDownPayment = downPayment || '0'
+
+        message += `\n💰 <b>Стоимость авто:</b> ${displayCarPrice}\n💵 <b>Первый взнос:</b> ${displayDownPayment}\n📅 <b>Срок кредита:</b> ${loanTerm} мес.\n🏦 <b>Банк:</b> ${displayBank}`
         if (userMessage) {
           message += `\n📝 <b>Сообщение:</b> ${userMessage}`
         }

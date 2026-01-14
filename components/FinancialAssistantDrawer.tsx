@@ -175,7 +175,17 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
         creditAmount: creditAmountValue,
       };
       // Intentionally not awaiting these for faster UI response
-      fetch('/api/send-telegram', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, type: `${financeType}_request`}) });
+      fetch('/api/send-telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          type: `${financeType}_request`,
+          carPrice: formatPrice(carPriceInCurrency),
+          bank: selectedBank?.name ?? "Не выбран",
+          downPayment: formatPrice(financeType === 'credit' ? downPayment[0] : leasingAdvance[0])
+        })
+      });
       import('firebase/firestore').then(({collection, addDoc, db}) => addDoc(collection(db, "leads"), payload));
 
       onOpenChange(false);
