@@ -296,7 +296,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black homepage -mt-14">
+    <div className="min-h-screen bg-background dark:bg-black homepage -mt-14">
       {/* Главный баннер */}
       <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14 bg-black dark:bg-black">
 
@@ -414,9 +414,9 @@ export default function HomePage() {
         </div>
 
         {/* Закругленный переход с Stories */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-[30px] z-20">
+        <div className="absolute bottom-0 left-0 right-0 bg-background dark:bg-black rounded-t-[30px] z-20">
           {/* Блок "Свежие поступления и новости" интегрированный в закругление */}
-          <div className="pt-3 pb-10 bg-gradient-to-b from-white to-gray-200 dark:from-gray-900 dark:to-black relative rounded-t-[30px]">
+          <div className="pt-3 pb-10 bg-gradient-to-b from-background to-gray-200 dark:from-gray-900 dark:to-black relative rounded-t-[30px]">
             <Stories />
           </div>
         </div>
@@ -425,7 +425,7 @@ export default function HomePage() {
       {/* Блок Stories больше не нужен отдельно */}
 
       {/* Блок "Специальное предложение" */}
-      <section className="pt-8 pb-20 bg-white dark:bg-black relative rounded-t-[30px] -mt-6">
+      <section className="pt-8 pb-20 bg-background dark:bg-black relative rounded-t-[30px] -mt-6">
         <div className="container px-4">
 
           {loadingCars ? (
