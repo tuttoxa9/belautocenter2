@@ -90,7 +90,9 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             ) : (
-              <div className="w-full h-full bg-slate-200 dark:bg-zinc-800 animate-pulse" />
+              <div className="w-full h-full bg-slate-200 dark:bg-zinc-800 flex items-center justify-center">
+                <div className="w-12 h-12 bg-slate-300 dark:bg-zinc-700 rounded-full animate-pulse" />
+              </div>
             )}
 
 
