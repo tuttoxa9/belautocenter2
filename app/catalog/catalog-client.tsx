@@ -403,7 +403,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-black dark:to-gray-950">
+    <div className="min-h-screen bg-background dark:bg-black">
       <div className="container px-4 py-8">
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
