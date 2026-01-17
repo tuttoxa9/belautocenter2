@@ -14,7 +14,7 @@ export default function LeasingSkeleton() {
 
         {/* Hero Section skeleton */}
         <div className="bg-white/70 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-lg shadow-gray-900/5 border-0 overflow-hidden mb-6 md:mb-8">
-          <div className="relative bg-gradient-to-r from-gray-100/80 to-gray-200/60 px-4 py-6 md:px-8 md:py-12 animate-pulse">
+          <div className="relative bg-gradient-to-r from-gray-100/80 to-gray-200/60 px-4 py-6 md:px-8 md:py-12">
             <div className="relative z-20">
               <div className="h-6 md:h-10 bg-gray-200/60 rounded w-64 md:w-96 mb-2 md:mb-4 animate-pulse"></div>
               <div className="h-4 md:h-6 bg-gray-200/60 rounded w-48 md:w-80 mb-2 md:mb-4 animate-pulse"></div>
@@ -70,7 +70,7 @@ export default function LeasingSkeleton() {
               </div>
 
               {/* Results Card skeleton */}
-              <div className="bg-gray-200/60 backdrop-blur-sm rounded-2xl p-3 md:p-6 animate-pulse shadow-sm">
+              <div className="bg-gray-200/60 backdrop-blur-sm rounded-2xl p-3 md:p-6 shadow-sm">
                 <div className="h-4 md:h-5 bg-gray-300/60 rounded w-32 mb-2 md:mb-4 animate-pulse"></div>
                 <div className="grid grid-cols-2 gap-2 md:gap-4">
                   {Array.from({ length: 4 }).map((_, index) => (
