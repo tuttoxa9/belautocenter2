@@ -52,9 +52,7 @@ export default function CarDetailsSkeleton() {
           <div className="p-4 md:p-8 space-y-6">
 
             {/* Галерея скелетон */}
-            <div className="bg-gradient-to-br from-gray-100/60 to-gray-200/40 rounded-3xl h-64 md:h-80 lg:h-96 animate-pulse flex items-center justify-center shadow-inner">
-              <div className="w-16 h-16 bg-gray-200/60 rounded-full animate-pulse"></div>
-            </div>
+            <div className="bg-gradient-to-br from-gray-100/60 to-gray-200/40 rounded-3xl h-64 md:h-80 lg:h-96 animate-pulse shadow-inner" />
 
             {/* Характеристики скелетон */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
