@@ -155,16 +155,18 @@ export default function Stories() {
 
   if (loading) {
     return (
-      <div className="container px-4">
-        <div className="animate-pulse">
-          <div className="h-5 bg-gray-300 dark:bg-gray-700 rounded w-48 mb-2"></div>
-          <div className="flex space-x-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex-shrink-0">
-                <div className="w-16 h-16 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-                <div className="text-center mt-2 max-w-16">
-                  <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-12 mb-1"></div>
-                  <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-10"></div>
+      <div className="container px-4 h-[142px]">
+        <div>
+          <div className="h-[26px] bg-gray-200 dark:bg-zinc-800 rounded w-64 mb-3 animate-pulse"></div>
+          <div className="flex space-x-3 overflow-hidden">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="flex-shrink-0 flex flex-col items-center">
+                <div className="w-[68px] h-[68px] rounded-full p-[2px] border-2 border-transparent">
+                  <div className="w-full h-full bg-gray-200 dark:bg-zinc-800 rounded-full animate-pulse"></div>
+                </div>
+                <div className="flex flex-col items-center mt-2 space-y-1">
+                  <div className="h-3 bg-gray-200 dark:bg-zinc-800 rounded w-14 animate-pulse"></div>
+                  <div className="h-2 bg-gray-200 dark:bg-zinc-800 rounded w-10 animate-pulse"></div>
                 </div>
               </div>
             ))}
@@ -179,13 +181,13 @@ export default function Stories() {
   return (
     <>
       {/* Лента историй */}
-      <div className="container px-4">
-        <div className="mb-2">
-          <h2 className="text-lg md:text-xl font-display font-bold text-gray-900 dark:text-white tracking-tight">{settings.title}</h2>
+      <div className="container px-4 h-[142px]">
+        <div className="mb-3">
+          <h2 className="text-lg md:text-xl font-display font-bold text-gray-900 dark:text-white tracking-tight leading-[26px]">{settings.title}</h2>
         </div>
         <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
           {stories.map((story, index) => (
-            <button key={story.id} onClick={() => handleStoryClick(index)} className="flex-shrink-0 relative group">
+            <button key={story.id} onClick={() => handleStoryClick(index)} className="flex-shrink-0 relative group flex flex-col items-center">
               <div
                 className={`w-16 h-16 rounded-full p-1 transition-all duration-300 border-2 ${
                   viewedStories.has(story.id) ? "border-gray-300 dark:border-gray-700" : "border-gradient-to-r from-purple-500 to-pink-500"
