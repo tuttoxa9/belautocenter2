@@ -161,12 +161,10 @@ export default function Stories() {
           <div className="flex space-x-3 overflow-hidden">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="flex-shrink-0 flex flex-col items-center">
-                <div className="w-[68px] h-[68px] rounded-full p-[2px] border-2 border-transparent">
-                  <div className="w-full h-full bg-gray-200 dark:bg-zinc-800 rounded-full animate-pulse"></div>
-                </div>
-                <div className="flex flex-col items-center mt-2 space-y-1">
-                  <div className="h-3 bg-gray-200 dark:bg-zinc-800 rounded w-14 animate-pulse"></div>
-                  <div className="h-2 bg-gray-200 dark:bg-zinc-800 rounded w-10 animate-pulse"></div>
+                <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-zinc-800 animate-pulse"></div>
+                <div className="flex flex-col items-center mt-2 w-16 space-y-1">
+                  <div className="h-[15px] bg-gray-200 dark:bg-zinc-800 rounded w-full animate-pulse"></div>
+                  <div className="h-[15px] bg-gray-200 dark:bg-zinc-800 rounded w-2/3 animate-pulse"></div>
                 </div>
               </div>
             ))}
