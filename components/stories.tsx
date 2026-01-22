@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ChevronLeft, ChevronRight, Play } from "lucide-react"
 import FadeInImage from "@/components/fade-in-image"
 import { collection, query, orderBy, getDocs, doc, getDoc } from "firebase/firestore"
@@ -157,13 +158,13 @@ export default function Stories() {
     return (
       <div className="container px-4 h-[142px]">
         <div>
-          <div className="h-[26px] bg-gray-200 dark:bg-zinc-800 rounded w-64 mb-3 animate-pulse"></div>
+          <Skeleton className="h-[26px] w-64 mb-3 rounded" />
           <div className="flex space-x-3 overflow-hidden">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex-shrink-0 flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-zinc-800 animate-pulse"></div>
+                <Skeleton className="w-16 h-16 rounded-full" />
                 <div className="flex flex-col items-center mt-2 w-16 space-y-1">
-                  <div className="h-[15px] bg-gray-200 dark:bg-zinc-800 rounded w-full animate-pulse"></div>
+                  <Skeleton className="h-[15px] w-full rounded" />
                 </div>
               </div>
             ))}
