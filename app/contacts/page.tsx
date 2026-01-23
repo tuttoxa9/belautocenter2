@@ -26,6 +26,7 @@ import { Badge } from '@/components/ui/badge'
 import YandexMap from '@/components/yandex-map'
 import { useButtonState } from '@/hooks/use-button-state'
 import { useNotification } from '@/components/providers/notification-provider'
+import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 interface ContactsData {
   title?: string
@@ -59,14 +60,6 @@ interface ContactsData {
       url?: string
     }
   }
-}
-
-const formatPhoneNumber = (value: string) => {
-  return value.replace(/[^\d+]/g, '')
-}
-
-const isPhoneValid = (phone: string) => {
-  return phone.length >= 13 && phone.startsWith('+375')
 }
 
 // Компонент скелетона для динамических данных с фиксированными размерами
@@ -141,6 +134,10 @@ export default function ContactsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!isPhoneValid(contactForm.phone)) {
+      return
+    }
 
     await submitButtonState.execute(async () => {
       // Отправка через API

@@ -22,6 +22,7 @@ import { firestoreApi } from "@/lib/firestore-api"
 import CreditConditions from "@/components/credit-conditions"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import CreditCarsCarousel from "@/components/credit-cars-carousel"
+import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 interface CreditPageSettings {
   title: string
@@ -229,23 +230,6 @@ export default function CreditPage() {
         setManualInputs({ ...manualInputs, selectedBank: bankValue, interestRate: selectedBank.minRate.toString() })
       }
     }
-  }
-
-  const formatPhoneNumber = (value: string) => {
-    let numbers = value.replace(/[^\d+]/g, "")
-
-    if (!numbers.startsWith("+375")) {
-      numbers = "+375"
-    }
-
-    const prefix = "+375"
-    const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9)
-
-    return prefix + afterPrefix
-  }
-
-  const isPhoneValid = (phone: string) => {
-    return phone.length === 13 && phone.startsWith("+375")
   }
 
   const isFormValid = () => {

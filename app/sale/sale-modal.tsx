@@ -9,6 +9,7 @@ import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, Rotat
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { isPhoneValid } from "@/lib/validation"
 
 interface SaleModalProps {
   isOpen: boolean
@@ -109,6 +110,10 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
   }
 
   const handleSubmit = async () => {
+    if (!isPhoneValid(formData.phone)) {
+      return
+    }
+
     try {
       submitButtonState.setLoading(true)
 
@@ -144,7 +149,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
   }
 
   const canProceedStep1 = formData.carMake.trim() && formData.carModel.trim() && formData.estimatedPrice.trim()
-  const canSubmit = formData.phone.length >= 13 // +375 + 9 цифр
+  const canSubmit = isPhoneValid(formData.phone)
 
   if (!isOpen) return null
 
