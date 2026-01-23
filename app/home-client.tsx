@@ -15,8 +15,10 @@ import DynamicSelectionSkeleton from "@/components/dynamic-selection-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import SaleModal from "@/app/sale/sale-modal"
+import { SellCarSheet } from "@/components/sell-car-sheet"
 import { CheckCircle, Check } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
+import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 interface HomepageSettings {
   heroTitle: string
@@ -48,6 +50,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
   const contactButtonState = useButtonState()
   const { showSuccess } = useNotification()
   const [showSaleModal, setShowSaleModal] = useState(false)
+  const [isSellSheetOpen, setIsSellSheetOpen] = useState(false)
 
   const animatedTexts = [
     "Поможем с приобретением и продажей автомобиля",
@@ -170,6 +173,10 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (!isPhoneValid(contactForm.phone)) {
+      return
+    }
+
     await contactButtonState.execute(async () => {
       // Сохраняем в Firebase через API
       try {
@@ -199,26 +206,6 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
         "Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время."
       )
     })
-  }
-
-  const formatPhoneNumber = (value: string) => {
-    // Удаляем все нецифровые символы кроме +
-    let numbers = value.replace(/[^\d+]/g, "")
-
-    // Если нет + в начале, добавляем +375
-    if (!numbers.startsWith("+375")) {
-      numbers = "+375"
-    }
-
-    // Берем только +375 и следующие 9 цифр максимум
-    const prefix = "+375"
-    const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9)
-
-    return prefix + afterPrefix
-  }
-
-  const isPhoneValid = (phone: string) => {
-    return phone.length === 13 && phone.startsWith("+375")
   }
 
   return (
@@ -331,10 +318,10 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
             <Button
               size="lg"
               variant="outline"
-              className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              asChild
+              className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer"
+              onClick={() => setIsSellSheetOpen(true)}
             >
-              <Link href="/sale" prefetch={true}>Продать автомобиль</Link>
+              Продать автомобиль
             </Button>
           </div>
         </div>
@@ -459,6 +446,11 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
       <SaleModal
         isOpen={showSaleModal}
         onClose={() => setShowSaleModal(false)}
+      />
+
+      <SellCarSheet
+        open={isSellSheetOpen}
+        onOpenChange={setIsSellSheetOpen}
       />
 
     </div>

@@ -23,6 +23,7 @@ import LeasingConditions from "@/components/leasing-conditions"
 import LeasingCarsCarousel from "@/components/leasing-cars-carousel"
 
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 interface LeasingPageSettings {
   title: string
@@ -218,23 +219,6 @@ export default function LeasingPage() {
 
   const handleCompanySelection = (companyValue: string) => {
     setManualInputs({ ...manualInputs, selectedCompany: companyValue })
-  }
-
-  const formatPhoneNumber = (value: string) => {
-    let numbers = value.replace(/[^\d+]/g, "")
-
-    if (!numbers.startsWith("+375")) {
-      numbers = "+375"
-    }
-
-    const prefix = "+375"
-    const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9)
-
-    return prefix + afterPrefix
-  }
-
-  const isPhoneValid = (phone: string) => {
-    return phone.length === 13 && phone.startsWith("+375")
   }
 
   const isFormValid = () => {

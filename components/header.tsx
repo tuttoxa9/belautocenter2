@@ -18,6 +18,7 @@ import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun, Snow
 import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
 import { useSnow } from "@/components/providers/snow-provider"
+import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 const navigation = [
   { name: "Главная", href: "/" },
@@ -81,6 +82,11 @@ export default function Header() {
 
   const handleCallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!isPhoneValid(formData.phone)) {
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -114,26 +120,6 @@ export default function Header() {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const formatPhoneNumber = (value: string) => {
-    // Удаляем все нецифровые символы кроме +
-    let numbers = value.replace(/[^\d+]/g, "")
-
-    // Если нет + в начале, добавляем +375
-    if (!numbers.startsWith("+375")) {
-      numbers = "+375"
-    }
-
-    // Берем только +375 и следующие 9 цифр максимум
-    const prefix = "+375"
-    const afterPrefix = numbers.slice(4).replace(/\D/g, "").slice(0, 9)
-
-    return prefix + afterPrefix
-  }
-
-  const isPhoneValid = (phone: string) => {
-    return phone.length === 13 && phone.startsWith("+375")
   }
 
   return (
