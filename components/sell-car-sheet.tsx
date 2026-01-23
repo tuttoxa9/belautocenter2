@@ -214,15 +214,20 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
 
           {/* Steps */}
           <div className="hidden sm:block">
-            <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Этапы работы</h4>
-            <div className="flex justify-between items-start relative">
-               <div className="absolute top-4 left-0 right-0 h-0.5 bg-slate-100 dark:bg-zinc-800 -z-10" />
+            <h4 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <Settings className="w-4 h-4 text-blue-600" />
+              Этапы работы
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                {steps.map((step) => (
-                 <div key={step.id} className="flex flex-col items-center text-center bg-white dark:bg-black px-1">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center mb-2 border border-slate-200 dark:border-zinc-700">
-                      <step.icon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                 <div key={step.id} className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-zinc-900/50 rounded-lg border border-slate-100 dark:border-zinc-800">
+                    <div className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center shadow-sm border border-slate-100 dark:border-zinc-700 shrink-0">
+                      <step.icon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <span className="text-[10px] font-medium text-slate-600 dark:text-slate-300">{step.title}</span>
+                    <div>
+                      <span className="text-xs font-bold text-slate-400 dark:text-slate-500 block mb-0.5">0{step.id}</span>
+                      <span className="text-sm font-medium text-slate-900 dark:text-white leading-none">{step.title}</span>
+                    </div>
                  </div>
                ))}
             </div>
@@ -250,44 +255,49 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
         <div className="lg:col-span-5 flex flex-col h-full">
            <div className="lg:sticky lg:top-0 space-y-4 h-full flex flex-col">
 
-              <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-lg flex-1 flex flex-col justify-center">
-                <div className="text-center mb-6">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                    <Phone className="w-6 h-6" />
+              <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-zinc-800 rounded-3xl p-6 lg:p-8 shadow-2xl flex-1 flex flex-col justify-center relative overflow-hidden group">
+
+                {/* Decorative gradient blob */}
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700"></div>
+                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-700"></div>
+
+                <div className="text-center mb-8 relative z-10">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/30 mb-4 transform group-hover:scale-110 transition-transform duration-500">
+                    <Phone className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Начните продажу сейчас</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    Оставьте заявку, мы свяжемся в течение 15 минут и ответим на все вопросы
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Начните продажу</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Оставьте номер телефона, и мы перезвоним в течение 15 минут
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
                   <div className="space-y-1.5">
-                    <Label htmlFor="sell-name" className="text-xs uppercase text-slate-500 font-semibold tracking-wider">Ваше имя</Label>
+                    <Label htmlFor="sell-name" className="text-xs uppercase text-slate-500 font-bold tracking-wider ml-1">Ваше имя</Label>
                     <Input
                       id="sell-name"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       placeholder="Как к вам обращаться?"
-                      className="h-11 bg-slate-50 dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-blue-500/20"
+                      className="h-12 bg-slate-50/50 dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-xl transition-all"
                       required
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="sell-phone" className="text-xs uppercase text-slate-500 font-semibold tracking-wider">Телефон</Label>
+                    <Label htmlFor="sell-phone" className="text-xs uppercase text-slate-500 font-bold tracking-wider ml-1">Телефон</Label>
                     <Input
                       id="sell-phone"
                       value={formData.phone}
                       onChange={(e) => setFormData({...formData, phone: formatPhoneNumber(e.target.value)})}
                       placeholder="+375 (XX) XXX-XX-XX"
-                      className="h-11 bg-slate-50 dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-blue-500/20"
+                      className="h-12 bg-slate-50/50 dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-xl transition-all"
                       required
                     />
                   </div>
 
                   <StatusButton
                     type="submit"
-                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 transition-all"
+                    className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-lg rounded-xl shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all duration-300"
                     state={submitButtonState.state}
                     disabled={!isPhoneValid(formData.phone) || !formData.name}
                     loadingText="Отправляем..."
@@ -297,14 +307,14 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
                   </StatusButton>
 
                   <p className="text-[10px] text-center text-slate-400 leading-tight pt-2">
-                    Нажимая кнопку, вы соглашаетесь с условиями <a href="/privacy" className="underline hover:text-slate-600 dark:hover:text-slate-300">политики конфиденциальности</a>
+                    Нажимая кнопку, вы соглашаетесь с условиями <a href="/privacy" className="underline hover:text-blue-600 dark:hover:text-blue-400 transition-colors">политики конфиденциальности</a>
                   </p>
                 </form>
               </div>
 
               {/* Direct Contacts Block */}
               {settings && (
-                <div className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800 rounded-xl p-4 text-center">
+                <div className="bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border border-slate-200/50 dark:border-zinc-800/50 rounded-2xl p-4 text-center shadow-sm">
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wide">Наши контакты</p>
                   <div className="flex flex-col gap-1">
                     {settings.phone && (
