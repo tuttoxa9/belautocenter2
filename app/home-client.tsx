@@ -15,6 +15,7 @@ import DynamicSelectionSkeleton from "@/components/dynamic-selection-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import SaleModal from "@/app/sale/sale-modal"
+import { SellCarSheet } from "@/components/sell-car-sheet"
 import { CheckCircle, Check } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 
@@ -48,6 +49,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
   const contactButtonState = useButtonState()
   const { showSuccess } = useNotification()
   const [showSaleModal, setShowSaleModal] = useState(false)
+  const [isSellCarOpen, setIsSellCarOpen] = useState(false)
 
   const animatedTexts = [
     "Поможем с приобретением и продажей автомобиля",
@@ -332,9 +334,9 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
               size="lg"
               variant="outline"
               className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              asChild
+              onClick={() => setIsSellCarOpen(true)}
             >
-              <Link href="/sale" prefetch={true}>Продать автомобиль</Link>
+              Продать автомобиль
             </Button>
           </div>
         </div>
@@ -459,6 +461,11 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
       <SaleModal
         isOpen={showSaleModal}
         onClose={() => setShowSaleModal(false)}
+      />
+
+      <SellCarSheet
+        open={isSellCarOpen}
+        onOpenChange={setIsSellCarOpen}
       />
 
     </div>
