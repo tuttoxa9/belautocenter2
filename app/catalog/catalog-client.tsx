@@ -273,18 +273,18 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   }, [initialCars])
 
   useEffect(() => {
-    const uniqueMakes = [...new Set(cars.map(car => car.make))].sort()
+    const uniqueMakes = [...new Set(cars.map(car => car.make).filter(Boolean))].sort()
     setAvailableMakes(uniqueMakes)
-    const uniqueModels = [...new Set(cars.map(car => car.model))].sort()
+    const uniqueModels = [...new Set(cars.map(car => car.model).filter(Boolean))].sort()
     setAvailableModels(uniqueModels)
   }, [cars])
 
   useEffect(() => {
     if (filters.make === "all") {
-      const allModels = [...new Set(cars.map(car => car.model))].sort()
+      const allModels = [...new Set(cars.map(car => car.model).filter(Boolean))].sort()
       setAvailableModels(allModels)
     } else {
-      const modelsForMake = [...new Set(cars.filter(car => car.make === filters.make).map(car => car.model))].sort()
+      const modelsForMake = [...new Set(cars.filter(car => car.make === filters.make).map(car => car.model).filter(Boolean))].sort()
       setAvailableModels(modelsForMake)
       if (filters.model !== "all" && !modelsForMake.includes(filters.model)) {
         setFilters(prev => ({ ...prev, model: "all" }))
