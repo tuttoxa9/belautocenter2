@@ -72,7 +72,7 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
 
   return (
     <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/60 rounded-2xl h-full group transition-all duration-200 dark:border dark:border-gray-800">
-      <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={true}>
+      <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={false}>
         {/* Image Section */}
         <div className="relative">
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-800/90 dark:to-black/90 rounded-t-2xl h-56">

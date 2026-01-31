@@ -252,6 +252,11 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   // Settings hook
   const { settings } = useSettings()
 
+  // Force refresh router cache on mount to ensure price is up to date
+  useEffect(() => {
+    router.refresh()
+  }, [router])
+
   // Загружаем статические данные только один раз при инициализации компонента
   useEffect(() => {
     loadStaticData()
