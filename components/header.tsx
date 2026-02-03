@@ -14,10 +14,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { BlurImage } from "@/components/ui/blur-image"
-import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun, Snowflake } from "lucide-react"
+import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
-import { useSnow } from "@/components/providers/snow-provider"
 import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 const navigation = [
@@ -43,8 +42,6 @@ interface Settings {
 export default function Header() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
-  const { isSnowing, toggleSnow } = useSnow()
-  const [isSnowButtonPulsating, setIsSnowButtonPulsating] = useState(false)
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [formData, setFormData] = useState({ name: "", phone: "+375" })
@@ -56,16 +53,6 @@ export default function Header() {
   useEffect(() => {
     loadSettings()
   }, [])
-
-  useEffect(() => {
-    if (isSnowing) {
-      setIsSnowButtonPulsating(true)
-      const timer = setTimeout(() => {
-        setIsSnowButtonPulsating(false)
-      }, 6000)
-      return () => clearTimeout(timer)
-    }
-  }, [isSnowing])
 
   const loadSettings = async () => {
     try {
@@ -148,15 +135,6 @@ export default function Header() {
 
         {/* Мобильное меню (справа) */}
         <div className="flex items-center md:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleSnow}
-            className={`mr-1 ${isSnowButtonPulsating ? 'pulse-glow-animation rounded-full' : ''}`}
-            aria-label="Переключить снег"
-          >
-            <Snowflake className={`h-5 w-5 transition-colors ${isSnowing ? 'text-blue-500' : 'text-gray-700 dark:text-gray-300'}`} />
-          </Button>
           <Button
             variant="ghost"
             size="icon"
@@ -334,16 +312,6 @@ export default function Header() {
           >
             <Phone className="h-4 w-4 mr-2" />
             <span>Заказать звонок</span>
-          </Button>
-
-          <Button
-            size="sm"
-            variant="outline"
-            className={`rounded-full p-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 ${isSnowButtonPulsating ? 'pulse-glow-animation' : ''}`}
-            onClick={toggleSnow}
-            aria-label="Переключить снег"
-          >
-            <Snowflake className={`h-4 w-4 transition-colors ${isSnowing ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`} />
           </Button>
 
           <Button
