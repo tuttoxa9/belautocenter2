@@ -2,9 +2,12 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react"
 
+export type ApplicationType = "credit" | "leasing"
+
 interface CreditLeasingModalContextType {
   isOpen: boolean
-  openModal: () => void
+  type: ApplicationType
+  openModal: (type: ApplicationType) => void
   closeModal: () => void
 }
 
@@ -12,12 +15,16 @@ const CreditLeasingModalContext = createContext<CreditLeasingModalContextType | 
 
 export function CreditLeasingModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [type, setType] = useState<ApplicationType>("credit")
 
-  const openModal = () => setIsOpen(true)
+  const openModal = (newType: ApplicationType) => {
+    setType(newType)
+    setIsOpen(true)
+  }
   const closeModal = () => setIsOpen(false)
 
   return (
-    <CreditLeasingModalContext.Provider value={{ isOpen, openModal, closeModal }}>
+    <CreditLeasingModalContext.Provider value={{ isOpen, type, openModal, closeModal }}>
       {children}
     </CreditLeasingModalContext.Provider>
   )

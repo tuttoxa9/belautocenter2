@@ -24,7 +24,7 @@ interface Car {
 }
 
 export function CreditLeasingModal() {
-  const { isOpen, closeModal } = useCreditLeasingModal()
+  const { isOpen, type, closeModal } = useCreditLeasingModal()
   const { showSuccess } = useNotification()
   const [phone, setPhone] = useState("+375")
   const [searchQuery, setSearchQuery] = useState("")
@@ -36,6 +36,7 @@ export function CreditLeasingModal() {
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   const isPhoneFieldValid = isPhoneValid(phone)
+  const isLeasing = type === "leasing"
 
   useEffect(() => {
     if (isOpen) {
@@ -78,7 +79,7 @@ export function CreditLeasingModal() {
       const data = {
         phone,
         car: selectedCar ? `${selectedCar.make} ${selectedCar.model} (${selectedCar.year})` : "Своя сумма",
-        type: "credit_leasing_request",
+        type: isLeasing ? "leasing_request" : "credit_request",
         status: "new",
         createdAt: new Date()
       }
@@ -91,7 +92,7 @@ export function CreditLeasingModal() {
         body: JSON.stringify(data),
       })
 
-      showSuccess("Заявка успешно отправлена! Мы свяжемся с вами.")
+      showSuccess(`Заявка на ${isLeasing ? 'лизинг' : 'кредит'} успешно отправлена! Мы свяжемся с вами.`)
       closeModal()
     } catch (error) {
       console.error("Error submitting:", error)
@@ -110,11 +111,12 @@ export function CreditLeasingModal() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden font-sans"
+          className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden"
+          style={{ fontFamily: "'Geologica', sans-serif" }}
         >
           {/* Halo Background Effect */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.12)_0%,transparent_70%)] blur-[60px]" />
+             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.15)_0%,transparent_70%)] blur-[60px]" />
           </div>
 
           {/* Header */}
@@ -135,7 +137,9 @@ export function CreditLeasingModal() {
 
                 {/* Left Side: Form */}
                 <div className={`w-full flex flex-col transition-all duration-500 ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
-                  <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-2">Давайте подадим заявку на одобрение кредита</h1>
+                  <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-2">
+                    Давайте подадим заявку на одобрение {isLeasing ? 'лизинга' : 'кредита'}
+                  </h1>
                   <p className="text-[#a8a8a8] text-[14px] md:text-[16px] leading-snug mb-8">
                     Нам понадобится ваш номер телефона
                   </p>
@@ -196,11 +200,6 @@ export function CreditLeasingModal() {
                                   onChange={(e) => setSearchQuery(e.target.value)}
                                   placeholder="Поиск марки или модели..."
                                   className="bg-[#121212] border-[#262626] text-white h-12 rounded-xl focus:ring-1 focus:ring-orange-500/50 pl-11 text-base"
-                                  onBlur={() => {
-                                    if (searchQuery === "" && !selectedCar) {
-                                      // setTimeout(() => setIsSearching(false), 200)
-                                    }
-                                  }}
                                 />
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8e8e8e]" />
                               </div>
@@ -230,7 +229,7 @@ export function CreditLeasingModal() {
                   </div>
                 </div>
 
-                {/* Right Side: Mini Catalog (Visible when searching or on large screens when phone is valid) */}
+                {/* Right Side: Mini Catalog */}
                 <AnimatePresence>
                   {isSearching && isPhoneFieldValid && (
                     <motion.div

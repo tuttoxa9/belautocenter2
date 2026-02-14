@@ -198,7 +198,7 @@ export default function Header() {
                       key={item.name}
                       onClick={() => {
                         setIsMobileMenuOpen(false);
-                        openCreditModal();
+                        openCreditModal(item.href === "/leasing" ? "leasing" : "credit");
                       }}
                       className="w-full flex items-center px-4 py-3 mx-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                     >
@@ -295,7 +295,7 @@ export default function Header() {
               return (
                 <button
                   key={item.name}
-                  onClick={openCreditModal}
+                  onClick={() => openCreditModal(item.href === "/leasing" ? "leasing" : "credit")}
                   className="text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   {item.name}

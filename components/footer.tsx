@@ -72,10 +72,10 @@ export default function Footer() {
               <Link href="/catalog" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Каталог
               </Link>
-              <button onClick={openCreditModal} className="text-left text-gray-400 hover:text-white transition-colors text-sm">
+              <button onClick={() => openCreditModal("credit")} className="text-left text-gray-400 hover:text-white transition-colors text-sm">
                 Кредит
               </button>
-              <button onClick={openCreditModal} className="text-left text-gray-400 hover:text-white transition-colors text-sm">
+              <button onClick={() => openCreditModal("leasing")} className="text-left text-gray-400 hover:text-white transition-colors text-sm">
                 Лизинг
               </button>
               <Link href="/warranty" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>

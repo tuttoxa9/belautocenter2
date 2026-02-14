@@ -27,7 +27,7 @@ export default function MobileDock() {
             return (
               <button
                 key={item.name}
-                onClick={openCreditModal}
+                onClick={() => openCreditModal("credit")}
                 className={`flex flex-col items-center justify-center py-3 px-2 text-xs transition-all duration-300 rounded-xl text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-gray-800/80`}
               >
                 <item.icon className={`h-6 w-6 mb-1 transition-all duration-300 text-slate-600 dark:text-gray-400`} />
