@@ -132,19 +132,18 @@ export function CreditLeasingModal() {
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden"
-          style={{ fontFamily: "'Geologica', sans-serif" }}
         >
           {/* Halo Background Effect */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
              <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.15)_0%,transparent_70%)] blur-[60px]" />
           </div>
 
-          {/* Header */}
-          <div className="relative z-10 p-4 flex items-center justify-between bg-black/50 backdrop-blur-md border-b border-white/5">
-            <button onClick={showDetails ? () => setShowDetails(false) : closeModal} className="p-2 hover:opacity-70 transition-opacity">
+          {/* Controls (No header bar) */}
+          <div className="relative z-20 p-4 flex items-center justify-between pointer-events-none">
+            <button onClick={showDetails ? () => setShowDetails(false) : closeModal} className="p-2 hover:opacity-70 transition-opacity pointer-events-auto">
               <ChevronLeft className="h-8 w-8" />
             </button>
-            <button onClick={closeModal} className="p-2 hover:opacity-70 transition-opacity">
+            <button onClick={closeModal} className="p-2 hover:opacity-70 transition-opacity pointer-events-auto">
               <X className="h-8 w-8" />
             </button>
           </div>
