@@ -328,21 +328,21 @@ export default function AdminCars() {
     return (
       <div className="animate-pulse space-y-6">
         <div className="flex justify-between items-center">
-          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-          <div className="h-10 bg-gray-200 rounded w-32"></div>
+          <div className="h-8 bg-muted rounded w-1/4"></div>
+          <div className="h-10 bg-muted rounded w-32"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white p-4 rounded-lg space-y-4">
-              <div className="h-48 bg-gray-200 rounded"></div>
+            <div key={i} className="bg-card border border-border p-4 rounded-lg space-y-4">
+              <div className="h-48 bg-muted rounded"></div>
               <div className="space-y-2">
-                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                <div className="h-6 bg-muted rounded w-3/4"></div>
+                <div className="h-4 bg-muted rounded w-1/2"></div>
+                <div className="h-4 bg-muted rounded w-2/3"></div>
               </div>
               <div className="flex space-x-2">
-                <div className="h-8 bg-gray-200 rounded flex-1"></div>
-                <div className="h-8 bg-gray-200 rounded w-16"></div>
+                <div className="h-8 bg-muted rounded flex-1"></div>
+                <div className="h-8 bg-muted rounded w-16"></div>
               </div>
             </div>
           ))}
@@ -356,7 +356,7 @@ export default function AdminCars() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl md:text-2xl font-bold truncate">Управление автомобилями</h2>
-          <div className="text-sm text-gray-500 mt-1">
+          <div className="text-sm text-muted-foreground mt-1 font-medium">
             {filteredCars.length === cars.length
               ? `Всего автомобилей: ${cars.length}`
               : `Показано ${filteredCars.length} из ${cars.length} автомобилей`}
@@ -382,14 +382,14 @@ export default function AdminCars() {
             </SheetHeader>
 
             {/* Навигация по разделам */}
-            <div className="flex gap-1 mb-6 mt-4 bg-gray-100 p-1 rounded-lg">
+            <div className="flex gap-1 mb-6 mt-4 bg-muted/50 dark:bg-zinc-800/50 p-1 rounded-lg border border-border/50">
               <button
                 type="button"
                 onClick={() => setActiveTab("basic")}
                 className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
                   activeTab === "basic"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-background text-foreground shadow-sm dark:bg-zinc-700 dark:text-zinc-100"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                 }`}
               >
                 Основная информация
@@ -399,8 +399,8 @@ export default function AdminCars() {
                 onClick={() => setActiveTab("images")}
                 className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
                   activeTab === "images"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-background text-foreground shadow-sm dark:bg-zinc-700 dark:text-zinc-100"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                 }`}
               >
                 Изображения
@@ -410,8 +410,8 @@ export default function AdminCars() {
                 onClick={() => setActiveTab("json")}
                 className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
                   activeTab === "json"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-background text-foreground shadow-sm dark:bg-zinc-700 dark:text-zinc-100"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                 }`}
               >
                 JSON
@@ -590,7 +590,7 @@ export default function AdminCars() {
 
               <div>
                 <Label className="text-sm">Описание (Markdown поддерживается)</Label>
-                <div className="text-xs text-gray-500 mb-2">
+                <div className="text-xs text-muted-foreground mb-2">
                   Поддерживается: **жирный**, *курсив*, # заголовки, - списки, [ссылки](url)
                 </div>
                 <Tabs defaultValue="edit" className="w-full">
@@ -599,8 +599,8 @@ export default function AdminCars() {
                     <TabsTrigger value="preview">Предпросмотр</TabsTrigger>
                   </TabsList>
                   <TabsContent value="edit" className="mt-2">
-                    <textarea
-                      className="w-full p-2 border rounded-md text-sm"
+                    <Textarea
+                      className="w-full p-2 border rounded-md text-sm min-h-[150px]"
                       rows={6}
                       value={carForm.description}
                       onChange={(e) => setCarForm({ ...carForm, description: e.target.value })}
@@ -608,11 +608,11 @@ export default function AdminCars() {
                     />
                   </TabsContent>
                   <TabsContent value="preview" className="mt-2">
-                    <div className="w-full p-3 border rounded-md bg-gray-50 min-h-[150px]">
+                    <div className="w-full p-3 border rounded-md bg-muted/30 dark:bg-zinc-900/50 min-h-[150px]">
                       {carForm.description ? (
                         <MarkdownRenderer content={carForm.description} />
                       ) : (
-                        <p className="text-gray-500 italic">Введите описание для предпросмотра...</p>
+                        <p className="text-muted-foreground italic">Введите описание для предпросмотра...</p>
                       )}
                     </div>
                   </TabsContent>
@@ -770,7 +770,7 @@ export default function AdminCars() {
                 <div className="space-y-4">
                   <div>
                     <Label className="text-sm">Фотографии автомобиля</Label>
-                    <p className="text-xs text-gray-500 mb-3">
+                    <p className="text-xs text-muted-foreground mb-3">
                       Загрузите качественные фотографии автомобиля. Первое изображение будет использоваться как главное.
                     </p>
                     <ImageUpload
@@ -791,7 +791,7 @@ export default function AdminCars() {
                 <div className="space-y-4">
                   <div>
                     <Label className="text-sm mb-2 block">Импорт данных из JSON</Label>
-                    <p className="text-xs text-gray-500 mb-3">
+                    <p className="text-xs text-muted-foreground mb-3">
                       Вставьте JSON с данными автомобиля для быстрого заполнения формы. Это перезапишет текущие данные.
                     </p>
                     <Textarea
@@ -825,7 +825,7 @@ export default function AdminCars() {
                   {/* Предпросмотр текущих данных формы */}
                   <div>
                     <Label className="text-sm mb-2 block">Предпросмотр данных формы</Label>
-                    <p className="text-xs text-gray-500 mb-3">
+                    <p className="text-xs text-muted-foreground mb-3">
                       Просмотр текущих данных в JSON формате
                     </p>
                     <Textarea
@@ -873,25 +873,25 @@ export default function AdminCars() {
 
       {/* Статистика автомобилей */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Всего автомобилей</div>
-          <div className="text-2xl font-bold mt-1">{cars.length}</div>
+        <div className="bg-card dark:bg-zinc-900/50 rounded-lg shadow-sm border border-border p-4">
+          <div className="text-sm text-muted-foreground">Всего автомобилей</div>
+          <div className="text-2xl font-bold mt-1 text-foreground">{cars.length}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">В наличии</div>
-          <div className="text-2xl font-bold mt-1 text-green-600">
+        <div className="bg-card dark:bg-zinc-900/50 rounded-lg shadow-sm border border-border p-4">
+          <div className="text-sm text-muted-foreground">В наличии</div>
+          <div className="text-2xl font-bold mt-1 text-green-600 dark:text-green-500">
             {cars.filter(car => car.isAvailable === true).length}
           </div>
-          <div className="text-sm text-gray-600 mt-1">
+          <div className="text-sm text-muted-foreground mt-1 font-medium">
             {cars.filter(car => car.isAvailable === true).reduce((sum, car) => sum + (car.price || 0), 0).toLocaleString('ru-RU')} $
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Проданные</div>
-          <div className="text-2xl font-bold mt-1 text-gray-500">
+        <div className="bg-card dark:bg-zinc-900/50 rounded-lg shadow-sm border border-border p-4">
+          <div className="text-sm text-muted-foreground">Проданные</div>
+          <div className="text-2xl font-bold mt-1 text-gray-500 dark:text-gray-400">
             {cars.filter(car => car.isAvailable === false).length}
           </div>
-          <div className="text-sm text-gray-600 mt-1">
+          <div className="text-sm text-muted-foreground mt-1 font-medium">
             {cars.filter(car => car.isAvailable === false).reduce((sum, car) => sum + (car.price || 0), 0).toLocaleString('ru-RU')} $
           </div>
         </div>
@@ -900,7 +900,7 @@ export default function AdminCars() {
       {/* Поле поиска, сортировка и фильтрация */}
       <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Поиск по марке, модели, году, цене..."
             value={searchQuery}
@@ -957,10 +957,10 @@ export default function AdminCars() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {filteredCars && filteredCars.map((car) => (
-          <Card key={car.id} className="relative">
+          <Card key={car.id} className="relative overflow-hidden">
             <CardContent className="p-3 md:p-4">
-              <Link href={`/catalog/${car.id}`} target="_blank" className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow-md hover:bg-gray-100 transition-all">
-                <Eye className="h-4 w-4 text-gray-700" />
+              <Link href={`/catalog/${car.id}`} target="_blank" className="absolute top-2 right-2 bg-white dark:bg-zinc-800 p-1.5 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all z-10">
+                <Eye className="h-4 w-4 text-gray-700 dark:text-gray-300" />
               </Link>
               {car.imageUrls && car.imageUrls.length > 0 && car.imageUrls[0] && (
                 <div className="mb-3">
@@ -979,7 +979,7 @@ export default function AdminCars() {
                   {car.isAvailable ? "В наличии" : "Продан"}
                 </Badge>
               </div>
-              <div className="text-xs md:text-sm text-gray-600 space-y-1">
+              <div className="text-xs md:text-sm text-muted-foreground space-y-1">
                 <p>Год: {car.year}</p>
                 <p>Цена: ${car.price?.toLocaleString()}</p>
                 <p>Пробег: {car.mileage?.toLocaleString()} км</p>
@@ -1004,18 +1004,18 @@ export default function AdminCars() {
 
       {cars.length === 0 && !searchQuery && (
         <div className="text-center py-12">
-          <Car className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-500">Автомобили не добавлены</p>
+          <Car className="h-12 w-12 mx-auto text-muted-foreground/60 mb-4" />
+          <p className="text-muted-foreground">Автомобили не добавлены</p>
         </div>
       )}
 
       {filteredCars.length === 0 && cars.length > 0 && (
         <div className="text-center py-12">
-          <Search className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+          <Search className="h-12 w-12 mx-auto text-muted-foreground/60 mb-4" />
           {searchQuery ? (
-            <p className="text-gray-500">По запросу "{searchQuery}" ничего не найдено</p>
+            <p className="text-muted-foreground">По запросу "{searchQuery}" ничего не найдено</p>
           ) : (
-            <p className="text-gray-500">Нет автомобилей, соответствующих выбранным фильтрам</p>
+            <p className="text-muted-foreground">Нет автомобилей, соответствующих выбранным фильтрам</p>
           )}
           <div className="flex gap-2 justify-center mt-2">
             {searchQuery && (
