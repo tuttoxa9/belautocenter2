@@ -429,20 +429,20 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               Очистить все
             </Button>
           </div>
-          <div className="max-h-48 overflow-y-auto space-y-1 bg-gray-50 rounded-lg p-3">
+          <div className="max-h-48 overflow-y-auto space-y-1 bg-muted/30 dark:bg-zinc-900/50 rounded-lg p-3 border border-border/50">
             {uploadLogs.map((log, index) => (
               <div
                 key={index}
                 className={`p-2 rounded text-sm border ${
                   log.type === 'error'
-                    ? 'bg-red-50 border-red-200 text-red-800'
+                    ? 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-300'
                     : log.type === 'success'
-                    ? 'bg-green-50 border-green-200 text-green-800'
+                    ? 'bg-green-50 border-green-200 text-green-800 dark:bg-green-950/30 dark:border-green-900/50 dark:text-green-300'
                     : log.type === 'processing'
-                    ? 'bg-blue-50 border-blue-200 text-blue-800'
+                    ? 'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950/30 dark:border-blue-900/50 dark:text-blue-300'
                     : log.type === 'warning'
-                    ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
-                    : 'bg-gray-50 border-gray-200 text-gray-800'
+                    ? 'bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-950/30 dark:border-yellow-900/50 dark:text-yellow-300'
+                    : 'bg-muted border-border text-foreground'
                 }`}
               >
                 <div className="flex justify-between items-start">
@@ -450,17 +450,17 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                     <div className="flex items-center gap-2">
                       <p className="font-medium text-xs">{log.fileName}</p>
                       {log.uploadSessionId && (
-                        <span className="text-xs px-1 py-0.5 bg-gray-200 rounded text-gray-600 font-mono">
+                        <span className="text-xs px-1 py-0.5 bg-muted border border-border rounded text-muted-foreground font-mono">
                           {log.uploadSessionId.slice(-6)}
                         </span>
                       )}
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {log.timestamp.toLocaleTimeString()}
                       </span>
                     </div>
                     <p className="text-xs mt-1">{log.message}</p>
                     {log.details && (
-                      <div className="text-xs mt-1 space-y-0.5 bg-white bg-opacity-50 rounded p-1">
+                      <div className="text-xs mt-1 space-y-0.5 bg-background/50 dark:bg-black/20 rounded p-1 border border-border/20">
                         {log.details.originalSize && (
                           <div>Исходный размер: {(log.details.originalSize / 1024 / 1024).toFixed(2)} MB</div>
                         )}
@@ -482,7 +482,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                         setShowLogs(false)
                       }
                     }}
-                    className="h-4 w-4 p-0 ml-2 text-gray-500 hover:text-gray-700 flex-shrink-0"
+                    className="h-4 w-4 p-0 ml-2 text-muted-foreground hover:text-foreground flex-shrink-0"
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -499,22 +499,22 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           <Card
             {...getRootProps()}
             className={`border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
-              isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-gray-400"
+              isDragActive ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-border hover:border-muted-foreground/50 dark:bg-zinc-900/30"
             }`}
           >
             <input {...getInputProps()} />
 {uploadingFiles.size > 0 ? (
               <div className="flex flex-col items-center space-y-2">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                <p className="text-sm text-gray-600">Загружается файлов: {uploadingFiles.size}</p>
+                <p className="text-sm text-muted-foreground">Загружается файлов: {uploadingFiles.size}</p>
               </div>
             ) : (
               <div className="flex flex-col items-center space-y-4">
-                <Upload className="h-8 w-8 text-gray-400" />
-                <p className="text-sm text-gray-600">
+                <Upload className="h-8 w-8 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">
                   {isDragActive ? "Отпустите файлы здесь" : "Перетащите изображения или нажмите для выбора"}
                 </p>
-                <p className="text-xs text-gray-500">Можно выбрать несколько файлов: PNG, JPG, WEBP, HEIC, HEIF до 10MB каждый</p>
+                <p className="text-xs text-muted-foreground/70">Можно выбрать несколько файлов: PNG, JPG, WEBP, HEIC, HEIF до 10MB каждый</p>
               </div>
             )}
           </Card>
@@ -522,13 +522,13 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           {/* Настройки загрузки */}
           <div className="flex items-center space-x-2 mt-4">
             <Checkbox id="webp-toggle-multiple" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} disabled />
-            <Label htmlFor="webp-toggle-multiple" className="text-sm font-medium text-gray-400">
+            <Label htmlFor="webp-toggle-multiple" className="text-sm font-medium text-muted-foreground/60">
               Оптимизировать в WebP
             </Label>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-gray-500 cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground/60 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p>Включает автоматическую конвертацию JPG/PNG в современный формат WebP. Уменьшает размер файла до 70% без видимой потери качества. Рекомендуется для всех фотографий. Отключите для схем или логотипов, если требуется сохранить исходный формат.</p>
@@ -539,9 +539,9 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
 
 
           {/* Отдельная область для вставки из буфера обмена */}
-          <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50 p-4 text-center">
+          <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50/50 dark:bg-yellow-900/10 dark:border-yellow-900/50 p-4 text-center">
             <div className="flex flex-col items-center space-y-3">
-              <div className="text-yellow-600">
+              <div className="text-yellow-600 dark:text-yellow-500/80">
                 <svg className="h-6 w-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
@@ -549,7 +549,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               <div
                 ref={pasteAreaRef}
                 tabIndex={0}
-                className="w-full max-w-md px-4 py-3 border border-yellow-400 rounded-lg text-sm text-center bg-white hover:bg-yellow-50 focus:bg-white focus:border-yellow-500 focus:outline-none cursor-text transition-colors"
+                className="w-full max-w-md px-4 py-3 border border-yellow-400 dark:border-yellow-900/50 rounded-lg text-sm text-center bg-white dark:bg-zinc-900 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 focus:bg-white dark:focus:bg-zinc-900 focus:border-yellow-500 focus:outline-none cursor-text transition-colors text-foreground"
                 onFocus={handlePasteAreaFocus}
                 onKeyDown={(e) => {
                   // Предотвращаем любые действия кроме Ctrl+V
@@ -560,7 +560,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               >
                 📋 Нажмите сюда и используйте Ctrl+V для вставки изображений
               </div>
-              <p className="text-xs text-yellow-700">Быстрая вставка изображений из буфера обмена</p>
+              <p className="text-xs text-yellow-700 dark:text-yellow-500/60">Быстрая вставка изображений из буфера обмена</p>
             </div>
           </Card>
 
@@ -570,7 +570,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm font-medium">Загруженные изображения ({previews.length})</p>
-                  <p className="text-xs text-gray-500">Перетащите для изменения порядка или кликните на номер</p>
+                  <p className="text-xs text-muted-foreground">Перетащите для изменения порядка или кликните на номер</p>
                 </div>
 <Button
                   size="sm"
@@ -585,7 +585,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
 {previews.map((imageUrl, index) => (
                   <Card
                     key={index}
-                    className={`relative transition-transform ${
+                    className={`relative transition-transform overflow-hidden ${
                       imageUrl === 'loading' ? 'cursor-default' : 'cursor-move'
                     } ${draggedIndex === index ? 'opacity-50 scale-95' : ''}`}
                     draggable={imageUrl !== 'loading'}
@@ -594,7 +594,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                     onDrop={imageUrl !== 'loading' ? (e) => handleDrop(e, index) : undefined}
                   >
                     {imageUrl === 'loading' ? (
-                      <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <div className="w-full h-32 bg-muted rounded-lg flex items-center justify-center">
                         <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
                       </div>
                     ) : (
@@ -700,22 +700,22 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
             <Card
               {...getRootProps()}
               className={`border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
-                isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-gray-400"
+                isDragActive ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-border hover:border-muted-foreground/50 dark:bg-zinc-900/30"
               }`}
             >
               <input {...getInputProps()} />
               {uploading ? (
                 <div className="flex flex-col items-center space-y-2">
                   <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                  <p className="text-sm text-gray-600">Загрузка...</p>
+                  <p className="text-sm text-muted-foreground">Загрузка...</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center space-y-4">
-                  <Upload className="h-8 w-8 text-gray-400" />
-                  <p className="text-sm text-gray-600">
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
                     {isDragActive ? "Отпустите файл здесь" : "Перетащите изображение или нажмите для выбора"}
                   </p>
-                  <p className="text-xs text-gray-500">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
+                  <p className="text-xs text-muted-foreground/70">PNG, JPG, WEBP, HEIC, HEIF до 10MB (включая фото с iPhone)</p>
                 </div>
               )}
             </Card>
@@ -723,13 +723,13 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
             {/* Настройки загрузки */}
             <div className="flex items-center space-x-2 mt-4">
               <Checkbox id="webp-toggle-single" checked={autoWebP} onCheckedChange={(checked) => setAutoWebP(Boolean(checked))} disabled />
-              <Label htmlFor="webp-toggle-single" className="text-sm font-medium text-gray-400">
+              <Label htmlFor="webp-toggle-single" className="text-sm font-medium text-muted-foreground/60">
                 Оптимизировать в WebP
               </Label>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-gray-500 cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground/60 cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>Включает автоматическую конвертацию JPG/PNG в современный формат WebP. Уменьшает размер файла до 70% без видимой потери качества. Рекомендуется для всех фотографий. Отключите для схем или логотипов, если требуется сохранить исходный формат.</p>
@@ -739,9 +739,9 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
             </div>
 
             {/* Отдельная область для вставки из буфера обмена */}
-            <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50 p-4 text-center">
+            <Card className="border-2 border-dashed border-yellow-300 bg-yellow-50/50 dark:bg-yellow-900/10 dark:border-yellow-900/50 p-4 text-center">
               <div className="flex flex-col items-center space-y-3">
-                <div className="text-yellow-600">
+                <div className="text-yellow-600 dark:text-yellow-500/80">
                   <svg className="h-6 w-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
@@ -749,7 +749,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 <div
                   ref={pasteAreaRef}
                   tabIndex={0}
-                  className="w-full max-w-md px-4 py-3 border border-yellow-400 rounded-lg text-sm text-center bg-white hover:bg-yellow-50 focus:bg-white focus:border-yellow-500 focus:outline-none cursor-text transition-colors"
+                  className="w-full max-w-md px-4 py-3 border border-yellow-400 dark:border-yellow-900/50 rounded-lg text-sm text-center bg-white dark:bg-zinc-900 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 focus:bg-white dark:focus:bg-zinc-900 focus:border-yellow-500 focus:outline-none cursor-text transition-colors text-foreground"
                   onFocus={handlePasteAreaFocus}
                   onKeyDown={(e) => {
                     // Предотвращаем любые действия кроме Ctrl+V
