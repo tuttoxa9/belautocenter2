@@ -6,6 +6,7 @@ import Image from "next/image"
 import { MapPin, Phone, Mail, Clock, Instagram, Loader2 } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { useCreditLeasingModal } from "@/components/providers/credit-leasing-modal-provider"
 
 interface Settings {
   companyName: string
@@ -23,6 +24,7 @@ interface Settings {
 }
 
 export default function Footer() {
+  const { openModal: openCreditModal } = useCreditLeasingModal()
   const [currentYear, setCurrentYear] = useState(2024) // Fallback значение
   const [loading, setLoading] = useState(true)
   const [settings, setSettings] = useState<Settings | null>(null)
@@ -70,12 +72,12 @@ export default function Footer() {
               <Link href="/catalog" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Каталог
               </Link>
-              <Link href="/credit" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              <button onClick={openCreditModal} className="text-left text-gray-400 hover:text-white transition-colors text-sm">
                 Кредит
-              </Link>
-              <Link href="/leasing" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
+              </button>
+              <button onClick={openCreditModal} className="text-left text-gray-400 hover:text-white transition-colors text-sm">
                 Лизинг
-              </Link>
+              </button>
               <Link href="/warranty" className="text-gray-400 hover:text-white transition-colors text-sm" prefetch={true}>
                 Гарантия
               </Link>
