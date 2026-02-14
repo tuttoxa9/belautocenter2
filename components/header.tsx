@@ -18,6 +18,7 @@ import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun } fro
 import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
 import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
+import { useCreditLeasingModal } from "@/components/providers/credit-leasing-modal-provider"
 
 const navigation = [
   { name: "Главная", href: "/" },
@@ -42,6 +43,7 @@ interface Settings {
 export default function Header() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+  const { openModal: openCreditModal } = useCreditLeasingModal()
   const [isCallbackOpen, setIsCallbackOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [formData, setFormData] = useState({ name: "", phone: "+375" })
@@ -185,9 +187,26 @@ export default function Header() {
           {/* Компактное навигационное меню */}
           <div className="py-4">
             {navigation
-              .filter((item) => !["/", "/catalog", "/credit", "/contacts"].includes(item.href))
+              .filter((item) => !["/", "/catalog", "/contacts"].includes(item.href))
               .map((item) => {
                 const isActive = pathname === item.href;
+                const isCreditOrLeasing = item.href === "/credit" || item.href === "/leasing";
+
+                if (isCreditOrLeasing) {
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        openCreditModal(item.href === "/leasing" ? "leasing" : "credit");
+                      }}
+                      className="w-full flex items-center px-4 py-3 mx-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    >
+                      <div className="w-2 h-2 rounded-full mr-3 bg-gray-300 dark:bg-gray-700"></div>
+                      <span className="font-medium">{item.name}</span>
+                    </button>
+                  );
+                }
 
                 return (
                   <Link
@@ -269,20 +288,36 @@ export default function Header() {
 
         {/* Десктопное меню */}
         <nav className="hidden md:flex items-center space-x-0 lg:space-x-1 flex-1 justify-start ml-2 lg:ml-4">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              prefetch={true}
-              className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md ${
-                pathname === item.href
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
+          {navigation.map((item) => {
+            const isCreditOrLeasing = item.href === "/credit" || item.href === "/leasing";
+
+            if (isCreditOrLeasing) {
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => openCreditModal(item.href === "/leasing" ? "leasing" : "credit")}
+                  className="text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  {item.name}
+                </button>
+              );
+            }
+
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                prefetch={true}
+                className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md ${
+                  pathname === item.href
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                }`}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Контакты и кнопка звонка для десктопа */}
