@@ -10,6 +10,12 @@ import { NotificationProvider } from "@/components/providers/notification-provid
 import { ThemeProvider } from "@/components/theme-provider"
 import { CreditLeasingModalProvider } from "@/components/providers/credit-leasing-modal-provider"
 import { CreditLeasingModal } from "@/components/credit-leasing-modal"
+import { Geologica } from "next/font/google"
+
+const geologica = Geologica({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-geologica",
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://belautocenter.by'),
@@ -104,11 +110,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="font/ttf"
           crossOrigin="anonymous"
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-sans min-h-screen flex flex-col" suppressHydrationWarning>
+      <body className={`${geologica.variable} font-sans min-h-screen flex flex-col`} suppressHydrationWarning>
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-FCJJ7QL8S4"

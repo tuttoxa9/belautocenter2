@@ -54,7 +54,6 @@ export function CreditLeasingModal() {
   const loadCars = async () => {
     try {
       const data = await firestoreApi.getCollection("cars")
-      // Только те, что в наличии
       const availableCars = (data as Car[]).filter(car => car.isAvailable)
       setCars(availableCars)
     } catch (error) {
@@ -111,31 +110,31 @@ export function CreditLeasingModal() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden"
-          style={{ fontFamily: "'Geologica', sans-serif" }}
+          className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden font-geologica"
+          style={{ fontFamily: "var(--font-geologica), sans-serif" }}
         >
           {/* Halo Background Effect */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
              <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.15)_0%,transparent_70%)] blur-[60px]" />
           </div>
 
-          {/* Header */}
-          <div className="relative z-10 p-4 flex items-center justify-between bg-black/50 backdrop-blur-md border-b border-white/5">
-            <button onClick={closeModal} className="p-2 hover:opacity-70 transition-opacity">
+          {/* Controls (No header bar) */}
+          <div className="relative z-20 p-4 flex items-center justify-between pointer-events-none">
+            <button onClick={closeModal} className="p-2 hover:opacity-70 transition-opacity pointer-events-auto">
               <ChevronLeft className="h-8 w-8" />
             </button>
-            <button onClick={closeModal} className="p-2 hover:opacity-70 transition-opacity">
+            <button onClick={closeModal} className="p-2 hover:opacity-70 transition-opacity pointer-events-auto">
               <X className="h-8 w-8" />
             </button>
           </div>
 
-          {/* Content */}
-          <div className="relative z-10 flex-1 flex flex-col overflow-y-auto pt-8 pb-12 px-6">
-            <div className={`w-full mx-auto transition-all duration-500 ease-in-out ${isSearching ? 'max-w-6xl' : 'max-w-md'}`}>
+          {/* Main Unified Content Area */}
+          <div className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-8 custom-scrollbar">
+            <div className={`w-full mx-auto mt-4 md:mt-8 transition-all duration-500 ease-in-out ${isSearching ? 'max-w-6xl' : 'max-w-md'}`}>
 
               <div className={`flex flex-col lg:flex-row gap-12 items-start justify-center ${isSearching ? 'lg:items-start' : 'items-center'}`}>
 
-                {/* Left Side: Form */}
+                {/* Form Section */}
                 <div className={`w-full flex flex-col transition-all duration-500 ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
                   <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-2">
                     Давайте подадим заявку на одобрение {isLeasing ? 'лизинга' : 'кредита'}
@@ -229,7 +228,7 @@ export function CreditLeasingModal() {
                   </div>
                 </div>
 
-                {/* Right Side: Mini Catalog */}
+                {/* Mini Catalog Section */}
                 <AnimatePresence>
                   {isSearching && isPhoneFieldValid && (
                     <motion.div
@@ -301,27 +300,25 @@ export function CreditLeasingModal() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+            </div>
 
+            {/* Footer links (No footer bar) */}
+            <div className="mt-auto pt-16 pb-8 text-center space-y-6">
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] text-[#a8a8a8] font-medium">
+                <Link href="/" onClick={closeModal} className="hover:text-white transition-colors">Главная</Link>
+                <Link href="/catalog" onClick={closeModal} className="hover:text-white transition-colors">Каталог</Link>
+                <Link href="https://vikup.belautocenter.by" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">Выкуп авто</Link>
+                <Link href="/warranty" onClick={closeModal} className="hover:text-white transition-colors">Гарантия</Link>
+                <Link href="/about" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">О нас</Link>
+                <Link href="/contacts" onClick={closeModal} className="hover:text-white transition-colors">Контакты</Link>
+                <Link href="/reviews" onClick={closeModal} className="hover:text-white transition-colors">Отзывы</Link>
+                <Link href="/privacy" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">Конфиденциальность</Link>
               </div>
 
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="relative z-10 p-8 text-center space-y-6 bg-gradient-to-t from-black via-black/80 to-transparent">
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] text-[#a8a8a8] font-medium">
-              <Link href="/" onClick={closeModal} className="hover:text-white transition-colors">Главная</Link>
-              <Link href="/catalog" onClick={closeModal} className="hover:text-white transition-colors">Каталог</Link>
-              <Link href="https://vikup.belautocenter.by" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">Выкуп авто</Link>
-              <Link href="/warranty" onClick={closeModal} className="hover:text-white transition-colors">Гарантия</Link>
-              <Link href="/about" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">О нас</Link>
-              <Link href="/contacts" onClick={closeModal} className="hover:text-white transition-colors">Контакты</Link>
-              <Link href="/reviews" onClick={closeModal} className="hover:text-white transition-colors">Отзывы</Link>
-              <Link href="/privacy" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">Конфиденциальность</Link>
-            </div>
-
-            <div className="text-[12px] text-[#8e8e8e] tracking-widest font-bold">
-              <p>© 2026 BELAUTOCENTER</p>
+              <div className="text-[12px] text-[#8e8e8e] tracking-widest font-bold">
+                <p>© 2026 BELAUTOCENTER</p>
+              </div>
             </div>
           </div>
         </motion.div>
