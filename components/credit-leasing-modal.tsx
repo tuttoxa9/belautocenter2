@@ -12,7 +12,6 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { getCachedImageUrl } from "@/lib/image-cache"
-import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 
 interface Car {
   id: string
@@ -33,12 +32,12 @@ interface Car {
 export function CreditLeasingModal() {
   const { isOpen, type, closeModal } = useCreditLeasingModal()
   const { showSuccess } = useNotification()
-  const usdBynRate = useUsdBynRate()
   const [phone, setPhone] = useState("+375")
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCar, setSelectedCar] = useState<Car | null>(null)
   const [isSearching, setIsSearching] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
+  const [isImageLoading, setIsImageLoading] = useState(true)
   const [cars, setCars] = useState<Car[]>([])
   const [filteredCars, setFilteredCars] = useState<Car[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -60,6 +59,13 @@ export function CreditLeasingModal() {
       setShowDetails(false)
     }
   }, [isOpen])
+
+  // Reset image loading state when a new car is selected
+  useEffect(() => {
+    if (selectedCar) {
+      setIsImageLoading(true)
+    }
+  }, [selectedCar])
 
   const loadCars = async () => {
     try {
@@ -111,12 +117,8 @@ export function CreditLeasingModal() {
   }
 
   const getMonthlyPayment = (car: Car) => {
-    let priceByn = car.priceByn
-    if (!priceByn && usdBynRate) {
-        priceByn = Math.round(car.price * usdBynRate)
-    }
-    if (!priceByn) return 0
-    return Math.round(priceByn * 0.0631)
+    // Умножаем цену в долларах на 0.0631
+    return Math.round(car.price * 0.0631)
   }
 
   if (!isOpen) return null
@@ -371,21 +373,17 @@ export function CreditLeasingModal() {
                         {selectedCar && (
                             <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                                 <div className="relative aspect-video bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl">
-                                    {selectedCar.imageUrls && selectedCar.imageUrls.length > 1 ? (
-                                        <Image
-                                            src={getCachedImageUrl(selectedCar.imageUrls[1])}
-                                            alt={selectedCar.make}
-                                            fill
-                                            className="object-cover"
-                                            quality={85}
-                                        />
-                                    ) : selectedCar.imageUrls && selectedCar.imageUrls[0] ? (
+                                    {isImageLoading && (
+                                        <div className="absolute inset-0 z-10 bg-zinc-800 animate-pulse" />
+                                    )}
+                                    {selectedCar.imageUrls && selectedCar.imageUrls[0] ? (
                                         <Image
                                             src={getCachedImageUrl(selectedCar.imageUrls[0])}
                                             alt={selectedCar.make}
                                             fill
-                                            className="object-cover"
+                                            className={`object-cover transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
                                             quality={85}
+                                            onLoad={() => setIsImageLoading(false)}
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
@@ -432,20 +430,27 @@ export function CreditLeasingModal() {
                                     </div>
 
                                     <div className="p-4 bg-orange-600/10 border border-orange-600/30 rounded-2xl">
-                                        <div className="text-xs text-orange-400 font-bold uppercase mb-1 tracking-widest">Ориентировочный платёж</div>
+                                        <div className="text-xs text-orange-400 font-bold uppercase mb-1 tracking-widest">
+                                            {isLeasing ? 'Лизинг' : 'Ориентировочный платёж'}
+                                        </div>
                                         <div className="text-2xl md:text-3xl font-black text-white">
-                                            {getMonthlyPayment(selectedCar).toLocaleString()} BYN <span className="text-xs text-white/50 font-medium">/ мес.</span>
+                                            {isLeasing ? (
+                                                <span className="text-lg md:text-xl font-bold">Расчет можно спросить у менеджера</span>
+                                            ) : (
+                                                <>
+                                                    {getMonthlyPayment(selectedCar).toLocaleString()} BYN <span className="text-xs text-white/50 font-medium">/ мес.</span>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
 
                                     <div className="flex gap-4">
-                                        <Button
+                                        <button
                                             onClick={() => setShowDetails(false)}
-                                            variant="outline"
-                                            className="flex-1 border-[#262626] hover:bg-white/5 text-white rounded-xl h-12 font-bold"
+                                            className="flex-1 bg-transparent border border-[#262626] hover:bg-white/5 text-white rounded-xl h-12 font-bold transition-all"
                                         >
                                             Назад к списку
-                                        </Button>
+                                        </button>
                                         <Button
                                             onClick={handleSubmit}
                                             disabled={isSubmitting}
