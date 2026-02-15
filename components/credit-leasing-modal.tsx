@@ -154,9 +154,10 @@ export function CreditLeasingModal() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden font-sans"
         >
-          {/* Subtle Halo Background */}
+          {/* Intense Halo Background */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.08)_0%,transparent_70%)] blur-[40px]" />
+             <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-[radial-gradient(circle,rgba(249,115,22,0.18)_0%,transparent_70%)] blur-[50px]" />
+             <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] bg-[radial-gradient(circle,rgba(249,115,22,0.05)_0%,transparent_70%)] blur-[80px]" />
           </div>
 
           {/* Controls */}
@@ -177,19 +178,20 @@ export function CreditLeasingModal() {
 
           {/* Content */}
           <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-12 custom-scrollbar">
-            <div className={`w-full mx-auto transition-all duration-500 ease-in-out ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
+            <div className={`w-full mx-auto transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
 
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 {!showDetails ? (
                   <motion.div
                     key="catalog-view"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.3 }}
                     className="w-full flex flex-col lg:flex-row gap-12 items-start justify-center"
                   >
                     {/* Form Side */}
-                    <div className={`w-full flex flex-col transition-all duration-500 ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
+                    <div className={`w-full flex flex-col transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
                       <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
                         Подать заявку на {isLeasing ? 'лизинг' : 'кредит'}
                       </h1>
@@ -211,11 +213,12 @@ export function CreditLeasingModal() {
                           )}
                         </div>
 
-                        <AnimatePresence>
+                        <AnimatePresence mode="wait">
                           {isPhoneFieldValid && (
                             <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
+                              key="form-fields"
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
                               className="space-y-6 overflow-visible"
                             >
                               <div className="relative group">
@@ -300,108 +303,117 @@ export function CreditLeasingModal() {
                     </div>
 
                     {/* Catalog Side */}
-                    {isSearching && isPhoneFieldValid && (
-                      <div className="flex-1 w-full lg:max-h-[70vh] flex flex-col">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-white/90">Доступные автомобили</h3>
-                          <span className="text-xs text-[#555]">{filteredCars.length}</span>
-                        </div>
-
-                        {/* Mobile Catalog */}
-                        <div className="flex lg:hidden overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4">
-                          <div
-                              className={`flex-shrink-0 w-32 h-40 p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-2 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626]'}`}
-                              onClick={() => {
-                                  setSelectedCar(null)
-                                  setIsSearching(false)
-                                  setSearchQuery("")
-                              }}
-                          >
-                              <div className="text-orange-500 font-bold text-center text-sm">Своя сумма</div>
+                    <AnimatePresence>
+                      {isSearching && isPhoneFieldValid && (
+                        <motion.div
+                          initial={{ opacity: 0, x: 15 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 15 }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                          className="flex-1 w-full lg:max-h-[70vh] flex flex-col"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-white/90">Доступные автомобили</h3>
+                            <span className="text-xs text-[#555]">{filteredCars.length}</span>
                           </div>
-                          {filteredCars.map(car => (
-                              <div
-                                  key={car.id}
-                                  className={`flex-shrink-0 w-40 p-2 rounded-2xl border transition-all cursor-pointer ${selectedCar?.id === car.id ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626]'}`}
-                                  onClick={() => {
-                                      setSelectedCar(car)
-                                      setShowDetails(true)
-                                  }}
-                              >
-                                  <div className="w-full h-24 relative bg-zinc-900 rounded-xl overflow-hidden mb-2">
+
+                          {/* Mobile Catalog */}
+                          <div className="flex lg:hidden overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4">
+                            <div
+                                className={`flex-shrink-0 w-32 h-40 p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-2 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626]'}`}
+                                onClick={() => {
+                                    setSelectedCar(null)
+                                    setIsSearching(false)
+                                    setSearchQuery("")
+                                }}
+                            >
+                                <div className="text-orange-500 font-bold text-center text-sm">Своя сумма</div>
+                            </div>
+                            {filteredCars.map(car => (
+                                <div
+                                    key={car.id}
+                                    className={`flex-shrink-0 w-40 p-2 rounded-2xl border transition-all cursor-pointer ${selectedCar?.id === car.id ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626]'}`}
+                                    onClick={() => {
+                                        setSelectedCar(car)
+                                        setShowDetails(true)
+                                    }}
+                                >
+                                    <div className="w-full h-24 relative bg-zinc-900 rounded-xl overflow-hidden mb-2">
+                                        {car.imageUrls && car.imageUrls[0] ? (
+                                            <Image
+                                            src={getCachedImageUrl(car.imageUrls[0])}
+                                            alt={`${car.make} ${car.model}`}
+                                            fill
+                                            quality={40}
+                                            sizes="150px"
+                                            className="object-cover"
+                                            />
+                                        ) : null}
+                                    </div>
+                                    <div className="font-bold text-[10px] truncate mb-1">{car.make} {car.model}</div>
+                                    <div className="text-orange-500 font-bold text-xs">${car.price.toLocaleString()}</div>
+                                </div>
+                            ))}
+                          </div>
+
+                          {/* Desktop Catalog */}
+                          <div className="hidden lg:grid grid-cols-2 xl:grid-cols-3 gap-3 overflow-y-auto pr-2 custom-scrollbar">
+                            <div
+                            className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-2 h-40 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
+                            onClick={() => {
+                                setSelectedCar(null)
+                                setIsSearching(false)
+                                setSearchQuery("")
+                            }}
+                            >
+                              <div className="text-orange-500 font-bold text-lg">Своя сумма</div>
+                            </div>
+
+                            {filteredCars.map(car => (
+                            <div
+                                key={car.id}
+                                className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col gap-3 ${selectedCar?.id === car.id ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
+                                onClick={() => {
+                                    setSelectedCar(car)
+                                    setShowDetails(true)
+                                }}
+                            >
+                                  <div className="w-full h-28 relative bg-zinc-900 rounded-xl overflow-hidden shadow-inner">
                                       {car.imageUrls && car.imageUrls[0] ? (
                                           <Image
                                           src={getCachedImageUrl(car.imageUrls[0])}
                                           alt={`${car.make} ${car.model}`}
                                           fill
-                                          quality={40}
-                                          sizes="150px"
+                                          quality={50}
+                                          sizes="250px"
                                           className="object-cover"
                                           />
-                                      ) : null}
+                                      ) : (
+                                          <div className="w-full h-full flex items-center justify-center">
+                                              <Search className="h-5 w-5 text-zinc-800" />
+                                          </div>
+                                      )}
                                   </div>
-                                  <div className="font-bold text-[10px] truncate mb-1">{car.make} {car.model}</div>
-                                  <div className="text-orange-500 font-bold text-xs">${car.price.toLocaleString()}</div>
-                              </div>
-                          ))}
-                        </div>
-
-                        {/* Desktop Catalog */}
-                        <div className="hidden lg:grid grid-cols-2 xl:grid-cols-3 gap-3 overflow-y-auto pr-2 custom-scrollbar">
-                          <div
-                          className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-2 h-40 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
-                          onClick={() => {
-                              setSelectedCar(null)
-                              setIsSearching(false)
-                              setSearchQuery("")
-                          }}
-                          >
-                            <div className="text-orange-500 font-bold text-lg">Своя сумма</div>
+                                  <div>
+                                      <div className="font-bold text-xs truncate mb-1">{car.make} {car.model}</div>
+                                      <div className="text-orange-500 font-bold text-sm">
+                                          ${car.price.toLocaleString()}
+                                      </div>
+                                  </div>
+                            </div>
+                            ))}
                           </div>
-
-                          {filteredCars.map(car => (
-                          <div
-                              key={car.id}
-                              className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col gap-3 ${selectedCar?.id === car.id ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
-                              onClick={() => {
-                                  setSelectedCar(car)
-                                  setShowDetails(true)
-                              }}
-                          >
-                                <div className="w-full h-28 relative bg-zinc-900 rounded-xl overflow-hidden shadow-inner">
-                                    {car.imageUrls && car.imageUrls[0] ? (
-                                        <Image
-                                        src={getCachedImageUrl(car.imageUrls[0])}
-                                        alt={`${car.make} ${car.model}`}
-                                        fill
-                                        quality={50}
-                                        sizes="250px"
-                                        className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                            <Search className="h-5 w-5 text-zinc-800" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    <div className="font-bold text-xs truncate mb-1">{car.make} {car.model}</div>
-                                    <div className="text-orange-500 font-bold text-sm">
-                                        ${car.price.toLocaleString()}
-                                    </div>
-                                </div>
-                          </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 ) : (
                   <motion.div
                     key="details-view"
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                     className="w-full flex flex-col items-center"
                   >
                     {selectedCar && (
