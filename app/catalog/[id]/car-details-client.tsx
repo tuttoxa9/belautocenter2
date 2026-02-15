@@ -46,6 +46,7 @@ import {
   Check
 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
+import CarPrice from "@/components/car-price"
 import CarDetailsSkeleton from "@/components/car-details-skeleton"
 import MarkdownRenderer from "@/components/markdown-renderer"
 
@@ -842,26 +843,13 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                   </>
                 ) : (
                   <>
-                    <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-1 leading-tight">
-                      {car?.price ? new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                        minimumFractionDigits: 0,
-                      }).format(car.price) : 'Цена по запросу'}
-                    </div>
-                    {car?.price && (
-                      usdBynRate ? (
-                        <div className="text-sm sm:text-base lg:text-lg font-semibold text-slate-600 dark:text-gray-400">
-                          ≈ {new Intl.NumberFormat("ru-BY", {
-                            style: "currency",
-                            currency: "BYN",
-                            minimumFractionDigits: 0,
-                          }).format(car.price * usdBynRate)}
-                        </div>
-                      ) : (
-                        <div className="h-5 w-32 bg-slate-200 dark:bg-gray-700 rounded animate-pulse mt-1 ml-auto"></div>
-                      )
-                    )}
+                    <CarPrice
+                      carId={carId}
+                      initialPrice={car?.price || 0}
+                      className="items-end"
+                      priceClassName="text-lg sm:text-2xl lg:text-3xl leading-tight"
+                      showByn={true}
+                    />
                     <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-500 mt-1">
                       от {car?.price ? new Intl.NumberFormat("en-US", {
                         style: "currency",

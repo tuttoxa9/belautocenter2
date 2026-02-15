@@ -55,6 +55,7 @@ export async function generateMetadata(
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
       },
+      cache: 'force-cache',
       next: { tags: ['cars-list', `car-${params.id}`] }
     })
 
@@ -168,6 +169,7 @@ async function getCarData(carId: string) {
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
       },
+      cache: 'force-cache',
       next: { tags: ['cars-list', `car-${carId}`] }
     })
 

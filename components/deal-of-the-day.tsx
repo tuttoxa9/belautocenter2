@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Clock, Gauge, Calendar, Fuel, Wallet, ChevronRight } from "lucide-react"
 import { BlurImage } from "@/components/ui/blur-image"
+import CarPrice from "@/components/car-price"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useCreditCalculator } from "@/hooks/use-credit-calculator"
 import DealOfTheDaySkeleton from "@/components/deal-of-the-day-skeleton"
@@ -193,7 +194,12 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
                   <div className="flex items-center gap-2 mb-1 text-gray-500 dark:text-gray-400 text-xs font-medium uppercase">
                     <Wallet className="w-3.5 h-3.5" /> Цена
                   </div>
-                  <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{formatPrice(dealCar.price)}</div>
+                  <CarPrice
+                    carId={dealCar.id}
+                    initialPrice={dealCar.price}
+                    priceClassName="text-lg text-blue-600 dark:text-blue-400"
+                    showByn={false}
+                  />
                </div>
             </div>
 
@@ -224,7 +230,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
               className="w-full bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 font-bold text-lg h-14 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 flex items-center justify-between px-8 group/btn"
               asChild
             >
-              <Link href={`/catalog/${dealCar.id}`}>
+              <Link href={`/catalog/${dealCar.id}`} prefetch={false}>
                 <span>Смотреть детали</span>
                 <ChevronRight className="w-6 h-6 group-hover/btn:translate-x-1 transition-transform" />
               </Link>

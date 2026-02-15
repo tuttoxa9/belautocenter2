@@ -115,7 +115,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md dark:shadow-gray-950">
       <div className="container flex h-14 items-center justify-between px-2 md:px-4">
         {/* Логотип слева на всех устройствах */}
-        <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={true}>
+        <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={false}>
           <Image
             src="/logo4.png"
             alt="Белавто Центр"
@@ -212,7 +212,7 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    prefetch={true}
+                    prefetch={false}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center px-4 py-3 mx-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors ${
                       isActive ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' : ''
@@ -307,7 +307,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                prefetch={true}
+                prefetch={false}
                 className={`text-sm font-bold tracking-wide transition-colors whitespace-nowrap px-2 py-2 rounded-md ${
                   pathname === item.href
                     ? "bg-blue-600 text-white"

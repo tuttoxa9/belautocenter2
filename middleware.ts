@@ -42,10 +42,16 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPublicPage) {
-    // max-age - для браузера (5 минут)
-    // must-revalidate - заставляет CDN/Браузер проверять свежесть кэша
-    // Мы убираем s-maxage, чтобы Vercel и Cloudflare полагались на ISR и явную очистку кэша
-    response.headers.set('Cache-Control', 'public, max-age=300, must-revalidate')
+    // Для страниц каталога и авто применяем жесткую политику актуализации цен
+    if (pathname.startsWith('/catalog')) {
+      // Браузер никогда не кэширует, всегда запрашивает сервер (для актуальных цен)
+      response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+      // Vercel CDN кэширует "вечно" до ручной инвалидации (экономия лимитов Firebase)
+      response.headers.set('CDN-Cache-Control', 'public, s-maxage=31536000')
+    } else {
+      // Для остальных публичных страниц - стандартное кэширование
+      response.headers.set('Cache-Control', 'public, max-age=300, must-revalidate')
+    }
     response.headers.set('Vary', 'Accept-Encoding')
   }
 
