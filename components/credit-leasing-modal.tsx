@@ -194,9 +194,10 @@ export function CreditLeasingModal() {
                 {!showDetails ? (
                   <motion.div
                     key="catalog-view"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full flex flex-col lg:flex-row gap-12 items-start justify-center"
                   >
                     {/* Form Side */}
@@ -313,10 +314,10 @@ export function CreditLeasingModal() {
                     {/* Catalog Side */}
                     {isSearching && isPhoneFieldValid && (
                       <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                         className="flex-1 w-full lg:max-h-[70vh] flex flex-col space-y-4"
                       >
                         {/* "Своя сумма" вынесена отдельно */}
@@ -419,10 +420,10 @@ export function CreditLeasingModal() {
                 ) : (
                   <motion.div
                     key="details-view"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full flex flex-col items-center"
                   >
                     {selectedCar && (
