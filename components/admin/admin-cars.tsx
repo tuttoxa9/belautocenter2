@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
+import { revalidateCar } from "@/app/actions/revalidate"
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
@@ -113,10 +114,14 @@ export default function AdminCars() {
         await updateDoc(doc(db, "cars", editingCar.id), carData)
         carId = editingCar.id
         await cacheInvalidator.onUpdate(carId)
+        // Вызываем On-Demand Revalidation
+        await revalidateCar(carId)
       } else {
         const docRef = await addDoc(collection(db, "cars"), carData)
         carId = docRef.id
         await cacheInvalidator.onCreate(carId)
+        // Вызываем On-Demand Revalidation
+        await revalidateCar(carId)
       }
 
       setIsSheetOpen(false)
@@ -154,6 +159,8 @@ export default function AdminCars() {
       try {
         await deleteDoc(doc(db, "cars", carId))
         await cacheInvalidator.onDelete(carId)
+        // Вызываем On-Demand Revalidation
+        await revalidateCar(carId)
         loadCars()
       } catch (error) {
         alert("Ошибка удаления автомобиля")

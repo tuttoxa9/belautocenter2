@@ -1,12 +1,11 @@
-// Cloudflare Worker для BelAutoCenter – ОПТИМИЗИРОВАННАЯ ВЕРСИЯ v3.0
-// Обновлено: точечная очистка кэша, ISR совместимость, улучшенное логирование
+// Cloudflare Worker для BelAutoCenter – ВЕРСИЯ ДЛЯ МЕДИА (R2)
+// Обновлено: удалено проксирование Firestore, оставлено только управление изображениями
 
 // ====================================================================================
 // 1. ОСНОВНЫЕ ХЕЛПЕРЫ И КОНСТАНТЫ
 // ====================================================================================
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
-const API_CACHE_TTL_SECONDS = 86400; // 24 часа для данных Firestore API
 const IMAGE_CACHE_TTL_SECONDS = 2592000; // 30 дней для изображений в R2
 const GOOGLE_JWKS_URL = "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com";
 
@@ -37,7 +36,7 @@ function handleCors(request) {
 }
 
 // ====================================================================================
-// 2. ВЕРИФИКАЦИЯ FIREBASE AUTH JWT
+// 2. ВЕРИФИКАЦИЯ FIREBASE AUTH JWT (для защиты загрузки)
 // ====================================================================================
 
 async function fetchJWKS(cache, ctx) { const cached = await cache.match(GOOGLE_JWKS_URL); if (cached) return cached.json(); const res = await fetch(GOOGLE_JWKS_URL, { cf: { cacheTtl: 3600, cacheEverything: true } }); if (!res.ok) throw new Error("Failed to fetch Google JWKS"); const jwks = await res.json(); const cacheableResponse = new Response(JSON.stringify(jwks), { headers: JSON_HEADERS }); try { ctx.waitUntil(cache.put(GOOGLE_JWKS_URL, cacheableResponse)); } catch(e) { console.error("Failed to cache JWKS:", e); } return jwks; }
@@ -48,75 +47,11 @@ async function verifyFirebaseIdToken(token, projectId, cache, ctx) { const { hea
 function withAuth(handler) { return async (request, env, ctx) => { try { const authHeader = request.headers.get("Authorization"); if (!authHeader || !authHeader.startsWith("Bearer ")) return error(401, "Missing or invalid Authorization header"); const token = authHeader.substring(7); const decodedToken = await verifyFirebaseIdToken(token, env.FIREBASE_PROJECT_ID, caches.default, ctx); request.firebaseUser = decodedToken; return handler(request, env, ctx); } catch (e) { console.error("Auth verification failed:", e); return error(403, "Forbidden", { details: e.message }); } }; }
 
 // ====================================================================================
-// 3. ХЕЛПЕРЫ ДЛЯ КЭША И ОЧИСТКИ
-// ====================================================================================
-
-function cacheKey(request) { const url = new URL(request.url); url.hash = ""; return new Request(url.toString(), { headers: request.headers, method: 'GET' }); }
-async function cacheGetOrSet(request, ctx, computeResponse) {
-  const key = cacheKey(request);
-  const cache = caches.default;
-  const cachedResponse = await cache.match(key);
-
-  if (cachedResponse) {
-    console.log(`[CACHE HIT] ${request.url}`);
-    return cachedResponse;
-  }
-
-  console.log(`[CACHE MISS] ${request.url}`);
-  const freshResponse = await computeResponse();
-
-  if (freshResponse.status === 200) {
-    freshResponse.headers.set("Cache-Control", `public, max-age=${API_CACHE_TTL_SECONDS}`);
-    freshResponse.headers.set("X-Cache-Status", "MISS");
-    freshResponse.headers.set("X-Cache-TTL", API_CACHE_TTL_SECONDS.toString());
-    ctx.waitUntil(cache.put(key, freshResponse.clone()));
-  }
-
-  return freshResponse;
-}
-async function purgeCacheByUrls(env, urls = []) {
-  if (!urls.length) {
-    console.log('[CACHE PURGE] No URLs provided, skipping');
-    return;
-  }
-
-  if (!env.CLOUDFLARE_API_TOKEN || !env.CLOUDFLARE_ZONE_ID) {
-    console.warn('[CACHE PURGE] Missing Cloudflare credentials, skipping');
-    return;
-  }
-
-  try {
-    console.log(`[CACHE PURGE] Purging ${urls.length} URLs:`, urls);
-
-    const endpoint = `https://api.cloudflare.com/client/v4/zones/${env.CLOUDFLARE_ZONE_ID}/purge_cache`;
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${env.CLOUDFLARE_API_TOKEN}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ files: urls })
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      console.log('[CACHE PURGE] Success:', result);
-    } else {
-      console.error('[CACHE PURGE] Failed:', result);
-    }
-  } catch (e) {
-    console.error('[CACHE PURGE] Error:', e);
-  }
-}
-
-// ====================================================================================
-// 4. БИЗНЕС-ЛОГИКА (R2 + FIRESTORE PROXY)
+// 3. БИЗНЕС-ЛОГИКА (R2)
 // ====================================================================================
 
 /**
  * Обработчик для получения файлов из R2.
- * Просто отдает закэшированный или свежий файл из бакета.
  */
 async function handleGetImage(request, env, ctx) {
     const cache = caches.default;
@@ -132,7 +67,6 @@ async function handleGetImage(request, env, ctx) {
         console.log(`Cache HIT for image: ${path}`);
         return response;
     }
-    console.log(`Cache MISS for image: ${path}`);
 
     const object = await env.IMAGE_BUCKET.get(path);
     if (object === null) {
@@ -154,8 +88,7 @@ async function handleGetImage(request, env, ctx) {
 }
 
 /**
- * Обработчик для загрузки файлов в R2 с опциональной конвертацией в WebP.
- * Конвертация происходит один раз - при загрузке.
+ * Обработчик для загрузки файлов в R2.
  */
 async function handleUpload(request, env) {
     if (request.method !== 'POST') return error(405, 'Method Not Allowed');
@@ -177,7 +110,6 @@ async function handleUpload(request, env) {
         let finalContentType = file.type;
 
         if (shouldConvertToWebP) {
-            console.log(`Attempting to convert ${file.name} to WebP...`);
             finalPath = path.replace(/\.[^.]+$/, '.webp');
             finalContentType = 'image/webp';
 
@@ -191,14 +123,14 @@ async function handleUpload(request, env) {
                 cf: { image: { format: 'webp', quality: 85 } }
             });
 
-            if (!conversionResponse.ok) {
-                throw new Error(`Image conversion failed with status: ${conversionResponse.status}`);
+            if (conversionResponse.ok) {
+                fileBodyToUpload = conversionResponse.body;
+            } else {
+                console.warn("WebP conversion failed, using original file");
+                finalPath = path;
+                finalContentType = file.type;
+                fileBodyToUpload = file.stream();
             }
-
-            console.log(`Successfully converted ${file.name} to WebP.`);
-            fileBodyToUpload = conversionResponse.body;
-        } else {
-            console.log(`Uploading ${file.name} (${file.type}) without conversion.`);
         }
 
         await env.IMAGE_BUCKET.put(finalPath, fileBodyToUpload, {
@@ -208,8 +140,7 @@ async function handleUpload(request, env) {
         return json({
             success: true,
             path: finalPath,
-            convertedToWebP: shouldConvertToWebP,
-            originalType: file.type,
+            convertedToWebP: shouldConvertToWebP && finalContentType === 'image/webp',
             savedAs: finalContentType,
         });
 
@@ -226,68 +157,14 @@ async function handleDeleteImage(request, env) {
         if (!path) return error(400, 'Требуется поле "path"');
 
         await env.IMAGE_BUCKET.delete(path);
-
-        console.log(`Deleted file from R2: ${path}`);
         return json({ success: true, path: path });
     } catch(e) {
         return error(400, `Invalid delete request: ${e.message}`);
     }
 }
 
-/** Прокси для запросов к Firestore API с кэшированием и очисткой */
-async function proxyFirestore(request, env, ctx) {
-    const url = new URL(request.url);
-    const firebaseUrl = `https://firestore.googleapis.com/v1/projects/${env.FIREBASE_PROJECT_ID}/databases/(default)/documents${url.pathname}${url.search}`;
-
-    console.log(`[FIRESTORE PROXY] ${request.method} ${url.pathname}`);
-
-    if (request.method === 'GET') {
-        const cachedResponse = await cacheGetOrSet(request, ctx, () => fetch(new Request(firebaseUrl, request)));
-
-        // Добавляем заголовок для отслеживания
-        const newHeaders = new Headers(cachedResponse.headers);
-        newHeaders.set('X-Cache-Status', 'HIT');
-
-        return new Response(cachedResponse.body, {
-            status: cachedResponse.status,
-            statusText: cachedResponse.statusText,
-            headers: newHeaders
-        });
-    }
-
-    // Для мутаций (POST, PUT, DELETE)
-    const response = await fetch(new Request(firebaseUrl, request));
-
-    if (response.ok) {
-        console.log(`[FIRESTORE PROXY] Mutation successful, purging cache...`);
-
-        // Собираем все URL для очистки
-        const urlsToPurge = [];
-
-        // 1. Очищаем конкретный документ
-        const docUrl = `https://${url.hostname}${url.pathname}`;
-        urlsToPurge.push(docUrl);
-
-        // 2. Очищаем коллекцию
-        const parts = url.pathname.split('/').filter(p => p);
-        if (parts.length >= 1) {
-            const collectionUrl = `https://${url.hostname}/${parts[0]}`;
-            urlsToPurge.push(collectionUrl);
-        }
-
-        console.log(`[CACHE PURGE] Will purge:`, urlsToPurge);
-        ctx.waitUntil(purgeCacheByUrls(env, urlsToPurge));
-    }
-
-    return new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers
-    });
-}
-
 // ====================================================================================
-// 5. ГЛАВНЫЙ ОБРАБОТЧИК FETCH (РОУТЕР)
+// 4. ГЛАВНЫЙ ОБРАБОТЧИК FETCH (РОУТЕР)
 // ====================================================================================
 
 export default {
@@ -299,10 +176,9 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Роутер запросов
-    // 1. Запросы на файлы из R2 (GET с расширением)
-    const isFileRequest = request.method === 'GET' && /\.(jpg|jpeg|png|webp|gif|svg|pdf|doc|docx)$/i.test(path);
-    if (isFileRequest) {
+    // 1. Запросы на файлы из R2 (GET)
+    if (request.method === 'GET') {
+      // Кэшируем любые GET запросы к воркеру как запросы к изображениям в R2
       return handleGetImage(request, env, ctx);
     }
 
@@ -314,13 +190,6 @@ export default {
       return withAuth(handleDeleteImage)(request, env, ctx);
     }
 
-    // 3. Все остальные запросы проксируются в Firestore
-    if (request.method !== 'GET') {
-      // Защищаем все изменяющие запросы к Firestore
-      return withAuth(proxyFirestore)(request, env, ctx);
-    } else {
-      // Разрешаем публичные, кэшируемые GET-запросы к Firestore
-      return proxyFirestore(request, env, ctx);
-    }
+    return error(404, "Not Found");
   }
 }
