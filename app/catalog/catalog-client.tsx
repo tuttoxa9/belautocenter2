@@ -407,7 +407,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       <div className="container px-4 py-8">
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-            <li><Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={true}>Главная</Link></li>
+            <li><Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={false}>Главная</Link></li>
             <li><ArrowRight className="h-3 w-3" /></li>
             <li className="text-gray-900 dark:text-white font-medium">Каталог</li>
           </ol>

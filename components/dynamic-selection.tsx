@@ -182,7 +182,7 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
                         Мы постоянно обновляем наш каталог. Попробуйте выбрать другую категорию или посмотрите все автомобили.
                       </p>
                       <Button variant="outline" className="mt-6 rounded-xl" asChild>
-                        <Link href="/catalog">Перейти в каталог</Link>
+                        <Link href="/catalog" prefetch={false}>Перейти в каталог</Link>
                       </Button>
                     </div>
                   )}
@@ -204,7 +204,7 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
                         В этой категории пока нет авто.
                       </p>
                       <Button variant="outline" size="sm" className="mt-4 rounded-xl" asChild>
-                        <Link href="/catalog">В каталог</Link>
+                        <Link href="/catalog" prefetch={false}>В каталог</Link>
                       </Button>
                     </div>
                   )}
@@ -216,7 +216,7 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
                       className="gap-2 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-xl px-8 py-6 text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
                       asChild
                     >
-                      <Link href="/catalog">
+                      <Link href="/catalog" prefetch={false}>
                         Смотреть все предложения <ArrowRight className="w-5 h-5" />
                       </Link>
                     </Button>
@@ -230,7 +230,7 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
                       className="gap-2 rounded-xl px-6 py-5 text-sm font-semibold w-full max-w-xs"
                       asChild
                     >
-                      <Link href="/catalog">
+                      <Link href="/catalog" prefetch={false}>
                         Смотреть все <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>

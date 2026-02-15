@@ -9,6 +9,7 @@ import { useState, useEffect, useMemo } from "react"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useIntersectionObserverV2 } from "@/hooks/use-intersection-observer"
 import { BlurImage } from "@/components/ui/blur-image"
+import CarPrice from "@/components/car-price"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn, cn } from "@/lib/utils"
 
@@ -72,7 +73,7 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
 
   return (
     <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/60 rounded-2xl h-full group transition-all duration-200 dark:border dark:border-gray-800">
-      <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={true}>
+      <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={false}>
         {/* Image Section */}
         <div className="relative">
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-800/90 dark:to-black/90 rounded-t-2xl h-56">
@@ -148,14 +149,13 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                     </span>
                   )}
                 </div>
-                <div className="font-bold text-slate-900 dark:text-white text-lg">
-                  {car?.price ? formattedPrice : 'Цена по запросу'}
-                </div>
-                {usdBynRate && car?.price && (
-                  <div className="text-xs text-slate-500 dark:text-gray-400 font-medium">
-                    ≈ {convertUsdToByn(car.price, usdBynRate)} BYN
-                  </div>
-                )}
+                <CarPrice
+                  carId={car.id}
+                  initialPrice={car.price}
+                  className="mb-1"
+                  priceClassName="text-lg"
+                  showByn={true}
+                />
               </div>
 
               {/* Specs - более компактные */}
