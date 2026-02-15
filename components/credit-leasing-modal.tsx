@@ -156,8 +156,8 @@ export function CreditLeasingModal() {
         >
           {/* Intense Halo Background */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-[radial-gradient(circle,rgba(249,115,22,0.18)_0%,transparent_70%)] blur-[50px]" />
-             <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] bg-[radial-gradient(circle,rgba(249,115,22,0.05)_0%,transparent_70%)] blur-[80px]" />
+             <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-[radial-gradient(circle,rgba(249,115,22,0.2)_0%,transparent_70%)] blur-[50px]" />
+             <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] bg-[radial-gradient(circle,rgba(249,115,22,0.06)_0%,transparent_70%)] blur-[80px]" />
           </div>
 
           {/* Controls */}
@@ -176,7 +176,7 @@ export function CreditLeasingModal() {
             </button>
           </div>
 
-          {/* Content */}
+          {/* Content Area */}
           <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-12 custom-scrollbar">
             <div className={`w-full mx-auto transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
 
@@ -186,8 +186,8 @@ export function CreditLeasingModal() {
                     key="catalog-view"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.3 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full flex flex-col lg:flex-row gap-12 items-start justify-center"
                   >
                     {/* Form Side */}
@@ -306,10 +306,10 @@ export function CreditLeasingModal() {
                     <AnimatePresence>
                       {isSearching && isPhoneFieldValid && (
                         <motion.div
-                          initial={{ opacity: 0, x: 15 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 15 }}
-                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                          initial={{ opacity: 0, y: 40, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 40, scale: 0.98 }}
+                          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                           className="flex-1 w-full lg:max-h-[70vh] flex flex-col"
                         >
                           <div className="flex items-center justify-between mb-4">
@@ -410,10 +410,10 @@ export function CreditLeasingModal() {
                 ) : (
                   <motion.div
                     key="details-view"
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -30 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
                     className="w-full flex flex-col items-center"
                   >
                     {selectedCar && (
