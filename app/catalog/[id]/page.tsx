@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
-// ISR: кэширование на 24 часа
-export const revalidate = 86400
+// ISR: On-Demand Revalidation используется через теги
+// export const revalidate = 86400
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -54,7 +54,8 @@ export async function generateMetadata(
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
-      }
+      },
+      next: { tags: ['cars-list', `car-${params.id}`] }
     })
 
     if (!response.ok) {
@@ -167,7 +168,7 @@ async function getCarData(carId: string) {
         'Content-Type': 'application/json',
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
       },
-      next: { revalidate: 86400 }
+      next: { tags: ['cars-list', `car-${carId}`] }
     })
 
     if (!response.ok) {

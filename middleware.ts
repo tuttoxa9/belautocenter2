@@ -42,15 +42,11 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPublicPage) {
-    // s-maxage - для Vercel Edge Cache и Cloudflare (24 часа)
-    // stale-while-revalidate - позволяет показывать старую версию пока обновляется новая (1 час)
-    // max-age - для браузера (5 минут, чтобы пользователи видели относительно свежие данные)
-    // CDN-Cache-Control - специально для Cloudflare CDN (24 часа)
-    //
-    // ✅ При изменении данных в админке кэш автоматически очищается через cacheInvalidator
-    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=3600')
+    // max-age - для браузера (5 минут)
+    // must-revalidate - заставляет CDN/Браузер проверять свежесть кэша
+    // Мы убираем s-maxage, чтобы Vercel и Cloudflare полагались на ISR и явную очистку кэша
+    response.headers.set('Cache-Control', 'public, max-age=300, must-revalidate')
     response.headers.set('Vary', 'Accept-Encoding')
-    response.headers.set('CDN-Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600')
   }
 
   return response

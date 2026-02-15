@@ -1,7 +1,7 @@
 import CatalogClient from './catalog-client'
 
-// ISR: кэширование на 24 часа
-export const revalidate = 86400
+// ISR: On-Demand Revalidation используется через теги
+// export const revalidate = 86400
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -59,7 +59,7 @@ export default async function CatalogPage() {
           'Content-Type': 'application/json',
           'User-Agent': 'NextJS-Direct-Firestore/1.0'
         },
-        next: { revalidate: 86400 }
+        next: { tags: ['cars-list'] }
       })
 
       if (response.ok) {
