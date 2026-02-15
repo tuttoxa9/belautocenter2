@@ -29,6 +29,11 @@ interface Car {
   transmission: string
 }
 
+interface Partner {
+  name: string
+  logoUrl: string
+}
+
 export function CreditLeasingModal() {
   const { isOpen, type, closeModal } = useCreditLeasingModal()
   const { showSuccess } = useNotification()
@@ -40,9 +45,9 @@ export function CreditLeasingModal() {
   const [isImageLoading, setIsImageLoading] = useState(true)
   const [cars, setCars] = useState<Car[]>([])
   const [filteredCars, setFilteredCars] = useState<Car[]>([])
+  const [partners, setPartners] = useState<Partner[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
 
   const isPhoneFieldValid = isPhoneValid(phone)
   const isLeasing = type === "leasing"
@@ -50,6 +55,7 @@ export function CreditLeasingModal() {
   useEffect(() => {
     if (isOpen) {
       loadCars()
+      loadPartners()
       document.body.style.overflow = "hidden"
     } else {
       document.body.style.overflow = "unset"
@@ -59,18 +65,14 @@ export function CreditLeasingModal() {
       setIsSearching(false)
       setShowDetails(false)
     }
-  }, [isOpen])
+  }, [isOpen, type])
 
   // Reset image loading state when a new car is selected
-  // and scroll to top when view changes
   useEffect(() => {
     if (selectedCar) {
       setIsImageLoading(true)
     }
-    if (contentRef.current) {
-        contentRef.current.scrollTop = 0
-    }
-  }, [selectedCar, showDetails])
+  }, [selectedCar])
 
   const loadCars = async () => {
     try {
@@ -79,6 +81,19 @@ export function CreditLeasingModal() {
       setCars(availableCars)
     } catch (error) {
       console.error("Error loading cars:", error)
+    }
+  }
+
+  const loadPartners = async () => {
+    try {
+      const pageId = isLeasing ? "leasing" : "credit"
+      const data = await firestoreApi.getDocument("pages", pageId)
+      if (data) {
+        const partnerList = isLeasing ? data.leasingCompanies : data.partners
+        setPartners(partnerList || [])
+      }
+    } catch (error) {
+      console.error("Error loading partners:", error)
     }
   }
 
@@ -137,9 +152,10 @@ export function CreditLeasingModal() {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden"
         >
-          {/* Halo Background Effect */}
+          {/* Enhanced Halo Background Effect */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.15)_0%,transparent_70%)] blur-[60px]" />
+             <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1200px] h-[900px] bg-[radial-gradient(circle,rgba(249,115,22,0.22)_0%,transparent_70%)] blur-[80px]" />
+             <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.05)_0%,transparent_70%)] blur-[100px]" />
           </div>
 
           {/* Controls (No header bar) */}
@@ -153,7 +169,7 @@ export function CreditLeasingModal() {
           </div>
 
           {/* Content Area */}
-          <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-8 custom-scrollbar scroll-smooth">
+          <div className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-8 custom-scrollbar">
             <div className={`w-full mx-auto mt-4 md:mt-8 transition-all duration-500 ease-in-out ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
 
               <AnimatePresence mode="wait" initial={false}>
@@ -257,6 +273,26 @@ export function CreditLeasingModal() {
                             </motion.div>
                           )}
                         </AnimatePresence>
+
+                        {/* Partners Section */}
+                        {partners.length > 0 && (
+                          <div className="pt-12">
+                            <h3 className="text-xs font-bold text-[#8e8e8e] uppercase tracking-widest mb-6">
+                              {isLeasing ? 'Партнеры по лизингу' : 'Банки-партнеры'}
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4 items-center justify-items-center opacity-40 hover:opacity-100 transition-opacity duration-500">
+                              {partners.map((partner, index) => (
+                                <div key={index} className="w-20 h-12 relative grayscale hover:grayscale-0 transition-all duration-300">
+                                  <img
+                                    src={getCachedImageUrl(partner.logoUrl)}
+                                    alt={partner.name}
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
