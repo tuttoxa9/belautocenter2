@@ -154,10 +154,10 @@ export function CreditLeasingModal() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden font-sans"
         >
-          {/* Intense Halo Background */}
+          {/* Enhanced Halo Background */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-[radial-gradient(circle,rgba(249,115,22,0.2)_0%,transparent_70%)] blur-[50px]" />
-             <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] bg-[radial-gradient(circle,rgba(249,115,22,0.06)_0%,transparent_70%)] blur-[80px]" />
+             <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-[radial-gradient(circle,rgba(249,115,22,0.25)_0%,transparent_70%)] blur-[60px]" />
+             <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] bg-[radial-gradient(circle,rgba(249,115,22,0.1)_0%,transparent_70%)] blur-[80px]" />
           </div>
 
           {/* Controls */}
@@ -177,8 +177,8 @@ export function CreditLeasingModal() {
           </div>
 
           {/* Content Area */}
-          <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-12 custom-scrollbar">
-            <div className={`w-full mx-auto transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
+          <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-12 custom-scrollbar scroll-smooth">
+            <div className={`w-full mx-auto mt-4 md:mt-8 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
 
               <AnimatePresence mode="wait" initial={false}>
                 {!showDetails ? (
@@ -282,19 +282,23 @@ export function CreditLeasingModal() {
                           )}
                         </AnimatePresence>
 
-                        {/* Partners */}
+                        {/* Partners Section with Hover Effects */}
                         {partners.length > 0 && (
                           <div className="pt-12">
                             <h3 className="text-[10px] font-bold text-[#444] uppercase tracking-widest mb-6 text-center">Наши партнеры</h3>
-                            <div className="grid grid-cols-3 gap-6 items-center justify-items-center opacity-40">
+                            <div className="grid grid-cols-3 gap-6 items-center justify-items-center">
                               {partners.slice(0, 6).map((partner, index) => (
-                                <div key={index} className="w-16 h-8 relative grayscale">
+                                <motion.div
+                                    key={index}
+                                    whileHover={{ scale: 1.05 }}
+                                    className="w-16 h-8 relative opacity-40 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0"
+                                >
                                   <img
                                     src={getCachedImageUrl(partner.logoUrl)}
                                     alt={partner.name}
                                     className="w-full h-full object-contain"
                                   />
-                                </div>
+                                </motion.div>
                               ))}
                             </div>
                           </div>
@@ -306,10 +310,10 @@ export function CreditLeasingModal() {
                     <AnimatePresence>
                       {isSearching && isPhoneFieldValid && (
                         <motion.div
-                          initial={{ opacity: 0, y: 40, scale: 0.98 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 40, scale: 0.98 }}
-                          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.3 }}
                           className="flex-1 w-full lg:max-h-[70vh] flex flex-col"
                         >
                           <div className="flex items-center justify-between mb-4">
@@ -413,7 +417,7 @@ export function CreditLeasingModal() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full flex flex-col items-center"
                   >
                     {selectedCar && (
@@ -501,11 +505,11 @@ export function CreditLeasingModal() {
             {/* Footer */}
             <div className="mt-auto pt-20 text-center space-y-4">
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[11px] text-[#444] font-medium">
-                <Link href="/" onClick={closeModal} className="hover:text-white">Главная</Link>
-                <Link href="/catalog" onClick={closeModal} className="hover:text-white">Каталог</Link>
-                <Link href="/about" onClick={closeModal} className="hover:text-white">О нас</Link>
-                <Link href="/contacts" onClick={closeModal} className="hover:text-white">Контакты</Link>
-                <Link href="/privacy" onClick={closeModal} className="hover:text-white">Конфиденциальность</Link>
+                <Link href="/" onClick={closeModal} className="hover:text-white transition-colors">Главная</Link>
+                <Link href="/catalog" onClick={closeModal} className="hover:text-white transition-colors">Каталог</Link>
+                <Link href="/about" onClick={closeModal} className="hover:text-white transition-colors">О нас</Link>
+                <Link href="/contacts" onClick={closeModal} className="hover:text-white transition-colors">Контакты</Link>
+                <Link href="/privacy" onClick={closeModal} className="hover:text-white transition-colors">Конфиденциальность</Link>
               </div>
               <p className="text-[10px] text-[#333] tracking-[0.3em] font-bold">© 2026 BELAUTOCENTER</p>
             </div>
