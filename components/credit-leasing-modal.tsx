@@ -48,6 +48,7 @@ export function CreditLeasingModal() {
   const [partners, setPartners] = useState<Partner[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const isPhoneFieldValid = isPhoneValid(phone)
   const isLeasing = type === "leasing"
@@ -67,12 +68,14 @@ export function CreditLeasingModal() {
     }
   }, [isOpen, type])
 
-  // Reset image loading state when a new car is selected
   useEffect(() => {
     if (selectedCar) {
       setIsImageLoading(true)
     }
-  }, [selectedCar])
+    if (contentRef.current) {
+        contentRef.current.scrollTop = 0
+    }
+  }, [selectedCar, showDetails])
 
   const loadCars = async () => {
     try {
@@ -127,7 +130,7 @@ export function CreditLeasingModal() {
         body: JSON.stringify(data),
       })
 
-      showSuccess(`Заявка на ${isLeasing ? 'лизинг' : 'кредит'} успешно отправлена! Мы свяжемся с вами.`)
+      showSuccess(`Заявка на ${isLeasing ? 'лизинг' : 'кредит'} успешно отправлена!`)
       closeModal()
     } catch (error) {
       console.error("Error submitting:", error)
@@ -146,48 +149,51 @@ export function CreditLeasingModal() {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden font-sans"
         >
-          {/* Enhanced Halo Background Effect */}
+          {/* Subtle Halo Background */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1200px] h-[900px] bg-[radial-gradient(circle,rgba(249,115,22,0.22)_0%,transparent_70%)] blur-[80px]" />
-             <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.05)_0%,transparent_70%)] blur-[100px]" />
+             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.08)_0%,transparent_70%)] blur-[40px]" />
           </div>
 
-          {/* Controls (No header bar) */}
+          {/* Controls */}
           <div className="relative z-20 p-4 flex items-center justify-between pointer-events-none">
-            <button onClick={showDetails ? () => setShowDetails(false) : closeModal} className="p-2 hover:opacity-70 transition-opacity pointer-events-auto">
+            <button
+                onClick={showDetails ? () => setShowDetails(false) : closeModal}
+                className="p-2 hover:opacity-70 transition-opacity pointer-events-auto"
+            >
               <ChevronLeft className="h-8 w-8" />
             </button>
-            <button onClick={closeModal} className="p-2 hover:opacity-70 transition-opacity pointer-events-auto">
+            <button
+                onClick={closeModal}
+                className="p-2 hover:opacity-70 transition-opacity pointer-events-auto"
+            >
               <X className="h-8 w-8" />
             </button>
           </div>
 
-          {/* Content Area */}
-          <div className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-8 custom-scrollbar">
-            <div className={`w-full mx-auto mt-4 md:mt-8 transition-all duration-500 ease-in-out ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
+          {/* Content */}
+          <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-12 custom-scrollbar">
+            <div className={`w-full mx-auto transition-all duration-500 ease-in-out ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
 
-              <AnimatePresence mode="wait" initial={false}>
+              <AnimatePresence mode="wait">
                 {!showDetails ? (
                   <motion.div
                     key="catalog-view"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                     className="w-full flex flex-col lg:flex-row gap-12 items-start justify-center"
                   >
-                    {/* Form Section */}
+                    {/* Form Side */}
                     <div className={`w-full flex flex-col transition-all duration-500 ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
-                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-2">
-                        Давайте подадим заявку на одобрение {isLeasing ? 'лизинга' : 'кредита'}
+                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
+                        Подать заявку на {isLeasing ? 'лизинг' : 'кредит'}
                       </h1>
-                      <p className="text-[#a8a8a8] text-[14px] md:text-[16px] leading-snug mb-8">
+                      <p className="text-[#a8a8a8] text-sm leading-snug mb-8">
                         Нам понадобится ваш номер телефона
                       </p>
 
@@ -198,19 +204,19 @@ export function CreditLeasingModal() {
                             value={phone}
                             onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
                             placeholder="Номер мобильного телефона"
-                            className="bg-[#121212] border-[#262626] text-white h-12 rounded-xl focus:ring-1 focus:ring-orange-500/50 placeholder:text-[#8e8e8e] text-base"
+                            className="bg-[#121212] border-[#262626] text-white h-12 rounded-xl focus:ring-1 focus:ring-orange-500/50 placeholder:text-[#555] text-base"
                           />
                           {isPhoneFieldValid && (
                             <CheckCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
                           )}
                         </div>
 
-                        <AnimatePresence mode="wait">
+                        <AnimatePresence>
                           {isPhoneFieldValid && (
                             <motion.div
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="space-y-6"
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              className="space-y-6 overflow-visible"
                             >
                               <div className="relative group">
                                 {!selectedCar && !isSearching ? (
@@ -219,9 +225,9 @@ export function CreditLeasingModal() {
                                       setIsSearching(true)
                                       setTimeout(() => searchInputRef.current?.focus(), 100)
                                     }}
-                                    className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a] transition-colors text-base"
+                                    className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a] transition-colors"
                                   >
-                                    <span>Своя сумма</span>
+                                    <span className="text-[#8e8e8e]">Выберите автомобиль</span>
                                     <Search className="h-5 w-5 text-[#8e8e8e]" />
                                   </button>
                                 ) : selectedCar && !isSearching ? (
@@ -230,7 +236,7 @@ export function CreditLeasingModal() {
                                       setIsSearching(true)
                                       setTimeout(() => searchInputRef.current?.focus(), 100)
                                     }}
-                                    className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a] transition-colors text-base"
+                                    className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a] transition-colors"
                                   >
                                     <span className="font-medium truncate mr-2">{selectedCar.make} {selectedCar.model}</span>
                                     <X className="h-5 w-5 text-[#8e8e8e] flex-shrink-0" onClick={(e) => {
@@ -245,10 +251,10 @@ export function CreditLeasingModal() {
                                       type="text"
                                       value={searchQuery}
                                       onChange={(e) => setSearchQuery(e.target.value)}
-                                      placeholder="Поиск марки или модели..."
+                                      placeholder="Поиск по каталогу..."
                                       className="bg-[#121212] border-[#262626] text-white h-12 rounded-xl focus:ring-1 focus:ring-orange-500/50 pl-11 text-base"
                                     />
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8e8e8e]" />
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#444]" />
                                   </div>
                                 )}
                               </div>
@@ -256,16 +262,15 @@ export function CreditLeasingModal() {
                               <Button
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
-                                className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 rounded-xl font-bold transition-all text-base shadow-lg shadow-orange-900/20 flex items-center justify-center gap-2"
+                                className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 rounded-xl font-bold transition-all text-base flex items-center justify-center gap-2"
                               >
-                                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-                                Отправить заявку
+                                {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : "Отправить заявку"}
                               </Button>
 
                               {isSearching && (
                                 <button
                                   onClick={() => setIsSearching(false)}
-                                  className="w-full text-[#8e8e8e] text-sm hover:text-white transition-colors lg:hidden"
+                                  className="w-full text-[#555] text-xs uppercase tracking-widest hover:text-white transition-colors lg:hidden"
                                 >
                                   Свернуть каталог
                                 </button>
@@ -274,15 +279,13 @@ export function CreditLeasingModal() {
                           )}
                         </AnimatePresence>
 
-                        {/* Partners Section */}
+                        {/* Partners */}
                         {partners.length > 0 && (
                           <div className="pt-12">
-                            <h3 className="text-xs font-bold text-[#8e8e8e] uppercase tracking-widest mb-6">
-                              {isLeasing ? 'Партнеры по лизингу' : 'Банки-партнеры'}
-                            </h3>
-                            <div className="grid grid-cols-3 gap-4 items-center justify-items-center opacity-40 hover:opacity-100 transition-opacity duration-500">
-                              {partners.map((partner, index) => (
-                                <div key={index} className="w-20 h-12 relative grayscale hover:grayscale-0 transition-all duration-300">
+                            <h3 className="text-[10px] font-bold text-[#444] uppercase tracking-widest mb-6 text-center">Наши партнеры</h3>
+                            <div className="grid grid-cols-3 gap-6 items-center justify-items-center opacity-40">
+                              {partners.slice(0, 6).map((partner, index) => (
+                                <div key={index} className="w-16 h-8 relative grayscale">
                                   <img
                                     src={getCachedImageUrl(partner.logoUrl)}
                                     alt={partner.name}
@@ -296,25 +299,25 @@ export function CreditLeasingModal() {
                       </div>
                     </div>
 
-                    {/* Mini Catalog Section */}
+                    {/* Catalog Side */}
                     {isSearching && isPhoneFieldValid && (
                       <div className="flex-1 w-full lg:max-h-[70vh] flex flex-col">
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-white/90">Выберите автомобиль</h3>
-                          <span className="text-xs text-[#8e8e8e]">Найдено: {filteredCars.length}</span>
+                          <h3 className="text-lg font-semibold text-white/90">Доступные автомобили</h3>
+                          <span className="text-xs text-[#555]">{filteredCars.length}</span>
                         </div>
 
                         {/* Mobile Catalog */}
-                        <div className="flex lg:hidden overflow-x-auto pb-4 gap-3 no-scrollbar -mx-2 px-2">
+                        <div className="flex lg:hidden overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4">
                           <div
-                              className={`flex-shrink-0 w-32 h-32 p-3 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-1 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626]'}`}
+                              className={`flex-shrink-0 w-32 h-40 p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-2 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626]'}`}
                               onClick={() => {
                                   setSelectedCar(null)
                                   setIsSearching(false)
                                   setSearchQuery("")
                               }}
                           >
-                              <div className="text-orange-500 font-bold text-center leading-tight text-sm">Своя сумма</div>
+                              <div className="text-orange-500 font-bold text-center text-sm">Своя сумма</div>
                           </div>
                           {filteredCars.map(car => (
                               <div
@@ -325,78 +328,70 @@ export function CreditLeasingModal() {
                                       setShowDetails(true)
                                   }}
                               >
-                                  <div className="w-full h-20 relative bg-zinc-900 rounded-xl overflow-hidden mb-2">
+                                  <div className="w-full h-24 relative bg-zinc-900 rounded-xl overflow-hidden mb-2">
                                       {car.imageUrls && car.imageUrls[0] ? (
                                           <Image
                                           src={getCachedImageUrl(car.imageUrls[0])}
                                           alt={`${car.make} ${car.model}`}
                                           fill
                                           quality={40}
-                                          sizes="120px"
+                                          sizes="150px"
                                           className="object-cover"
                                           />
                                       ) : null}
                                   </div>
-                                  <div className="font-bold text-[10px] truncate leading-tight">{car.make} {car.model}</div>
-                                  <div className="text-orange-500 font-black text-xs">${car.price.toLocaleString()}</div>
+                                  <div className="font-bold text-[10px] truncate mb-1">{car.make} {car.model}</div>
+                                  <div className="text-orange-500 font-bold text-xs">${car.price.toLocaleString()}</div>
                               </div>
                           ))}
                         </div>
 
                         {/* Desktop Catalog */}
-                        <div className="hidden lg:grid grid-cols-2 gap-3 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="hidden lg:grid grid-cols-2 xl:grid-cols-3 gap-3 overflow-y-auto pr-2 custom-scrollbar">
                           <div
-                          className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-2 h-32 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
+                          className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-center items-center gap-2 h-40 ${!selectedCar ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
                           onClick={() => {
                               setSelectedCar(null)
                               setIsSearching(false)
                               setSearchQuery("")
                           }}
                           >
-                          <div className="text-orange-500 font-bold text-lg">Своя сумма</div>
-                          <div className="text-xs text-[#8e8e8e] text-center">Укажите желаемую сумму при звонке</div>
+                            <div className="text-orange-500 font-bold text-lg">Своя сумма</div>
                           </div>
 
                           {filteredCars.map(car => (
                           <div
                               key={car.id}
-                              className={`p-3 rounded-2xl border transition-all cursor-pointer flex gap-4 ${selectedCar?.id === car.id ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
+                              className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col gap-3 ${selectedCar?.id === car.id ? 'bg-orange-600/20 border-orange-500' : 'bg-[#121212] border-[#262626] hover:bg-[#1a1a1a]'}`}
                               onClick={() => {
                                   setSelectedCar(car)
                                   setShowDetails(true)
                               }}
                           >
-                              <div className="w-24 h-16 relative flex-shrink-0 bg-zinc-900 rounded-xl overflow-hidden shadow-inner">
-                              {car.imageUrls && car.imageUrls[0] ? (
-                                  <Image
-                                  src={getCachedImageUrl(car.imageUrls[0])}
-                                  alt={`${car.make} ${car.model}`}
-                                  fill
-                                  quality={60}
-                                  sizes="100px"
-                                  className="object-cover"
-                                  />
-                              ) : (
-                                  <div className="w-full h-full flex items-center justify-center">
-                                  <Search className="h-4 w-4 text-zinc-700" />
-                                  </div>
-                              )}
-                              </div>
-                              <div className="flex-1 min-w-0 flex flex-col justify-center">
-                              <div className="font-bold text-sm truncate text-white">{car.make} {car.model}</div>
-                              <div className="text-[#8e8e8e] text-xs mb-1">{car.year} г.</div>
-                              <div className="text-orange-500 font-black text-sm">
-                                  ${car.price.toLocaleString()}
-                              </div>
-                              </div>
+                                <div className="w-full h-28 relative bg-zinc-900 rounded-xl overflow-hidden shadow-inner">
+                                    {car.imageUrls && car.imageUrls[0] ? (
+                                        <Image
+                                        src={getCachedImageUrl(car.imageUrls[0])}
+                                        alt={`${car.make} ${car.model}`}
+                                        fill
+                                        quality={50}
+                                        sizes="250px"
+                                        className="object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <Search className="h-5 w-5 text-zinc-800" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div>
+                                    <div className="font-bold text-xs truncate mb-1">{car.make} {car.model}</div>
+                                    <div className="text-orange-500 font-bold text-sm">
+                                        ${car.price.toLocaleString()}
+                                    </div>
+                                </div>
                           </div>
                           ))}
-
-                          {filteredCars.length === 0 && (
-                          <div className="col-span-full py-12 text-[#8e8e8e] text-sm text-center bg-[#121212] rounded-3xl border border-dashed border-[#262626]">
-                              Ничего не найдено. Попробуйте другой запрос.
-                          </div>
-                          )}
                         </div>
                       </div>
                     )}
@@ -406,13 +401,12 @@ export function CreditLeasingModal() {
                     key="details-view"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    exit={{ opacity: 0, x: -20 }}
                     className="w-full flex flex-col items-center"
                   >
                     {selectedCar && (
-                      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                          <div className="relative aspect-video bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl">
+                      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-[#0a0a0a] p-6 md:p-10 rounded-[2.5rem] border border-white/5 shadow-2xl">
+                          <div className="relative aspect-video bg-zinc-900 rounded-2xl overflow-hidden">
                               {isImageLoading && (
                                   <div className="absolute inset-0 z-10 bg-zinc-800 animate-pulse" />
                               )}
@@ -433,71 +427,54 @@ export function CreditLeasingModal() {
                           </div>
 
                           <div className="space-y-6">
-                              <div className="space-y-2">
-                                  <h2 className="text-3xl md:text-4xl font-black tracking-tighter uppercase">{selectedCar.make} {selectedCar.model}</h2>
+                              <div className="space-y-1">
+                                  <h2 className="text-3xl font-bold tracking-tight uppercase leading-none">{selectedCar.make} {selectedCar.model}</h2>
                                   <p className="text-orange-500 font-bold text-2xl">${selectedCar.price.toLocaleString()}</p>
                               </div>
 
-                              <div className="grid grid-cols-2 gap-4">
-                                  <div className="bg-[#121212] p-3 rounded-2xl border border-white/5 flex items-center gap-3">
-                                      <Calendar className="h-5 w-5 text-orange-500" />
-                                      <div>
-                                          <div className="text-[10px] text-[#8e8e8e] uppercase font-bold">Год</div>
-                                          <div className="text-sm font-bold">{selectedCar.year}</div>
-                                      </div>
-                                  </div>
-                                  <div className="bg-[#121212] p-3 rounded-2xl border border-white/5 flex items-center gap-3">
-                                      <Gauge className="h-5 w-5 text-orange-500" />
-                                      <div>
-                                          <div className="text-[10px] text-[#8e8e8e] uppercase font-bold">Пробег</div>
-                                          <div className="text-sm font-bold">{selectedCar.mileage} км</div>
-                                      </div>
-                                  </div>
-                                  <div className="bg-[#121212] p-3 rounded-2xl border border-white/5 flex items-center gap-3">
-                                      <Fuel className="h-5 w-5 text-orange-500" />
-                                      <div>
-                                          <div className="text-[10px] text-[#8e8e8e] uppercase font-bold">Двигатель</div>
-                                          <div className="text-sm font-bold">{selectedCar.engineVolume} л, {selectedCar.fuelType}</div>
-                                      </div>
-                                  </div>
-                                  <div className="bg-[#121212] p-3 rounded-2xl border border-white/5 flex items-center gap-3">
-                                      <Settings2 className="h-5 w-5 text-orange-500" />
-                                      <div>
-                                          <div className="text-[10px] text-[#8e8e8e] uppercase font-bold">КПП</div>
-                                          <div className="text-sm font-bold">{selectedCar.transmission}</div>
-                                      </div>
-                                  </div>
+                              <div className="grid grid-cols-2 gap-3">
+                                  {[
+                                    { icon: Calendar, label: "Год", value: selectedCar.year },
+                                    { icon: Gauge, label: "Пробег", value: `${selectedCar.mileage.toLocaleString()} км` },
+                                    { icon: Fuel, label: "Объем", value: `${selectedCar.engineVolume} л` },
+                                    { icon: Settings2, label: "КПП", value: selectedCar.transmission }
+                                  ].map((spec, i) => (
+                                    <div key={i} className="bg-[#121212] p-3 rounded-xl border border-white/5 flex items-center gap-3">
+                                        <spec.icon className="h-4 w-4 text-orange-500" />
+                                        <div>
+                                            <div className="text-[10px] text-[#555] uppercase font-bold tracking-widest">{spec.label}</div>
+                                            <div className="text-xs font-bold truncate">{spec.value}</div>
+                                        </div>
+                                    </div>
+                                  ))}
                               </div>
 
-                              <div className="p-4 bg-orange-600/10 border border-orange-600/30 rounded-2xl">
-                                  <div className="text-xs text-orange-400 font-bold uppercase mb-1 tracking-widest">
-                                      {isLeasing ? 'Лизинг' : 'Ориентировочный платёж'}
+                              <div className="p-5 bg-orange-600/10 border border-orange-600/20 rounded-2xl">
+                                  <div className="text-[10px] text-orange-500 font-bold uppercase mb-2 tracking-widest">
+                                      {isLeasing ? 'Лизинг' : 'Платёж в месяц'}
                                   </div>
-                                  <div className="text-2xl md:text-3xl font-black text-white">
+                                  <div className="text-xl md:text-2xl font-bold text-white">
                                       {isLeasing ? (
-                                          <span className="text-lg md:text-xl font-bold">Расчет можно спросить у менеджера</span>
+                                          <span className="text-sm">Расчет можно получить у менеджера</span>
                                       ) : (
-                                          <>
-                                              {getMonthlyPayment(selectedCar).toLocaleString()} BYN <span className="text-xs text-white/50 font-medium">/ мес.</span>
-                                          </>
+                                          <>{getMonthlyPayment(selectedCar).toLocaleString()} BYN</>
                                       )}
                                   </div>
                               </div>
 
-                              <div className="flex gap-4">
+                              <div className="flex gap-3">
                                   <button
                                       onClick={() => setShowDetails(false)}
-                                      className="flex-1 bg-transparent border border-[#262626] hover:bg-white/5 text-white rounded-xl h-12 font-bold transition-all"
+                                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 text-white rounded-xl h-12 font-bold transition-all text-xs"
                                   >
-                                      Назад к списку
+                                      Назад
                                   </button>
                                   <Button
                                       onClick={handleSubmit}
                                       disabled={isSubmitting}
-                                      className="flex-[2] bg-white text-black hover:bg-zinc-200 h-12 rounded-xl font-bold flex items-center justify-center gap-2"
+                                      className="flex-[2] bg-white text-black hover:bg-zinc-200 h-12 rounded-xl font-bold text-xs flex items-center justify-center gap-2"
                                   >
-                                      {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-                                      Подать заявку
+                                      {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "ПОДАТЬ ЗАЯВКУ"}
                                   </Button>
                               </div>
                           </div>
@@ -509,22 +486,16 @@ export function CreditLeasingModal() {
 
             </div>
 
-            {/* Footer links */}
-            <div className="mt-auto pt-16 pb-8 text-center space-y-6">
-              <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] text-[#a8a8a8] font-medium">
-                <Link href="/" onClick={closeModal} className="hover:text-white transition-colors">Главная</Link>
-                <Link href="/catalog" onClick={closeModal} className="hover:text-white transition-colors">Каталог</Link>
-                <Link href="https://vikup.belautocenter.by" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">Выкуп авто</Link>
-                <Link href="/warranty" onClick={closeModal} className="hover:text-white transition-colors">Гарантия</Link>
-                <Link href="/about" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">О нас</Link>
-                <Link href="/contacts" onClick={closeModal} className="hover:text-white transition-colors">Контакты</Link>
-                <Link href="/reviews" onClick={closeModal} className="hover:text-white transition-colors">Отзывы</Link>
-                <Link href="/privacy" onClick={closeModal} className="hover:text-white transition-colors text-nowrap">Конфиденциальность</Link>
+            {/* Footer */}
+            <div className="mt-auto pt-20 text-center space-y-4">
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[11px] text-[#444] font-medium">
+                <Link href="/" onClick={closeModal} className="hover:text-white">Главная</Link>
+                <Link href="/catalog" onClick={closeModal} className="hover:text-white">Каталог</Link>
+                <Link href="/about" onClick={closeModal} className="hover:text-white">О нас</Link>
+                <Link href="/contacts" onClick={closeModal} className="hover:text-white">Контакты</Link>
+                <Link href="/privacy" onClick={closeModal} className="hover:text-white">Конфиденциальность</Link>
               </div>
-
-              <div className="text-[12px] text-[#8e8e8e] tracking-widest font-bold">
-                <p>© 2026 BELAUTOCENTER</p>
-              </div>
+              <p className="text-[10px] text-[#333] tracking-[0.3em] font-bold">© 2026 BELAUTOCENTER</p>
             </div>
           </div>
         </motion.div>
