@@ -219,7 +219,7 @@ export function CreditLeasingModal() {
                                   }}
                                   className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a]"
                                 >
-                                  <span className="text-[#8e8e8e] text-sm">Своя сумма - сообщите вашу сумму менеджеру</span>
+                                  <span className="text-[#8e8e8e] text-sm">Своя сумма - сообщите сумму при звонке</span>
                                   <Search className="h-5 w-5 text-[#8e8e8e]" />
                                 </button>
                               ) : selectedCar && !isSearching ? (
@@ -262,7 +262,7 @@ export function CreditLeasingModal() {
                         )}
 
                         {/* Partners or Catalog Container */}
-                        <div className="relative w-full pt-8 min-h-[200px]">
+                        <div className="relative w-full pt-8 min-h-[400px] md:h-[400px]">
                           {/* Catalog */}
                           {isSearching && isPhoneFieldValid ? (
                             <div className="w-full flex flex-col space-y-4 text-left">
@@ -287,7 +287,7 @@ export function CreditLeasingModal() {
                                 <div className="flex items-center justify-between text-left">
                                   <div>
                                     <div className="font-bold text-white text-sm mb-0.5">Своя сумма</div>
-                                    <div className="text-[#666] text-xs">Сообщите вашу сумму менеджеру</div>
+                                    <div className="text-[#666] text-xs">Сообщите сумму при звонке</div>
                                   </div>
                                   {!selectedCar && (
                                     <CheckCircle className="h-5 w-5 text-orange-500 flex-shrink-0" />
@@ -295,7 +295,7 @@ export function CreditLeasingModal() {
                                 </div>
                               </button>
 
-                              <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
                                 {filteredCars.map(car => (
                                   <div
                                     key={car.id}
@@ -396,7 +396,7 @@ export function CreditLeasingModal() {
                                   </div>
                                   <div className="text-xl md:text-2xl font-bold text-white">
                                       {isLeasing ? (
-                                          <span className="text-sm">Расчет можно получить у менеджера</span>
+                                          <span className="text-sm">Расчет можно получить при звонке</span>
                                       ) : (
                                           <>{getMonthlyPayment(selectedCar).toLocaleString()} BYN</>
                                       )}
