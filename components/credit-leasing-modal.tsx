@@ -154,9 +154,20 @@ export function CreditLeasingModal() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden font-sans"
         >
-          {/* Subtle Halo Background */}
+          {/* Enhanced Background */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.08)_0%,transparent_70%)] blur-[40px]" />
+             {/* Main gradient orb */}
+             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.12)_0%,rgba(234,88,12,0.06)_40%,transparent_70%)] blur-[60px] animate-pulse" style={{ animationDuration: '4s' }} />
+
+             {/* Secondary accent orb */}
+             <div className="absolute top-[20%] right-[-5%] w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(251,146,60,0.08)_0%,transparent_60%)] blur-[50px]" />
+
+             {/* Bottom accent */}
+             <div className="absolute bottom-[-10%] left-[10%] w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(249,115,22,0.06)_0%,transparent_70%)] blur-[70px]" />
+
+             {/* Ambient glow lines */}
+             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/20 to-transparent" />
+             <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/10 to-transparent" />
           </div>
 
           {/* Controls */}
@@ -281,11 +292,11 @@ export function CreditLeasingModal() {
 
                         {/* Partners */}
                         {partners.length > 0 && (
-                          <div className="pt-12">
-                            <h3 className="text-[10px] font-bold text-[#444] uppercase tracking-widest mb-6 text-center">Наши партнеры</h3>
-                            <div className="grid grid-cols-3 gap-6 items-center justify-items-center opacity-40">
+                          <div className="pt-12 group/partners">
+                            <h3 className="text-[10px] font-bold text-[#444] uppercase tracking-widest mb-6 text-center group-hover/partners:text-[#666] transition-colors">Наши партнеры</h3>
+                            <div className="grid grid-cols-3 gap-6 items-center justify-items-center opacity-40 group-hover/partners:opacity-70 transition-opacity">
                               {partners.slice(0, 6).map((partner, index) => (
-                                <div key={index} className="w-16 h-8 relative grayscale">
+                                <div key={index} className="w-16 h-8 relative grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer hover:scale-110">
                                   <img
                                     src={getCachedImageUrl(partner.logoUrl)}
                                     alt={partner.name}
@@ -399,9 +410,10 @@ export function CreditLeasingModal() {
                 ) : (
                   <motion.div
                     key="details-view"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className="w-full flex flex-col items-center"
                   >
                     {selectedCar && (
