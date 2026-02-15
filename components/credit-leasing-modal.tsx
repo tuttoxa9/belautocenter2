@@ -154,18 +154,11 @@ export function CreditLeasingModal() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] bg-black text-white flex flex-col overflow-hidden font-sans"
         >
-          {/* Enhanced Background */}
+          {/* Background */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             {/* Main gradient orb */}
-             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.12)_0%,rgba(234,88,12,0.06)_40%,transparent_70%)] blur-[60px] animate-pulse" style={{ animationDuration: '4s' }} />
-
-             {/* Secondary accent orb */}
+             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle,rgba(249,115,22,0.12)_0%,rgba(234,88,12,0.06)_40%,transparent_70%)] blur-[60px]" />
              <div className="absolute top-[20%] right-[-5%] w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(251,146,60,0.08)_0%,transparent_60%)] blur-[50px]" />
-
-             {/* Bottom accent */}
              <div className="absolute bottom-[-10%] left-[10%] w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(249,115,22,0.06)_0%,transparent_70%)] blur-[70px]" />
-
-             {/* Ambient glow lines */}
              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/20 to-transparent" />
              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/10 to-transparent" />
           </div>
@@ -174,13 +167,13 @@ export function CreditLeasingModal() {
           <div className="relative z-20 p-4 flex items-center justify-between pointer-events-none">
             <button
                 onClick={showDetails ? () => setShowDetails(false) : closeModal}
-                className="p-2 hover:opacity-70 transition-opacity pointer-events-auto"
+                className="p-2 hover:opacity-70 pointer-events-auto"
             >
               <ChevronLeft className="h-8 w-8" />
             </button>
             <button
                 onClick={closeModal}
-                className="p-2 hover:opacity-70 transition-opacity pointer-events-auto"
+                className="p-2 hover:opacity-70 pointer-events-auto"
             >
               <X className="h-8 w-8" />
             </button>
@@ -188,20 +181,12 @@ export function CreditLeasingModal() {
 
           {/* Content */}
           <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-12 custom-scrollbar">
-            <div className={`w-full mx-auto transition-all duration-500 ease-in-out ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
+            <div className={`w-full mx-auto ${showDetails ? 'max-w-4xl' : 'max-w-md'}`}>
 
-              <AnimatePresence mode="wait">
                 {!showDetails ? (
-                  <motion.div
-                    key="catalog-view"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="w-full flex flex-col lg:flex-row gap-12 items-start justify-center"
-                  >
+                  <div className="w-full flex flex-col items-center text-center">
                     {/* Form Side */}
-                    <div className={`w-full flex flex-col transition-all duration-500 ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
+                    <div className="w-full flex flex-col items-center text-center">
                       <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
                         Подать заявку на {isLeasing ? 'лизинг' : 'кредит'}
                       </h1>
@@ -223,221 +208,155 @@ export function CreditLeasingModal() {
                           )}
                         </div>
 
-                        <AnimatePresence>
-                          {isPhoneFieldValid && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              className="space-y-6 overflow-visible"
-                            >
-                              <div className="relative group">
-                                {!selectedCar && !isSearching ? (
-                                  <button
-                                    onClick={() => {
-                                      setIsSearching(true)
-                                      setTimeout(() => searchInputRef.current?.focus(), 100)
-                                    }}
-                                    className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a] transition-colors"
-                                  >
-                                    <span className="text-[#8e8e8e] text-sm">Своя сумма - сообщите вашу сумму менеджеру</span>
-                                    <Search className="h-5 w-5 text-[#8e8e8e]" />
-                                  </button>
-                                ) : selectedCar && !isSearching ? (
-                                  <button
-                                    onClick={() => {
-                                      setIsSearching(true)
-                                      setTimeout(() => searchInputRef.current?.focus(), 100)
-                                    }}
-                                    className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a] transition-colors"
-                                  >
-                                    <span className="font-medium truncate mr-2">{selectedCar.make} {selectedCar.model}</span>
-                                    <X className="h-5 w-5 text-[#8e8e8e] flex-shrink-0" onClick={(e) => {
-                                      e.stopPropagation()
-                                      setSelectedCar(null)
-                                    }} />
-                                  </button>
-                                ) : (
-                                  <div className="relative w-full">
-                                    <Input
-                                      ref={searchInputRef}
-                                      type="text"
-                                      value={searchQuery}
-                                      onChange={(e) => setSearchQuery(e.target.value)}
-                                      placeholder="Поиск по каталогу..."
-                                      className="bg-[#121212] border-[#262626] text-white h-12 rounded-xl focus:ring-1 focus:ring-orange-500/50 pl-11 text-base"
-                                    />
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#444]" />
-                                  </div>
-                                )}
-                              </div>
-
-                              <Button
-                                onClick={handleSubmit}
-                                disabled={isSubmitting}
-                                className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 rounded-xl font-bold transition-all text-base flex items-center justify-center gap-2"
-                              >
-                                {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : "Отправить заявку"}
-                              </Button>
-
-                              {isSearching && (
+                        {isPhoneFieldValid && (
+                          <div className="space-y-6">
+                            <div className="relative group">
+                              {!selectedCar && !isSearching ? (
                                 <button
-                                  onClick={() => setIsSearching(false)}
-                                  className="w-full text-[#555] text-xs uppercase tracking-widest hover:text-white transition-colors lg:hidden"
+                                  onClick={() => {
+                                    setIsSearching(true)
+                                    setTimeout(() => searchInputRef.current?.focus(), 10)
+                                  }}
+                                  className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a]"
                                 >
-                                  Свернуть каталог
+                                  <span className="text-[#8e8e8e] text-sm">Своя сумма - сообщите вашу сумму менеджеру</span>
+                                  <Search className="h-5 w-5 text-[#8e8e8e]" />
                                 </button>
-                              )}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-
-                        {/* Partners */}
-                        {partners.length > 0 && (
-                          <div className="pt-12 group/partners">
-                            <h3 className="text-[11px] font-bold text-[#444] uppercase tracking-widest mb-8 text-center group-hover/partners:text-[#666] transition-colors">Наши партнеры</h3>
-                            <div className="grid grid-cols-3 gap-8 items-center justify-items-center opacity-40 group-hover/partners:opacity-70 transition-opacity">
-                              {partners.slice(0, 6).map((partner, index) => (
-                                <div key={index} className="w-20 h-10 relative grayscale hover:grayscale-0 transition-all duration-300">
-                                  <img
-                                    src={getCachedImageUrl(partner.logoUrl)}
-                                    alt={partner.name}
-                                    className="w-full h-full object-contain"
+                              ) : selectedCar && !isSearching ? (
+                                <button
+                                  onClick={() => {
+                                    setIsSearching(true)
+                                    setTimeout(() => searchInputRef.current?.focus(), 10)
+                                  }}
+                                  className="w-full bg-[#121212] border border-[#262626] text-white h-12 px-4 rounded-xl flex items-center justify-between hover:bg-[#1a1a1a]"
+                                >
+                                  <span className="font-medium truncate mr-2 text-left">{selectedCar.make} {selectedCar.model}</span>
+                                  <X className="h-5 w-5 text-[#8e8e8e] flex-shrink-0" onClick={(e) => {
+                                    e.stopPropagation()
+                                    setSelectedCar(null)
+                                  }} />
+                                </button>
+                              ) : (
+                                <div className="relative w-full">
+                                  <Input
+                                    ref={searchInputRef}
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Поиск по каталогу..."
+                                    className="bg-[#121212] border-[#262626] text-white h-12 rounded-xl focus:ring-1 focus:ring-orange-500/50 pl-11 text-base"
                                   />
+                                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#444]" />
                                 </div>
-                              ))}
+                              )}
                             </div>
+
+                            <Button
+                              onClick={handleSubmit}
+                              disabled={isSubmitting}
+                              className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2"
+                            >
+                              {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : "Отправить заявку"}
+                            </Button>
                           </div>
                         )}
-                      </div>
-                    </div>
 
-                    {/* Catalog Side */}
-                    {isSearching && isPhoneFieldValid && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex-1 w-full lg:max-h-[70vh] flex flex-col space-y-4"
-                      >
-                        {/* "Своя сумма" вынесена отдельно */}
-                        <div className="space-y-3">
-                          <h3 className="text-xs font-semibold text-[#666] uppercase tracking-wider">Или выберите вариант</h3>
-                          <button
-                            onClick={() => {
-                              setSelectedCar(null)
-                              setIsSearching(false)
-                              setSearchQuery("")
-                            }}
-                            className={`w-full p-4 rounded-xl border transition-all ${!selectedCar ? 'bg-orange-600/10 border-orange-500/50' : 'bg-[#0d0d0d] border-[#262626] hover:border-[#333]'}`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="text-left">
-                                <div className="font-bold text-white text-sm mb-0.5">Своя сумма</div>
-                                <div className="text-[#666] text-xs">Сообщите вашу сумму менеджеру</div>
+                        {/* Partners or Catalog Container */}
+                        <div className="relative w-full pt-8 min-h-[200px]">
+                          {/* Catalog */}
+                          {isSearching && isPhoneFieldValid ? (
+                            <div className="w-full flex flex-col space-y-4 text-left">
+                              <div className="flex items-center justify-between">
+                                <h3 className="text-xs font-semibold text-[#666] uppercase tracking-wider">Выберите автомобиль</h3>
+                                <button
+                                  onClick={() => setIsSearching(false)}
+                                  className="text-xs text-orange-500 hover:text-orange-400 font-bold"
+                                >
+                                  ЗАКРЫТЬ
+                                </button>
                               </div>
-                              {!selectedCar && (
-                                <CheckCircle className="h-5 w-5 text-orange-500 flex-shrink-0" />
-                              )}
-                            </div>
-                          </button>
-                        </div>
 
-                        {/* Каталог */}
-                        <div className="flex-1 space-y-3">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-xs font-semibold text-[#666] uppercase tracking-wider">Из каталога</h3>
-                            <span className="text-xs text-[#555] bg-[#0d0d0d] px-2 py-1 rounded-md">{filteredCars.length}</span>
-                          </div>
-
-                          {/* Mobile Catalog */}
-                          <div className="flex lg:hidden overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4">
-                            {filteredCars.map(car => (
-                              <div
-                                key={car.id}
-                                className={`flex-shrink-0 w-44 p-3 rounded-xl border transition-all ${selectedCar?.id === car.id ? 'bg-orange-600/10 border-orange-500/50' : 'bg-[#0d0d0d] border-[#262626]'}`}
+                              <button
                                 onClick={() => {
-                                  setSelectedCar(car)
-                                  setShowDetails(true)
+                                  setSelectedCar(null)
+                                  setIsSearching(false)
+                                  setSearchQuery("")
                                 }}
+                                className={`w-full p-4 rounded-xl border ${!selectedCar ? 'bg-orange-600/10 border-orange-500/50' : 'bg-[#0d0d0d] border-[#262626] hover:border-[#333]'}`}
                               >
-                                <div className="w-full h-28 relative bg-zinc-900 rounded-lg overflow-hidden mb-3">
-                                  {car.imageUrls && car.imageUrls[0] ? (
-                                    <Image
-                                      src={getCachedImageUrl(car.imageUrls[0])}
-                                      alt={`${car.make} ${car.model}`}
-                                      fill
-                                      quality={50}
-                                      sizes="180px"
-                                      className="object-cover"
-                                    />
-                                  ) : null}
-                                </div>
-                                <div className="font-bold text-xs truncate mb-1 text-white">{car.make} {car.model}</div>
-                                <div className="text-orange-500 font-bold text-sm">${car.price.toLocaleString()}</div>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Desktop Catalog */}
-                          <div className="hidden lg:grid grid-cols-2 xl:grid-cols-3 gap-3 overflow-y-auto pr-2 custom-scrollbar max-h-[55vh]">
-                            {filteredCars.map(car => (
-                              <div
-                                key={car.id}
-                                className={`p-3 rounded-xl border transition-all cursor-pointer ${selectedCar?.id === car.id ? 'bg-orange-600/10 border-orange-500/50' : 'bg-[#0d0d0d] border-[#262626] hover:border-[#333]'}`}
-                                onClick={() => {
-                                  setSelectedCar(car)
-                                  setShowDetails(true)
-                                }}
-                              >
-                                <div className="w-full h-32 relative bg-zinc-900 rounded-lg overflow-hidden mb-3">
-                                  {car.imageUrls && car.imageUrls[0] ? (
-                                    <Image
-                                      src={getCachedImageUrl(car.imageUrls[0])}
-                                      alt={`${car.make} ${car.model}`}
-                                      fill
-                                      quality={60}
-                                      sizes="280px"
-                                      className="object-cover"
-                                    />
-                                  ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                      <Search className="h-6 w-6 text-zinc-800" />
-                                    </div>
+                                <div className="flex items-center justify-between text-left">
+                                  <div>
+                                    <div className="font-bold text-white text-sm mb-0.5">Своя сумма</div>
+                                    <div className="text-[#666] text-xs">Сообщите вашу сумму менеджеру</div>
+                                  </div>
+                                  {!selectedCar && (
+                                    <CheckCircle className="h-5 w-5 text-orange-500 flex-shrink-0" />
                                   )}
                                 </div>
-                                <div>
-                                  <div className="font-bold text-sm truncate mb-1 text-white">{car.make} {car.model}</div>
-                                  <div className="text-orange-500 font-bold text-base">${car.price.toLocaleString()}</div>
+                              </button>
+
+                              <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
+                                {filteredCars.map(car => (
+                                  <div
+                                    key={car.id}
+                                    className={`p-2 rounded-xl border cursor-pointer ${selectedCar?.id === car.id ? 'bg-orange-600/10 border-orange-500/50' : 'bg-[#0d0d0d] border-[#262626] hover:border-[#333]'}`}
+                                    onClick={() => {
+                                      setSelectedCar(car)
+                                      setShowDetails(true)
+                                    }}
+                                  >
+                                    <div className="w-full aspect-video relative bg-zinc-900 rounded-lg overflow-hidden mb-2">
+                                      {car.imageUrls && car.imageUrls[0] ? (
+                                        <Image
+                                          src={getCachedImageUrl(car.imageUrls[0])}
+                                          alt={`${car.make} ${car.model}`}
+                                          fill
+                                          quality={50}
+                                          sizes="(max-width: 768px) 50vw, 200px"
+                                          className="object-cover"
+                                        />
+                                      ) : null}
+                                    </div>
+                                    <div className="font-bold text-[11px] truncate mb-0.5 text-white">{car.make} {car.model}</div>
+                                    <div className="text-orange-500 font-bold text-xs">${car.price.toLocaleString()}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            /* Partners */
+                            partners.length > 0 && (
+                              <div className="w-full">
+                                <h3 className="text-[11px] font-bold text-[#444] uppercase tracking-widest mb-8">Наши партнеры</h3>
+                                <div className="grid grid-cols-3 gap-8 items-center justify-items-center opacity-40">
+                                  {partners.slice(0, 6).map((partner, index) => (
+                                    <div key={index} className="w-20 h-10 relative grayscale">
+                                      <img
+                                        src={getCachedImageUrl(partner.logoUrl)}
+                                        alt={partner.name}
+                                        className="w-full h-full object-contain"
+                                      />
+                                    </div>
+                                  ))}
                                 </div>
                               </div>
-                            ))}
-                          </div>
+                            )
+                          )}
                         </div>
-                      </motion.div>
-                    )}
-                  </motion.div>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
-                  <motion.div
-                    key="details-view"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="w-full flex flex-col items-center"
-                  >
+                  <div className="w-full flex flex-col items-center">
                     {selectedCar && (
-                      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-[#0a0a0a] p-6 md:p-10 rounded-[2.5rem] border border-white/5 shadow-2xl">
+                      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-[#0a0a0a] p-6 md:p-10 rounded-[2.5rem] border border-white/5">
                           <div className="relative aspect-video bg-zinc-900 rounded-2xl overflow-hidden">
-                              {isImageLoading && (
-                                  <div className="absolute inset-0 z-10 bg-zinc-800 animate-pulse" />
-                              )}
                               {selectedCar.imageUrls && selectedCar.imageUrls[0] ? (
                                   <Image
                                       src={getCachedImageUrl(selectedCar.imageUrls[0])}
                                       alt={selectedCar.make}
                                       fill
-                                      className={`object-cover transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                                      className={`object-cover ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
                                       quality={85}
                                       onLoad={() => setIsImageLoading(false)}
                                   />
@@ -448,7 +367,7 @@ export function CreditLeasingModal() {
                               )}
                           </div>
 
-                          <div className="space-y-6">
+                          <div className="space-y-6 text-left">
                               <div className="space-y-1">
                                   <h2 className="text-3xl font-bold tracking-tight uppercase leading-none">{selectedCar.make} {selectedCar.model}</h2>
                                   <p className="text-orange-500 font-bold text-2xl">${selectedCar.price.toLocaleString()}</p>
@@ -487,14 +406,14 @@ export function CreditLeasingModal() {
                               <div className="flex gap-3">
                                   <button
                                       onClick={() => setShowDetails(false)}
-                                      className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 text-white rounded-xl h-12 font-bold transition-all text-xs"
+                                      className="flex-1 bg-white/5 border border-white/5 text-white rounded-xl h-12 font-bold text-xs"
                                   >
                                       Назад
                                   </button>
                                   <Button
                                       onClick={handleSubmit}
                                       disabled={isSubmitting}
-                                      className="flex-[2] bg-white text-black hover:bg-zinc-200 h-12 rounded-xl font-bold text-xs flex items-center justify-center gap-2"
+                                      className="flex-[2] bg-white text-black h-12 rounded-xl font-bold text-xs flex items-center justify-center gap-2"
                                   >
                                       {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "ПОДАТЬ ЗАЯВКУ"}
                                   </Button>
@@ -502,9 +421,8 @@ export function CreditLeasingModal() {
                           </div>
                       </div>
                     )}
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
 
             </div>
 
