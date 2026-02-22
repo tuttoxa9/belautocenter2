@@ -145,7 +145,7 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                   </h3>
                   {car.fromEurope && (
                     <span className="mt-0.5 flex-shrink-0 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded-full">
-                      Из Европы
+                      Без пробега по РБ
                     </span>
                   )}
                 </div>
