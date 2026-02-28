@@ -9,6 +9,8 @@ interface HomepageSettings {
   ctaSubtitle: string
 }
 
+export const revalidate = false;
+
 export default async function HomePage() {
   // Параллельная загрузка данных на сервере
   const [settingsDoc, allCars] = await Promise.all([

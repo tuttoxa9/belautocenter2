@@ -14,7 +14,7 @@ export async function revalidateCar(carId: string) {
     revalidateTag(`car-${carId}`);
 
     // Сбрасываем кэш списка автомобилей
-    revalidateTag('cars-list');
+    revalidateTag('cars-data');
 
     // Сбрасываем закэшированные страницы
     revalidatePath(`/catalog/${carId}`);
@@ -35,7 +35,7 @@ export async function revalidateAllCars() {
   console.log('[Revalidation] Triggering full catalog revalidate');
 
   try {
-    revalidateTag('cars-list');
+    revalidateTag('cars-data');
     revalidatePath('/catalog');
     revalidatePath('/');
 

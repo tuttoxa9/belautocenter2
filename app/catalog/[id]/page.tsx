@@ -2,8 +2,36 @@ import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
-// ISR: On-Demand Revalidation используется через теги
-// export const revalidate = 86400
+export const revalidate = false;
+
+// Генерация статических параметров для предварительной сборки популярных страниц
+export async function generateStaticParams() {
+  try {
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+    // Загружаем только первые 50 авто для пре-билда, остальные соберутся в ISR
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars?pageSize=50`
+
+    const response = await fetch(firestoreUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'NextJS-Direct-Firestore/1.0'
+      },
+      cache: 'force-cache',
+      next: { tags: ['cars-data'] }
+    })
+
+    if (!response.ok) return []
+
+    const data = await response.json()
+    if (!data.documents) return []
+
+    return data.documents.map((doc: any) => ({
+      id: doc.name.split('/').pop() || '',
+    }))
+  } catch (error) {
+    return []
+  }
+}
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -56,7 +84,7 @@ export async function generateMetadata(
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
       },
       cache: 'force-cache',
-      next: { tags: ['cars-list', `car-${params.id}`] }
+      next: { tags: ['cars-data', `car-${params.id}`] }
     })
 
     if (!response.ok) {
@@ -170,7 +198,7 @@ async function getCarData(carId: string) {
         'User-Agent': 'NextJS-Direct-Firestore/1.0'
       },
       cache: 'force-cache',
-      next: { tags: ['cars-list', `car-${carId}`] }
+      next: { tags: ['cars-data', `car-${carId}`] }
     })
 
     if (!response.ok) {

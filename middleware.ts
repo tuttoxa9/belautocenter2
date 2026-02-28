@@ -42,11 +42,10 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPublicPage) {
-    // Для страниц каталога и авто применяем жесткую политику актуализации цен
     if (pathname.startsWith('/catalog')) {
-      // Браузер никогда не кэширует, всегда запрашивает сервер (для актуальных цен)
-      response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
-      // Vercel CDN кэширует "вечно" до ручной инвалидации (экономия лимитов Firebase)
+      // Разрешаем браузеру кэшировать, чтобы при навигации не дергать сервер зря.
+      // Актуальность данных обеспечивается On-Demand Revalidation на Vercel (через API Webhook).
+      response.headers.set('Cache-Control', 'public, max-age=120, stale-while-revalidate=600')
       response.headers.set('CDN-Cache-Control', 'public, s-maxage=31536000')
     } else {
       // Для остальных публичных страниц - стандартное кэширование

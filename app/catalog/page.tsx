@@ -1,7 +1,6 @@
 import CatalogClient from './catalog-client'
 
-// ISR: On-Demand Revalidation используется через теги
-// export const revalidate = 86400
+export const revalidate = false;
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -60,7 +59,7 @@ export default async function CatalogPage() {
           'User-Agent': 'NextJS-Direct-Firestore/1.0'
         },
         cache: 'force-cache',
-        next: { tags: ['cars-list'] }
+        next: { tags: ['cars-data'] }
       })
 
       if (response.ok) {

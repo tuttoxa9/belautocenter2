@@ -145,7 +145,20 @@ export async function POST(request: NextRequest) {
       results.vercel.message = 'Skipped (only for full purge)';
     }
 
-    // 3. Очистка Next.js ISR кэша (включая Vercel Edge Cache через revalidatePath)
+    // 3. Очистка Next.js ISR кэша (включая Vercel Edge Cache через revalidatePath/revalidateTag)
+    // Подтягиваем revalidateTag
+    const { revalidateTag } = require('next/cache');
+
+    try {
+      revalidateTag('cars-data');
+      if (documentId) {
+        revalidateTag(`car-${documentId}`);
+      }
+      console.log('[REVALIDATE] Tags cleared: cars-data', documentId ? `and car-${documentId}` : '');
+    } catch (e) {
+       console.error('[REVALIDATE] Error clearing tags', e);
+    }
+
     if (paths && Array.isArray(paths)) {
       console.log('[REVALIDATE] Next.js: Revalidating paths:', paths);
 

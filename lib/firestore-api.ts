@@ -11,20 +11,19 @@ export class FirestoreApi {
    */
   async getCollection(collectionName: string, forceRefresh = false): Promise<FirestoreDocument[]> {
     try {
-
-
       const headers: Record<string, string> = {};
+      const path = `/${collectionName}`;
+
+      const requestOptions: any = { headers };
+
       if (forceRefresh) {
-        headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-        headers['Pragma'] = 'no-cache';
-        headers['Expires'] = '0';
+        requestOptions.cache = 'no-store';
+      } else {
+        requestOptions.cache = 'force-cache';
+        requestOptions.next = { tags: ['cars-data'] };
       }
 
-      const path = forceRefresh
-        ? `/${collectionName}?_t=${Date.now()}`
-        : `/${collectionName}`;
-
-      const response = await apiClient.get<any>(path, { headers })
+      const response = await apiClient.get<any>(path, requestOptions);
 
 
 
@@ -58,7 +57,12 @@ export class FirestoreApi {
    */
   async getDocument(collectionName: string, documentId: string): Promise<FirestoreDocument | null> {
     try {
-      const doc = await apiClient.get<any>(`/${collectionName}/${documentId}`)
+      const requestOptions: any = {
+        cache: 'force-cache',
+        next: { tags: ['cars-data', `car-${documentId}`] }
+      };
+
+      const doc = await apiClient.get<any>(`/${collectionName}/${documentId}`, requestOptions)
 
       if (!doc || !doc.fields) {
         return null

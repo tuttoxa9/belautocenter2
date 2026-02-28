@@ -5,6 +5,8 @@ export interface ApiRequestOptions {
   body?: any
   headers?: Record<string, string>
   requireAuth?: boolean
+  next?: RequestInit['next']
+  cache?: RequestCache
 }
 
 export class ApiClient {
@@ -54,7 +56,15 @@ export class ApiClient {
 
     const requestOptions: RequestInit = {
       method,
-      headers: requestHeaders
+      headers: requestHeaders,
+    }
+
+    if (options.next) {
+      requestOptions.next = options.next;
+    }
+
+    if (options.cache) {
+      requestOptions.cache = options.cache;
     }
 
     if (body && method !== 'GET') {
