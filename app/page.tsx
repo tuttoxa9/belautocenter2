@@ -13,9 +13,11 @@ export const revalidate = false;
 
 export default async function HomePage() {
   // Параллельная загрузка данных на сервере
+  // Используем forceRefresh = false, что под капотом вызывает fetch с { cache: 'force-cache', next: { tags: ['cars-data'] } }
+  // Для настроек мы пока не делали тегов, поэтому используем стандартный getDocument
   const [settingsDoc, allCars] = await Promise.all([
     firestoreApi.getDocument("pages", "main").catch(() => null),
-    firestoreApi.getCollection("cars").catch(() => [])
+    firestoreApi.getCollection("cars", false).catch(() => [])
   ])
 
   // Фильтрация для блока "Featured Cars" на сервере

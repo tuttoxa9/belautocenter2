@@ -16,10 +16,10 @@ export async function revalidateCar(carId: string) {
     // Сбрасываем кэш списка автомобилей
     revalidateTag('cars-data');
 
-    // Сбрасываем закэшированные страницы
-    revalidatePath(`/catalog/${carId}`);
-    revalidatePath('/catalog');
-    revalidatePath('/');
+    // Сбрасываем закэшированные страницы, используя 'page' чтобы очистить Server Components
+    revalidatePath(`/catalog/${carId}`, 'page');
+    revalidatePath('/catalog', 'page');
+    revalidatePath('/', 'page');
 
     return { success: true };
   } catch (error) {
@@ -36,8 +36,8 @@ export async function revalidateAllCars() {
 
   try {
     revalidateTag('cars-data');
-    revalidatePath('/catalog');
-    revalidatePath('/');
+    revalidatePath('/catalog', 'page');
+    revalidatePath('/', 'page');
 
     return { success: true };
   } catch (error) {

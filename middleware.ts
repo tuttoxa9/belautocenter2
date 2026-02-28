@@ -42,10 +42,10 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPublicPage) {
-    if (pathname.startsWith('/catalog')) {
-      // Разрешаем браузеру кэшировать, чтобы при навигации не дергать сервер зря.
-      // Актуальность данных обеспечивается On-Demand Revalidation на Vercel (через API Webhook).
-      response.headers.set('Cache-Control', 'public, max-age=120, stale-while-revalidate=600')
+    if (pathname.startsWith('/catalog') || pathname === '/') {
+      // Разрешаем браузеру кэшировать только на короткое время,
+      // чтобы изменения из админки были видны быстро при обновлении (в т.ч. на главной).
+      response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=120')
       response.headers.set('CDN-Cache-Control', 'public, s-maxage=31536000')
     } else {
       // Для остальных публичных страниц - стандартное кэширование
