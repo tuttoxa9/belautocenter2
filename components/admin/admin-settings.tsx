@@ -104,20 +104,13 @@ export default function AdminSettings() {
 
     setPurgingCache(true)
     try {
-      const result = await purgeAllCache()
+      const { revalidateAllCars } = await import('@/app/actions/revalidate');
+      const result = await revalidateAllCars();
 
       if (result.success) {
-        const details = result.details ? JSON.stringify(result.details, null, 2) : ''
-        alert(`✅ Кэш успешно очищен!\n\nВсе страницы будут загружать свежие данные.\n\nДетали:\n${details}`)
+        alert(`✅ Кэш успешно очищен!\n\nВсе страницы будут загружать свежие данные.`);
       } else {
-        // Показываем детальное сообщение об ошибке
-        let errorMessage = result.error || 'Неизвестная ошибка'
-
-        if (errorMessage.includes('API key не настроен')) {
-          errorMessage += '\n\n📝 Инструкция:\n1. Откройте Vercel Dashboard\n2. Перейдите в Settings → Environment Variables\n3. Добавьте переменные:\n   - CACHE_INVALIDATION_API_KEY\n   - NEXT_PUBLIC_CACHE_INVALIDATION_API_KEY\n4. Используйте любой случайный ключ (например: abc123xyz)\n5. Оба ключа должны быть одинаковыми'
-        }
-
-        alert(`❌ Ошибка очистки кэша:\n\n${errorMessage}`)
+        alert(`❌ Ошибка очистки кэша:\n\n${result.error || 'Неизвестная ошибка'}`)
       }
     } catch (error) {
       alert(`❌ Ошибка: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
