@@ -57,6 +57,23 @@ export class ApiClient {
       headers: requestHeaders
     }
 
+    if (method === 'GET') {
+      // Кэшируем GET запросы Next.js Data Cache для снижения нагрузки на CPU.
+      // При наличии forceRefresh или no-cache отключаем этот кэш.
+      const isNoCache = headers?.['Cache-Control']?.includes('no-cache');
+
+      if (isNoCache) {
+        requestOptions.cache = 'no-store';
+      } else {
+        const pathSegments = path.split('/').filter(Boolean);
+        const collectionName = pathSegments[pathSegments[0] === 'api' && pathSegments.length > 1 ? 1 : 0] || 'all';
+        requestOptions.cache = 'force-cache';
+        requestOptions.next = {
+          tags: [`collection-${collectionName}`, 'all-data']
+        };
+      }
+    }
+
     if (body && method !== 'GET') {
       requestOptions.body = JSON.stringify(body)
     }

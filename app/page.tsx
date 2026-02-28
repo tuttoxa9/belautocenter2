@@ -1,6 +1,8 @@
 import { firestoreApi } from "@/lib/firestore-api"
 import HomeClient from "./home-client"
 
+export const revalidate = false // Статическая генерация для Vercel (снижает CPU). Кэш будет обновляться On-Demand.
+
 interface HomepageSettings {
   heroTitle: string
   heroSubtitle: string
@@ -17,7 +19,11 @@ export default async function HomePage() {
   ])
 
   // Фильтрация для блока "Featured Cars" на сервере
-  let featuredCars = allCars.filter((car: any) => car.showOnHomepage === true)
+  let featuredCars = allCars.filter((car: any) =>
+    car.showOnHomepage === true &&
+    car.isAvailable !== false &&
+    car.status !== 'sold'
+  )
 
   if (featuredCars.length === 0) {
     featuredCars = allCars
