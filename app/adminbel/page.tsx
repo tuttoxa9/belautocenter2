@@ -79,20 +79,12 @@ export default function AdminPage() {
         return
       }
 
-      // Формируем URL API на основе переменной окружения или значения по умолчанию
-      const apiHost = process.env.NEXT_PUBLIC_API_HOST || 'https://images.belautocenter.by'
+      // Вызываем наш Server Action для полной очистки
+      const { revalidateAllCars } = await import('@/app/actions/revalidate');
+      const result = await revalidateAllCars();
 
-      // Отправляем запрос на очистку кэша
-      const response = await fetch(`${apiHost}/purge-everything`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error(`Ошибка очистки кэша: ${response.status} ${response.statusText}`)
+      if (!result.success) {
+        throw new Error(`Ошибка очистки кэша: ${result.error || 'Неизвестная ошибка'}`);
       }
 
       // Показываем уведомление об успехе

@@ -305,6 +305,8 @@ export default function AdminCars() {
       filtered = filtered.filter(car => car.isAvailable === true)
     } else if (filterOption === "sold") {
       filtered = filtered.filter(car => car.isAvailable === false)
+    } else if (filterOption === "onHomepage") {
+      filtered = filtered.filter(car => car.showOnHomepage === true)
     }
 
     return filtered
@@ -947,7 +949,7 @@ export default function AdminCars() {
           </div>
 
           {/* Фильтрация */}
-          <div className="w-36">
+          <div className="w-48">
             <Select value={filterOption} onValueChange={setFilterOption}>
               <SelectTrigger>
                 <SelectValue placeholder="Фильтр" />
@@ -956,6 +958,7 @@ export default function AdminCars() {
                 <SelectItem value="all">Все</SelectItem>
                 <SelectItem value="available">В наличии</SelectItem>
                 <SelectItem value="sold">Проданные</SelectItem>
+                <SelectItem value="onHomepage">На главной</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -978,13 +981,20 @@ export default function AdminCars() {
                   />
                 </div>
               )}
-              <div className="flex items-start justify-between mb-2 gap-2">
-                <h3 className="font-semibold text-sm md:text-base truncate flex-1">
-                  {car.make} {car.model}
-                </h3>
-                <Badge variant={car.isAvailable ? "default" : "secondary"} className="text-xs flex-shrink-0">
-                  {car.isAvailable ? "В наличии" : "Продан"}
-                </Badge>
+              <div className="flex flex-col mb-2 gap-1">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-semibold text-sm md:text-base truncate flex-1">
+                    {car.make} {car.model}
+                  </h3>
+                  <Badge variant={car.isAvailable ? "default" : "secondary"} className="text-xs flex-shrink-0">
+                    {car.isAvailable ? "В наличии" : "Продан"}
+                  </Badge>
+                </div>
+                {car.showOnHomepage && (
+                  <Badge variant="outline" className="text-[10px] w-fit border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300">
+                    На главной
+                  </Badge>
+                )}
               </div>
               <div className="text-xs md:text-sm text-muted-foreground space-y-1">
                 <p>Год: {car.year}</p>
