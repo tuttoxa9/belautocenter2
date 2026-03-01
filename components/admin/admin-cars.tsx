@@ -13,8 +13,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Car, Code, Search, Eye } from "lucide-react"
+import { Plus, Edit, Trash2, Car, Code, Search, Eye, Check } from "lucide-react"
 import ImageUpload from "@/components/admin/image-upload"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Link from "next/link"
 import { useButtonState } from "@/hooks/use-button-state"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -33,7 +34,9 @@ export default function AdminCars() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSaving, setIsSaving] = useState(false)
   const [sortOption, setSortOption] = useState("createdAt_desc") // По умолчанию сортировка по дате добавления (новые вначале)
-  const [filterOption, setFilterOption] = useState("all") // По умолчанию все автомобили
+  const [filterOption, setFilterOption] = useState("available") // По умолчанию автомобили в наличии
+  const [mainTab, setMainTab] = useState("all") // 'all' для всех машин, 'homepage' для машин на главной
+  const [isAddHomepageDialogOpen, setIsAddHomepageDialogOpen] = useState(false)
   const cacheInvalidator = createCacheInvalidator('cars')
   const saveButtonState = useButtonState()
   const deleteButtonStates = {}
@@ -165,6 +168,42 @@ export default function AdminCars() {
       } catch (error) {
         alert("Ошибка удаления автомобиля")
       }
+    }
+  }
+
+  const addToHomepage = async (carId) => {
+    try {
+      await updateDoc(doc(db, "cars", carId), {
+        showOnHomepage: true,
+        updatedAt: new Date()
+      })
+      await cacheInvalidator.onUpdate(carId)
+      await revalidateCar(carId)
+
+      // Обновляем локальное состояние
+      setCars(cars.map(car =>
+        car.id === carId ? { ...car, showOnHomepage: true } : car
+      ))
+    } catch (error) {
+      alert("Ошибка при добавлении автомобиля на главную")
+    }
+  }
+
+  const removeFromHomepage = async (carId) => {
+    try {
+      await updateDoc(doc(db, "cars", carId), {
+        showOnHomepage: false,
+        updatedAt: new Date()
+      })
+      await cacheInvalidator.onUpdate(carId)
+      await revalidateCar(carId)
+
+      // Обновляем локальное состояние
+      setCars(cars.map(car =>
+        car.id === carId ? { ...car, showOnHomepage: false } : car
+      ))
+    } catch (error) {
+      alert("Ошибка при удалении автомобиля с главной")
     }
   }
 
@@ -363,11 +402,6 @@ export default function AdminCars() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl md:text-2xl font-bold truncate">Управление автомобилями</h2>
-          <div className="text-sm text-muted-foreground mt-1 font-medium">
-            {filteredCars.length === cars.length
-              ? `Всего автомобилей: ${cars.length}`
-              : `Показано ${filteredCars.length} из ${cars.length} автомобилей`}
-          </div>
         </div>
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
@@ -878,6 +912,19 @@ export default function AdminCars() {
         </Sheet>
       </div>
 
+      <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="all">Каталог</TabsTrigger>
+          <TabsTrigger value="homepage">На главной</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-4">
+          <div className="text-sm text-muted-foreground font-medium mb-4">
+            {filteredCars.length === cars.length
+              ? `Всего автомобилей: ${cars.length}`
+              : `Показано ${filteredCars.length} из ${cars.length} автомобилей`}
+          </div>
+
       {/* Статистика автомобилей */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         <div className="bg-card dark:bg-zinc-900/50 rounded-lg shadow-sm border border-border p-4">
@@ -1044,6 +1091,107 @@ export default function AdminCars() {
           </div>
         </div>
       )}
+        </TabsContent>
+
+        <TabsContent value="homepage" className="space-y-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+            <h3 className="text-lg font-semibold">Автомобили на главной странице</h3>
+            <Button onClick={() => setIsAddHomepageDialogOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Добавить на главную
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {cars.filter(car => car.showOnHomepage).map((car) => (
+              <Card key={car.id} className="relative overflow-hidden border-2 border-primary/20">
+                <CardContent className="p-3 md:p-4">
+                  {car.imageUrls && car.imageUrls.length > 0 && car.imageUrls[0] && (
+                    <div className="mb-3">
+                      <img
+                        src={getCachedImageUrl(car.imageUrls[0])}
+                        alt={`${car.make} ${car.model}`}
+                        className="w-full h-40 object-cover rounded-md"
+                      />
+                    </div>
+                  )}
+                  <div className="flex items-start justify-between mb-2 gap-2">
+                    <h3 className="font-semibold text-sm md:text-base truncate flex-1">
+                      {car.make} {car.model}
+                    </h3>
+                  </div>
+                  <div className="text-xs md:text-sm text-muted-foreground space-y-1 mb-3">
+                    <p>Год: {car.year}</p>
+                    <p>Цена: ${car.price?.toLocaleString()}</p>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={() => removeFromHomepage(car.id)}
+                  >
+                    Убрать с главной
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {cars.filter(car => car.showOnHomepage).length === 0 && (
+            <div className="text-center py-12">
+              <Car className="h-12 w-12 mx-auto text-muted-foreground/60 mb-4" />
+              <p className="text-muted-foreground">На главной странице пока нет автомобилей</p>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
+
+      <Dialog open={isAddHomepageDialogOpen} onOpenChange={setIsAddHomepageDialogOpen}>
+        <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Добавить автомобиль на главную</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto pr-2 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {cars.filter(car => !car.showOnHomepage).map((car) => (
+                <Card key={car.id} className="relative overflow-hidden">
+                  <CardContent className="p-3">
+                    {car.imageUrls && car.imageUrls.length > 0 && car.imageUrls[0] && (
+                      <div className="mb-2">
+                        <img
+                          src={getCachedImageUrl(car.imageUrls[0])}
+                          alt={`${car.make} ${car.model}`}
+                          className="w-full h-32 object-cover rounded-md"
+                        />
+                      </div>
+                    )}
+                    <h3 className="font-semibold text-sm truncate mb-1">
+                      {car.make} {car.model}
+                    </h3>
+                    <div className="text-xs text-muted-foreground mb-3 flex justify-between">
+                      <span>{car.year}</span>
+                      <span className="font-medium text-foreground">${car.price?.toLocaleString()}</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="w-full text-xs"
+                      onClick={() => addToHomepage(car.id)}
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Добавить на главную
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+              {cars.filter(car => !car.showOnHomepage).length === 0 && (
+                <div className="col-span-full text-center py-12 text-muted-foreground">
+                  Нет доступных автомобилей для добавления
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
