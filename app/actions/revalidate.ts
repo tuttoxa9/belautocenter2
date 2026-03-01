@@ -10,13 +10,12 @@ export async function revalidateCar(carId: string) {
   console.log(`[Revalidation] Triggering revalidate for car: ${carId}`);
 
   try {
-    // Сбрасываем кэш данных для конкретного авто
+    // Сбрасываем кэш данных для конкретного авто и всей коллекции машин
     revalidateTag(`car-${carId}`);
-
-    // Сбрасываем кэш списка автомобилей
     revalidateTag('cars-list');
+    revalidateTag('collection-cars');
 
-    // Сбрасываем закэшированные страницы
+    // Сбрасываем закэшированные страницы, что обновит Edge Cache на Vercel
     revalidatePath(`/catalog/${carId}`);
     revalidatePath('/catalog');
     revalidatePath('/');
@@ -36,6 +35,7 @@ export async function revalidateAllCars() {
 
   try {
     revalidateTag('cars-list');
+    revalidateTag('collection-cars');
     revalidatePath('/catalog');
     revalidatePath('/');
 

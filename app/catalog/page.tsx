@@ -1,7 +1,7 @@
 import CatalogClient from './catalog-client'
 
-// ISR: On-Demand Revalidation используется через теги
-// export const revalidate = 86400
+// ISR: On-Demand Revalidation используется через теги (статическая генерация на всегда до вызова actions/revalidate)
+export const revalidate = false
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
