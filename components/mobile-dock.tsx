@@ -17,8 +17,8 @@ export default function MobileDock() {
   const { openModal: openCreditModal } = useCreditLeasingModal()
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-slate-200/50 dark:border-gray-800/50 rounded-2xl shadow-[0_0_35px_0px_rgba(0,0,0,0.4)] dark:shadow-[0_0_35px_0px_rgba(0,0,0,0.8)] md:hidden">
-      <div className="grid grid-cols-4 p-2">
+    <div className="fixed bottom-3 left-3 right-3 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-slate-200/50 dark:border-gray-800/50 rounded-2xl shadow-[0_0_35px_0px_rgba(0,0,0,0.4)] dark:shadow-[0_0_35px_0px_rgba(0,0,0,0.8)] md:hidden">
+      <div className="grid grid-cols-4 p-1.5 xs:p-2">
         {dockItems.map((item) => {
           const isActive = pathname === item.href
           const isCredit = item.href === "/credit"
@@ -28,10 +28,10 @@ export default function MobileDock() {
               <button
                 key={item.name}
                 onClick={() => openCreditModal("credit")}
-                className={`flex flex-col items-center justify-center py-3 px-2 text-xs transition-all duration-300 rounded-xl text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-gray-800/80`}
+                className={`flex flex-col items-center justify-center py-2 px-1 xs:py-3 xs:px-2 text-[10px] xs:text-xs transition-all duration-300 rounded-xl text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-gray-800/80`}
               >
-                <item.icon className={`h-6 w-6 mb-1 transition-all duration-300 text-slate-600 dark:text-gray-400`} />
-                <span className="text-xs font-medium">{item.name}</span>
+                <item.icon className={`h-5 w-5 xs:h-6 xs:w-6 mb-1 transition-all duration-300 text-slate-600 dark:text-gray-400`} />
+                <span className="font-medium tracking-tight truncate w-full px-0.5 text-center">{item.name}</span>
               </button>
             )
           }
@@ -41,14 +41,14 @@ export default function MobileDock() {
               key={item.name}
               href={item.href}
               prefetch={false}
-              className={`flex flex-col items-center justify-center py-3 px-2 text-xs transition-all duration-300 rounded-xl ${
+              className={`flex flex-col items-center justify-center py-2 px-1 xs:py-3 xs:px-2 text-[10px] xs:text-xs transition-all duration-300 rounded-xl ${
                 isActive
                   ? "text-white bg-slate-900 dark:bg-gray-700 shadow-lg shadow-slate-900/25 dark:shadow-black/60 transform scale-105"
                   : "text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-gray-800/80"
               }`}
             >
-              <item.icon className={`h-6 w-6 mb-1 transition-all duration-300 ${isActive ? "text-white" : "text-slate-600 dark:text-gray-400"}`} />
-              <span className="text-xs font-medium">{item.name}</span>
+              <item.icon className={`h-5 w-5 xs:h-6 xs:w-6 mb-1 transition-all duration-300 ${isActive ? "text-white" : "text-slate-600 dark:text-gray-400"}`} />
+              <span className="font-medium tracking-tight truncate w-full px-0.5 text-center">{item.name}</span>
             </Link>
           )
         })}

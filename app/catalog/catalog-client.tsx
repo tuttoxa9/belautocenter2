@@ -405,15 +405,15 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-black dark:to-gray-950">
       <div className="container px-4 py-8">
-        <nav className="mb-6">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+        <nav className="mb-4 xs:mb-6">
+          <ol className="flex items-center space-x-2 text-xs xs:text-sm text-gray-500 dark:text-gray-400">
             <li><Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={false}>Главная</Link></li>
             <li><ArrowRight className="h-3 w-3" /></li>
             <li className="text-gray-900 dark:text-white font-medium">Каталог</li>
           </ol>
         </nav>
 
-        <div className="mb-8">
+        <div className="mb-6 xs:mb-8">
           <div className="relative">
             <Input
               type="text"
@@ -421,16 +421,16 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-400 h-12 text-base pl-12 rounded-lg w-full"
+              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-400 h-10 xs:h-12 text-sm xs:text-base pl-10 xs:pl-12 rounded-lg w-full pr-24 xs:pr-28"
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-            <Button onClick={handleSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-9 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-md transition-colors">Найти</Button>
+            <Search className="absolute left-3 xs:left-4 top-1/2 -translate-y-1/2 h-4 w-4 xs:h-5 xs:w-5 text-gray-400 dark:text-gray-500" />
+            <Button onClick={handleSearch} className="absolute right-1.5 xs:right-2 top-1/2 -translate-y-1/2 h-7 xs:h-9 px-2 xs:px-4 text-xs xs:text-sm bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-md transition-colors">Найти</Button>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="lg:hidden mb-6">
-            <Button variant="outline" className="w-full h-11 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-white rounded-lg transition-colors" onClick={() => setIsFilterOpen(true)}>
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div className="lg:hidden mb-2 xs:mb-4">
+            <Button variant="outline" className="w-full h-10 xs:h-11 text-sm bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-white rounded-lg transition-colors" onClick={() => setIsFilterOpen(true)}>
               <Filter className="h-4 w-4 mr-2" />
               Фильтры
               {hasActiveFilters() && <span className="ml-2 w-2 h-2 bg-slate-500 dark:bg-blue-500 rounded-full"></span>}
@@ -441,17 +441,17 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           <div className="lg:w-96 hidden lg:block"><DesktopFilters filters={filters} setFilters={setFilters} availableMakes={availableMakes} availableModels={availableModels} hasActiveFilters={hasActiveFilters} resetFilters={resetFilters} applyFilters={applyFilters} /></div>
 
           <div className="flex-1">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Каталог автомобилей</h1>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Найдено {loading ? <span className="inline-block bg-gray-200 dark:bg-zinc-800 rounded h-4 w-6 align-middle animate-pulse mx-2"></span> : filteredCars.length} автомобилей</p>
+                <h1 className="text-xl xs:text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">Каталог автомобилей</h1>
+                <p className="text-xs xs:text-sm sm:text-base text-gray-600 dark:text-gray-400">Найдено {loading ? <span className="inline-block bg-gray-200 dark:bg-zinc-800 rounded h-3 w-4 sm:h-4 sm:w-6 align-middle animate-pulse mx-1 sm:mx-2"></span> : filteredCars.length} автомобилей</p>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-1 w-full sm:w-auto">
                   <div className="flex items-center space-x-2 px-2 sm:px-3">
-                    <SlidersHorizontal className="h-4 w-4 text-gray-500 dark:text-gray-400 shrink-0" />
+                    <SlidersHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-500 dark:text-gray-400 shrink-0" />
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-full sm:w-48 border-0 bg-transparent dark:text-white h-9 text-xs sm:text-sm font-medium px-1 sm:px-3"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="w-full sm:w-48 border-0 bg-transparent dark:text-white h-8 sm:h-9 text-xs sm:text-sm font-medium px-1 sm:px-3"><SelectValue /></SelectTrigger>
                       <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-lg rounded-lg">
                         <SelectItem value="date-desc">Новые объявления</SelectItem>
                         <SelectItem value="date-asc">Старые объявления</SelectItem>

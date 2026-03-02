@@ -749,35 +749,35 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black animate-appear-blur">
-      <div className="container mx-auto px-1 sm:px-2 lg:px-4 py-4 sm:py-6 max-w-7xl">
+      <div className="container mx-auto px-1 xs:px-2 sm:px-2 lg:px-4 py-3 xs:py-4 sm:py-6 max-w-7xl">
         {/* Хлебные крошки */}
-        <nav className="mb-4 sm:mb-6">
-          <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-slate-500 dark:text-gray-400">
+        <nav className="mb-3 xs:mb-4 sm:mb-6">
+          <ol className="flex items-center space-x-1 sm:space-x-2 text-[10px] xs:text-xs sm:text-sm text-slate-500 dark:text-gray-400">
             <li>
               <button
                 onClick={() => router.push('/')}
-                className="hover:text-slate-700 dark:hover:text-gray-200 transition-colors px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-gray-800"
+                className="hover:text-slate-700 dark:hover:text-gray-200 transition-colors px-1 xs:px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-gray-800"
               >
                 Главная
               </button>
             </li>
             <li>
-              <ChevronRight className="h-4 w-4 text-slate-400 dark:text-gray-600" />
+              <ChevronRight className="h-3 w-3 xs:h-4 xs:w-4 text-slate-400 dark:text-gray-600" />
             </li>
             <li>
               <button
                 onClick={() => router.push('/catalog')}
-                className="hover:text-slate-700 dark:hover:text-gray-200 transition-colors px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-gray-800"
+                className="hover:text-slate-700 dark:hover:text-gray-200 transition-colors px-1 xs:px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-gray-800"
               >
                 Каталог
               </button>
             </li>
             <li>
-              <ChevronRight className="h-4 w-4 text-slate-400 dark:text-gray-600" />
+              <ChevronRight className="h-3 w-3 xs:h-4 xs:w-4 text-slate-400 dark:text-gray-600" />
             </li>
-            <li className="text-slate-900 dark:text-white font-medium px-2 py-1 bg-slate-100 dark:bg-gray-800 rounded-md">
+            <li className="text-slate-900 dark:text-white font-medium px-1 xs:px-2 py-1 bg-slate-100 dark:bg-gray-800 rounded-md truncate max-w-[100px] xs:max-w-[150px] sm:max-w-none">
               {loading ? (
-                <div className="h-4 bg-slate-300 dark:bg-gray-700 rounded w-20 animate-pulse inline-block"></div>
+                <div className="h-3 xs:h-4 bg-slate-300 dark:bg-gray-700 rounded w-16 xs:w-20 animate-pulse inline-block"></div>
               ) : (
                 `${car?.make || ''} ${car?.model || ''}`
               )}
@@ -786,48 +786,48 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
         </nav>
 
         {/* ЕДИНЫЙ ОСНОВНОЙ БЛОК */}
-        <div className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200/50 dark:border-gray-700/50 overflow-hidden" style={{ boxShadow: '0 8px 32px rgba(27, 40, 52, 0.07)' }}>
+        <div className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-sm rounded-2xl xs:rounded-3xl shadow-2xl border border-slate-200/50 dark:border-gray-700/50 overflow-hidden" style={{ boxShadow: '0 8px 32px rgba(27, 40, 52, 0.07)' }}>
           <div>
 
           {/* Заголовок и цена - компактный верхний блок */}
-          <div className="bg-gradient-to-r from-slate-50 to-white dark:from-gray-800 dark:to-gray-800 border-b border-slate-200/50 dark:border-gray-700/50 p-3 sm:p-6">
+          <div className="bg-gradient-to-r from-slate-50 to-white dark:from-gray-800 dark:to-gray-800 border-b border-slate-200/50 dark:border-gray-700/50 p-2.5 xs:p-3 sm:p-6">
             {/* Мобильная компоновка - горизонтальная для экономии места */}
-            <div className="flex items-start justify-between gap-3 lg:gap-4">
+            <div className="flex items-start justify-between gap-2 xs:gap-3 lg:gap-4">
               <div className="flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 xs:gap-2 sm:gap-3 mb-1.5 xs:mb-2">
                   {loading ? (
-                    <div className="h-8 sm:h-10 lg:h-12 bg-slate-300 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
+                    <div className="h-6 xs:h-8 sm:h-10 lg:h-12 bg-slate-300 dark:bg-gray-700 rounded w-32 xs:w-48 animate-pulse"></div>
                   ) : (
-                    <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
+                    <h1 className="text-base xs:text-lg sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white leading-tight truncate">
                       {car?.make} {car?.model}
                     </h1>
                   )}
                   <div className="self-start sm:self-auto">
                     {loading ? (
-                      <div className="h-6 sm:h-7 bg-slate-300 dark:bg-gray-700 rounded-full w-16 animate-pulse"></div>
+                      <div className="h-5 xs:h-6 sm:h-7 bg-slate-300 dark:bg-gray-700 rounded-full w-12 xs:w-16 animate-pulse"></div>
                     ) : car?.isAvailable ? (
-                      <div className="bg-green-500 dark:bg-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
+                      <div className="bg-green-500 dark:bg-green-600 text-white px-1.5 xs:px-2 sm:px-3 py-0.5 xs:py-1 rounded-full text-[10px] xs:text-xs sm:text-sm font-bold inline-block">
                         В наличии
                       </div>
                     ) : (
-                      <div className="bg-red-500 dark:bg-red-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold inline-block">
+                      <div className="bg-red-500 dark:bg-red-600 text-white px-1.5 xs:px-2 sm:px-3 py-0.5 xs:py-1 rounded-full text-[10px] xs:text-xs sm:text-sm font-bold inline-block">
                         Продан
                       </div>
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-gray-400">
+                <div className="flex flex-wrap items-center gap-1 xs:gap-1.5 sm:gap-2 text-slate-600 dark:text-gray-400">
                   {loading ? (
                     <>
-                      <div className="h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-12 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-16 animate-pulse"></div>
-                      <div className="h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-14 animate-pulse"></div>
+                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-10 xs:w-12 animate-pulse"></div>
+                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-12 xs:w-16 animate-pulse"></div>
+                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-10 xs:w-14 animate-pulse"></div>
                     </>
                   ) : (
                     <>
-                      <span className="bg-slate-100 dark:bg-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium dark:text-gray-200">{car?.year}</span>
-                      <span className="bg-slate-100 dark:bg-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium dark:text-gray-200">{car?.color}</span>
-                      <span className="bg-slate-100 dark:bg-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm font-medium dark:text-gray-200">{car?.bodyType}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.year}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.color}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.bodyType}</span>
                     </>
                   )}
                 </div>
@@ -837,9 +837,9 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               <div className="text-right flex-shrink-0">
                 {loading ? (
                   <>
-                    <div className="h-6 sm:h-8 lg:h-9 bg-slate-300 dark:bg-gray-700 rounded w-24 mb-1 animate-pulse ml-auto"></div>
-                    <div className="h-4 sm:h-5 lg:h-6 bg-slate-300 dark:bg-gray-700 rounded w-20 animate-pulse ml-auto"></div>
-                    <div className="h-3 sm:h-4 bg-slate-300 dark:bg-gray-700 rounded w-16 mt-1 animate-pulse ml-auto"></div>
+                    <div className="h-5 xs:h-6 sm:h-8 lg:h-9 bg-slate-300 dark:bg-gray-700 rounded w-16 xs:w-24 mb-1 animate-pulse ml-auto"></div>
+                    <div className="h-3 xs:h-4 sm:h-5 lg:h-6 bg-slate-300 dark:bg-gray-700 rounded w-14 xs:w-20 animate-pulse ml-auto"></div>
+                    <div className="h-2 xs:h-3 sm:h-4 bg-slate-300 dark:bg-gray-700 rounded w-10 xs:w-16 mt-1 animate-pulse ml-auto"></div>
                   </>
                 ) : (
                   <>
@@ -847,10 +847,10 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                       carId={carId}
                       initialPrice={car?.price || 0}
                       className="items-end"
-                      priceClassName="text-lg sm:text-2xl lg:text-3xl leading-tight"
+                      priceClassName="text-base xs:text-lg sm:text-2xl lg:text-3xl leading-tight"
                       showByn={true}
                     />
-                    <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-500 mt-1">
+                    <div className="text-[10px] xs:text-xs sm:text-sm text-slate-500 dark:text-gray-500 mt-0.5 xs:mt-1">
                       от {car?.price ? new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "USD",

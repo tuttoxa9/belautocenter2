@@ -49,15 +49,15 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-gray-900 text-white rounded-t-[50px] footer-corner-fill">
-      <div className="container px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+    <footer className="bg-gray-900 text-white rounded-t-[30px] xs:rounded-t-[50px] footer-corner-fill">
+      <div className="container px-3 xs:px-4 py-8 xs:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 xs:gap-8">
           {/* Колонка 1: Логотип и слоган */}
-          <div className="space-y-4">
+          <div className="space-y-3 xs:space-y-4">
             <Link href="/" className="flex justify-center md:justify-start" prefetch={true}>
-              <Image src="/logo.png" alt="Логотип" width={160} height={160} className="object-contain" />
+              <Image src="/logo.png" alt="Логотип" width={140} height={140} className="object-contain xs:w-[160px] xs:h-[160px]" />
             </Link>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 text-xs xs:text-sm text-center md:text-left">
               Надежный партнер в выборе качественного автомобиля с пробегом в Беларуси
             </p>
           </div>
