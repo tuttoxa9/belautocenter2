@@ -19,6 +19,9 @@ const config: Config = {
       },
     },
   	extend: {
+		screens: {
+			'xs': '375px',
+		},
   		fontFamily: {
   			sans: ['Geoform', 'system-ui', 'sans-serif'],
   			display: ['Geoform', 'system-ui', 'sans-serif'],

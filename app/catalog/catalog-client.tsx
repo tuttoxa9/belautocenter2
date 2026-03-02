@@ -443,15 +443,15 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           <div className="flex-1">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Каталог автомобилей</h1>
-                <p className="text-gray-600 dark:text-gray-400">Найдено {loading ? <span className="inline-block bg-gray-200 dark:bg-zinc-800 rounded h-4 w-6 align-middle animate-pulse mx-2"></span> : filteredCars.length} автомобилей</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Каталог автомобилей</h1>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Найдено {loading ? <span className="inline-block bg-gray-200 dark:bg-zinc-800 rounded h-4 w-6 align-middle animate-pulse mx-2"></span> : filteredCars.length} автомобилей</p>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-1">
-                  <div className="flex items-center space-x-2 px-3">
-                    <SlidersHorizontal className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-1 w-full sm:w-auto">
+                  <div className="flex items-center space-x-2 px-2 sm:px-3">
+                    <SlidersHorizontal className="h-4 w-4 text-gray-500 dark:text-gray-400 shrink-0" />
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-48 border-0 bg-transparent dark:text-white h-9 text-sm font-medium"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="w-full sm:w-48 border-0 bg-transparent dark:text-white h-9 text-xs sm:text-sm font-medium px-1 sm:px-3"><SelectValue /></SelectTrigger>
                       <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-lg rounded-lg">
                         <SelectItem value="date-desc">Новые объявления</SelectItem>
                         <SelectItem value="date-asc">Старые объявления</SelectItem>
@@ -483,7 +483,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
               </div>
             ) : filteredCars.length > 0 ? (
               <div className="space-y-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
                   {displayedCars.map(car => <CarCard key={car.id} car={car} />)}
                 </div>
                 {hasMore && (

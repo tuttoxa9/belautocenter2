@@ -73,10 +73,10 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
 
   return (
     <Card ref={cardRef} className="overflow-hidden border-0 bg-white/70 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg shadow-gray-900/5 dark:shadow-black/60 rounded-2xl h-full group transition-all duration-200 dark:border dark:border-gray-800">
-      <Link href={`/catalog/${car.id}`} className="block h-full" prefetch={false}>
+      <Link href={`/catalog/${car.id}`} className="block h-full flex flex-col" prefetch={false}>
         {/* Image Section */}
-        <div className="relative">
-          <div className="relative overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-800/90 dark:to-black/90 rounded-t-2xl h-56">
+        <div className="relative w-full aspect-[4/3] sm:h-56 sm:aspect-auto">
+          <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-gray-100/80 to-gray-200/60 dark:from-gray-800/90 dark:to-black/90 rounded-t-2xl">
             {isIntersecting ? (
               <BlurImage
                 src={primaryImageUrl || "/placeholder.svg?height=200&width=280"}
@@ -97,11 +97,11 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
 
 
             {/* Year - скелетон или данные */}
-            <div className="absolute top-3 right-3">
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
               {!dataReady ? (
-                <div className="h-6 w-12 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+                <div className="h-5 w-10 sm:h-6 sm:w-12 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
               ) : (
-                <span className="bg-black/75 dark:bg-gray-700/90 text-white text-xs font-medium px-2 py-1 rounded">
+                <span className="bg-black/75 dark:bg-gray-700/90 text-white text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 rounded">
                   {car.year}
                 </span>
               )}
@@ -110,7 +110,7 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
         </div>
 
         {/* Content Section */}
-        <CardContent className="p-3 space-y-2">
+        <CardContent className="p-2.5 sm:p-3 space-y-1.5 sm:space-y-2">
           {!dataReady ? (
             // Скелетон до готовности данных
             <>
@@ -138,13 +138,13 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
             // Реальные данные после готовности
             <>
               {/* Header - более компактный */}
-              <div className="mb-2">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-base leading-tight group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors flex-1">
+              <div className="mb-1.5 sm:mb-2">
+                <div className="flex items-start justify-between gap-1 sm:gap-2 flex-col sm:flex-row sm:items-start mb-1 sm:mb-0">
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base leading-tight group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2 sm:line-clamp-none w-full">
                     {car.make} {car.model}
                   </h3>
                   {car.fromEurope && (
-                    <span className="mt-0.5 flex-shrink-0 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded-full">
+                    <span className="sm:mt-0.5 flex-shrink-0 text-[9px] sm:text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-1.5 py-0.5 sm:px-2 rounded-full leading-none">
                       Без пробега по РБ
                     </span>
                   )}
@@ -152,27 +152,27 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                 <CarPrice
                   carId={car.id}
                   initialPrice={car.price}
-                  className="mb-1"
-                  priceClassName="text-lg"
+                  className="mb-0 sm:mb-1"
+                  priceClassName="text-base sm:text-lg"
                   showByn={true}
                 />
               </div>
 
               {/* Specs - более компактные */}
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
+              <div className="space-y-0.5 sm:space-y-1">
+                <div className="flex items-center justify-between text-[10px] sm:text-xs">
                   <span className="text-slate-600 dark:text-gray-400">Пробег</span>
-                  <span className="font-medium text-slate-900 dark:text-white">{formattedMileage} км</span>
+                  <span className="font-medium text-slate-900 dark:text-white truncate max-w-[60%] text-right">{formattedMileage} км</span>
                 </div>
-                <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center justify-between text-[10px] sm:text-xs">
                   <span className="text-slate-600 dark:text-gray-400">Двигатель</span>
-                  <span className="font-medium text-slate-900 dark:text-white">
+                  <span className="font-medium text-slate-900 dark:text-white truncate max-w-[60%] text-right">
                     {car.fuelType === "Электро" ? car.fuelType : `${formattedEngineVolume} ${car.fuelType}`}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center justify-between text-[10px] sm:text-xs">
                   <span className="text-slate-600 dark:text-gray-400">КПП</span>
-                  <span className="font-medium text-slate-900 dark:text-white">{car.transmission}</span>
+                  <span className="font-medium text-slate-900 dark:text-white truncate max-w-[60%] text-right">{car.transmission}</span>
                 </div>
               </div>
             </>
