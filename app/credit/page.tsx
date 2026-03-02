@@ -295,49 +295,49 @@ export default function CreditPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-black dark:to-black">
-      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
+      <div className="max-w-7xl mx-auto px-2 xs:px-4 py-4 xs:py-6 md:py-8">
 
         {/* Breadcrumbs - статичные, показываем всегда */}
-        <nav className="mb-6 md:mb-8">
-          <ol className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-300">
+        <nav className="mb-4 xs:mb-6 md:mb-8">
+          <ol className="flex items-center space-x-1.5 xs:space-x-2 text-[10px] xs:text-xs sm:text-sm text-slate-500 dark:text-slate-300">
             <li>
               <Link href="/" className="hover:text-slate-900 dark:hover:text-white transition-colors" prefetch={true}>
                 Главная
               </Link>
             </li>
-            <li><ChevronRight className="h-4 w-4" /></li>
+            <li><ChevronRight className="h-3 w-3 xs:h-4 xs:w-4" /></li>
             <li className="text-slate-900 dark:text-white font-medium">Автокредит</li>
           </ol>
         </nav>
 
         {/* Hero Section - заголовки и описание со скелетонами */}
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 dark:border-zinc-800 overflow-hidden mb-6 md:mb-8">
-          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-black dark:via-zinc-950 dark:to-black px-4 py-6 md:px-8 md:py-12 min-h-[120px] md:min-h-[220px]">
+        <div className="bg-white dark:bg-zinc-900 rounded-xl xs:rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 dark:border-zinc-800 overflow-hidden mb-4 xs:mb-6 md:mb-8">
+          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-black dark:via-zinc-950 dark:to-black px-3 xs:px-4 py-4 xs:py-6 md:px-8 md:py-12 min-h-[100px] xs:min-h-[120px] md:min-h-[220px]">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9wYXR0ZXJuPgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz4KPHN2Zz4=')] opacity-10"></div>
 
             {/* Credit Image - статичное, показываем всегда */}
-            <div className="absolute -top-6 right-0 md:-top-12 md:right-4 z-10">
+            <div className="absolute -top-4 right-0 xs:-top-6 md:-top-12 md:right-4 z-10">
               <Image
                 src="/car_credit3new.png"
                 alt="Car Credit"
                 width={300}
                 height={300}
-                className="w-32 h-32 md:w-56 md:h-56 lg:w-72 lg:h-72 xl:w-80 xl:h-80 object-contain"
+                className="w-24 h-24 xs:w-32 xs:h-32 md:w-56 md:h-56 lg:w-72 lg:h-72 xl:w-80 xl:h-80 object-contain"
                 style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }}
               />
             </div>
 
-            <div className="relative z-20">
+            <div className="relative z-20 w-2/3 xs:w-3/4 md:w-full">
               {loading ? (
-                <div className="space-y-2 md:space-y-4">
-                  <div className="h-6 md:h-10 bg-slate-400 dark:bg-zinc-700 rounded w-64 md:w-96 animate-pulse"></div>
-                  <div className="h-4 md:h-6 bg-slate-300 dark:bg-zinc-800 rounded w-48 md:w-80 animate-pulse"></div>
+                <div className="space-y-1.5 xs:space-y-2 md:space-y-4">
+                  <div className="h-5 xs:h-6 md:h-10 bg-slate-400 dark:bg-zinc-700 rounded w-full md:w-96 animate-pulse"></div>
+                  <div className="h-3 xs:h-4 md:h-6 bg-slate-300 dark:bg-zinc-800 rounded w-5/6 md:w-80 animate-pulse"></div>
                   <div className="hidden md:block h-4 bg-slate-300 dark:bg-zinc-800 rounded w-72 animate-pulse mt-2 md:mt-6"></div>
                 </div>
               ) : (
-                <div className="space-y-2 md:space-y-4">
-                  <h1 className="text-xl md:text-4xl font-bold text-white dark:text-slate-100 relative z-30 leading-tight">{settings?.title}</h1>
-                  <p className="text-sm md:text-lg md:text-xl text-slate-300 dark:text-slate-400 relative z-30 leading-tight">{settings?.subtitle}</p>
+                <div className="space-y-1 xs:space-y-2 md:space-y-4">
+                  <h1 className="text-base xs:text-xl md:text-4xl font-bold text-white dark:text-slate-100 relative z-30 leading-tight">{settings?.title}</h1>
+                  <p className="text-[10px] xs:text-sm md:text-lg md:text-xl text-slate-300 dark:text-slate-400 relative z-30 leading-tight pr-2">{settings?.subtitle}</p>
                   <p className="hidden md:block text-slate-400 dark:text-slate-500 leading-relaxed text-sm md:text-base relative z-30 mt-2 md:mt-6">{settings?.description}</p>
                 </div>
               )}
@@ -345,7 +345,7 @@ export default function CreditPage() {
           </div>
 
           {/* Main Content */}
-          <div className="p-4 md:p-8 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-8">
+          <div className="p-3 xs:p-4 md:p-8 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-8">
 
             {/* Banks Partners Section - только логотипы со скелетонами, остальное статично */}
             <div className="lg:hidden mb-4">

@@ -113,15 +113,15 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md dark:shadow-gray-950">
-      <div className="container flex h-14 items-center justify-between px-2 md:px-4">
+      <div className="container flex h-12 xs:h-14 items-center justify-between px-2 md:px-4">
         {/* Логотип слева на всех устройствах */}
-        <Link href="/" className="flex items-center space-x-2 flex-shrink-0" prefetch={false}>
+        <Link href="/" className="flex items-center space-x-1.5 xs:space-x-2 flex-shrink-0" prefetch={false}>
           <Image
             src="/logo4.png"
             alt="Белавто Центр"
             width={120}
             height={40}
-            className="h-8 w-auto sm:h-10 block dark:hidden object-contain"
+            className="h-6 xs:h-8 w-auto sm:h-10 block dark:hidden object-contain"
             priority
           />
           <Image
@@ -129,10 +129,10 @@ export default function Header() {
             alt="Белавто Центр"
             width={120}
             height={40}
-            className="h-8 w-auto sm:h-10 hidden dark:block object-contain"
+            className="h-6 xs:h-8 w-auto sm:h-10 hidden dark:block object-contain"
             priority
           />
-          <span className="font-display font-bold text-sm sm:text-lg text-gray-900 dark:text-white tracking-tight">Белавто Центр</span>
+          <span className="font-display font-bold text-[11px] xs:text-sm sm:text-lg text-gray-900 dark:text-white tracking-tight leading-none">Белавто Центр</span>
         </Link>
 
         {/* Мобильное меню (справа) */}
