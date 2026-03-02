@@ -164,7 +164,7 @@ export default function DynamicSelection({ cars }: DynamicSelectionProps) {
              <div key={cat.id} className={activeTab === cat.id ? "block animate-in fade-in zoom-in-95 duration-500" : "hidden"}>
 
                 {/* Desktop View: Grid */}
-                <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="hidden md:grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
                   {cat.filter(availableCars).length > 0 ? (
                     cat.filter(availableCars).slice(0, 4).map((car) => {
                        const safeCar = { ...car, currency: car.currency || 'USD', engineVolume: Number(car.engineVolume) || 0 };

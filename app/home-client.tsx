@@ -299,17 +299,17 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
         </div>
 
         <div className="relative z-30 text-center text-white max-w-4xl mx-auto px-4 pb-20 sm:pb-20 md:pb-20 lg:pb-20 xl:pb-20 hero-content">
-          <h1 className={`text-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 leading-tight ${textAnimationClass}`}>
+          <h1 className={`text-hero text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 leading-tight ${textAnimationClass}`}>
             {animatedTexts[currentTextIndex]}
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 md:mb-16 lg:mb-20 xl:mb-24 text-gray-100 font-medium leading-relaxed">
+          <p className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 md:mb-16 lg:mb-20 xl:mb-24 text-gray-100 font-medium leading-relaxed px-2">
             {settings.heroSubtitle}
           </p>
 
-          <div className="relative z-50 flex flex-col gap-4 items-center">
+          <div className="relative z-50 flex flex-col gap-3 sm:gap-4 items-center w-full max-w-sm mx-auto sm:max-w-none">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-sm xs:text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] sm:hover:scale-105 transition-all duration-300"
               asChild
             >
               <Link href="/catalog" prefetch={false}>{settings.heroButtonText}</Link>
@@ -318,7 +318,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
             <Button
               size="lg"
               variant="outline"
-              className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer"
+              className="w-full sm:w-auto bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-sm xs:text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] sm:hover:scale-105 transition-all duration-300 cursor-pointer"
               onClick={() => setIsSellSheetOpen(true)}
             >
               Продать автомобиль
@@ -343,7 +343,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
 
           {/* Featured Cars Grid */}
           {featuredCars && featuredCars.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
               {featuredCars.map((car) => (
                 <CarCard key={car.id} car={car} />
               ))}

@@ -25,15 +25,21 @@ export default async function HomePage() {
     car.status !== 'sold'
   )
 
-  if (featuredCars.length === 0) {
-    featuredCars = allCars
-      .filter((car: any) => car.isAvailable !== false && car.status !== 'sold')
+  // Если вручную выбрано меньше 4 машин, дополняем их самыми свежими
+  if (featuredCars.length < 4) {
+    const additionalCars = allCars
+      .filter((car: any) =>
+        car.isAvailable !== false &&
+        car.status !== 'sold' &&
+        car.showOnHomepage !== true // исключаем те, что уже добавлены
+      )
       .sort((a: any, b: any) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
-      .slice(0, 4)
+      .slice(0, 4 - featuredCars.length)
+
+    featuredCars = [...featuredCars, ...additionalCars]
   } else {
-    featuredCars = featuredCars
-      .sort((a: any, b: any) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
-      .slice(0, 4)
+    // Если выбрано больше 4 машин, обрезаем до 4 (либо можно оставить все, но по ТЗ вроде 4)
+    featuredCars = featuredCars.slice(0, 4)
   }
 
   const settings = settingsDoc as HomepageSettings | null
