@@ -188,7 +188,7 @@ export function CreditLeasingModal() {
 
           {/* Content */}
           <div ref={contentRef} className="relative z-10 flex-1 flex flex-col overflow-y-auto px-6 pb-12 custom-scrollbar">
-            <div className={`w-full mx-auto transition-all duration-500 ease-in-out ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
+            <div className={`w-full mx-auto transition-all duration-500 lg:transition-none ease-in-out ${isSearching || showDetails ? 'max-w-6xl' : 'max-w-md'}`}>
 
               <AnimatePresence mode="wait">
                 {!showDetails ? (
@@ -201,7 +201,7 @@ export function CreditLeasingModal() {
                     className="w-full flex flex-col lg:flex-row gap-12 items-start justify-center"
                   >
                     {/* Form Side */}
-                    <div className={`w-full flex flex-col transition-all duration-500 ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
+                    <div className={`w-full flex flex-col transition-all duration-500 lg:transition-none ${isSearching ? 'lg:w-[400px]' : 'items-center text-center'}`}>
                       <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
                         Подать заявку на {isLeasing ? 'лизинг' : 'кредит'}
                       </h1>
@@ -293,7 +293,7 @@ export function CreditLeasingModal() {
 
                         {/* Partners */}
                         {partners.length > 0 && (
-                          <div className="pt-12 group/partners">
+                          <div className={`pt-12 group/partners ${isSearching ? 'hidden lg:block' : ''}`}>
                             <h3 className="text-[11px] font-bold text-[#444] uppercase tracking-widest mb-8 text-center group-hover/partners:text-[#666] transition-colors">Наши партнеры</h3>
                             <div className="grid grid-cols-3 gap-8 items-center justify-items-center opacity-40 group-hover/partners:opacity-70 transition-opacity">
                               {partners.slice(0, 6).map((partner, index) => (
@@ -313,13 +313,7 @@ export function CreditLeasingModal() {
 
                     {/* Catalog Side */}
                     {isSearching && isPhoneFieldValid && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex-1 w-full lg:max-h-[70vh] flex flex-col space-y-4"
-                      >
+                      <div className="flex-1 w-full lg:max-h-[70vh] flex flex-col space-y-4 animate-in fade-in duration-200 lg:duration-0">
                         {/* "Своя сумма" вынесена отдельно */}
                         <div className="space-y-3">
                           <h3 className="text-xs font-semibold text-[#666] uppercase tracking-wider">Или выберите вариант</h3>
@@ -414,7 +408,7 @@ export function CreditLeasingModal() {
                             ))}
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
                   </motion.div>
                 ) : (
