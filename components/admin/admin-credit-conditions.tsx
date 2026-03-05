@@ -11,8 +11,8 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Edit, Trash2, Save, GripVertical, Percent, Clock, Building, CreditCard, CheckCircle, DollarSign, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Shield, TrendingDown } from "lucide-react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 
 interface CreditCondition {
   id: string
@@ -89,11 +89,9 @@ export default function AdminCreditConditions() {
 
   const loadConditions = async () => {
     try {
-      const docRef = doc(db, "settings", "credit-conditions")
-      const docSnap = await getDoc(docRef)
+      const data = await firestoreApi.getDocument("settings", "credit-conditions")
 
-      if (docSnap.exists()) {
-        const data = docSnap.data()
+      if (data) {
         if (data.conditions && Array.isArray(data.conditions)) {
           setConditions(data.conditions.sort((a: CreditCondition, b: CreditCondition) => a.order - b.order))
         }
@@ -107,8 +105,7 @@ export default function AdminCreditConditions() {
   const saveConditions = async (updatedConditions: CreditCondition[]) => {
     try {
       setSaving(true)
-      const docRef = doc(db, "settings", "credit-conditions")
-      await setDoc(docRef, { conditions: updatedConditions }, { merge: true })
+      await firestoreApi.updateDocument("settings", "credit-conditions", { conditions: updatedConditions })
       setConditions(updatedConditions)
     } catch (error) {
       alert("Ошибка сохранения. Попробуйте еще раз.")

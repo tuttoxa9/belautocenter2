@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, orderBy, query } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -21,13 +21,14 @@ export default function AdminMetaLeads() {
 
   const loadLeads = async () => {
     try {
-      const leadsQuery = query(collection(db, "metaLeads"), orderBy("createdAt", "desc"))
-      const snapshot = await getDocs(leadsQuery)
-      const leadsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt || new Date().toISOString(),
+      const data = await firestoreApi.getCollection("metaLeads")
+      const leadsData = data.map((doc) => ({
+        ...doc,
+        createdAt: doc.createdAt || new Date().toISOString(),
       }))
+
+      leadsData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
       setLeads(leadsData)
     } catch (error) {
       console.error("Error loading leads:", error)

@@ -8,8 +8,8 @@ import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Calculator } from "lucide-react"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
 
@@ -63,12 +63,10 @@ export default function LeasingCalculator() {
 
   const loadCalculatorData = async () => {
     try {
-      const docRef = doc(db, "leasing", "calculator")
-      const docSnap = await getDoc(docRef)
+      const data = await firestoreApi.getDocument("leasing", "calculator")
 
-      if (docSnap.exists()) {
-        const data = docSnap.data() as LeasingCalculatorData
-        setData(data)
+      if (data) {
+        setData(data as unknown as LeasingCalculatorData)
 
         // Устанавливаем значения по умолчанию из БД
         setCalculator(prev => ({

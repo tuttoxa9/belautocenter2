@@ -3,8 +3,8 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { Percent, Clock, Building, CreditCard, CheckCircle, DollarSign, FileText, Users, Zap, Award, Target, Briefcase, TrendingUp, Handshake, CheckSquare, Coins, Timer, Shield, TrendingDown, Heart } from "lucide-react"
 
@@ -74,11 +74,9 @@ export default function CreditConditions() {
 
   const loadConditions = async () => {
     try {
-      const docRef = doc(db, "settings", "credit-conditions")
-      const docSnap = await getDoc(docRef)
+      const data = await firestoreApi.getDocument("settings", "credit-conditions")
 
-      if (docSnap.exists()) {
-        const data = docSnap.data()
+      if (data) {
         if (data.conditions && Array.isArray(data.conditions)) {
           const activeConditions = data.conditions
             .filter((condition: CreditCondition) => condition.isActive)

@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import { collection, getDocs } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn } from "@/lib/utils"
@@ -48,7 +48,7 @@ export function CarsCarousel() {
     try {
       setLoading(true)
 
-      const snapshot = await getDocs(collection(db, "cars"))
+      const snapshot = await firestoreApi.getCollection("cars")
 
       const carsData = snapshot.docs
         .map((doc) => ({

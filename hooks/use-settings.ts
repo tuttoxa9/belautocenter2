@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { firestoreApi } from '@/lib/firestore-api'
+
 
 interface ShowroomInfo {
   title: string
@@ -53,8 +53,8 @@ export function useSettings() {
     try {
       setLoading(true)
       const [mainDoc, financeDoc] = await Promise.all([
-        getDoc(doc(db, "settings", "main")),
-        getDoc(doc(db, "settings", "finance")),
+        firestoreApi.getDocument("settings", "main"),
+        firestoreApi.getDocument("settings", "finance"),
       ]);
 
       // Дефолтные значения

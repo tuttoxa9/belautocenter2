@@ -73,14 +73,9 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
   useEffect(() => {
     const loadFunnelSettings = async () => {
       try {
-        const { doc, getDoc } = await import("firebase/firestore")
-        const { db } = await import("@/lib/firebase")
+        const data = await firestoreApi.getDocument("settings", "funnel")
 
-        const docRef = doc(db, "settings", "funnel")
-        const docSnap = await getDoc(docRef)
-
-        if (docSnap.exists()) {
-          const data = docSnap.data()
+        if (data) {
           setFunnelSettings(prev => ({ ...prev, ...data }))
         }
       } catch (error) {

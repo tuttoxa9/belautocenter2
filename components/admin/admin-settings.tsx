@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { createCacheInvalidator, purgeAllCache } from "@/lib/cache-invalidation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -60,9 +60,9 @@ export default function AdminSettings() {
   const loadSettings = useCallback(async () => {
     try {
       const [mainDoc, homepageDoc, storiesDoc] = await Promise.all([
-        getDoc(doc(db, "settings", "main")),
-        getDoc(doc(db, "settings", "homepage")),
-        getDoc(doc(db, "settings", "stories")),
+        firestoreApi.getDocument("settings", "main"),
+        firestoreApi.getDocument("settings", "homepage"),
+        firestoreApi.getDocument("settings", "stories"),
       ])
 
       setSettings((prevSettings) => ({
@@ -84,9 +84,9 @@ export default function AdminSettings() {
     setSaving(true)
     try {
       await Promise.all([
-        setDoc(doc(db, "settings", "main"), settings.main),
-        setDoc(doc(db, "settings", "homepage"), settings.homepage),
-        setDoc(doc(db, "settings", "stories"), settings.stories),
+        firestoreApi.updateDocument("settings", "main", settings.main),
+        firestoreApi.updateDocument("settings", "homepage", settings.homepage),
+        firestoreApi.updateDocument("settings", "stories", settings.stories),
       ])
       await cacheInvalidator.onUpdate('main')
       alert("Настройки сохранены!")

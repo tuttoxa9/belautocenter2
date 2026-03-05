@@ -593,10 +593,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
     await bookingButtonState.execute(async () => {
       // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...bookingForm,
           carId: carId,
           carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
@@ -637,10 +634,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
     await callbackButtonState.execute(async () => {
       // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...callbackForm,
           carId: carId,
           carInfo: `${car?.make} ${car?.model} ${car?.year}`,
@@ -680,10 +674,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
     await creditButtonState.execute(async () => {
       // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
-        const { collection, addDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
-
-        await addDoc(collection(db, "leads"), {
+        await firestoreApi.addDocument("leads", {
           ...creditForm,
           carId: carId,
           carInfo: `${car?.make} ${car?.model} ${car?.year}`,

@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -44,7 +44,7 @@ export default function AdminFinance() {
   const loadSettings = useCallback(async () => {
     setLoading(true)
     try {
-      const financeDoc = await getDoc(doc(db, "settings", "finance"))
+      const financeDoc = await firestoreApi.getDocument("settings", "finance")
       if (financeDoc.exists()) {
         const data = financeDoc.data() as FinanceSettings
         setSettings(data)
@@ -75,7 +75,7 @@ export default function AdminFinance() {
         hybridMarkup: markupToSave
       }
 
-      await setDoc(doc(db, "settings", "finance"), newSettings)
+      await firestoreApi.updateDocument("settings", "finance", newSettings)
 
       setSettings(newSettings)
 

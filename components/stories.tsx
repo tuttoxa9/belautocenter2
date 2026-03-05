@@ -4,8 +4,8 @@ import React, { useState, useEffect, useCallback } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ChevronLeft, ChevronRight, Play } from "lucide-react"
 import FadeInImage from "@/components/fade-in-image"
-import { collection, query, orderBy, getDocs, doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 
 interface Story {
   id: string
@@ -39,7 +39,7 @@ export default function Stories() {
 
   const loadSettings = useCallback(async () => {
     try {
-      const settingsDoc = await getDoc(doc(db, "settings", "stories"))
+      const settingsDoc = await firestoreApi.getDocument("settings", "stories")
       if (settingsDoc.exists()) {
         setSettings(settingsDoc.data() as StoriesSettings)
       }
@@ -49,18 +49,14 @@ export default function Stories() {
 
   const loadStories = useCallback(async () => {
     try {
-      const storiesQuery = query(
-        collection(db, "stories"),
-        orderBy("order", "asc")
-      )
+      const data = await firestoreApi.getCollection("stories")
 
-      const snapshot = await getDocs(storiesQuery)
-
-      const storiesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date()
+      const storiesData = data.map(doc => ({
+        ...doc,
+        createdAt: doc.createdAt ? new Date(doc.createdAt) : new Date()
       })) as Story[]
+
+      storiesData.sort((a, b) => (a.order || 0) - (b.order || 0))
 
       setStories(storiesData)
     } catch (error) {

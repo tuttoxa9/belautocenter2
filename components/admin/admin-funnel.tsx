@@ -10,8 +10,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import ImageUpload from "./image-upload"
 
 interface FunnelSettings {
@@ -58,12 +58,10 @@ export default function AdminFunnel() {
   const loadSettings = async () => {
     try {
       setIsLoading(true)
-      const docRef = doc(db, "settings", "funnel")
-      const docSnap = await getDoc(docRef)
+      const data = await firestoreApi.getDocument("settings", "funnel")
 
-      if (docSnap.exists()) {
-        const data = docSnap.data() as Partial<FunnelSettings>
-        setSettings(prev => ({ ...prev, ...data }))
+      if (data) {
+        setSettings(prev => ({ ...prev, ...data as unknown as Partial<FunnelSettings> }))
       }
     } catch (error) {
     } finally {
@@ -75,8 +73,7 @@ export default function AdminFunnel() {
     try {
       saveButtonState.setLoading(true)
 
-      const docRef = doc(db, "settings", "funnel")
-      await setDoc(docRef, settings, { merge: true })
+      await firestoreApi.updateDocument("settings", "funnel", settings)
 
       saveButtonState.setSuccess(true)
       showSuccess("Настройки воронки сохранены")

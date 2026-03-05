@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, updateDoc, deleteDoc, doc, orderBy, query } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,13 +22,15 @@ export default function AdminLeads() {
 
   const loadLeads = async () => {
     try {
-      const leadsQuery = query(collection(db, "leads"), orderBy("createdAt", "desc"))
-      const snapshot = await getDocs(leadsQuery)
-      const leadsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
+      const data = await firestoreApi.getCollection("leads")
+
+      const leadsData = data.map(doc => ({
+        ...doc,
+        createdAt: doc.createdAt ? new Date(doc.createdAt) : new Date()
       }))
+
+      leadsData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
       setLeads(leadsData)
     } catch (error) {
     } finally {
@@ -38,7 +40,7 @@ export default function AdminLeads() {
 
   const updateLeadStatus = async (leadId, status) => {
     try {
-      await updateDoc(doc(db, "leads", leadId), { status })
+      await firestoreApi.updateDocument("leads", leadId, { status })
       await cacheInvalidator.onUpdate(leadId)
       loadLeads()
     } catch (error) {
@@ -48,7 +50,7 @@ export default function AdminLeads() {
   const deleteLead = async (leadId) => {
     if (confirm("Удалить эту заявку?")) {
       try {
-        await deleteDoc(doc(db, "leads", leadId))
+        await firestoreApi.deleteDocument("leads", leadId)
         await cacheInvalidator.onDelete(leadId)
         loadLeads()
       } catch (error) {

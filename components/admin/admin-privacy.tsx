@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
@@ -55,7 +55,7 @@ export default function AdminPrivacy() {
 
   const loadPrivacyData = async () => {
     try {
-      const privacyDoc = await getDoc(doc(db, "pages", "privacy"))
+      const privacyDoc = await firestoreApi.getDocument("pages", "privacy")
       if (privacyDoc.exists()) {
         setPrivacyData(privacyDoc.data() as PrivacyData)
       }
@@ -71,7 +71,7 @@ export default function AdminPrivacy() {
         ...privacyData,
         lastUpdated: new Date().toLocaleDateString('ru-RU')
       }
-      await setDoc(doc(db, "pages", "privacy"), updatedData)
+      await firestoreApi.updateDocument("pages", "privacy", updatedData)
       setPrivacyData(updatedData)
       saveButtonState.setSuccess()
     } catch (error) {

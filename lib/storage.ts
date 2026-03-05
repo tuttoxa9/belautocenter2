@@ -67,8 +67,13 @@ export const uploadImage = async (file: File, path: string, autoWebP: boolean = 
     // Получаем ответ от воркера
     const result = await response.json();
 
-    if (!result.success || !result.path) {
+    if (!result.url && !result.key && !result.path) {
       throw new Error(result.error || 'Сервер не вернул путь к файлу');
+    }
+
+    // Подстраиваемся под разные форматы ответа воркера (наш воркер возвращает {url, key})
+    if (!result.path && result.key) {
+      result.path = result.key;
     }
 
     // Проверяем информацию о конвертации из нового формата
@@ -135,11 +140,11 @@ export const deleteImage = async (path: string): Promise<void> => {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // Отправляем POST-запрос на эндпоинт удаления
+    // Отправляем POST-запрос на эндпоинт удаления (воркер ожидает ключ { key: path })
     const response = await fetch(`${IMAGE_HOST}/delete-image`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ path }),
+      body: JSON.stringify({ key: path }),
     });
 
     if (!response.ok) {
