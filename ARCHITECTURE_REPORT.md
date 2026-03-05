@@ -1,85 +1,125 @@
-# Архитектурный анализ системы кэширования BelAutoCenter
+# Архитектурный отчет по проекту Autobel (Next.js + Firebase)
 
-## 1. Request Lifecycle (Жизненный цикл запроса)
+Этот отчет содержит анализ кодовой базы для принятия решения о дальнейшей оптимизации затрат на Vercel или переезде на Cloudflare Pages.
 
-### Путь запроса к странице автомобиля (`/catalog/[id]`):
-1.  **Browser → Cloudflare CDN**: Запрос попадает на пограничный сервер Cloudflare.
-    *   Если HTML-страница есть в кэше Cloudflare (благодаря заголовкам `s-maxage` или `CDN-Cache-Control`), она отдается мгновенно.
-2.  **Cloudflare CDN → Vercel (Next.js)**: Если в Cloudflare промах (MISS), запрос передается на Vercel.
-3.  **Vercel (Next.js Layer)**:
-    *   Проверяется **Vercel Edge Cache** (ISR). Если страница закэширована и TTL не истек, отдается она.
-    *   Если требуется регенерация (MISS или STALE):
-        *   Выполняется `generateMetadata`: делает прямой запрос в Firestore API (`firestore.googleapis.com`).
-        *   Выполняется `getCarData`: делает прямой запрос в Firestore API.
-        *   **Next.js Data Cache**: Результаты этих `fetch` запросов также кэшируются внутри Vercel на 24 часа (согласно `next: { revalidate: 86400 }`).
-4.  **Рендеринг**: Next.js собирает HTML и возвращает его Cloudflare.
-5.  **Cloudflare CDN**: Кэширует полученный HTML (на 24 часа) и отдает пользователю.
+## 1. Общий стек и маршрутизация
 
-### Путь запроса к API данных (Client-side):
-1.  **Browser → Cloudflare Worker**: Клиентский JS делает запрос через прокси-воркер.
-2.  **Cloudflare Worker**:
-    *   Проверяет свой **Cache API**. Если JSON есть в кэше, он отдается.
-    *   Если промах: проксирует запрос в Firestore, кэширует результат на 24 часа (`API_CACHE_TTL_SECONDS`).
+*   **Версия Next.js:** Используется `14.2.35` (указано в `package.json`).
+*   **Роутер:** Проект полностью использует **App Router** (папка `app/`). Папка `pages/` отсутствует. Маршрутизация организована через серверные компоненты (например, `app/page.tsx`, `app/catalog/page.tsx`).
 
----
+## 2. Работа с Firebase (Критично для затрат)
 
-## 2. Анализ слоев кэширования
+В проекте используются оба SDK: и серверный `firebase-admin`, и клиентский `firebase/app`, а также прямые запросы к REST API Firestore.
 
-| Слой | Тип данных | TTL | Источник TTL (в коде) |
-| :--- | :--- | :--- | :--- |
-| **Cloudflare Worker** | JSON (Firestore) | 24ч | `image-cache-worker.js` (line 10) |
-| **Next.js Data Cache** | JSON (Firestore) | 24ч | `app/catalog/[id]/page.tsx` (line 155) |
-| **Vercel Edge Cache** | HTML (Page) | 24ч | `app/catalog/[id]/page.tsx` (line 5) |
-| **Cloudflare CDN** | HTML (Page) | 24ч | `middleware.ts` (line 46) |
-| **Browser Cache** | HTML/JSON | 5мин | `middleware.ts` (line 46 - `max-age=300`) |
-
-### Конфликты и проблемы:
-- **Многослойность**: Даже при очистке кэша Vercel, Cloudflare CDN может продолжать отдавать старый HTML.
-- **Data Cache vs ISR**: Очистка страницы (`revalidatePath`) не всегда сбрасывает внутренний `fetch` кэш, если он настроен жестко.
-- **Bypass Worker**: Серверные компоненты ходят в Firestore напрямую, а клиентские — через Worker. Это создает две разные "версии" кэша данных.
-
----
-
-## 3. R2 vs Firestore
-
-- **Разделение**: Происходит внутри `image-cache-worker.js` на основе URL и метода.
-- **Изображения**: `GET` запросы с расширениями файлов обрабатываются функцией `handleGetImage`, которая читает из **R2**.
-- **Данные**: Все остальные запросы проксируются через `proxyFirestore` в **Google Firestore API**.
-- **Кэширование**: У изображений TTL 30 дней, у данных — 24 часа.
-
----
-
-## 4. Вердикт: Почему обновление занимает 24 часа?
-
-Причина в **каскадном кэшировании с жестко заданным TTL 86400 секунд**.
-
-### Проблемные участки кода:
-
-1.  **В странице (`app/catalog/[id]/page.tsx`):**
+*   **Серверный SDK (`firebase-admin`):**
+    Инициализируется в файле `lib/firebase-admin.ts`:
     ```typescript
-    export const revalidate = 86400 // Блокирует обновление HTML на сутки
-    // ...
+    import admin from 'firebase-admin'
+
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93',
+      })
+    }
+    export const db = admin.firestore()
+    ```
+    *(Примечание: В текущей кодовой базе `lib/firebase-admin.ts` объявлен, но почти нигде не используется напрямую. Вместо этого активно применяются прямые `fetch` запросы к REST API Firestore и клиентский SDK).*
+
+*   **Клиентский SDK (`firebase/app`, `firebase/firestore` и др.):**
+    Инициализируется в `lib/firebase.js`.
+    Используется очень широко, особенно в:
+    *   Всех компонентах админки (папка `components/admin/`: `admin-cars.tsx`, `admin-leads.tsx` и т.д.) для CRUD операций.
+    *   Клиентских компонентах для отправки данных (например, `components/FinancialAssistantDrawer.tsx`, `app/catalog/[id]/car-details-client.tsx`, `app/sale/sale-modal.tsx`).
+
+*   **Самые тяжелые/частые запросы (Прямой REST API Firestore):**
+    Для серверного рендеринга и генерации статики проект делает прямые запросы к REST API Firestore с использованием `fetch`. Это происходит на самых посещаемых страницах.
+
+    **Пример 1: Запрос списка машин для SSG (`app/catalog/[id]/page.tsx`)**
+    ```typescript
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars?mask.fieldPaths=name&pageSize=300`
+
     const response = await fetch(firestoreUrl, {
-      next: { revalidate: 86400 } // Блокирует обновление данных внутри Next.js на сутки
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'NextJS-Direct-Firestore/1.0' },
+      cache: 'force-cache',
+      next: { tags: ['cars-list'] }
     })
     ```
-2.  **В Воркере (`image-cache-worker.js`):**
-    ```javascript
-    const API_CACHE_TTL_SECONDS = 86400; // Блокирует обновление JSON в Cloudflare на сутки
+
+    **Пример 2: Динамический API-роут для получения цены (`app/api/cars/[id]/price/route.ts`)**
+    ```typescript
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars/${carId}`;
+
+    const response = await fetch(firestoreUrl, {
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'NextJS-Price-API/1.0' },
+      cache: 'force-cache',
+      next: { tags: [`car-${carId}`, 'cars-list'] }
+    });
     ```
-3.  **В Middleware (`middleware.ts`):**
+
+## 3. Стратегии рендеринга (Function Invocations и CPU на Vercel)
+
+Так как используется App Router, `getServerSideProps` отсутствует. Проект сильно опирается на статическую генерацию (SSG) с On-Demand Revalidation.
+
+*   **Кэширование и ISR:**
+    На основных страницах (`app/page.tsx`, `app/catalog/page.tsx`, `app/catalog/[id]/page.tsx`) жестко отключена автоматическая ревалидация по времени:
+    ```typescript
+    export const revalidate = false // Статическая генерация для Vercel. Кэш будет обновляться On-Demand.
+    ```
+    Все данные запрашиваются через `fetch` с `cache: 'force-cache'` и тегами (например, `next: { tags: ['cars-list', `car-${params.id}`] }`).
+
+*   **Инвалидация кэша (On-Demand ISR):**
+    Реализована через выделенный API-роут `app/api/revalidate/route.ts`. Он принимает POST-запросы от вебхуков или из админки и вызывает `revalidatePath(path, 'page')`.
+    Этот механизм хорош, но если контент меняется часто, каждое обновление провоцирует Function Invocation и тратит CPU на перегенерацию страниц на Vercel.
+
+*   **API-роуты (`app/api/...`):**
+    *   `/api/cars/[id]/price/route.ts` — получение актуальной цены авто.
+    *   `/api/exchange-rate/route.ts` — курсы валют.
+    *   `/api/revalidate/route.ts` — эндпоинт для сброса кэша Next.js, Vercel Edge и Cloudflare.
+    *   `/api/send-telegram/route.ts` — отправка заявок/лидов в Telegram.
+    *   `/api/meta-webhook/route.ts` — вебхуки для Facebook/Meta Leads.
+
+## 4. Оценка времени сборок (Build Minutes)
+
+*   **Секция `scripts` в `package.json`:**
+    ```json
+    "scripts": {
+      "build": "next build",
+      "dev": "next dev -H 0.0.0.0",
+      "pages:build": "npx @cloudflare/next-on-pages",
+      "deploy": "npm run pages:build && wrangler pages deploy",
+      // ... скрипты для worker
+    }
+    ```
+    Уже присутствует интеграция `@cloudflare/next-on-pages` для билда под Cloudflare.
+
+*   **Генерация статических страниц (`generateStaticParams`):**
+    В `app/catalog/[id]/page.tsx` используется `generateStaticParams`. Он запрашивает до 300 документов из Firestore (только их имена/ID) во время сборки:
+    ```typescript
+    export async function generateStaticParams() {
+      // ... fetch: `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars?mask.fieldPaths=name&pageSize=300`
+      return data.documents.map((doc: any) => ({ id: doc.name.split('/').pop() }))
+    }
+    ```
+    Если автомобилей много, генерация сотен статических страниц при каждом билде может занимать значительное время (Build Minutes).
+
+## 5. Блокеры для переезда на Cloudflare Pages (Edge Runtime)
+
+Проект уже частично адаптирован под Cloudflare Pages (есть скрипты `pages:build` и `wrangler.toml`), но остаются важные нюансы:
+
+*   **Node.js модули (`fs`, `path`, `crypto` и др.):**
+    Явных импортов серверных модулей `fs`, `path`, `crypto` в компонентах и API роутах **не обнаружено**. В `next.config.mjs` уже предусмотрен фикс для клиентского бандла:
     ```javascript
-    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=86400, ...') // Говорит Cloudflare хранить HTML сутки
+    config.resolve.fallback = { ...config.resolve.fallback, fs: false, net: false, tls: false, crypto: false }
     ```
 
----
+*   **Компонент `<Image />` из `next/image`:**
+    **Используется повсеместно!** Во многих файлах (например, `app/catalog/[id]/car-details-client.tsx`, `components/header.tsx`, `components/lazy-thumbnail.tsx` и др.).
+    *Критично:* На Cloudflare Pages стандартная серверная оптимизация изображений Next.js не работает "из коробки" так же, как на Vercel. Однако, в `next.config.mjs` уже выставлено `unoptimized: true` в настройках `images`, что отключает оптимизацию Next.js и позволяет изображениям работать на Cloudflare.
 
-## Рекомендации по переходу на On-Demand Revalidation
+*   **Middleware (`middleware.ts`):**
+    Присутствует. Логика достаточно легкая: устанавливает заголовки безопасности (`X-Frame-Options` и др.) и жестко управляет заголовками кэширования `Cache-Control` и `CDN-Cache-Control` (для API Firestore и публичных страниц).
+    При переезде на Cloudflare Pages придется убедиться, что эти заголовки корректно обрабатываются их Edge-кэшем, так как `CDN-Cache-Control` (с `s-maxage`) — это специфика Vercel/CDN. Cloudflare использует директивы `s-maxage` из обычного `Cache-Control` или настраивается через Page Rules/Cache Rules.
 
-1.  **Унификация путей**: Заставить и сервер, и клиент ходить за данными через одно место (лучше напрямую в Firestore API с использованием `tags` для Next.js fetch).
-2.  **Использование тегов (Tags)**:
-    - Заменить `revalidate: 86400` на `tags: ['cars']`.
-3.  **Webhook Инвалидация**:
-    - Настроить вызов `/api/revalidate` не только из админки, но и (в идеале) через Firebase Functions при изменении документа.
-4.  **Синхронизация Cloudflare**:
-    - При вызове `revalidatePath` в Next.js, API роут должен также отправлять запрос в Cloudflare API для очистки конкретного URL (`purge_cache`). Сейчас это реализовано частично, нужно убедиться в корректности `NEXT_PUBLIC_BASE_URL`.
+### Итог для DevOps
+Кодовая база уже подготовлена к Cloudflare Pages (отключена оптимизация `<Image>`, добавлены скрипты `@cloudflare/next-on-pages`, нет жесткой привязки к `fs`/`path`). Главная причина "сжирания" лимитов на Vercel — это `revalidatePath` в `app/api/revalidate/route.ts`, который при каждом обновлении данных в Firebase пересобирает статические страницы каталога On-Demand (Function Invocations) и частые прямые `fetch` к Firestore.
