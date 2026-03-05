@@ -417,19 +417,38 @@ export default function AdminCars() {
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="admin-sheet-wide overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle className="text-lg md:text-xl">{editingCar ? "Редактировать" : "Добавить"} автомобиль</SheetTitle>
-            </SheetHeader>
+            <div className="sticky top-0 z-50 -mx-6 -mt-6 px-6 py-4 bg-background/80 backdrop-blur-xl border-b border-border/40 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <SheetTitle className="text-2xl font-light tracking-tight text-foreground">
+                  {editingCar ? "Редактирование автомобиля" : "Новый автомобиль"}
+                </SheetTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Заполните данные ниже
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" className="rounded-full px-6 bg-transparent" onClick={() => setIsSheetOpen(false)}>
+                  Отмена
+                </Button>
+                <Button type="button" className="rounded-full px-6" onClick={(e) => {
+                  // Инициируем submit формы програмно
+                  const form = document.getElementById("car-form");
+                  if (form) form.requestSubmit();
+                }} loading={isSaving}>
+                  {editingCar ? "Сохранить" : "Добавить"}
+                </Button>
+              </div>
+            </div>
 
-            {/* Навигация по разделам */}
-            <div className="flex gap-1 mb-6 mt-4 bg-muted/50 dark:bg-zinc-800/50 p-1 rounded-lg border border-border/50">
+            {/* Навигация по разделам (Современные Pills) */}
+            <div className="flex flex-wrap gap-2 mt-8 mb-8">
               <button
                 type="button"
                 onClick={() => setActiveTab("basic")}
-                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                   activeTab === "basic"
-                    ? "bg-background text-foreground shadow-sm dark:bg-zinc-700 dark:text-zinc-100"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                    ? "bg-primary text-primary-foreground shadow-md scale-105"
+                    : "bg-muted/30 text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
                 Основная информация
@@ -437,32 +456,35 @@ export default function AdminCars() {
               <button
                 type="button"
                 onClick={() => setActiveTab("images")}
-                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                   activeTab === "images"
-                    ? "bg-background text-foreground shadow-sm dark:bg-zinc-700 dark:text-zinc-100"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                    ? "bg-primary text-primary-foreground shadow-md scale-105"
+                    : "bg-muted/30 text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
-                Изображения
+                Галерея
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("json")}
-                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                   activeTab === "json"
-                    ? "bg-background text-foreground shadow-sm dark:bg-zinc-700 dark:text-zinc-100"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                    ? "bg-primary text-primary-foreground shadow-md scale-105"
+                    : "bg-muted/30 text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
-                JSON
+                Импорт/Экспорт JSON
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form id="car-form" onSubmit={handleSubmit} className="space-y-12 pb-24">
               {/* Раздел: Основная информация */}
               {activeTab === "basic" && (
-                <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div className="space-y-10">
+                  {/* Базовая информация */}
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Базовые параметры</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label className="text-sm">Марка</Label>
                   <Input
@@ -472,8 +494,8 @@ export default function AdminCars() {
                     required
                   />
                 </div>
-                <div>
-                  <Label className="text-sm">Модель</Label>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Модель</Label>
                   <Input
                     value={carForm.model}
                     onChange={(e) => setCarForm({ ...carForm, model: e.target.value })}
@@ -483,9 +505,9 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                <div>
-                  <Label className="text-sm">Год</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Год</Label>
                   <Input
                     type="number"
                     value={carForm.year}
@@ -494,8 +516,8 @@ export default function AdminCars() {
                     required
                   />
                 </div>
-                <div>
-                  <Label className="text-sm">Цена ($)</Label>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Цена ($)</Label>
                   <Input
                     type="number"
                     value={carForm.price}
@@ -504,8 +526,8 @@ export default function AdminCars() {
                     required
                   />
                 </div>
-                <div className="sm:col-span-2 md:col-span-1">
-                  <Label className="text-sm">Пробег (км)</Label>
+                      <div className="space-y-2 sm:col-span-2 md:col-span-1">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Пробег (км)</Label>
                   <Input
                     type="number"
                     value={carForm.mileage}
@@ -516,9 +538,14 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Объем двигателя (л)</Label>
+                  </div>
+
+                  {/* Технические характеристики */}
+                  <div className="space-y-6 pt-6 mt-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Технические данные</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Объем двигателя (л)</Label>
                   <Input
                     type="number"
                     step="0.1"
@@ -529,8 +556,8 @@ export default function AdminCars() {
                     required={carForm.fuelType !== "Электро"}
                   />
                 </div>
-                <div>
-                  <Label>Тип топлива</Label>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Тип топлива</Label>
                   <Select
                     value={carForm.fuelType}
                     onValueChange={(value) => {
@@ -555,9 +582,9 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Коробка передач</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Коробка передач</Label>
                   <Select
                     value={carForm.transmission}
                     onValueChange={(value) => setCarForm({ ...carForm, transmission: value })}
@@ -572,8 +599,8 @@ export default function AdminCars() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label>Привод</Label>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Привод</Label>
                   <Select
                     value={carForm.driveTrain}
                     onValueChange={(value) => setCarForm({ ...carForm, driveTrain: value })}
@@ -590,17 +617,22 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Тип кузова</Label>
+                  </div>
+
+                  {/* Внешний вид */}
+                  <div className="space-y-6 pt-6 mt-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Внешний вид</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Тип кузова</Label>
                   <Input
                     value={carForm.bodyType}
                     onChange={(e) => setCarForm({ ...carForm, bodyType: e.target.value })}
                     placeholder="Седан, Хэтчбек, Внедорожник..."
                   />
                 </div>
-                <div>
-                  <Label>Цвет</Label>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Цвет</Label>
                   <Input
                     value={carForm.color}
                     onChange={(e) => setCarForm({ ...carForm, color: e.target.value })}
@@ -609,17 +641,22 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Ссылка на обзор в TikTok</Label>
+                  </div>
+
+                  {/* Медиа ссылки */}
+                  <div className="space-y-6 pt-6 mt-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Медиа ссылки</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">TikTok</Label>
                   <Input
                     value={carForm.tiktok_url}
                     onChange={(e) => setCarForm({ ...carForm, tiktok_url: e.target.value })}
                     placeholder="https://www.tiktok.com/@user/video/123"
                   />
                 </div>
-                <div>
-                  <Label>Ссылка на обзор в YouTube</Label>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">YouTube</Label>
                   <Input
                     value={carForm.youtube_url}
                     onChange={(e) => setCarForm({ ...carForm, youtube_url: e.target.value })}
@@ -628,8 +665,14 @@ export default function AdminCars() {
                 </div>
               </div>
 
-              <div>
-                <Label className="text-sm">Описание (Markdown поддерживается)</Label>
+                  </div>
+
+                  {/* Описание */}
+                  <div className="space-y-6 pt-6 mt-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Описание</h3>
+                    <div className="mt-6 space-y-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Детальное описание</Label>
                 <div className="text-xs text-muted-foreground mb-2">
                   Поддерживается: **жирный**, *курсив*, # заголовки, - списки, [ссылки](url)
                 </div>
@@ -659,9 +702,16 @@ export default function AdminCars() {
                 </Tabs>
               </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <input
+                    </div>
+                  </div>
+
+                  {/* Статус и опции */}
+                  <div className="space-y-6 pt-6 mt-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Статус и опции</h3>
+                    <div className="flex flex-col sm:flex-row gap-6 mt-6 p-6 bg-muted/20 rounded-xl border border-border/50">
+                      <div className="flex items-center space-x-3 cursor-pointer hover:bg-muted/40 p-3 rounded-lg transition-colors flex-1">
+                        <input
+                          className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
                         type="checkbox"
                         id="isAvailable"
                         checked={carForm.isAvailable}
@@ -670,20 +720,22 @@ export default function AdminCars() {
                       <Label htmlFor="isAvailable">В наличии</Label>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="showOnHomepage"
+                      <div className="flex items-center space-x-3 cursor-pointer hover:bg-muted/40 p-3 rounded-lg transition-colors flex-1">
+                        <input
+                          className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+                          type="checkbox"
+                          id="showOnHomepage"
                         checked={carForm.showOnHomepage}
                         onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
                       />
                       <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="fromEurope"
+                      <div className="flex items-center space-x-3 cursor-pointer hover:bg-muted/40 p-3 rounded-lg transition-colors flex-1">
+                        <input
+                          className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+                          type="checkbox"
+                          id="fromEurope"
                         checked={carForm.fromEurope}
                         onChange={(e) => setCarForm({ ...carForm, fromEurope: e.target.checked })}
                       />
@@ -691,8 +743,10 @@ export default function AdminCars() {
                     </div>
                   </div>
 
-                  <div>
-                    <Label className="text-sm">Характеристики</Label>
+                  {/* Характеристики */}
+                  <div className="space-y-6 pt-6 mt-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Характеристики</h3>
+                    <div className="space-y-4 mt-6">
                     <div className="space-y-2">
                       {Object.entries(carForm.specifications).map(([key, value], index) => (
                         <div key={index} className="flex flex-col sm:flex-row gap-2">
@@ -757,8 +811,13 @@ export default function AdminCars() {
                     </div>
                   </div>
 
-                  <div>
-                    <Label className="text-sm">Комплектация</Label>
+                    </div>
+                  </div>
+
+                  {/* Комплектация */}
+                  <div className="space-y-6 pt-6 mt-6">
+                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Комплектация</h3>
+                    <div className="space-y-4 mt-6 bg-muted/10 p-6 rounded-xl border border-border/30">
                     <div className="space-y-2">
                       {carForm.features.map((feature, index) => (
                         <div key={index} className="flex gap-2">
@@ -801,15 +860,18 @@ export default function AdminCars() {
                         Добавить особенность
                       </Button>
                     </div>
+                    </div>
                   </div>
                 </div>
               )}
 
               {/* Раздел: Изображения */}
               {activeTab === "images" && (
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-sm">Фотографии автомобиля</Label>
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="space-y-6">
+                    <div className="flex flex-col space-y-2 mb-6">
+                      <h3 className="text-xl font-medium tracking-tight">Галерея фотографий</h3>
+                    </div>
                     <p className="text-xs text-muted-foreground mb-3">
                       Загрузите качественные фотографии автомобиля. Первое изображение будет использоваться как главное.
                     </p>
@@ -828,9 +890,9 @@ export default function AdminCars() {
 
               {/* Раздел: JSON */}
               {activeTab === "json" && (
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-sm mb-2 block">Импорт данных из JSON</Label>
+                <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="bg-muted/10 p-6 rounded-2xl border border-border/40 shadow-sm">
+                    <h3 className="text-xl font-medium tracking-tight mb-2">Импорт данных</h3>
                     <p className="text-xs text-muted-foreground mb-3">
                       Вставьте JSON с данными автомобиля для быстрого заполнения формы. Это перезапишет текущие данные.
                     </p>
@@ -863,8 +925,8 @@ export default function AdminCars() {
                   </div>
 
                   {/* Предпросмотр текущих данных формы */}
-                  <div>
-                    <Label className="text-sm mb-2 block">Предпросмотр данных формы</Label>
+                  <div className="bg-muted/10 p-6 rounded-2xl border border-border/40 shadow-sm mt-8">
+                    <h3 className="text-xl font-medium tracking-tight mb-2">Экспорт текущих данных</h3>
                     <p className="text-xs text-muted-foreground mb-3">
                       Просмотр текущих данных в JSON формате
                     </p>
@@ -897,15 +959,7 @@ export default function AdminCars() {
                 </div>
               )}
 
-              {/* Кнопки управления */}
-              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t">
-                <Button type="submit" className="flex-1 text-sm" loading={isSaving}>
-                  {editingCar ? "Сохранить изменения" : "Добавить автомобиль"}
-                </Button>
-                <Button type="button" variant="outline" className="text-sm" onClick={() => setIsSheetOpen(false)}>
-                  Отмена
-                </Button>
-              </div>
+              {/* Кнопки управления перемещены в sticky header */}
             </form>
           </SheetContent>
         </Sheet>
