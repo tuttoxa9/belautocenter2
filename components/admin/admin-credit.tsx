@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -70,7 +70,7 @@ export default function AdminCredit() {
 
   const loadCreditData = async () => {
     try {
-      const creditDoc = await getDoc(doc(db, "pages", "credit"))
+      const creditDoc = await firestoreApi.getDocument("pages", "credit")
       if (creditDoc.exists()) {
         setCreditData(creditDoc.data())
       }
@@ -82,7 +82,7 @@ export default function AdminCredit() {
 
   const saveCreditData = async () => {
     await saveButtonState.execute(async () => {
-      await setDoc(doc(db, "pages", "credit"), creditData)
+      await firestoreApi.updateDocument("pages", "credit", creditData)
     })
   }
 

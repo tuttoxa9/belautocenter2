@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
@@ -88,7 +88,7 @@ export default function AdminContacts() {
 
   const loadContactsData = async () => {
     try {
-      const contactsDoc = await getDoc(doc(db, "pages", "contacts"))
+      const contactsDoc = await firestoreApi.getDocument("pages", "contacts")
       if (contactsDoc.exists()) {
         const data = contactsDoc.data() as ContactsData
         setContactsData(data)
@@ -101,7 +101,7 @@ export default function AdminContacts() {
 
   const handleSave = async () => {
     try {
-      await setDoc(doc(db, "pages", "contacts"), contactsData)
+      await firestoreApi.updateDocument("pages", "contacts", contactsData)
       saveButtonState.setSuccess()
     } catch (error) {
       saveButtonState.setError()

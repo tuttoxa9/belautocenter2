@@ -10,9 +10,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Upload, Trash2, Edit, Eye, Link as LinkIcon, GripVertical } from "lucide-react"
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy, setDoc, getDoc } from "firebase/firestore"
+import { firestoreApi } from '@/lib/firestore-api'
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
-import { db } from "@/lib/firebase"
+
 import { uploadImage, deleteImage, UploadResult } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
@@ -65,13 +65,15 @@ export default function AdminStories() {
 
   const loadStories = async () => {
     try {
-      const storiesQuery = query(collection(db, "stories"), orderBy("order", "asc"))
-      const snapshot = await getDocs(storiesQuery)
-      const storiesData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
+      const data = await firestoreApi.getCollection("stories")
+
+      const storiesData = data.map((doc) => ({
+        ...doc,
+        createdAt: doc.createdAt ? new Date(doc.createdAt) : new Date(),
       })) as Story[]
+
+      storiesData.sort((a, b) => (a.order || 0) - (b.order || 0))
+
       setStories(storiesData)
     } catch (error) {
     } finally {
@@ -81,9 +83,9 @@ export default function AdminStories() {
 
   const loadSettings = async () => {
     try {
-      const settingsDoc = await getDoc(doc(db, "settings", "stories"))
-      if (settingsDoc.exists()) {
-        setSettings(settingsDoc.data() as StoriesSettings)
+      const settingsDoc = await firestoreApi.getDocument("settings", "stories")
+      if (settingsDoc) {
+        setSettings(settingsDoc as unknown as StoriesSettings)
       }
     } catch (error) {
     }
@@ -91,7 +93,7 @@ export default function AdminStories() {
 
   const saveSettings = async () => {
     try {
-      await setDoc(doc(db, "settings", "stories"), settings)
+      await firestoreApi.updateDocument("settings", "stories", settings)
       alert("Настройки сохранены!")
     } catch (error) {
       alert("Ошибка сохранения настроек")
@@ -155,7 +157,7 @@ export default function AdminStories() {
         avatarUrl = await uploadFile(formData.avatarFile)
       }
 
-      const docRef = await addDoc(collection(db, "stories"), {
+      const docRef = await firestoreApi.addDocument("stories", {
         mediaUrl,
         mediaType,
         caption: formData.caption,
@@ -201,7 +203,7 @@ export default function AdminStories() {
         updateData.avatarUrl = avatarUrl
       }
 
-      await updateDoc(doc(db, "stories", selectedStory.id), updateData)
+      await firestoreApi.updateDocument("stories", selectedStory.id, updateData)
       await cacheInvalidator.onUpdate(selectedStory.id)
       setIsEditDialogOpen(false)
       setSelectedStory(null)
@@ -234,7 +236,7 @@ export default function AdminStories() {
       }
 
       // Удаляем документ из Firestore
-      await deleteDoc(doc(db, "stories", story.id))
+      await firestoreApi.deleteDocument("stories", story.id)
       await cacheInvalidator.onDelete(story.id)
       loadStories()
       alert("История удалена!")

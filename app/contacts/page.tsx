@@ -82,15 +82,10 @@ export default function ContactsPage() {
   useEffect(() => {
     const fetchContactsData = async () => {
       try {
-        // Используем прямой импорт Firebase как в админке
-        const { doc, getDoc } = await import('firebase/firestore')
-        const { db } = await import('@/lib/firebase')
+        const data = await firestoreApi.getDocument("pages", "contacts")
 
-        const contactsDoc = await getDoc(doc(db, "pages", "contacts"))
-
-        if (contactsDoc.exists()) {
-          const data = contactsDoc.data() as ContactsData
-          // Создаем чистую копию данных без несериализуемых объектов Firestore
+        if (data) {
+          // Создаем чистую копию данных без несериализуемых объектов
           const cleanData = JSON.parse(JSON.stringify(data))
           setContactsData(cleanData)
         } else {

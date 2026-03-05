@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -50,13 +50,14 @@ export default function AdminReviews() {
 
   const loadReviews = async () => {
     try {
-      const reviewsQuery = query(collection(db, "reviews"), orderBy("createdAt", "desc"))
-      const snapshot = await getDocs(reviewsQuery)
-      const reviewsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
+      const data = await firestoreApi.getCollection("reviews")
+      const reviewsData = data.map((doc) => ({
+        ...doc,
+        createdAt: doc.createdAt ? new Date(doc.createdAt) : new Date(),
       })) as Review[]
+
+      reviewsData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
       setReviews(reviewsData)
     } catch (error) {
     } finally {
@@ -76,10 +77,10 @@ export default function AdminReviews() {
       }
 
       if (editingReview) {
-        await updateDoc(doc(db, "reviews", editingReview.id), reviewData)
+        await firestoreApi.updateDocument("reviews", editingReview.id, reviewData)
         await cacheInvalidator.onUpdate(editingReview.id)
       } else {
-        const docRef = await addDoc(collection(db, "reviews"), reviewData)
+        const docRef = await firestoreApi.addDocument("reviews", reviewData)
         await cacheInvalidator.onCreate(docRef.id)
       }
 
@@ -110,7 +111,7 @@ export default function AdminReviews() {
   const handleDelete = async (reviewId: string) => {
     if (confirm("Удалить этот отзыв?")) {
       try {
-        await deleteDoc(doc(db, "reviews", reviewId))
+        await firestoreApi.deleteDocument("reviews", reviewId)
         await cacheInvalidator.onDelete(reviewId)
         loadReviews()
       } catch (error) {

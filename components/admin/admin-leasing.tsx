@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -119,7 +119,7 @@ export default function AdminLeasing() {
 
   const loadLeasingData = async () => {
     try {
-      const leasingDoc = await getDoc(doc(db, "pages", "leasing"))
+      const leasingDoc = await firestoreApi.getDocument("pages", "leasing")
       if (leasingDoc.exists()) {
         const data = leasingDoc.data() as LeasingPageData
         // Убеждаемся, что массивы не undefined
@@ -139,7 +139,7 @@ export default function AdminLeasing() {
 
   const saveLeasingData = async () => {
     await saveButtonState.execute(async () => {
-      await setDoc(doc(db, "pages", "leasing"), leasingData)
+      await firestoreApi.updateDocument("pages", "leasing", leasingData)
     })
   }
 
@@ -216,7 +216,7 @@ export default function AdminLeasing() {
     }
     setLeasingData(defaultData)
     try {
-      await setDoc(doc(db, "pages", "leasing"), defaultData)
+      await firestoreApi.updateDocument("pages", "leasing", defaultData)
       alert("Данные сброшены к значениям по умолчанию и сохранены!")
     } catch (error) {
       alert("Ошибка при сбросе данных")

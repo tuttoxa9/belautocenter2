@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -40,9 +40,9 @@ export default function AdminPages() {
   const loadPages = useCallback(async () => {
     try {
       const [aboutDoc, creditDoc, leasingDoc] = await Promise.all([
-        getDoc(doc(db, "pages", "about")),
-        getDoc(doc(db, "pages", "credit")),
-        getDoc(doc(db, "pages", "leasing")),
+        firestoreApi.getDocument("pages", "about"),
+        firestoreApi.getDocument("pages", "credit"),
+        firestoreApi.getDocument("pages", "leasing"),
       ])
 
       setPages({
@@ -61,9 +61,9 @@ export default function AdminPages() {
   const savePages = async () => {
     await saveButtonState.execute(async () => {
       await Promise.all([
-        setDoc(doc(db, "pages", "about"), pages.about),
-        setDoc(doc(db, "pages", "credit"), pages.credit),
-        setDoc(doc(db, "pages", "leasing"), pages.leasing),
+        firestoreApi.updateDocument("pages", "about", pages.about),
+        firestoreApi.updateDocument("pages", "credit", pages.credit),
+        firestoreApi.updateDocument("pages", "leasing", pages.leasing),
       ])
     })
   }

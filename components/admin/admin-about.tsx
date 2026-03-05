@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { Button } from "@/components/ui/button"
 import { StatusButton } from "@/components/ui/status-button"
 import { Input } from "@/components/ui/input"
@@ -94,7 +94,7 @@ export default function AdminAbout() {
 
   const loadAboutData = async () => {
     try {
-      const aboutDoc = await getDoc(doc(db, "pages", "about"))
+      const aboutDoc = await firestoreApi.getDocument("pages", "about")
       if (aboutDoc.exists()) {
         const data = aboutDoc.data()
         if (data) {
@@ -112,7 +112,7 @@ export default function AdminAbout() {
 
   const saveAboutData = async () => {
     await saveButtonState.execute(async () => {
-      await setDoc(doc(db, "pages", "about"), aboutData)
+      await firestoreApi.updateDocument("pages", "about", aboutData)
     })
   }
 

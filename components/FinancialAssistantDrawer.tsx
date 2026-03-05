@@ -184,7 +184,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
           downPayment: formatPrice(financeType === 'credit' ? downPayment[0] : leasingAdvance[0])
         })
       });
-      import('firebase/firestore').then(({collection, addDoc, db}) => addDoc(collection(db, "leads"), payload));
+      firestoreApi.addDocument("leads", payload);
 
       onOpenChange(false);
       setCreditForm({ name: "", phone: "+375", message: "" });

@@ -1,7 +1,8 @@
-import { getAuth } from 'firebase/auth'
+// Оставляем firebase/auth для получения JWT токена
+import { auth } from './firebase'
 
 export interface ApiRequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   body?: any
   headers?: Record<string, string>
   requireAuth?: boolean
@@ -11,11 +12,7 @@ export class ApiClient {
   private baseUrl: string
 
   constructor() {
-    // Используем относительный путь по умолчанию.
-    // Это позволяет коду работать на любом домене (Vercel, localhost, production),
-    // так как запросы будут отправляться на тот же хост, с которого загружена страница.
-    // Переменная NEXT_PUBLIC_API_HOST остается для гибкости, если понадобится указать другой хост.
-    // Используем Worker URL если указан, иначе относительные пути
+    // Используем Worker URL по умолчанию
     this.baseUrl = process.env.NEXT_PUBLIC_API_HOST || ''
     console.log('[API Client] Base URL:', this.baseUrl || 'relative paths')
   }
@@ -37,10 +34,8 @@ export class ApiClient {
       ...headers
     }
 
-    // Если требуется авторизация, добавляем заголовок Authorization с Firebase ID-токеном
-    if (requireAuth) {
+    if (requireAuth && !requestHeaders['Authorization']) {
       try {
-        const auth = getAuth()
         const user = auth.currentUser
         if (!user) {
           throw new Error('Требуется авторизация')
@@ -54,24 +49,22 @@ export class ApiClient {
 
     const requestOptions: RequestInit = {
       method,
-      headers: requestHeaders
+      headers: requestHeaders,
     }
 
-    if (method === 'GET') {
-      // Кэшируем GET запросы Next.js Data Cache для снижения нагрузки на CPU.
-      // При наличии forceRefresh или no-cache отключаем этот кэш.
-      const isNoCache = headers?.['Cache-Control']?.includes('no-cache');
-
-      if (isNoCache) {
-        requestOptions.cache = 'no-store';
+    // Добавляем кэширование для GET запросов, если не указано иное
+    if (method === 'GET' && !headers['Cache-Control']) {
+      // Пытаемся взять тег из заголовков, если он есть
+      if (headers['Next-Tags']) {
+        requestOptions.next = { tags: [headers['Next-Tags']] };
+        delete requestHeaders['Next-Tags'];
       } else {
-        const pathSegments = path.split('/').filter(Boolean);
-        const collectionName = pathSegments[pathSegments[0] === 'api' && pathSegments.length > 1 ? 1 : 0] || 'all';
         requestOptions.cache = 'force-cache';
-        requestOptions.next = {
-          tags: [`collection-${collectionName}`, 'all-data']
-        };
       }
+    } else if (method === 'GET') {
+      // Если Cache-Control явно задан (например, no-cache), Next.js fetch API
+      // может ругаться, если передать force-cache
+      requestOptions.cache = 'no-store';
     }
 
     if (body && method !== 'GET') {
@@ -82,7 +75,6 @@ export class ApiClient {
       const fullUrl = `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`
 
       const response = await fetch(fullUrl, requestOptions)
-
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -104,24 +96,24 @@ export class ApiClient {
 
       return {} as T
     } catch (error) {
+      console.error(`[API Client] Error fetching ${path}:`, error)
       throw error
     }
   }
 
-  // Вспомогательные методы для разных типов запросов
-  async get<T>(path: string, options?: Omit<ApiRequestOptions, 'method' | 'body'>): Promise<T> {
+  get<T>(path: string, options?: Omit<ApiRequestOptions, 'method'>) {
     return this.fetch<T>(path, { ...options, method: 'GET' })
   }
 
-  async post<T>(path: string, body: any, options?: Omit<ApiRequestOptions, 'method'>): Promise<T> {
+  post<T>(path: string, body: any, options?: Omit<ApiRequestOptions, 'method' | 'body'>) {
     return this.fetch<T>(path, { ...options, method: 'POST', body })
   }
 
-  async put<T>(path: string, body: any, options?: Omit<ApiRequestOptions, 'method'>): Promise<T> {
+  put<T>(path: string, body: any, options?: Omit<ApiRequestOptions, 'method' | 'body'>) {
     return this.fetch<T>(path, { ...options, method: 'PUT', body })
   }
 
-  async delete<T>(path: string, options?: Omit<ApiRequestOptions, 'method'>): Promise<T> {
+  delete<T>(path: string, options?: Omit<ApiRequestOptions, 'method'>) {
     return this.fetch<T>(path, { ...options, method: 'DELETE' })
   }
 }

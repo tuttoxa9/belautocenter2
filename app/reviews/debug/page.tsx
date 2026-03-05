@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, query, orderBy } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 
 interface Review {
   id: string
@@ -27,26 +27,16 @@ export default function ReviewsDebugPage() {
 
   const loadAllReviews = async () => {
     try {
+      const data = await firestoreApi.getCollection("reviews")
 
-      // Простой запрос без сортировки
-      let snapshot = await getDocs(collection(db, "reviews"))
-
-      // С сортировкой
-      try {
-        const sortedQuery = query(collection(db, "reviews"), orderBy("createdAt", "desc"))
-        snapshot = await getDocs(sortedQuery)
-      } catch (sortError) {
-        setError("Ошибка сортировки: " + sortError.message)
-      }
-
-      const reviewsData = snapshot.docs.map((doc) => {
-        const data = doc.data()
+      const reviewsData = data.map((doc) => {
         return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt,
+          ...doc,
+          createdAt: doc.createdAt,
         }
       }) as Review[]
+
+      reviewsData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
       setAllReviews(reviewsData)
     } catch (error: any) {

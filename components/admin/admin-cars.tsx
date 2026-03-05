@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { firestoreApi } from '@/lib/firestore-api'
+
 import { createCacheInvalidator } from "@/lib/cache-invalidation"
 import { revalidateCar } from "@/app/actions/revalidate"
 import { Button } from "@/components/ui/button"
@@ -76,7 +76,7 @@ export default function AdminCars() {
 
   const loadCars = async () => {
     try {
-      const snapshot = await getDocs(collection(db, "cars"))
+      const snapshot = await firestoreApi.getCollection("cars")
       const carsData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -114,13 +114,13 @@ export default function AdminCars() {
       let carId: string;
 
       if (editingCar) {
-        await updateDoc(doc(db, "cars", editingCar.id), carData)
+        await firestoreApi.updateDocument("cars", editingCar.id, carData)
         carId = editingCar.id
         await cacheInvalidator.onUpdate(carId)
         // Вызываем On-Demand Revalidation
         await revalidateCar(carId)
       } else {
-        const docRef = await addDoc(collection(db, "cars"), carData)
+        const docRef = await firestoreApi.addDocument("cars", carData)
         carId = docRef.id
         await cacheInvalidator.onCreate(carId)
         // Вызываем On-Demand Revalidation
@@ -160,7 +160,7 @@ export default function AdminCars() {
   const handleDelete = async (carId) => {
     if (confirm("Удалить этот автомобиль?")) {
       try {
-        await deleteDoc(doc(db, "cars", carId))
+        await firestoreApi.deleteDocument("cars", carId)
         await cacheInvalidator.onDelete(carId)
         // Вызываем On-Demand Revalidation
         await revalidateCar(carId)
@@ -173,7 +173,7 @@ export default function AdminCars() {
 
   const addToHomepage = async (carId) => {
     try {
-      await updateDoc(doc(db, "cars", carId), {
+      await firestoreApi.updateDocument("cars", carId, {
         showOnHomepage: true,
         updatedAt: new Date()
       })
@@ -191,7 +191,7 @@ export default function AdminCars() {
 
   const removeFromHomepage = async (carId) => {
     try {
-      await updateDoc(doc(db, "cars", carId), {
+      await firestoreApi.updateDocument("cars", carId, {
         showOnHomepage: false,
         updatedAt: new Date()
       })

@@ -5,14 +5,26 @@ export interface FirestoreDocument {
   [key: string]: any
 }
 
+// Извлекаем Project ID из переменной окружения
+const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93';
+
 export class FirestoreApi {
+  /**
+   * Формирует базовый путь для коллекции в Firestore REST API
+   */
+  private getBasePath(collectionName: string, documentId?: string): string {
+    let path = `/v1/projects/${PROJECT_ID}/databases/(default)/documents/${collectionName}`;
+    if (documentId) {
+      path += `/${documentId}`;
+    }
+    return path;
+  }
+
   /**
    * Получить список документов из коллекции
    */
   async getCollection(collectionName: string, forceRefresh = false): Promise<FirestoreDocument[]> {
     try {
-
-
       const headers: Record<string, string> = {};
       if (forceRefresh) {
         headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
@@ -20,36 +32,31 @@ export class FirestoreApi {
         headers['Expires'] = '0';
       }
 
-      const path = forceRefresh
-        ? `/${collectionName}?_t=${Date.now()}`
-        : `/${collectionName}`;
-
-      const response = await apiClient.get<any>(path, { headers })
-
-
-
-      if (!response.documents) {
-
-        return []
+      let path = this.getBasePath(collectionName);
+      if (forceRefresh) {
+        path += `?_t=${Date.now()}`;
       }
 
-      const parsedData = response.documents.map((doc: any) => {
-        const id = doc.name.split('/').pop() || ''
-        const fields: Record<string, any> = {}
+      // Воркер теперь возвращает сразу плоский JSON массив документов,
+      // или объект с `documents`, если мы попали напрямую на Firestore
+      const response = await apiClient.get<any>(path, { headers })
 
-        // Преобразуем Firestore поля в обычные объекты
-        for (const [key, value] of Object.entries(doc.fields || {})) {
-          fields[key] = this.convertFieldValue(value)
-        }
+      if (Array.isArray(response)) {
+        return response;
+      } else if (response.documents) {
+        // Если вдруг воркер не сработал или вернул старый формат с .documents
+        // (хотя flattenFirestoreResponse в воркере должен был это сделать,
+        // но оставим фоллбэк на всякий случай)
+        return Array.isArray(response.documents) ? response.documents : [];
+      } else if (response.name && !response.documents) {
+        // Если вдруг вернулся один документ (бывает в REST API)
+        return [response];
+      }
 
-        return { id, ...fields }
-      })
-
-
-      return parsedData
+      return [];
     } catch (error) {
-
-      throw error
+      console.error(`Failed to get collection ${collectionName}:`, error);
+      throw error;
     }
   }
 
@@ -58,52 +65,60 @@ export class FirestoreApi {
    */
   async getDocument(collectionName: string, documentId: string): Promise<FirestoreDocument | null> {
     try {
-      const doc = await apiClient.get<any>(`/${collectionName}/${documentId}`)
+      const path = this.getBasePath(collectionName, documentId);
+      const doc = await apiClient.get<any>(path)
 
-      if (!doc || !doc.fields) {
-        return null
+      if (!doc) {
+        return null;
       }
 
-      const fields: Record<string, any> = {}
-
-      // Преобразуем Firestore поля в обычные объекты
-      for (const [key, value] of Object.entries(doc.fields || {})) {
-        fields[key] = this.convertFieldValue(value)
-      }
-
-      const id = doc.name.split('/').pop() || documentId
-      return { id, ...fields }
+      // Воркер отдает плоский JSON
+      return doc as FirestoreDocument;
     } catch (error) {
-
-      throw error
+      console.error(`Failed to get document ${documentId} in ${collectionName}:`, error);
+      throw error;
     }
   }
 
   /**
    * Добавить новый документ в коллекцию
+   * Для POST запросов в Firestore REST API структура требует { fields: { ... } },
+   * но наш воркер не разворачивает POST тела на пути ТУДА. Мы должны отправить
+   * данные в формате Firestore.
    */
   async addDocument(collectionName: string, data: Record<string, any>): Promise<{ id: string }> {
     try {
       const firebaseData = this.convertToFirestoreFormat(data)
-      const response = await apiClient.post<any>(`/${collectionName}`, { fields: firebaseData })
-      const id = response.name.split('/').pop() || ''
+      const path = this.getBasePath(collectionName);
+
+      const response = await apiClient.post<any>(path, { fields: firebaseData })
+
+      // Имя возвращается в формате projects/.../documents/коллекция/ID
+      const id = response.name ? response.name.split('/').pop() || '' : (response.id || '');
       return { id }
     } catch (error) {
-
-      throw error
+      console.error(`Failed to add document to ${collectionName}:`, error);
+      throw error;
     }
   }
 
   /**
-   * Обновить существующий документ
+   * Обновить существующий документ (PATCH)
    */
   async updateDocument(collectionName: string, documentId: string, data: Record<string, any>): Promise<void> {
     try {
-      const firebaseData = this.convertToFirestoreFormat(data)
-      await apiClient.put<any>(`/${collectionName}/${documentId}`, { fields: firebaseData })
-    } catch (error) {
+      const firebaseData = this.convertToFirestoreFormat(data);
+      const path = this.getBasePath(collectionName, documentId);
 
-      throw error
+      // В Firestore REST API обновление - это PATCH
+      await apiClient.fetch<any>(path, {
+        method: 'PATCH',
+        body: { fields: firebaseData },
+        requireAuth: true
+      });
+    } catch (error) {
+      console.error(`Failed to update document ${documentId} in ${collectionName}:`, error);
+      throw error;
     }
   }
 
@@ -112,15 +127,17 @@ export class FirestoreApi {
    */
   async deleteDocument(collectionName: string, documentId: string): Promise<void> {
     try {
-      await apiClient.delete<any>(`/${collectionName}/${documentId}`)
+      const path = this.getBasePath(collectionName, documentId);
+      await apiClient.delete<any>(path)
     } catch (error) {
-
-      throw error
+      console.error(`Failed to delete document ${documentId} from ${collectionName}:`, error);
+      throw error;
     }
   }
 
   /**
    * Конвертировать обычный объект в формат Firestore
+   * (необходимо для POST и PATCH запросов, которые отправляются в REST API)
    */
   private convertToFirestoreFormat(data: Record<string, any>): Record<string, any> {
     const result: Record<string, any> = {}
@@ -165,34 +182,6 @@ export class FirestoreApi {
     }
 
     return result
-  }
-
-  /**
-   * Конвертировать значение поля из формата Firestore в обычный формат
-   */
-  private convertFieldValue(value: any): any {
-    if (value.stringValue !== undefined) {
-      return value.stringValue
-    } else if (value.integerValue !== undefined) {
-      return parseInt(value.integerValue)
-    } else if (value.doubleValue !== undefined) {
-      return parseFloat(value.doubleValue)
-    } else if (value.booleanValue !== undefined) {
-      return value.booleanValue
-    } else if (value.timestampValue !== undefined) {
-      return new Date(value.timestampValue)
-    } else if (value.arrayValue !== undefined) {
-      return value.arrayValue.values?.map((v: any) => this.convertFieldValue(v)) || []
-    } else if (value.mapValue !== undefined) {
-      const result: Record<string, any> = {}
-      for (const [k, v] of Object.entries(value.mapValue.fields || {})) {
-        result[k] = this.convertFieldValue(v)
-      }
-      return result
-    } else if (value.nullValue !== undefined) {
-      return null
-    }
-    return value
   }
 }
 
