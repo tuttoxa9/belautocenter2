@@ -458,350 +458,386 @@ export default function AdminCars() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Раздел: Основная информация */}
               {activeTab === "basic" && (
-                <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label className="text-sm">Марка</Label>
-                  <Input
-                    value={carForm.make}
-                    onChange={(e) => setCarForm({ ...carForm, make: e.target.value })}
-                    className="text-sm"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm">Модель</Label>
-                  <Input
-                    value={carForm.model}
-                    onChange={(e) => setCarForm({ ...carForm, model: e.target.value })}
-                    className="text-sm"
-                    required
-                  />
-                </div>
-              </div>
+                <div className="space-y-8">
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                <div>
-                  <Label className="text-sm">Год</Label>
-                  <Input
-                    type="number"
-                    value={carForm.year}
-                    onChange={(e) => setCarForm({ ...carForm, year: e.target.value })}
-                    className="text-sm"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm">Цена ($)</Label>
-                  <Input
-                    type="number"
-                    value={carForm.price}
-                    onChange={(e) => setCarForm({ ...carForm, price: e.target.value })}
-                    className="text-sm"
-                    required
-                  />
-                </div>
-                <div className="sm:col-span-2 md:col-span-1">
-                  <Label className="text-sm">Пробег (км)</Label>
-                  <Input
-                    type="number"
-                    value={carForm.mileage}
-                    onChange={(e) => setCarForm({ ...carForm, mileage: e.target.value })}
-                    className="text-sm"
-                    required
-                  />
-                </div>
-              </div>
+                  {/* Блок: Основные параметры */}
+                  <div className="bg-slate-50/50 dark:bg-zinc-900/50 p-5 rounded-2xl border border-border/50 space-y-5">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Основные параметры</h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Объем двигателя (л)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={carForm.engineVolume}
-                    onChange={(e) => setCarForm({ ...carForm, engineVolume: e.target.value })}
-                    disabled={carForm.fuelType === "Электро"}
-                    placeholder={carForm.fuelType === "Электро" ? "Не требуется для электро" : ""}
-                    required={carForm.fuelType !== "Электро"}
-                  />
-                </div>
-                <div>
-                  <Label>Тип топлива</Label>
-                  <Select
-                    value={carForm.fuelType}
-                    onValueChange={(value) => {
-                      const newForm = { ...carForm, fuelType: value }
-                      // Очищаем объем двигателя для электро
-                      if (value === "Электро") {
-                        newForm.engineVolume = ""
-                      }
-                      setCarForm(newForm)
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Выберите тип топлива" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Бензин">Бензин</SelectItem>
-                      <SelectItem value="Дизель">Дизель</SelectItem>
-                      <SelectItem value="Гибрид">Гибрид</SelectItem>
-                      <SelectItem value="Электро">Электро</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Коробка передач</Label>
-                  <Select
-                    value={carForm.transmission}
-                    onValueChange={(value) => setCarForm({ ...carForm, transmission: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Выберите КПП" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Автомат">Автомат</SelectItem>
-                      <SelectItem value="Механика">Механика</SelectItem>
-                      <SelectItem value="Вариатор">Вариатор</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Привод</Label>
-                  <Select
-                    value={carForm.driveTrain}
-                    onValueChange={(value) => setCarForm({ ...carForm, driveTrain: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Выберите привод" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Передний">Передний</SelectItem>
-                      <SelectItem value="Задний">Задний</SelectItem>
-                      <SelectItem value="Полный">Полный</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Тип кузова</Label>
-                  <Input
-                    value={carForm.bodyType}
-                    onChange={(e) => setCarForm({ ...carForm, bodyType: e.target.value })}
-                    placeholder="Седан, Хэтчбек, Внедорожник..."
-                  />
-                </div>
-                <div>
-                  <Label>Цвет</Label>
-                  <Input
-                    value={carForm.color}
-                    onChange={(e) => setCarForm({ ...carForm, color: e.target.value })}
-                    placeholder="Черный металлик"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <Label>Ссылка на обзор в TikTok</Label>
-                  <Input
-                    value={carForm.tiktok_url}
-                    onChange={(e) => setCarForm({ ...carForm, tiktok_url: e.target.value })}
-                    placeholder="https://www.tiktok.com/@user/video/123"
-                  />
-                </div>
-                <div>
-                  <Label>Ссылка на обзор в YouTube</Label>
-                  <Input
-                    value={carForm.youtube_url}
-                    onChange={(e) => setCarForm({ ...carForm, youtube_url: e.target.value })}
-                    placeholder="https://www.youtube.com/watch?v=123"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label className="text-sm">Описание (Markdown поддерживается)</Label>
-                <div className="text-xs text-muted-foreground mb-2">
-                  Поддерживается: **жирный**, *курсив*, # заголовки, - списки, [ссылки](url)
-                </div>
-                <Tabs defaultValue="edit" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="edit">Редактирование</TabsTrigger>
-                    <TabsTrigger value="preview">Предпросмотр</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="edit" className="mt-2">
-                    <Textarea
-                      className="w-full p-2 border rounded-md text-sm min-h-[150px]"
-                      rows={6}
-                      value={carForm.description}
-                      onChange={(e) => setCarForm({ ...carForm, description: e.target.value })}
-                      placeholder="Подробное описание автомобиля...&#10;&#10;Можно использовать:&#10;**Жирный текст**&#10;*Курсивный текст*&#10;# Заголовок&#10;- Пункт списка&#10;- Другой пункт"
-                    />
-                  </TabsContent>
-                  <TabsContent value="preview" className="mt-2">
-                    <div className="w-full p-3 border rounded-md bg-muted/30 dark:bg-zinc-900/50 min-h-[150px]">
-                      {carForm.description ? (
-                        <MarkdownRenderer content={carForm.description} />
-                      ) : (
-                        <p className="text-muted-foreground italic">Введите описание для предпросмотра...</p>
-                      )}
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="isAvailable"
-                        checked={carForm.isAvailable}
-                        onChange={(e) => setCarForm({ ...carForm, isAvailable: e.target.checked })}
-                      />
-                      <Label htmlFor="isAvailable">В наличии</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Марка</Label>
+                        <Input
+                          value={carForm.make}
+                          onChange={(e) => setCarForm({ ...carForm, make: e.target.value })}
+                          className="bg-white dark:bg-zinc-950 transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Модель</Label>
+                        <Input
+                          value={carForm.model}
+                          onChange={(e) => setCarForm({ ...carForm, model: e.target.value })}
+                          className="bg-white dark:bg-zinc-950 transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="showOnHomepage"
-                        checked={carForm.showOnHomepage}
-                        onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
-                      />
-                      <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Год выпуска</Label>
+                        <Input
+                          type="number"
+                          value={carForm.year}
+                          onChange={(e) => setCarForm({ ...carForm, year: e.target.value })}
+                          className="bg-white dark:bg-zinc-950 transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Цена ($)</Label>
+                        <Input
+                          type="number"
+                          value={carForm.price}
+                          onChange={(e) => setCarForm({ ...carForm, price: e.target.value })}
+                          className="bg-white dark:bg-zinc-950 transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Пробег (км)</Label>
+                        <Input
+                          type="number"
+                          value={carForm.mileage}
+                          onChange={(e) => setCarForm({ ...carForm, mileage: e.target.value })}
+                          className="bg-white dark:bg-zinc-950 transition-all focus:ring-2 focus:ring-primary/20"
+                          required
+                        />
+                      </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="fromEurope"
-                        checked={carForm.fromEurope}
-                        onChange={(e) => setCarForm({ ...carForm, fromEurope: e.target.checked })}
-                      />
-                      <Label htmlFor="fromEurope">Без пробега по РБ</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border/50">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Тип кузова</Label>
+                        <Input
+                          value={carForm.bodyType}
+                          onChange={(e) => setCarForm({ ...carForm, bodyType: e.target.value })}
+                          placeholder="Седан, Хэтчбек..."
+                          className="bg-white dark:bg-zinc-950"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Цвет</Label>
+                        <Input
+                          value={carForm.color}
+                          onChange={(e) => setCarForm({ ...carForm, color: e.target.value })}
+                          placeholder="Черный металлик"
+                          className="bg-white dark:bg-zinc-950"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    <Label className="text-sm">Характеристики</Label>
+                  {/* Блок: Технические данные */}
+                  <div className="bg-slate-50/50 dark:bg-zinc-900/50 p-5 rounded-2xl border border-border/50 space-y-5">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Технические данные</h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Тип топлива</Label>
+                        <Select
+                          value={carForm.fuelType}
+                          onValueChange={(value) => {
+                            const newForm = { ...carForm, fuelType: value }
+                            if (value === "Электро") newForm.engineVolume = ""
+                            setCarForm(newForm)
+                          }}
+                        >
+                          <SelectTrigger className="bg-white dark:bg-zinc-950">
+                            <SelectValue placeholder="Выберите тип" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Бензин">Бензин</SelectItem>
+                            <SelectItem value="Дизель">Дизель</SelectItem>
+                            <SelectItem value="Гибрид">Гибрид</SelectItem>
+                            <SelectItem value="Электро">Электро</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Объем двигателя (л)</Label>
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={carForm.engineVolume}
+                          onChange={(e) => setCarForm({ ...carForm, engineVolume: e.target.value })}
+                          disabled={carForm.fuelType === "Электро"}
+                          placeholder={carForm.fuelType === "Электро" ? "Не требуется" : "Например: 2.0"}
+                          className="bg-white dark:bg-zinc-950 disabled:bg-slate-100 disabled:dark:bg-zinc-900"
+                          required={carForm.fuelType !== "Электро"}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Коробка передач</Label>
+                        <Select
+                          value={carForm.transmission}
+                          onValueChange={(value) => setCarForm({ ...carForm, transmission: value })}
+                        >
+                          <SelectTrigger className="bg-white dark:bg-zinc-950">
+                            <SelectValue placeholder="Выберите КПП" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Автомат">Автомат</SelectItem>
+                            <SelectItem value="Механика">Механика</SelectItem>
+                            <SelectItem value="Вариатор">Вариатор</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Привод</Label>
+                        <Select
+                          value={carForm.driveTrain}
+                          onValueChange={(value) => setCarForm({ ...carForm, driveTrain: value })}
+                        >
+                          <SelectTrigger className="bg-white dark:bg-zinc-950">
+                            <SelectValue placeholder="Выберите привод" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Передний">Передний</SelectItem>
+                            <SelectItem value="Задний">Задний</SelectItem>
+                            <SelectItem value="Полный">Полный</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Блок: Описание и Медиа */}
+                  <div className="bg-slate-50/50 dark:bg-zinc-900/50 p-5 rounded-2xl border border-border/50 space-y-5">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Описание и Медиа</h3>
+
                     <div className="space-y-2">
-                      {Object.entries(carForm.specifications).map(([key, value], index) => (
-                        <div key={index} className="flex flex-col sm:flex-row gap-2">
-                          <Input
-                            placeholder="Название"
-                            value={key}
-                            className="text-sm"
-                            onChange={(e) => {
-                              const newSpecs = { ...carForm.specifications }
-                              delete newSpecs[key]
-                              newSpecs[e.target.value] = value
-                              setCarForm({ ...carForm, specifications: newSpecs })
-                            }}
+                      <Label className="text-sm font-medium flex justify-between">
+                        Подробное описание
+                        <span className="text-xs text-muted-foreground font-normal">Поддерживает Markdown</span>
+                      </Label>
+                      <Tabs defaultValue="edit" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 mb-2 bg-slate-200/50 dark:bg-zinc-800">
+                          <TabsTrigger value="edit">Текст</TabsTrigger>
+                          <TabsTrigger value="preview">Предпросмотр</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="edit" className="mt-0">
+                          <Textarea
+                            className="w-full p-3 border rounded-xl text-sm min-h-[150px] bg-white dark:bg-zinc-950 focus:ring-2 focus:ring-primary/20 transition-all resize-y"
+                            value={carForm.description}
+                            onChange={(e) => setCarForm({ ...carForm, description: e.target.value })}
+                            placeholder="Опишите состояние автомобиля, историю обслуживания и другие важные детали..."
                           />
-                          <Input
-                            placeholder="Значение"
-                            value={value}
-                            className="text-sm"
-                            onChange={(e) => {
-                              setCarForm({
-                                ...carForm,
-                                specifications: {
-                                  ...carForm.specifications,
-                                  [key]: e.target.value
-                                }
-                              })
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="w-full sm:w-auto"
-                            onClick={() => {
-                              const newSpecs = { ...carForm.specifications }
-                              delete newSpecs[key]
-                              setCarForm({ ...carForm, specifications: newSpecs })
-                            }}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-xs w-full sm:w-auto"
-                        onClick={() => {
-                          setCarForm({
-                            ...carForm,
-                            specifications: {
-                              ...carForm.specifications,
-                              "": ""
-                            }
-                          })
-                        }}
-                      >
-                        <Plus className="h-3 w-3 mr-2" />
-                        Добавить характеристику
-                      </Button>
+                        </TabsContent>
+                        <TabsContent value="preview" className="mt-0">
+                          <div className="w-full p-4 border rounded-xl bg-white dark:bg-zinc-950 min-h-[150px] prose prose-sm dark:prose-invert max-w-none">
+                            {carForm.description ? (
+                              <MarkdownRenderer content={carForm.description} />
+                            ) : (
+                              <p className="text-muted-foreground italic m-0">Здесь появится предпросмотр описания...</p>
+                            )}
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/50">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Обзор в TikTok</Label>
+                        <Input
+                          value={carForm.tiktok_url}
+                          onChange={(e) => setCarForm({ ...carForm, tiktok_url: e.target.value })}
+                          placeholder="https://tiktok.com/..."
+                          className="bg-white dark:bg-zinc-950"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Обзор в YouTube</Label>
+                        <Input
+                          value={carForm.youtube_url}
+                          onChange={(e) => setCarForm({ ...carForm, youtube_url: e.target.value })}
+                          placeholder="https://youtube.com/..."
+                          className="bg-white dark:bg-zinc-950"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    <Label className="text-sm">Комплектация</Label>
-                    <div className="space-y-2">
-                      {carForm.features.map((feature, index) => (
-                        <div key={index} className="flex gap-2">
-                          <Input
-                            placeholder="Особенность"
-                            value={feature}
-                            className="text-sm"
-                            onChange={(e) => {
-                              const newFeatures = [...carForm.features]
-                              newFeatures[index] = e.target.value
-                              setCarForm({ ...carForm, features: newFeatures })
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const newFeatures = carForm.features.filter((_, i) => i !== index)
-                              setCarForm({ ...carForm, features: newFeatures })
-                            }}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-xs w-full sm:w-auto"
-                        onClick={() => {
-                          setCarForm({
-                            ...carForm,
-                            features: [...carForm.features, ""]
-                          })
-                        }}
-                      >
-                        <Plus className="h-3 w-3 mr-2" />
-                        Добавить особенность
-                      </Button>
+                  {/* Блок: Дополнительно (Характеристики и Комплектация) */}
+                  <div className="bg-slate-50/50 dark:bg-zinc-900/50 p-5 rounded-2xl border border-border/50 space-y-8">
+
+                    {/* Характеристики */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between border-b border-border/50 pb-2">
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Характеристики</h3>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="h-8 text-xs rounded-lg"
+                          onClick={() => {
+                            setCarForm({
+                              ...carForm,
+                              specifications: { ...carForm.specifications, "": "" }
+                            })
+                          }}
+                        >
+                          <Plus className="h-3 w-3 mr-1" /> Добавить
+                        </Button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {Object.entries(carForm.specifications).map(([key, value], index) => (
+                          <div key={index} className="flex flex-col sm:flex-row gap-2 items-start">
+                            <Input
+                              placeholder="Название (напр. 'Разгон 0-100')"
+                              value={key}
+                              className="text-sm bg-white dark:bg-zinc-950 flex-1"
+                              onChange={(e) => {
+                                const newSpecs = { ...carForm.specifications }
+                                delete newSpecs[key]
+                                newSpecs[e.target.value] = value
+                                setCarForm({ ...carForm, specifications: newSpecs })
+                              }}
+                            />
+                            <Input
+                              placeholder="Значение (напр. '7.5 сек')"
+                              value={value}
+                              className="text-sm bg-white dark:bg-zinc-950 flex-1"
+                              onChange={(e) => {
+                                setCarForm({
+                                  ...carForm,
+                                  specifications: { ...carForm.specifications, [key]: e.target.value }
+                                })
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-10 w-10 text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0"
+                              onClick={() => {
+                                const newSpecs = { ...carForm.specifications }
+                                delete newSpecs[key]
+                                setCarForm({ ...carForm, specifications: newSpecs })
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Комплектация */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between border-b border-border/50 pb-2">
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Комплектация</h3>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="h-8 text-xs rounded-lg"
+                          onClick={() => {
+                            setCarForm({
+                              ...carForm,
+                              features: [...carForm.features, ""]
+                            })
+                          }}
+                        >
+                          <Plus className="h-3 w-3 mr-1" /> Добавить
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {carForm.features.map((feature, index) => (
+                          <div key={index} className="flex gap-2">
+                            <Input
+                              placeholder="Напр. 'Климат-контроль'"
+                              value={feature}
+                              className="text-sm bg-white dark:bg-zinc-950"
+                              onChange={(e) => {
+                                const newFeatures = [...carForm.features]
+                                newFeatures[index] = e.target.value
+                                setCarForm({ ...carForm, features: newFeatures })
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-10 w-10 text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0"
+                              onClick={() => {
+                                const newFeatures = carForm.features.filter((_, i) => i !== index)
+                                setCarForm({ ...carForm, features: newFeatures })
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
+
+                  {/* Блок: Статусы */}
+                  <div className="bg-slate-50/50 dark:bg-zinc-900/50 p-5 rounded-2xl border border-border/50">
+                     <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Статусы отображения</h3>
+                     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                        <Label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-border/50 bg-white dark:bg-zinc-950 hover:bg-slate-50 dark:hover:bg-zinc-900 transition-colors flex-1">
+                          <input
+                            type="checkbox"
+                            className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                            checked={carForm.isAvailable}
+                            onChange={(e) => setCarForm({ ...carForm, isAvailable: e.target.checked })}
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">В наличии</span>
+                            <span className="text-xs text-muted-foreground">Отображать как доступный для покупки</span>
+                          </div>
+                        </Label>
+
+                        <Label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-border/50 bg-white dark:bg-zinc-950 hover:bg-slate-50 dark:hover:bg-zinc-900 transition-colors flex-1">
+                          <input
+                            type="checkbox"
+                            className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                            checked={carForm.showOnHomepage}
+                            onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">На главной</span>
+                            <span className="text-xs text-muted-foreground">Закрепить в разделе "Популярные"</span>
+                          </div>
+                        </Label>
+
+                        <Label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-border/50 bg-white dark:bg-zinc-950 hover:bg-slate-50 dark:hover:bg-zinc-900 transition-colors flex-1">
+                          <input
+                            type="checkbox"
+                            className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                            checked={carForm.fromEurope}
+                            onChange={(e) => setCarForm({ ...carForm, fromEurope: e.target.checked })}
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">Без пробега по РБ</span>
+                            <span className="text-xs text-muted-foreground">Специальная отметка в карточке</span>
+                          </div>
+                        </Label>
+                     </div>
+                  </div>
+
                 </div>
               )}
 
