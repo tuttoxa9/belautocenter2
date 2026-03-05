@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import CarDetailsClient from "./car-details-client"
 import { getCachedImageUrl } from "@/lib/image-cache"
 
-// ISR: On-Demand Revalidation используется через теги
-// export const revalidate = 86400
+// ISR: On-Demand Revalidation используется через теги (статическая генерация, кэш сбрасывается вручную из админки)
+export const revalidate = false
 
 // Функция для парсинга данных Firestore
 const parseFirestoreDoc = (doc: any): any => {
@@ -39,6 +39,45 @@ const convertFieldValue = (value: any): any => {
     return null
   }
   return value
+}
+
+// Предварительная генерация путей для страниц автомобилей во время билда (SSG)
+export async function generateStaticParams() {
+  try {
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93'
+    // Запрашиваем только ID (используем mask) чтобы ускорить загрузку и не тянуть лишние данные
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/cars?mask.fieldPaths=name&pageSize=300`
+
+    const response = await fetch(firestoreUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'NextJS-Direct-Firestore/1.0'
+      },
+      // Кэшируем список машин
+      cache: 'force-cache',
+      next: { tags: ['cars-list'] }
+    })
+
+    if (!response.ok) {
+      console.error('Failed to fetch cars for static paths')
+      return []
+    }
+
+    const data = await response.json()
+
+    if (!data.documents) {
+      return []
+    }
+
+    return data.documents.map((doc: any) => {
+      // Имя документа имеет формат: projects/{projectId}/databases/{databaseId}/documents/{document_path}
+      const id = doc.name.split('/').pop() || ''
+      return { id }
+    })
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
 
 // Динамическая генерация метатегов на основе данных автомобиля
