@@ -39,14 +39,12 @@ export default function LeasingCalculator() {
     carPrice: [50000],
     advance: [15000],
     leasingTerm: [36],
-    residualValue: [20],
   })
 
   const [manualInputs, setManualInputs] = useState({
     carPrice: '',
     advance: '',
     leasingTerm: '',
-    residualValue: '',
     selectedCompany: ''
   })
 
@@ -59,10 +57,9 @@ export default function LeasingCalculator() {
       carPrice: calculator.carPrice[0].toString(),
       advance: calculator.advance[0].toString(),
       leasingTerm: calculator.leasingTerm[0].toString(),
-      residualValue: calculator.residualValue[0].toString(),
       selectedCompany: ''
     })
-  }, [calculator.carPrice, calculator.advance, calculator.leasingTerm, calculator.residualValue])
+  }, [calculator.carPrice, calculator.advance, calculator.leasingTerm])
 
   const loadCalculatorData = async () => {
     try {
@@ -79,7 +76,6 @@ export default function LeasingCalculator() {
           carPrice: [data.defaultCarPrice || 50000],
           advance: [Math.round((data.defaultCarPrice || 50000) * (data.defaultAdvancePercent || 30) / 100)],
           leasingTerm: [data.defaultTerm || 36],
-          residualValue: [data.defaultResidualPercent || 20],
         }))
       } else {
         // Данные по умолчанию
@@ -111,9 +107,8 @@ export default function LeasingCalculator() {
     const carPrice = calculator.carPrice[0]
     const advance = calculator.advance[0]
     const term = calculator.leasingTerm[0]
-    const residualValue = (carPrice * calculator.residualValue[0]) / 100
 
-    const leasingAmount = carPrice - advance - residualValue
+    const leasingAmount = carPrice - advance
 
     // Простой расчет без процентов для лизинга
     return leasingAmount / term
@@ -200,10 +195,6 @@ export default function LeasingCalculator() {
         const clampedTerm = Math.max(12, Math.min(84, numValue))
         setCalculator({ ...calculator, leasingTerm: [clampedTerm] })
         break
-      case 'residualValue':
-        const clampedResidual = Math.max(10, Math.min(50, numValue))
-        setCalculator({ ...calculator, residualValue: [clampedResidual] })
-        break
     }
   }
 
@@ -212,9 +203,8 @@ export default function LeasingCalculator() {
   }
 
   const monthlyPayment = calculateMonthlyPayment()
-  const leasingSum = calculator.carPrice[0] - calculator.advance[0] - (calculator.carPrice[0] * calculator.residualValue[0] / 100)
+  const leasingSum = calculator.carPrice[0] - calculator.advance[0]
   const totalPayments = monthlyPayment * calculator.leasingTerm[0] + calculator.advance[0]
-  const residualValue = (calculator.carPrice[0] * calculator.residualValue[0]) / 100
 
   if (loading) {
     return (
@@ -314,7 +304,7 @@ export default function LeasingCalculator() {
           </div>
         </div>
 
-        {/* Вторая строка: Срок и Остаточная стоимость */}
+        {/* Вторая строка: Срок */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm">Срок: {calculator.leasingTerm[0]} мес.</Label>
@@ -338,32 +328,6 @@ export default function LeasingCalculator() {
                 className="text-xs h-8"
                 min={12}
                 max={84}
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label className="text-sm">Остаточная стоимость: {calculator.residualValue[0]}%</Label>
-            <div className="space-y-1 mt-1">
-              <Slider
-                value={calculator.residualValue}
-                onValueChange={(value) => {
-                  setCalculator({ ...calculator, residualValue: value })
-                  setManualInputs({ ...manualInputs, residualValue: value[0].toString() })
-                }}
-                max={50}
-                min={10}
-                step={5}
-                className="h-1"
-              />
-              <Input
-                type="number"
-                placeholder="20"
-                value={manualInputs.residualValue}
-                onChange={(e) => handleManualInputChange('residualValue', e.target.value)}
-                className="text-xs h-8"
-                min={10}
-                max={50}
               />
             </div>
           </div>
@@ -409,10 +373,6 @@ export default function LeasingCalculator() {
           <div className="flex justify-between">
             <span>Общая сумма выплат:</span>
             <span className="font-semibold">{formatCurrency(totalPayments)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Остаточная стоимость:</span>
-            <span className="font-semibold">{formatCurrency(residualValue)}</span>
           </div>
           {!isBelarusianRubles && usdBynRate && (
             <div className="pt-2 mt-2 border-t border-blue-200">

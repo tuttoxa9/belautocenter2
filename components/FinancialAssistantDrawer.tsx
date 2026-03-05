@@ -59,7 +59,6 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
   const [selectedBank, setSelectedBank] = useState<PartnerBank | null>(null);
   const [leasingAdvance, setLeasingAdvance] = useState([0]);
   const [leasingTerm, setLeasingTerm] = useState([36]);
-  const [residualValue, setResidualValue] = useState([20]);
   const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null);
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(true);
   const [creditForm, setCreditForm] = useState({ name: "", phone: "+375", message: "" });
@@ -82,7 +81,6 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
       }
       setLoanTerm([60]);
       setLeasingTerm([36]);
-      setResidualValue([20]);
     }
   }, [open, car, isBelarusianRubles, usdBynRate]);
 
@@ -143,7 +141,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
   const calculateLeasingPayment = () => {
     const advance = leasingAdvance[0];
     const term = leasingTerm[0];
-    const leasingSum = carPriceInCurrency - advance - ((carPriceInCurrency * residualValue[0]) / 100);
+    const leasingSum = carPriceInCurrency - advance;
     return term > 0 ? leasingSum / term : 0;
   };
 
@@ -253,10 +251,6 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
               <Label className="flex justify-between"><span>Срок лизинга</span> <span>{leasingTerm[0]} мес.</span></Label>
               <Slider value={leasingTerm} onValueChange={setLeasingTerm} max={84} min={12} step={1} className="mt-2" />
             </div>
-             <div>
-              <Label className="flex justify-between"><span>Остаточная стоимость</span> <span>{residualValue[0]}%</span></Label>
-              <Slider value={residualValue} onValueChange={setResidualValue} max={50} min={1} step={1} className="mt-2" />
-            </div>
             <div>
               <Label>Лизинговая компания</Label>
                <Select value={selectedLeasingCompany?.name} onValueChange={v => setSelectedLeasingCompany(leasingCompanies.find(c => c.name === v) || null)}>
@@ -329,13 +323,6 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
                   <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
                     <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">Ставка</p>
                     <p className="font-semibold text-sm text-white">{selectedBank.rate || selectedBank.minRate}%</p>
-                  </div>
-                )}
-
-                {financeType === 'leasing' && (
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-                    <p className="text-xs text-slate-400 dark:text-gray-300 mb-1">Остаточная</p>
-                    <p className="font-semibold text-sm text-white">{residualValue[0]}%</p>
                   </div>
                 )}
               </div>
