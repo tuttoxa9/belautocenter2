@@ -36,14 +36,16 @@ export class ApiClient {
 
     if (requireAuth && !requestHeaders['Authorization']) {
       try {
+        // Дожидаемся инициализации Firebase Auth перед запросом токена
+        await auth.authStateReady();
         const user = auth.currentUser
         if (!user) {
-          throw new Error('Требуется авторизация')
+          throw new Error('Требуется авторизация (пользователь не найден)')
         }
         const token = await user.getIdToken(true)
         requestHeaders['Authorization'] = `Bearer ${token}`
       } catch (error) {
-        throw new Error('Не удалось получить токен авторизации')
+        throw new Error('Не удалось получить токен авторизации: ' + (error as Error).message)
       }
     }
 

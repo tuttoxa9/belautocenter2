@@ -13,7 +13,9 @@ export class FirestoreApi {
    * Формирует базовый путь для коллекции в Firestore REST API
    */
   private getBasePath(collectionName: string, documentId?: string): string {
-    let path = `/v1/projects/${PROJECT_ID}/databases/(default)/documents/${collectionName}`;
+    // ВАЖНО: Воркер пользователя (v3.0) ожидает, что мы будем отправлять запросы
+    // просто как /collectionName/documentId. Воркер сам добавляет /v1/projects/...
+    let path = `/${collectionName}`;
     if (documentId) {
       path += `/${documentId}`;
     }
@@ -32,30 +34,42 @@ export class FirestoreApi {
         headers['Expires'] = '0';
       }
 
-      let path = this.getBasePath(collectionName);
-      if (forceRefresh && !requireAuth) {
-        // Добавляем timestamp только если не идем через авторизацию, так как
-        // Cloudflare Worker с авторизацией и так игнорирует кэш
-        path += `?_t=${Date.now()}`;
-      }
+      const allDocuments: FirestoreDocument[] = [];
+      let pageToken: string | undefined = undefined;
+      const basePath = this.getBasePath(collectionName);
 
-      // Воркер теперь возвращает сразу плоский JSON массив документов,
-      // или объект с `documents`, если мы попали напрямую на Firestore
-      const response = await apiClient.get<any>(path, { headers, requireAuth })
+      do {
+        let path = `${basePath}?pageSize=100`;
+        if (pageToken) {
+          path += `&pageToken=${pageToken}`;
+        }
 
-      if (Array.isArray(response)) {
-        return response;
-      } else if (response.documents) {
-        // Если вдруг воркер не сработал или вернул старый формат с .documents
-        // (хотя flattenFirestoreResponse в воркере должен был это сделать,
-        // но оставим фоллбэк на всякий случай)
-        return Array.isArray(response.documents) ? response.documents : [];
-      } else if (response.name && !response.documents) {
-        // Если вдруг вернулся один документ (бывает в REST API)
-        return [response];
-      }
+        if (forceRefresh && !requireAuth) {
+          // Добавляем timestamp только если не идем через авторизацию
+          path += `&_t=${Date.now()}`;
+        }
 
-      return [];
+        // Воркер возвращает плоский JSON массив (если он перехватил response.documents)
+        // Но если в ответе есть nextPageToken, он мог вернуть объект { documents: [...], nextPageToken: "..." }
+        // (зависит от того, как мы написали flattenFirestoreResponse)
+        const response = await apiClient.get<any>(path, { headers, requireAuth });
+
+        if (Array.isArray(response)) {
+          allDocuments.push(...response);
+          pageToken = undefined; // Если пришел просто массив, значит пагинации нет (или воркер ее стер)
+        } else if (response.documents) {
+          // Если воркер вернул объект с documents и (возможно) nextPageToken
+          allDocuments.push(...(Array.isArray(response.documents) ? response.documents : []));
+          pageToken = response.nextPageToken;
+        } else if (response.name && !response.documents) {
+          allDocuments.push(response);
+          pageToken = undefined;
+        } else {
+          pageToken = undefined;
+        }
+      } while (pageToken);
+
+      return allDocuments;
     } catch (error) {
       console.error(`Failed to get collection ${collectionName}:`, error);
       throw error;
