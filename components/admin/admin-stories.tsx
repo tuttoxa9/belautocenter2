@@ -65,7 +65,7 @@ export default function AdminStories() {
 
   const loadStories = async () => {
     try {
-      const data = await firestoreApi.getCollection("stories")
+      const data = await firestoreApi.getCollection("stories", true, true)
 
       const storiesData = data.map((doc) => ({
         ...doc,
@@ -83,7 +83,7 @@ export default function AdminStories() {
 
   const loadSettings = async () => {
     try {
-      const settingsDoc = await firestoreApi.getDocument("settings", "stories")
+      const settingsDoc = await firestoreApi.getDocument("settings", "stories", true)
       if (settingsDoc) {
         setSettings(settingsDoc as unknown as StoriesSettings)
       }

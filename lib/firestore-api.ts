@@ -23,7 +23,7 @@ export class FirestoreApi {
   /**
    * Получить список документов из коллекции
    */
-  async getCollection(collectionName: string, forceRefresh = false): Promise<FirestoreDocument[]> {
+  async getCollection(collectionName: string, forceRefresh = false, requireAuth = false): Promise<FirestoreDocument[]> {
     try {
       const headers: Record<string, string> = {};
       if (forceRefresh) {
@@ -33,13 +33,15 @@ export class FirestoreApi {
       }
 
       let path = this.getBasePath(collectionName);
-      if (forceRefresh) {
+      if (forceRefresh && !requireAuth) {
+        // Добавляем timestamp только если не идем через авторизацию, так как
+        // Cloudflare Worker с авторизацией и так игнорирует кэш
         path += `?_t=${Date.now()}`;
       }
 
       // Воркер теперь возвращает сразу плоский JSON массив документов,
       // или объект с `documents`, если мы попали напрямую на Firestore
-      const response = await apiClient.get<any>(path, { headers })
+      const response = await apiClient.get<any>(path, { headers, requireAuth })
 
       if (Array.isArray(response)) {
         return response;
@@ -63,10 +65,10 @@ export class FirestoreApi {
   /**
    * Получить один документ из коллекции
    */
-  async getDocument(collectionName: string, documentId: string): Promise<FirestoreDocument | null> {
+  async getDocument(collectionName: string, documentId: string, requireAuth = false): Promise<FirestoreDocument | null> {
     try {
       const path = this.getBasePath(collectionName, documentId);
-      const doc = await apiClient.get<any>(path)
+      const doc = await apiClient.get<any>(path, { requireAuth })
 
       if (!doc) {
         return null;

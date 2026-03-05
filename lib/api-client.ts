@@ -53,18 +53,24 @@ export class ApiClient {
     }
 
     // Добавляем кэширование для GET запросов, если не указано иное
-    if (method === 'GET' && !headers['Cache-Control']) {
-      // Пытаемся взять тег из заголовков, если он есть
-      if (headers['Next-Tags']) {
-        requestOptions.next = { tags: [headers['Next-Tags']] };
-        delete requestHeaders['Next-Tags'];
+    if (method === 'GET') {
+      if (requireAuth) {
+        // Запросы с авторизацией (админка) никогда не должны кэшироваться в Next.js
+        requestOptions.cache = 'no-store';
+        requestHeaders['Cache-Control'] = 'no-store, no-cache, must-revalidate';
+      } else if (!headers['Cache-Control']) {
+        // Пытаемся взять тег из заголовков, если он есть
+        if (headers['Next-Tags']) {
+          requestOptions.next = { tags: [headers['Next-Tags']] };
+          delete requestHeaders['Next-Tags'];
+        } else {
+          requestOptions.cache = 'force-cache';
+        }
       } else {
-        requestOptions.cache = 'force-cache';
+        // Если Cache-Control явно задан (например, no-cache), Next.js fetch API
+        // может ругаться, если передать force-cache
+        requestOptions.cache = 'no-store';
       }
-    } else if (method === 'GET') {
-      // Если Cache-Control явно задан (например, no-cache), Next.js fetch API
-      // может ругаться, если передать force-cache
-      requestOptions.cache = 'no-store';
     }
 
     if (body && method !== 'GET') {

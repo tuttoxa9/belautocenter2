@@ -50,7 +50,7 @@ export default function AdminReviews() {
 
   const loadReviews = async () => {
     try {
-      const data = await firestoreApi.getCollection("reviews")
+      const data = await firestoreApi.getCollection("reviews", true, true)
       const reviewsData = data.map((doc) => ({
         ...doc,
         createdAt: doc.createdAt ? new Date(doc.createdAt) : new Date(),

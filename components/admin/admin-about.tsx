@@ -94,7 +94,7 @@ export default function AdminAbout() {
 
   const loadAboutData = async () => {
     try {
-      const aboutDoc = await firestoreApi.getDocument("pages", "about")
+      const aboutDoc = await firestoreApi.getDocument("pages", "about", true)
       if (aboutDoc) {
         setAboutData(prev => ({
           ...prev,

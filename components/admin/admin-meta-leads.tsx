@@ -21,7 +21,7 @@ export default function AdminMetaLeads() {
 
   const loadLeads = async () => {
     try {
-      const data = await firestoreApi.getCollection("metaLeads")
+      const data = await firestoreApi.getCollection("metaLeads", true, true)
       const leadsData = data.map((doc) => ({
         ...doc,
         createdAt: doc.createdAt || new Date().toISOString(),

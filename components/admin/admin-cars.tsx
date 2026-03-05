@@ -76,7 +76,7 @@ export default function AdminCars() {
 
   const loadCars = async () => {
     try {
-      const data = await firestoreApi.getCollection("cars")
+      const data = await firestoreApi.getCollection("cars", true, true)
       const carsData = data.map((doc: any) => ({
         ...doc,
       }))

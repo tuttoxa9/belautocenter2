@@ -88,7 +88,7 @@ export default function AdminContacts() {
 
   const loadContactsData = async () => {
     try {
-      const contactsDoc = await firestoreApi.getDocument("pages", "contacts")
+      const contactsDoc = await firestoreApi.getDocument("pages", "contacts", true)
       if (contactsDoc) {
         setContactsData(contactsDoc as unknown as ContactsData)
       }

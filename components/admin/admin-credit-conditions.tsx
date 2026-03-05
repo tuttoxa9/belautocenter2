@@ -89,7 +89,7 @@ export default function AdminCreditConditions() {
 
   const loadConditions = async () => {
     try {
-      const data = await firestoreApi.getDocument("settings", "credit-conditions")
+      const data = await firestoreApi.getDocument("settings", "credit-conditions", true)
 
       if (data) {
         if (data.conditions && Array.isArray(data.conditions)) {

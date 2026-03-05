@@ -44,7 +44,7 @@ export default function AdminFinance() {
   const loadSettings = useCallback(async () => {
     setLoading(true)
     try {
-      const financeDoc = await firestoreApi.getDocument("settings", "finance")
+      const financeDoc = await firestoreApi.getDocument("settings", "finance", true)
       if (financeDoc) {
         const data = financeDoc as unknown as FinanceSettings
         setSettings(data)

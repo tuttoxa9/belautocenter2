@@ -58,7 +58,7 @@ export default function AdminFunnel() {
   const loadSettings = async () => {
     try {
       setIsLoading(true)
-      const data = await firestoreApi.getDocument("settings", "funnel")
+      const data = await firestoreApi.getDocument("settings", "funnel", true)
 
       if (data) {
         setSettings(prev => ({ ...prev, ...data as unknown as Partial<FunnelSettings> }))
