@@ -226,7 +226,6 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   const [leasingAmount, setLeasingAmount] = useState([75000])
   const [leasingAdvance, setLeasingAdvance] = useState([15000])
   const [leasingTerm, setLeasingTerm] = useState([36])
-  const [residualValue, setResidualValue] = useState([20])
   const [selectedLeasingCompany, setSelectedLeasingCompany] = useState<LeasingCompany | null>(null)
   // Состояние для валюты (по умолчанию - белорусские рубли)
   const [isBelarusianRubles, setIsBelarusianRubles] = useState(true)
@@ -275,7 +274,6 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
       }
       setLoanTerm([60])
       setLeasingTerm([36])
-      setResidualValue([20])
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
 
@@ -584,9 +582,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
     const carPrice = isBelarusianRubles && usdBynRate ? (car && car.price ? car.price * usdBynRate : 0) : (car && car.price ? car.price : 0)
     const advance = isBelarusianRubles && usdBynRate ? leasingAdvance[0] : leasingAdvance[0]
     const term = leasingTerm[0]
-    const residualVal = (carPrice * residualValue[0]) / 100
 
-    const leasingSum = carPrice - advance - residualVal
+    const leasingSum = carPrice - advance
     return leasingSum / term
   }
 
@@ -1512,33 +1509,19 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      <div className="space-y-1 sm:space-y-2">
-                        <Label className="text-xs sm:text-sm">Срок (мес.)</Label>
-                        <Input
-                          type="number"
-                          value={leasingTerm[0]}
-                          onChange={(e) => setLeasingTerm([Number(e.target.value)])}
-                          min={12}
-                          max={84}
-                          step={3}
-                          className="text-xs sm:text-sm h-8 sm:h-10"
-                        />
-                      </div>
-                      <div className="space-y-1 sm:space-y-2">
-                        <Label className="text-xs sm:text-sm">Остаток (%)</Label>
-                        <Input
-                          type="number"
-                          value={residualValue[0]}
-                          onChange={(e) => setResidualValue([Number(e.target.value)])}
-                          min={10}
-                          max={50}
-                          step={5}
-                          className="text-xs sm:text-sm h-8 sm:h-10"
-                        />
-                      </div>
+                    <div className="space-y-1 sm:space-y-2">
+                      <Label className="text-xs sm:text-sm">Срок (мес.)</Label>
+                      <Input
+                        type="number"
+                        value={leasingTerm[0]}
+                        onChange={(e) => setLeasingTerm([Number(e.target.value)])}
+                        min={12}
+                        max={84}
+                        step={3}
+                        className="text-xs sm:text-sm h-8 sm:h-10"
+                      />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 mt-2 sm:mt-3">
                       <Label className="text-xs sm:text-sm">Лизинговая компания</Label>
                       {leasingCompanies.length > 0 ? (
                         <Select
@@ -1742,19 +1725,6 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                             : formatPrice(calculateLeasingPayment() * leasingTerm[0] + leasingAdvance[0])
                           }
                         </div>
-                      </div>
-                      <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
-                        <div className="text-xs text-slate-400 mb-0.5">Остаточная</div>
-                        <div className="font-semibold text-xs sm:text-sm text-white">
-                          {isBelarusianRubles
-                            ? new Intl.NumberFormat("ru-BY", { style: "currency", currency: "BYN", minimumFractionDigits: 0 }).format((leasingAmount[0] * residualValue[0]) / 100)
-                            : formatPrice((leasingAmount[0] * residualValue[0]) / 100)
-                          }
-                        </div>
-                      </div>
-                      <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
-                        <div className="text-xs text-slate-400 mb-0.5">Остаточная %</div>
-                        <div className="font-semibold text-xs sm:text-sm text-white">{residualValue[0]}%</div>
                       </div>
                       <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10">
                         <div className="text-xs text-slate-400 mb-0.5">Срок</div>
