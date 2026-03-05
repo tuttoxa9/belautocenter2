@@ -88,12 +88,12 @@ export function useSettings() {
         hybridMarkup: 0.1,
       };
 
-      const mainSettings = mainDoc.exists()
-        ? { ...defaultSettings, ...JSON.parse(JSON.stringify(mainDoc.data())) }
+      const mainSettings = mainDoc
+        ? { ...defaultSettings, ...JSON.parse(JSON.stringify(mainDoc)) }
         : defaultSettings;
 
-      const financeSettings = financeDoc.exists()
-        ? { ...defaultFinanceSettings, ...JSON.parse(JSON.stringify(financeDoc.data())) }
+      const financeSettings = financeDoc
+        ? { ...defaultFinanceSettings, ...JSON.parse(JSON.stringify(financeDoc)) }
         : defaultFinanceSettings;
 
 

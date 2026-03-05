@@ -46,9 +46,9 @@ export default function AdminPages() {
       ])
 
       setPages({
-        about: aboutDoc.exists() ? aboutDoc.data().content || "" : "",
-        credit: creditDoc.exists() ? creditDoc.data().content || "" : "",
-        leasing: leasingDoc.exists() ? leasingDoc.data().content || "" : "",
+        about: aboutDoc ? aboutDoc.content || "" : "",
+        credit: creditDoc ? creditDoc.content || "" : "",
+        leasing: leasingDoc ? leasingDoc.content || "" : "",
       })
     } catch (error) {
     }

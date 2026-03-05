@@ -76,17 +76,16 @@ export default function AdminCars() {
 
   const loadCars = async () => {
     try {
-      const snapshot = await firestoreApi.getCollection("cars")
-      const carsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
+      const data = await firestoreApi.getCollection("cars")
+      const carsData = data.map((doc: any) => ({
+        ...doc,
       }))
       // Сортировка по умолчанию: сначала новые (по дате создания)
       const sortedCars = [...carsData].sort((a, b) => {
-        // Используем createdAt (timestamp) для сортировки
-        const dateA = a.createdAt ? new Date(a.createdAt.seconds * 1000) : new Date(0)
-        const dateB = b.createdAt ? new Date(b.createdAt.seconds * 1000) : new Date(0)
-        return dateB - dateA // От новых к старым
+        // В Firestore REST API дата приходит как строка ISO или объект
+        const dateA = a.createdAt ? new Date(typeof a.createdAt === 'string' ? a.createdAt : a.createdAt.seconds * 1000) : new Date(0)
+        const dateB = b.createdAt ? new Date(typeof b.createdAt === 'string' ? b.createdAt : b.createdAt.seconds * 1000) : new Date(0)
+        return dateB.getTime() - dateA.getTime() // От новых к старым
       })
       setCars(sortedCars)
     } catch (error) {

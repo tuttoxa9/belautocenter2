@@ -120,8 +120,8 @@ export default function AdminLeasing() {
   const loadLeasingData = async () => {
     try {
       const leasingDoc = await firestoreApi.getDocument("pages", "leasing")
-      if (leasingDoc.exists()) {
-        const data = leasingDoc.data() as LeasingPageData
+      if (leasingDoc) {
+        const data = leasingDoc as unknown as LeasingPageData
         // Убеждаемся, что массивы не undefined
         setLeasingData({
           ...data,

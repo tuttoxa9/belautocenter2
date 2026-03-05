@@ -45,8 +45,8 @@ export default function AdminFinance() {
     setLoading(true)
     try {
       const financeDoc = await firestoreApi.getDocument("settings", "finance")
-      if (financeDoc.exists()) {
-        const data = financeDoc.data() as FinanceSettings
+      if (financeDoc) {
+        const data = financeDoc as unknown as FinanceSettings
         setSettings(data)
         setCustomRateInput(String(data.customRate || "3.25"))
         setHybridMarkupInput(String(data.hybridMarkup || "0.1"))

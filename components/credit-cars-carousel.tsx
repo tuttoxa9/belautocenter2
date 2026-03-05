@@ -48,12 +48,11 @@ export function CarsCarousel() {
     try {
       setLoading(true)
 
-      const snapshot = await firestoreApi.getCollection("cars")
+      const data = await firestoreApi.getCollection("cars")
 
-      const carsData = snapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
+      const carsData = data
+        .map((doc: any) => ({
+          ...doc,
         }))
         .filter((car: CarData) => {
           const hasPrice = car && car.price && car.price > 0

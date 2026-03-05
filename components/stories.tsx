@@ -40,8 +40,8 @@ export default function Stories() {
   const loadSettings = useCallback(async () => {
     try {
       const settingsDoc = await firestoreApi.getDocument("settings", "stories")
-      if (settingsDoc.exists()) {
-        setSettings(settingsDoc.data() as StoriesSettings)
+      if (settingsDoc) {
+        setSettings(settingsDoc as unknown as StoriesSettings)
       }
     } catch (error) {
     }
