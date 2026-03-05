@@ -66,9 +66,9 @@ export default function AdminSettings() {
       ])
 
       setSettings((prevSettings) => ({
-        main: mainDoc.exists() ? mainDoc.data() : prevSettings.main,
-        homepage: homepageDoc.exists() ? homepageDoc.data() : prevSettings.homepage,
-        stories: storiesDoc.exists() ? storiesDoc.data() : prevSettings.stories,
+        main: mainDoc ? mainDoc : prevSettings.main,
+        homepage: homepageDoc ? homepageDoc : prevSettings.homepage,
+        stories: storiesDoc ? storiesDoc : prevSettings.stories,
       }))
     } catch (error) {
     } finally {

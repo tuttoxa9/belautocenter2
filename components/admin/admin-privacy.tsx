@@ -56,8 +56,8 @@ export default function AdminPrivacy() {
   const loadPrivacyData = async () => {
     try {
       const privacyDoc = await firestoreApi.getDocument("pages", "privacy")
-      if (privacyDoc.exists()) {
-        setPrivacyData(privacyDoc.data() as PrivacyData)
+      if (privacyDoc) {
+        setPrivacyData(privacyDoc as unknown as PrivacyData)
       }
     } catch (error) {
     } finally {

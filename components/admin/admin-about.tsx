@@ -95,14 +95,11 @@ export default function AdminAbout() {
   const loadAboutData = async () => {
     try {
       const aboutDoc = await firestoreApi.getDocument("pages", "about")
-      if (aboutDoc.exists()) {
-        const data = aboutDoc.data()
-        if (data) {
-          setAboutData(prev => ({
-            ...prev,
-            ...data
-          }))
-        }
+      if (aboutDoc) {
+        setAboutData(prev => ({
+          ...prev,
+          ...(aboutDoc as unknown as Partial<AboutData>)
+        }))
       }
     } catch (error) {
     } finally {
