@@ -10,14 +10,6 @@ export function middleware(request: NextRequest) {
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin')
 
-  // Кэширование статических ресурсов
-  if (pathname.startsWith('/images/') ||
-      pathname.startsWith('/_next/static/') ||
-      pathname.startsWith('/favicon') ||
-      pathname.match(/\.(jpg|jpeg|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|webp|avif)$/)) {
-    response.headers.set('Cache-Control', 'public, max-age=31536000, immutable')
-    response.headers.set('Vary', 'Accept-Encoding')
-  }
 
   // Улучшенное кэширование для API Firestore запросов
   if (pathname.startsWith('/api/firestore')) {
@@ -60,6 +52,8 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    // Исключаем статические ресурсы и медиа файлы,
+    // чтобы middleware не запускался на каждую картинку (экономит CPU)
+    '/((?!_next/static|_next/image|favicon.ico|images/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|css|js|woff|woff2|ttf|eot|mp4|webm|ogg)$).*)',
   ],
 }
