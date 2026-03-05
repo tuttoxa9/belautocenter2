@@ -83,8 +83,8 @@ export default function AdminCars() {
       // Сортировка по умолчанию: сначала новые (по дате создания)
       const sortedCars = [...carsData].sort((a, b) => {
         // В Firestore REST API дата приходит как строка ISO или объект
-        const dateA = a.createdAt ? new Date(typeof a.createdAt === 'string' ? a.createdAt : a.createdAt.seconds * 1000) : new Date(0)
-        const dateB = b.createdAt ? new Date(typeof b.createdAt === 'string' ? b.createdAt : b.createdAt.seconds * 1000) : new Date(0)
+        const dateA = a.createdAt ? new Date(typeof a.createdAt === 'string' ? a.createdAt : (a.createdAt.seconds ? a.createdAt.seconds * 1000 : a.createdAt)) : new Date(0)
+        const dateB = b.createdAt ? new Date(typeof b.createdAt === 'string' ? b.createdAt : (b.createdAt.seconds ? b.createdAt.seconds * 1000 : b.createdAt)) : new Date(0)
         return dateB.getTime() - dateA.getTime() // От новых к старым
       })
       setCars(sortedCars)
@@ -307,15 +307,15 @@ export default function AdminCars() {
     switch (sortOption) {
       case "createdAt_desc": // Новые вначале (по дате добавления)
         return sorted.sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt.seconds * 1000) : new Date(0)
-          const dateB = b.createdAt ? new Date(b.createdAt.seconds * 1000) : new Date(0)
-          return dateB - dateA
+          const dateA = a.createdAt ? new Date(typeof a.createdAt === 'string' ? a.createdAt : (a.createdAt.seconds ? a.createdAt.seconds * 1000 : a.createdAt)) : new Date(0)
+          const dateB = b.createdAt ? new Date(typeof b.createdAt === 'string' ? b.createdAt : (b.createdAt.seconds ? b.createdAt.seconds * 1000 : b.createdAt)) : new Date(0)
+          return dateB.getTime() - dateA.getTime()
         })
       case "createdAt_asc": // Старые вначале (по дате добавления)
         return sorted.sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt.seconds * 1000) : new Date(0)
-          const dateB = b.createdAt ? new Date(b.createdAt.seconds * 1000) : new Date(0)
-          return dateA - dateB
+          const dateA = a.createdAt ? new Date(typeof a.createdAt === 'string' ? a.createdAt : (a.createdAt.seconds ? a.createdAt.seconds * 1000 : a.createdAt)) : new Date(0)
+          const dateB = b.createdAt ? new Date(typeof b.createdAt === 'string' ? b.createdAt : (b.createdAt.seconds ? b.createdAt.seconds * 1000 : b.createdAt)) : new Date(0)
+          return dateA.getTime() - dateB.getTime()
         })
       case "price_asc": // По возрастанию цены
         return sorted.sort((a, b) => (a.price || 0) - (b.price || 0))
