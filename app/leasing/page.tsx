@@ -54,14 +54,12 @@ export default function LeasingPage() {
     carPrice: [50000],
     advance: [15000],
     leasingTerm: [36],
-    residualValue: [20],
   })
 
   const [manualInputs, setManualInputs] = useState({
     carPrice: '',
     advance: '',
     leasingTerm: '',
-    residualValue: '',
     selectedCompany: ''
   })
 
@@ -99,7 +97,6 @@ export default function LeasingPage() {
       carPrice: calculator.carPrice[0].toString(),
       advance: calculator.advance[0].toString(),
       leasingTerm: calculator.leasingTerm[0].toString(),
-      residualValue: calculator.residualValue[0].toString(),
       selectedCompany: ''
     })
   }, [])
@@ -126,7 +123,7 @@ export default function LeasingPage() {
   }
 
   const calculateMonthlyPayment = () => {
-    const principal = calculator.carPrice[0] - calculator.advance[0] - (calculator.carPrice[0] * calculator.residualValue[0] / 100)
+    const principal = calculator.carPrice[0] - calculator.advance[0]
     const monthlyPayment = principal / calculator.leasingTerm[0]
     return monthlyPayment
   }
@@ -209,10 +206,6 @@ export default function LeasingPage() {
       case 'leasingTerm':
         const clampedTerm = Math.max(12, Math.min(120, numValue))
         setCalculator({ ...calculator, leasingTerm: [clampedTerm] })
-        break
-      case 'residualValue':
-        const clampedResidual = Math.max(10, Math.min(50, numValue))
-        setCalculator({ ...calculator, residualValue: [clampedResidual] })
         break
     }
   }
@@ -309,9 +302,8 @@ export default function LeasingPage() {
   }
 
   const monthlyPayment = calculateMonthlyPayment()
-  const residualValue = (calculator.carPrice[0] * calculator.residualValue[0]) / 100
   const totalAmount = monthlyPayment * calculator.leasingTerm[0] + calculator.advance[0]
-  const leasingSum = calculator.carPrice[0] - calculator.advance[0] - residualValue
+  const leasingSum = calculator.carPrice[0] - calculator.advance[0]
 
 
 
@@ -527,32 +519,6 @@ export default function LeasingPage() {
                     placeholder="Месяцы"
                   />
                 </div>
-
-                {/* Residual Value - статичный */}
-                <div className="bg-slate-50 dark:bg-zinc-800/50 rounded-lg md:rounded-2xl p-2 md:p-6 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors">
-                  <div className="flex items-center justify-between mb-1 md:mb-4">
-                    <label className="text-xs md:text-sm font-semibold text-slate-900 dark:text-slate-100">Остаточная стоимость</label>
-                    <span className="text-xs md:text-lg font-bold text-slate-900 dark:text-slate-100">{calculator.residualValue[0]}%</span>
-                  </div>
-                  <Slider
-                    value={calculator.residualValue}
-                    onValueChange={(value) => {
-                      setCalculator({ ...calculator, residualValue: value })
-                      setManualInputs({ ...manualInputs, residualValue: value[0].toString() })
-                    }}
-                    max={50}
-                    min={10}
-                    step={5}
-                    className="mb-1 md:mb-4"
-                  />
-                  <Input
-                    type="number"
-                    value={manualInputs.residualValue}
-                    onChange={(e) => handleManualInputChange('residualValue', e.target.value)}
-                    className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-700 focus:border-slate-400 dark:focus:border-zinc-500 dark:text-slate-100 rounded text-xs md:text-sm h-7 md:h-auto"
-                    placeholder="Процент"
-                  />
-                </div>
                 </div>
 
                   {/* Company Selection - со скелетоном для опций из БД */}
@@ -605,7 +571,7 @@ export default function LeasingPage() {
                 {/* Results Card - статичный */}
                 <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg md:rounded-2xl p-3 md:p-6 text-white">
                   <h3 className="text-sm md:text-lg font-semibold mb-2 md:mb-4">Результат расчета</h3>
-                  <div className="grid grid-cols-2 gap-2 md:gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
                     <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
                       <div className="text-xs text-slate-300 mb-1">Сумма лизинга</div>
                       <div className="text-sm md:text-xl font-bold">{formatCurrency(leasingSum)}</div>
@@ -613,10 +579,6 @@ export default function LeasingPage() {
                     <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
                       <div className="text-xs text-slate-300 mb-1">Ежемесячный платеж</div>
                       <div className="text-sm md:text-xl font-bold text-green-400">{formatCurrency(monthlyPayment)}</div>
-                    </div>
-                    <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
-                      <div className="text-xs text-slate-300 mb-1">Остаточная стоимость</div>
-                      <div className="text-sm md:text-xl font-bold">{formatCurrency(residualValue)}</div>
                     </div>
                     <div className="bg-white/10 rounded-md md:rounded-xl p-2 md:p-4 backdrop-blur">
                       <div className="text-xs text-slate-300 mb-1">Общая сумма</div>
