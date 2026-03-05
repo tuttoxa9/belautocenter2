@@ -23,7 +23,7 @@ export default function AdminData() {
     })
 
     try {
-      const allCars = await firestoreApi.getCollection('cars')
+      const allCars = await firestoreApi.getCollection('cars', true, true)
       const soldCars = allCars.filter(car => car.isAvailable === false)
 
       if (soldCars.length === 0) {

@@ -22,7 +22,7 @@ export default function AdminLeads() {
 
   const loadLeads = async () => {
     try {
-      const data = await firestoreApi.getCollection("leads")
+      const data = await firestoreApi.getCollection("leads", true, true)
 
       const leadsData = data.map(doc => ({
         ...doc,

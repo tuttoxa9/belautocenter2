@@ -40,9 +40,9 @@ export default function AdminPages() {
   const loadPages = useCallback(async () => {
     try {
       const [aboutDoc, creditDoc, leasingDoc] = await Promise.all([
-        firestoreApi.getDocument("pages", "about"),
-        firestoreApi.getDocument("pages", "credit"),
-        firestoreApi.getDocument("pages", "leasing"),
+        firestoreApi.getDocument("pages", "about", true),
+        firestoreApi.getDocument("pages", "credit", true),
+        firestoreApi.getDocument("pages", "leasing", true),
       ])
 
       setPages({

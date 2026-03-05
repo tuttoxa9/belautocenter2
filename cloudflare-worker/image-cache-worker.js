@@ -273,41 +273,68 @@ async function proxyFirestore(request, env, ctx) {
   });
 
   if (request.method === 'GET') {
-    const cacheUrl = new URL(request.url);
-    const cacheKey = new Request(cacheUrl.toString(), request);
-    const cache = caches.default;
+    const authHeader = request.headers.get("Authorization");
+    const isAuthorizedRequest = authHeader && authHeader.startsWith("Bearer ");
 
-    let response = await cache.match(cacheKey);
-
-    if (!response) {
-      console.log(`Cache miss for ${cacheUrl.pathname}`);
+    if (isAuthorizedRequest) {
+      // Прямой запрос без кэша для админки (когда есть токен)
+      console.log(`[FIRESTORE PROXY] Direct fetch (Bypass Cache) for ${url.pathname}`);
       const originResponse = await fetch(modifiedRequest);
+      const responseHeaders = new Headers(originResponse.headers);
+      responseHeaders.set('Access-Control-Allow-Origin', '*');
+      responseHeaders.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
 
-      if (originResponse.ok) {
-        const data = await originResponse.json();
-        const flattenedData = flattenFirestoreResponse(data);
-
-        response = json(flattenedData, {
-          headers: {
-            'Cache-Control': `public, s-maxage=${FIRESTORE_CACHE_TTL_SECONDS}, stale-while-revalidate=30`,
-          }
-        });
-
-        ctx.waitUntil(cache.put(cacheKey, response.clone()));
-      } else {
-        return originResponse;
+      if (originResponse.ok && originResponse.headers.get('content-type')?.includes('application/json')) {
+          const data = await originResponse.json();
+          return new Response(JSON.stringify(flattenFirestoreResponse(data)), {
+              status: originResponse.status,
+              statusText: originResponse.statusText,
+              headers: responseHeaders
+          });
       }
+      return new Response(originResponse.body, {
+          status: originResponse.status,
+          statusText: originResponse.statusText,
+          headers: responseHeaders
+      });
     } else {
-      console.log(`Cache hit for ${cacheUrl.pathname}`);
-    }
+      // Использовать кэш для публичных запросов
+      const cacheUrl = new URL(request.url);
+      const cacheKey = new Request(cacheUrl.toString(), request);
+      const cache = caches.default;
 
-    const responseHeaders = new Headers(response.headers);
-    responseHeaders.set('Access-Control-Allow-Origin', '*');
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: responseHeaders
-    });
+      let response = await cache.match(cacheKey);
+
+      if (!response) {
+        console.log(`Cache miss for ${cacheUrl.pathname}`);
+        const originResponse = await fetch(modifiedRequest);
+
+        if (originResponse.ok) {
+          const data = await originResponse.json();
+          const flattenedData = flattenFirestoreResponse(data);
+
+          response = json(flattenedData, {
+            headers: {
+              'Cache-Control': `public, s-maxage=${FIRESTORE_CACHE_TTL_SECONDS}, stale-while-revalidate=30`,
+            }
+          });
+
+          ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        } else {
+          return originResponse;
+        }
+      } else {
+        console.log(`Cache hit for ${cacheUrl.pathname}`);
+      }
+
+      const responseHeaders = new Headers(response.headers);
+      responseHeaders.set('Access-Control-Allow-Origin', '*');
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: responseHeaders
+      });
+    }
   }
 
   // Для PATCH/POST/DELETE (мутации) - проксируем напрямую

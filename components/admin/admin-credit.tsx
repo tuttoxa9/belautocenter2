@@ -70,7 +70,7 @@ export default function AdminCredit() {
 
   const loadCreditData = async () => {
     try {
-      const creditDoc = await firestoreApi.getDocument("pages", "credit")
+      const creditDoc = await firestoreApi.getDocument("pages", "credit", true)
       if (creditDoc) {
         setCreditData(creditDoc as any)
       }

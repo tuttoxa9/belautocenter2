@@ -60,9 +60,9 @@ export default function AdminSettings() {
   const loadSettings = useCallback(async () => {
     try {
       const [mainDoc, homepageDoc, storiesDoc] = await Promise.all([
-        firestoreApi.getDocument("settings", "main"),
-        firestoreApi.getDocument("settings", "homepage"),
-        firestoreApi.getDocument("settings", "stories"),
+        firestoreApi.getDocument("settings", "main", true),
+        firestoreApi.getDocument("settings", "homepage", true),
+        firestoreApi.getDocument("settings", "stories", true),
       ])
 
       setSettings((prevSettings) => ({
