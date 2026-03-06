@@ -481,7 +481,57 @@ export default function AdminCars() {
               {/* Раздел: Основная информация */}
               {activeTab === "basic" && (
                 <div className="space-y-10">
+
+                  {/* Статусы автомобиля (Тогглы) */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div
+                      onClick={() => setCarForm({ ...carForm, isAvailable: !carForm.isAvailable })}
+                      className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 ${carForm.isAvailable ? 'bg-green-500/10 border-green-500/30 dark:bg-green-500/5 dark:border-green-500/20' : 'bg-card border-border hover:border-foreground/20'}`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-base">В наличии</span>
+                        <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${carForm.isAvailable ? 'bg-green-500' : 'bg-muted'}`}>
+                          <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${carForm.isAvailable ? 'translate-x-4' : 'translate-x-0'}`} />
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-snug">
+                        {carForm.isAvailable ? 'Автомобиль отображается в каталоге как доступный.' : 'Автомобиль скрыт или отмечен как проданный.'}
+                      </p>
+                    </div>
+
+                    <div
+                      onClick={() => setCarForm({ ...carForm, showOnHomepage: !carForm.showOnHomepage })}
+                      className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 ${carForm.showOnHomepage ? 'bg-blue-500/10 border-blue-500/30 dark:bg-blue-500/5 dark:border-blue-500/20' : 'bg-card border-border hover:border-foreground/20'}`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-base">На главной</span>
+                        <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${carForm.showOnHomepage ? 'bg-blue-500' : 'bg-muted'}`}>
+                          <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${carForm.showOnHomepage ? 'translate-x-4' : 'translate-x-0'}`} />
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-snug">
+                        {carForm.showOnHomepage ? 'Отображается в карусели на главной странице.' : 'Не отображается на главной странице.'}
+                      </p>
+                    </div>
+
+                    <div
+                      onClick={() => setCarForm({ ...carForm, fromEurope: !carForm.fromEurope })}
+                      className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 ${carForm.fromEurope ? 'bg-purple-500/10 border-purple-500/30 dark:bg-purple-500/5 dark:border-purple-500/20' : 'bg-card border-border hover:border-foreground/20'}`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-base">Из Европы / Без пробега</span>
+                        <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${carForm.fromEurope ? 'bg-purple-500' : 'bg-muted'}`}>
+                          <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${carForm.fromEurope ? 'translate-x-4' : 'translate-x-0'}`} />
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-snug">
+                        {carForm.fromEurope ? 'Отмечен специальным бейджем "Из Европы".' : 'Обычный автомобиль, без специального бейджа.'}
+                      </p>
+                    </div>
+                  </div>
+
                   {/* Базовая информация */}
+
                   <div className="space-y-6">
                     <h3 className="text-lg font-medium tracking-tight border-b pb-2">Базовые параметры</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -541,9 +591,12 @@ export default function AdminCars() {
                   </div>
 
                   {/* Технические характеристики */}
-                  <div className="space-y-6 pt-6 mt-6">
-                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Технические данные</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-sm transition-all hover:shadow-md mt-8">
+                    <div className="mb-6 border-b border-border/50 pb-4">
+                      <h3 className="text-xl font-semibold tracking-tight">Технические данные</h3>
+                      <p className="text-sm text-muted-foreground mt-1">Параметры двигателя и трансмиссии</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
                       <div className="space-y-2">
                         <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Объем двигателя (л)</Label>
                   <Input
@@ -620,9 +673,12 @@ export default function AdminCars() {
                   </div>
 
                   {/* Внешний вид */}
-                  <div className="space-y-6 pt-6 mt-6">
-                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Внешний вид</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-sm transition-all hover:shadow-md mt-8">
+                    <div className="mb-6 border-b border-border/50 pb-4">
+                      <h3 className="text-xl font-semibold tracking-tight">Внешний вид</h3>
+                      <p className="text-sm text-muted-foreground mt-1">Кузов и цветовые решения</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
                       <div className="space-y-2">
                         <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Тип кузова</Label>
                   <Input
@@ -644,9 +700,12 @@ export default function AdminCars() {
                   </div>
 
                   {/* Медиа ссылки */}
-                  <div className="space-y-6 pt-6 mt-6">
-                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Медиа ссылки</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-sm transition-all hover:shadow-md mt-8">
+                    <div className="mb-6 border-b border-border/50 pb-4">
+                      <h3 className="text-xl font-semibold tracking-tight">Внешние видеообзоры</h3>
+                      <p className="text-sm text-muted-foreground mt-1">Ссылки на ролики с автомобилем в TikTok и YouTube (опционально)</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
                       <div className="space-y-2">
                         <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">TikTok</Label>
                   <Input
@@ -668,8 +727,11 @@ export default function AdminCars() {
                   </div>
 
                   {/* Описание */}
-                  <div className="space-y-6 pt-6 mt-6">
-                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Описание</h3>
+                  <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-sm transition-all hover:shadow-md mt-8">
+                    <div className="mb-6 border-b border-border/50 pb-4">
+                      <h3 className="text-xl font-semibold tracking-tight">Описание продавца</h3>
+                      <p className="text-sm text-muted-foreground mt-1">Развернутый текст с подробным описанием состояния, особенностей и преимуществ</p>
+                    </div>
                     <div className="mt-6 space-y-4">
                       <div className="space-y-2">
                         <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Детальное описание</Label>
@@ -705,49 +767,36 @@ export default function AdminCars() {
                     </div>
                   </div>
 
-                  {/* Статус и опции */}
-                  <div className="space-y-6 pt-6 mt-6">
-                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Статус и опции</h3>
-                    <div className="flex flex-col sm:flex-row gap-6 mt-6 p-6 bg-muted/20 rounded-xl border border-border/50">
-                      <div className="flex items-center space-x-3 cursor-pointer hover:bg-muted/40 p-3 rounded-lg transition-colors flex-1">
-                        <input
-                          className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
-                        type="checkbox"
-                        id="isAvailable"
-                        checked={carForm.isAvailable}
-                        onChange={(e) => setCarForm({ ...carForm, isAvailable: e.target.checked })}
-                      />
-                      <Label htmlFor="isAvailable">В наличии</Label>
-                    </div>
 
-                      <div className="flex items-center space-x-3 cursor-pointer hover:bg-muted/40 p-3 rounded-lg transition-colors flex-1">
-                        <input
-                          className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
-                          type="checkbox"
-                          id="showOnHomepage"
-                        checked={carForm.showOnHomepage}
-                        onChange={(e) => setCarForm({ ...carForm, showOnHomepage: e.target.checked })}
-                      />
-                      <Label htmlFor="showOnHomepage">Показывать на главной странице</Label>
-                    </div>
-
-                      <div className="flex items-center space-x-3 cursor-pointer hover:bg-muted/40 p-3 rounded-lg transition-colors flex-1">
-                        <input
-                          className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
-                          type="checkbox"
-                          id="fromEurope"
-                        checked={carForm.fromEurope}
-                        onChange={(e) => setCarForm({ ...carForm, fromEurope: e.target.checked })}
-                      />
-                      <Label htmlFor="fromEurope">Без пробега по РБ</Label>
-                    </div>
-                  </div>
 
                   {/* Характеристики */}
-                  <div className="space-y-6 pt-6 mt-6">
-                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Характеристики</h3>
+                  <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-sm transition-all hover:shadow-md mt-8">
+                    <div className="mb-6 border-b border-border/50 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-semibold tracking-tight">Детальные характеристики</h3>
+                        <p className="text-sm text-muted-foreground mt-1">Ключ-значение для вывода в таблицу параметров (например: Привод - Полный)</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="default"
+                        size="sm"
+                        className="rounded-full whitespace-nowrap"
+                        onClick={() => {
+                          setCarForm({
+                            ...carForm,
+                            specifications: {
+                              ...carForm.specifications,
+                              "": ""
+                            }
+                          })
+                        }}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Добавить поле
+                      </Button>
+                    </div>
                     <div className="space-y-4 mt-6">
-                    <div className="space-y-2">
+                    <div className="space-y-3 bg-muted/20 p-4 rounded-xl border border-border/40">
                       {Object.entries(carForm.specifications).map(([key, value], index) => (
                         <div key={index} className="flex flex-col sm:flex-row gap-2">
                           <Input
@@ -790,35 +839,35 @@ export default function AdminCars() {
                           </Button>
                         </div>
                       ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-xs w-full sm:w-auto"
-                        onClick={() => {
-                          setCarForm({
-                            ...carForm,
-                            specifications: {
-                              ...carForm.specifications,
-                              "": ""
-                            }
-                          })
-                        }}
-                      >
-                        <Plus className="h-3 w-3 mr-2" />
-                        Добавить характеристику
-                      </Button>
-                    </div>
-                  </div>
-
+                      {/* Кнопка добавлена в заголовок секции */}
                     </div>
                   </div>
 
                   {/* Комплектация */}
-                  <div className="space-y-6 pt-6 mt-6">
-                    <h3 className="text-lg font-medium tracking-tight border-b pb-2">Комплектация</h3>
-                    <div className="space-y-4 mt-6 bg-muted/10 p-6 rounded-xl border border-border/30">
-                    <div className="space-y-2">
+                  <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-sm transition-all hover:shadow-md mt-8">
+                    <div className="mb-6 border-b border-border/50 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-semibold tracking-tight">Особенности комплектации</h3>
+                        <p className="text-sm text-muted-foreground mt-1">Опции, установленные в автомобиле (например: Климат-контроль, Панорама)</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="default"
+                        size="sm"
+                        className="rounded-full whitespace-nowrap"
+                        onClick={() => {
+                          setCarForm({
+                            ...carForm,
+                            features: [...carForm.features, ""]
+                          })
+                        }}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Добавить опцию
+                      </Button>
+                    </div>
+                    <div className="space-y-4 mt-6">
+                    <div className="space-y-3 bg-muted/20 p-4 rounded-xl border border-border/40">
                       {carForm.features.map((feature, index) => (
                         <div key={index} className="flex gap-2">
                           <Input
@@ -844,24 +893,11 @@ export default function AdminCars() {
                           </Button>
                         </div>
                       ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-xs w-full sm:w-auto"
-                        onClick={() => {
-                          setCarForm({
-                            ...carForm,
-                            features: [...carForm.features, ""]
-                          })
-                        }}
-                      >
-                        <Plus className="h-3 w-3 mr-2" />
-                        Добавить особенность
-                      </Button>
+                      {/* Кнопка добавлена в заголовок секции */}
                     </div>
                     </div>
                   </div>
+                </div>
                 </div>
               )}
 
