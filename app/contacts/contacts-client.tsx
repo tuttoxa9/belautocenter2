@@ -7,9 +7,7 @@ import {
   MapPin,
   Phone,
   Mail,
-  MessageCircle,
   Clock,
-  Star,
   CheckCircle,
   Send,
   ArrowRight,
@@ -80,7 +78,6 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
     }
 
     await submitButtonState.execute(async () => {
-      // Отправка через API
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {
@@ -98,22 +95,21 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
         throw new Error('Ошибка отправки сообщения')
       }
 
-      // Очистка формы после успешной отправки
       setContactForm({ name: '', phone: '', message: '' })
       showSuccess("Ваше сообщение успешно отправлено! Мы ответим вам в ближайшее время.")
     })
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-black">
-      {/* Header - статичный, не зависит от Firestore */}
-      <div className="bg-white dark:bg-gray-900/50 border-b border-slate-200 dark:border-gray-800">
-        <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-4 lg:py-6">
-          {/* Breadcrumbs - статичные */}
-          <nav className="mb-3 lg:mb-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black pb-12">
+      {/* Header */}
+      <div className="bg-white dark:bg-[#0a0a0a] border-b border-slate-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+          {/* Breadcrumbs */}
+          <nav className="mb-6">
             <ol className="flex items-center space-x-2 text-sm text-slate-500 dark:text-gray-400">
               <li>
-                <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" prefetch={true}>
+                <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400" prefetch={true}>
                   Главная
                 </Link>
               </li>
@@ -122,216 +118,149 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
             </ol>
           </nav>
 
-          {/* Title - мобильная версия с фиксированными размерами */}
-          <div className="lg:hidden flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 dark:from-blue-500 dark:via-purple-500 dark:to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10">
-              <Phone className="h-6 w-6 text-white drop-shadow-sm" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="h-5 mb-1">
-                <h1 className="text-xl font-bold text-slate-900 dark:text-white truncate leading-5">{contactsData.title || 'Контакты'}</h1>
-              </div>
-              <div className="flex items-center space-x-2 text-xs text-slate-600 dark:text-gray-400 h-3">
-                <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-400 dark:to-teal-500 rounded-full shadow-sm"></div>
-                <span>Свяжитесь с нами</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Title - с фиксированными размерами */}
-          <div className="hidden lg:flex items-start justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 dark:border-slate-600/50">
-                <Phone className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <div className="h-8 mb-1">
-                  <h1 className="text-3xl font-bold text-slate-900 dark:text-white leading-8">{contactsData.title || 'Контакты'}</h1>
-                </div>
-                <div className="h-5">
-                  <p className="text-slate-600 dark:text-gray-400 leading-5">{contactsData.subtitle || 'Свяжитесь с нами любым удобным способом'}</p>
-                </div>
-              </div>
-            </div>
+          {/* Title */}
+          <div>
+            <h1 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+              {contactsData.title || 'Контакты'}
+            </h1>
+            <p className="text-lg md:text-xl text-slate-600 dark:text-gray-400 max-w-2xl">
+              {contactsData.subtitle || 'Свяжитесь с нами любым удобным способом'}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="max-w-4xl lg:max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        {/* Contact Cards Grid - зафиксированные размеры карточек */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
 
-          {/* Phone Card - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[140px] md:h-[160px]">
-            <CardContent className="p-4 md:p-6 h-full flex flex-col">
-              <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-500 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10 flex-shrink-0">
-                  <Phone className="h-5 w-5 md:h-6 md:w-6 text-white drop-shadow-sm" />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Телефон</h3>
-                  <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Звоните в любое время</p>
-                </div>
+        {/* Contact Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Phone Card */}
+          <Card className="border border-slate-200 dark:border-gray-800 shadow-sm bg-white dark:bg-[#0a0a0a] h-full rounded-2xl">
+            <CardContent className="p-8 flex flex-col items-center text-center h-full">
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6">
+                <Phone className="h-7 w-7 text-blue-600 dark:text-blue-400" />
               </div>
-              <div className="flex-1 flex flex-col justify-between">
-                <div className="flex-1 mb-2">
-                  <div className="space-y-1">
-                    {contactsData.phone && (
-                      <a
-                        href={`tel:${contactsData.phone.replace(/\s/g, '')}`}
-                        className="text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
-                      >
-                        {contactsData.phone}
-                      </a>
-                    )}
-                    {contactsData.phone2 && (
-                      <a
-                        href={`tel:${contactsData.phone2.replace(/\s/g, '')}`}
-                        className="text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white font-medium text-base md:text-lg block transition-colors leading-5 md:leading-6"
-                      >
-                        {contactsData.phone2}
-                      </a>
-                    )}
+              <h3 className="font-semibold text-slate-900 dark:text-white text-xl mb-4">Телефон</h3>
+              <div className="flex-1 space-y-3 mb-6">
+                {contactsData.phone && (
+                  <a
+                    href={`tel:${contactsData.phone.replace(/\s/g, '')}`}
+                    className="block text-slate-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium"
+                  >
+                    {contactsData.phone}
+                  </a>
+                )}
+                {contactsData.phone2 && (
+                  <a
+                    href={`tel:${contactsData.phone2.replace(/\s/g, '')}`}
+                    className="block text-slate-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 text-lg font-medium"
+                  >
+                    {contactsData.phone2}
+                  </a>
+                )}
+              </div>
+              {contactsData.phoneNote && (
+                <p className="text-slate-500 dark:text-gray-500 text-sm mt-auto">{contactsData.phoneNote}</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Email Card */}
+          <Card className="border border-slate-200 dark:border-gray-800 shadow-sm bg-white dark:bg-[#0a0a0a] h-full rounded-2xl">
+            <CardContent className="p-8 flex flex-col items-center text-center h-full">
+              <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center justify-center mb-6">
+                <Mail className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <h3 className="font-semibold text-slate-900 dark:text-white text-xl mb-4">Email</h3>
+              <div className="flex-1 mb-6 flex items-center justify-center">
+                {contactsData.email && (
+                  <a
+                    href={`mailto:${contactsData.email}`}
+                    className="text-slate-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 text-lg font-medium break-all"
+                  >
+                    {contactsData.email}
+                  </a>
+                )}
+              </div>
+              {contactsData.emailNote && (
+                <p className="text-slate-500 dark:text-gray-500 text-sm mt-auto">{contactsData.emailNote}</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Working Hours Card */}
+          <Card className="border border-slate-200 dark:border-gray-800 shadow-sm bg-white dark:bg-[#0a0a0a] h-full rounded-2xl">
+            <CardContent className="p-8 flex flex-col items-center text-center h-full">
+              <div className="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center mb-6">
+                <Clock className="h-7 w-7 text-amber-600 dark:text-amber-400" />
+              </div>
+              <h3 className="font-semibold text-slate-900 dark:text-white text-xl mb-4">Время работы</h3>
+              <div className="flex-1 w-full max-w-[220px] mb-6 space-y-4">
+                {contactsData.workingHours?.weekdays && (
+                  <div className="flex justify-between items-center border-b border-slate-100 dark:border-gray-800 pb-3">
+                    <span className="text-slate-500 dark:text-gray-400">Пн-Пт</span>
+                    <span className="text-slate-900 dark:text-white font-medium">{contactsData.workingHours.weekdays}</span>
                   </div>
-                </div>
-                <div className="h-3 md:h-4">
-                  {contactsData.phoneNote ? (
-                    <p className="text-slate-500 dark:text-gray-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.phoneNote}</p>
-                  ) : null}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Email Card - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[140px] md:h-[160px]">
-            <CardContent className="p-4 md:p-6 h-full flex flex-col">
-              <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 dark:from-blue-500 dark:via-purple-500 dark:to-indigo-600 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10 flex-shrink-0">
-                  <Mail className="h-5 w-5 md:h-6 md:w-6 text-white drop-shadow-sm" />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Email</h3>
-                  <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Напишите нам</p>
-                </div>
-              </div>
-              <div className="flex-1 flex flex-col justify-between">
-                <div className="h-5 md:h-6 mb-2">
-                  {contactsData.email ? (
-                    <a
-                      href={`mailto:${contactsData.email}`}
-                      className="text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white font-medium text-sm md:text-lg block transition-colors break-all leading-5 md:leading-6"
-                    >
-                      {contactsData.email}
-                    </a>
-                  ) : null}
-                </div>
-                <div className="h-3 md:h-4">
-                  {contactsData.emailNote ? (
-                    <p className="text-slate-500 dark:text-gray-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.emailNote}</p>
-                  ) : null}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Working Hours Card - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 md:col-span-2 lg:col-span-1 h-[140px] md:h-[160px]">
-            <CardContent className="p-4 md:p-6 h-full flex flex-col">
-              <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 dark:from-amber-400 dark:via-orange-400 dark:to-red-400 rounded-xl flex items-center justify-center shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 dark:border-white/10 flex-shrink-0">
-                  <Clock className="h-5 w-5 md:h-6 md:w-6 text-white drop-shadow-sm" />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Время работы</h3>
-                  <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Режим работы</p>
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="space-y-1 md:space-y-2 h-[50px] md:h-[60px]">
-                  {contactsData.workingHours ? (
-                    <>
-                      {contactsData.workingHours.weekdays && (
-                        <div className="flex justify-between text-xs md:text-sm h-3 md:h-4">
-                          <span className="text-slate-700 dark:text-gray-300 font-medium">Пн-Пт:</span>
-                          <span className="text-slate-600 dark:text-gray-400 text-right">{contactsData.workingHours.weekdays}</span>
-                        </div>
-                      )}
-                      {contactsData.workingHours.weekends && (
-                        <div className="flex justify-between text-xs md:text-sm h-3 md:h-4 mt-1 md:mt-2">
-                          <span className="text-slate-700 dark:text-gray-300 font-medium">Сб-Вс:</span>
-                          <span className="text-slate-600 dark:text-gray-400 text-right">{contactsData.workingHours.weekends}</span>
-                        </div>
-                      )}
-                    </>
-                  ) : null}
-                </div>
+                )}
+                {contactsData.workingHours?.weekends && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500 dark:text-gray-400">Сб-Вс</span>
+                    <span className="text-slate-900 dark:text-white font-medium">{contactsData.workingHours.weekends}</span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Map and Contact Form Grid - фиксированные размеры */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        {/* Map and Form Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
 
-          {/* Map Section - фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[400px] md:h-[480px] lg:h-[520px]">
-            <CardContent className="p-0 h-full flex flex-col">
-              <div className="w-full h-48 md:h-64 lg:h-80 flex-shrink-0">
-                {contactsData.address ? (
-                  <div className="w-full h-full overflow-hidden rounded-t-lg">
-                    <YandexMap
-                      address={contactsData.address}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 rounded-t-lg flex items-center justify-center">
-                    <MapPin className="h-12 w-12 text-slate-400 dark:text-slate-500" />
-                  </div>
-                )}
-              </div>
-              <div className="p-4 md:p-6 flex-1 flex flex-col">
-                <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 dark:border-slate-600/50 flex-shrink-0">
-                    <MapPin className="h-4 w-4 md:h-5 md:w-5 text-white" />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base">Наш адрес</h3>
-                    <p className="text-slate-600 dark:text-gray-400 text-xs md:text-sm truncate">Приезжайте к нам</p>
-                  </div>
+          {/* Map */}
+          <Card className="border border-slate-200 dark:border-gray-800 shadow-sm bg-white dark:bg-[#0a0a0a] rounded-2xl overflow-hidden flex flex-col h-full min-h-[500px]">
+            <div className="flex-1 relative w-full h-full min-h-[350px]">
+              {contactsData.address ? (
+                <YandexMap
+                  address={contactsData.address}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 w-full h-full bg-slate-100 dark:bg-gray-900 flex items-center justify-center">
+                  <MapPin className="h-12 w-12 text-slate-400 dark:text-gray-600" />
                 </div>
-                <div className="flex-1 flex flex-col justify-between">
-                  <div className="h-4 md:h-5 mb-2">
-                    {contactsData.address ? (
-                      <p className="text-slate-700 dark:text-gray-300 font-medium text-sm md:text-base leading-4 md:leading-5">{contactsData.address}</p>
-                    ) : null}
-                  </div>
-                  <div className="h-3 md:h-4">
-                    {contactsData.addressNote ? (
-                      <p className="text-slate-500 dark:text-gray-500 text-xs md:text-sm leading-3 md:leading-4">{contactsData.addressNote}</p>
-                    ) : null}
-                  </div>
+              )}
+            </div>
+            <div className="p-6 md:p-8 bg-white dark:bg-[#0a0a0a] border-t border-slate-100 dark:border-gray-800">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-slate-100 dark:bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+                  <MapPin className="h-6 w-6 text-slate-600 dark:text-gray-300" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-1">Наш адрес</h3>
+                  {contactsData.address && (
+                    <p className="text-slate-700 dark:text-gray-300 text-base mb-1">{contactsData.address}</p>
+                  )}
+                  {contactsData.addressNote && (
+                    <p className="text-slate-500 dark:text-gray-500 text-sm">{contactsData.addressNote}</p>
+                  )}
                 </div>
               </div>
-            </CardContent>
+            </div>
           </Card>
 
-          {/* Contact Form - статичная форма, фиксированная высота */}
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-slate-50 dark:from-gray-800/70 dark:to-gray-900/70 h-[400px] md:h-[480px] lg:h-[520px]">
-            <CardHeader className="pb-3 md:pb-4 px-4 md:px-6 pt-4 md:pt-6 flex-shrink-0">
-              <CardTitle className="text-lg md:text-xl font-bold text-slate-900 dark:text-white flex items-center">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200 border border-slate-700/50 dark:border-slate-600/50 mr-2 md:mr-3 flex-shrink-0">
-                  <MessageCircle className="h-4 w-4 md:h-5 md:w-5 text-white" />
-                </div>
-                Написать нам
-              </CardTitle>
+          {/* Form */}
+          <Card className="border border-slate-200 dark:border-gray-800 shadow-sm bg-white dark:bg-[#0a0a0a] rounded-2xl flex flex-col h-full">
+            <CardHeader className="p-6 md:p-8 pb-4">
+              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">Написать нам</CardTitle>
+              <p className="text-slate-500 dark:text-gray-400 mt-2 text-sm md:text-base">
+                Оставьте свои контактные данные, и наш менеджер свяжется с вами для консультации.
+              </p>
             </CardHeader>
-            <CardContent className="px-4 md:px-6 pb-4 md:pb-6 flex-1 flex flex-col">
-              <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 flex-1 flex flex-col">
+            <CardContent className="p-6 md:p-8 pt-0 flex-1 flex flex-col">
+              <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col">
                 <div>
-                  <Label htmlFor="name" className="text-slate-700 dark:text-gray-300 font-medium text-xs md:text-sm">
+                  <Label htmlFor="name" className="text-slate-700 dark:text-gray-300 font-medium mb-1.5 block">
                     Ваше имя
                   </Label>
                   <Input
@@ -339,32 +268,32 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
                     value={contactForm.name}
                     onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                     placeholder="Введите ваше имя"
-                    className="mt-1 border-slate-200 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 text-sm"
+                    className="h-12 border-slate-200 dark:border-gray-800 dark:bg-black dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0"
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="phone" className="text-slate-700 dark:text-gray-300 font-medium text-xs md:text-sm">
+                  <Label htmlFor="phone" className="text-slate-700 dark:text-gray-300 font-medium mb-1.5 block">
                     Номер телефона
                   </Label>
-                  <div className="relative mt-1">
+                  <div className="relative">
                     <Input
                       id="phone"
                       value={contactForm.phone}
                       onChange={(e) => setContactForm({ ...contactForm, phone: formatPhoneNumber(e.target.value) })}
                       placeholder="+375XXXXXXXXX"
-                      className="border-slate-200 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 pr-10 text-sm"
+                      className="h-12 border-slate-200 dark:border-gray-800 dark:bg-black dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 pr-10"
                       required
                     />
                     {isPhoneValid(contactForm.phone) && (
-                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-green-500 dark:text-green-400" />
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500 dark:text-green-400" />
                     )}
                   </div>
                 </div>
 
                 <div className="flex-1 flex flex-col">
-                  <Label htmlFor="message" className="text-slate-700 dark:text-gray-300 font-medium text-xs md:text-sm">
+                  <Label htmlFor="message" className="text-slate-700 dark:text-gray-300 font-medium mb-1.5 block">
                     Ваше сообщение
                   </Label>
                   <Textarea
@@ -372,23 +301,22 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
                     value={contactForm.message}
                     onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                     placeholder="Расскажите, чем мы можем помочь..."
-                    rows={3}
-                    className="mt-1 border-slate-200 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 resize-none text-sm flex-1"
+                    className="flex-1 min-h-[120px] border-slate-200 dark:border-gray-800 dark:bg-black dark:text-white focus:border-slate-400 dark:focus:border-gray-600 focus:ring-0 resize-none"
                     required
                   />
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-4">
                   <StatusButton
                     type="submit"
                     size="lg"
                     state={submitButtonState.state}
-                    className="w-full bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-900 hover:to-black dark:hover:from-slate-600 dark:hover:to-slate-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm"
+                    className="w-full h-12 bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-black font-semibold rounded-xl text-base"
                     loadingText="Отправляем..."
                     successText="Отправлено!"
                     errorText="Ошибка отправки"
                   >
-                    <Send className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+                    <Send className="h-4 w-4 mr-2" />
                     Отправить сообщение
                   </StatusButton>
                 </div>
@@ -396,130 +324,95 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      {/* Social Media - фиксированные размеры карточек соцсетей */}
-      {(contactsData.socialMedia && Object.keys(contactsData.socialMedia).length > 0) ? (
-        <section className="relative pt-12 pb-32 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-t-[40px] -mb-20 overflow-hidden mt-8">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-500/80 to-cyan-400/70"></div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center space-x-3 mb-8">
-                  <div className="w-11 h-11 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-sm border border-white/30">
-                    <Star className="h-5 w-5 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-light text-white tracking-tight">
-                    Мы в социальных сетях
-                  </h3>
-                </div>
-
-                <div className="flex flex-col space-y-4 max-w-2xl mx-auto">
-                  {contactsData.socialMedia?.instagram && (
-                    <a
-                      href={contactsData.socialMedia.instagram.url || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-pink-200 dark:hover:border-pink-800 h-[88px]"
-                    >
-                      <div className="w-16 h-16 bg-gradient-to-br from-pink-400 via-pink-500 to-orange-400 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-pink-300/50 transition-all duration-500 flex-shrink-0">
-                        <Instagram className="h-8 w-8 text-white" />
-                      </div>
-                      <div className="ml-5 flex-1 min-w-0">
-                        <h4 className="font-semibold text-slate-900 dark:text-white text-lg group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors truncate">Instagram</h4>
-                        <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.instagram.name}</p>
-                        <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Фото и видео наших автомобилей</p>
-                      </div>
-                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                        <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </a>
-                  )}
-
-                  {contactsData.socialMedia?.telegram && (
-                    <a
-                      href={contactsData.socialMedia.telegram.url || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-blue-200 h-[88px]"
-                    >
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-blue-300/50 transition-all duration-500 flex-shrink-0">
-                        <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.584 7.44c-.12.528-.432.66-.876.412l-2.424-1.788-1.164 1.12c-.132.132-.24.24-.492.24l.168-2.388 4.416-3.984c.192-.168-.036-.264-.3-.096l-5.46 3.432-2.352-.744c-.516-.156-.528-.516.108-.768l9.192-3.54c.432-.156.804.108.672.672z"/>
-                        </svg>
-                      </div>
-                      <div className="ml-5 flex-1 min-w-0">
-                        <h4 className="font-semibold text-slate-900 dark:text-white text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">Telegram</h4>
-                        <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.telegram.name}</p>
-                        <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Быстрые консультации и уведомления</p>
-                      </div>
-                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                        <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </a>
-                  )}
-
-                  {contactsData.socialMedia?.avby && (
-                    <a
-                      href={contactsData.socialMedia.avby.url || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-emerald-200 h-[88px]"
-                    >
-                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-emerald-300/50 transition-all duration-500 flex-shrink-0">
-                        <Image
-                          src="/av.png"
-                          alt="av.by"
-                          width={32}
-                          height={24}
-                          className="object-contain brightness-0 invert"
-                        />
-                      </div>
-                      <div className="ml-5 flex-1 min-w-0">
-                        <h4 className="font-semibold text-slate-900 text-lg group-hover:text-emerald-600 transition-colors truncate">av.by</h4>
-                        <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.avby.name}</p>
-                        <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Наш официальный профиль на av.by</p>
-                      </div>
-                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                        <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </a>
-                  )}
-
-                  {contactsData.socialMedia?.tiktok && (
-                    <a
-                      href={contactsData.socialMedia.tiktok.url || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-5 border border-white/40 dark:border-gray-700/40 hover:bg-white dark:hover:bg-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 hover:border-gray-300 h-[88px]"
-                    >
-                      <div className="w-16 h-16 bg-gradient-to-br from-gray-700 via-gray-800 to-black rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-gray-400/50 transition-all duration-500 flex-shrink-0">
-                        <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
-                        </svg>
-                      </div>
-                      <div className="ml-5 flex-1 min-w-0">
-                        <h4 className="font-semibold text-slate-900 text-lg group-hover:text-gray-700 transition-colors truncate">TikTok</h4>
-                        <p className="text-slate-600 dark:text-gray-300 text-sm truncate">{contactsData.socialMedia.tiktok.name}</p>
-                        <p className="text-slate-500 dark:text-gray-400 text-xs truncate">Короткие видео и обзоры авто</p>
-                      </div>
-                      <div className="ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                        <svg className="w-5 h-5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </a>
-                  )}
-                </div>
-              </div>
+        {/* Social Media Section */}
+        {(contactsData.socialMedia && Object.keys(contactsData.socialMedia).length > 0) ? (
+          <div className="pt-10 border-t border-slate-200 dark:border-gray-800">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">Мы в социальных сетях</h2>
+              <p className="text-slate-500 dark:text-gray-400 max-w-2xl mx-auto">
+                Подписывайтесь на нас, чтобы следить за новыми поступлениями, акциями и обзорами автомобилей.
+              </p>
             </div>
-        </section>
-      ) : null}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {contactsData.socialMedia.instagram && (
+                <a
+                  href={contactsData.socialMedia.instagram.url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center p-8 bg-white dark:bg-[#0a0a0a] rounded-2xl border border-slate-200 dark:border-gray-800 text-center hover:border-pink-300 dark:hover:border-pink-800/50 group"
+                >
+                  <div className="w-16 h-16 bg-pink-50 dark:bg-pink-900/10 rounded-2xl flex items-center justify-center mb-5 text-pink-500 dark:text-pink-400 group-hover:bg-pink-100 dark:group-hover:bg-pink-900/20">
+                    <Instagram className="h-8 w-8" />
+                  </div>
+                  <h4 className="font-semibold text-slate-900 dark:text-white text-xl mb-2">Instagram</h4>
+                  <p className="text-slate-700 dark:text-gray-300 font-medium mb-1">{contactsData.socialMedia.instagram.name}</p>
+                  <p className="text-slate-500 dark:text-gray-500 text-sm">Фото и видео</p>
+                </a>
+              )}
+
+              {contactsData.socialMedia.telegram && (
+                <a
+                  href={contactsData.socialMedia.telegram.url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center p-8 bg-white dark:bg-[#0a0a0a] rounded-2xl border border-slate-200 dark:border-gray-800 text-center hover:border-blue-300 dark:hover:border-blue-800/50 group"
+                >
+                  <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/10 rounded-2xl flex items-center justify-center mb-5 text-blue-500 dark:text-blue-400 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/20">
+                    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.584 7.44c-.12.528-.432.66-.876.412l-2.424-1.788-1.164 1.12c-.132.132-.24.24-.492.24l.168-2.388 4.416-3.984c.192-.168-.036-.264-.3-.096l-5.46 3.432-2.352-.744c-.516-.156-.528-.516.108-.768l9.192-3.54c.432-.156.804.108.672.672z"/>
+                    </svg>
+                  </div>
+                  <h4 className="font-semibold text-slate-900 dark:text-white text-xl mb-2">Telegram</h4>
+                  <p className="text-slate-700 dark:text-gray-300 font-medium mb-1">{contactsData.socialMedia.telegram.name}</p>
+                  <p className="text-slate-500 dark:text-gray-500 text-sm">Быстрые консультации</p>
+                </a>
+              )}
+
+              {contactsData.socialMedia.avby && (
+                <a
+                  href={contactsData.socialMedia.avby.url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center p-8 bg-white dark:bg-[#0a0a0a] rounded-2xl border border-slate-200 dark:border-gray-800 text-center hover:border-emerald-300 dark:hover:border-emerald-800/50 group"
+                >
+                  <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/20">
+                    <Image
+                      src="/av.png"
+                      alt="av.by"
+                      width={32}
+                      height={24}
+                      className="object-contain dark:invert opacity-80 group-hover:opacity-100"
+                    />
+                  </div>
+                  <h4 className="font-semibold text-slate-900 dark:text-white text-xl mb-2">av.by</h4>
+                  <p className="text-slate-700 dark:text-gray-300 font-medium mb-1">{contactsData.socialMedia.avby.name}</p>
+                  <p className="text-slate-500 dark:text-gray-500 text-sm">Наш профиль</p>
+                </a>
+              )}
+
+              {contactsData.socialMedia.tiktok && (
+                <a
+                  href={contactsData.socialMedia.tiktok.url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center p-8 bg-white dark:bg-[#0a0a0a] rounded-2xl border border-slate-200 dark:border-gray-800 text-center hover:border-slate-400 dark:hover:border-gray-600 group"
+                >
+                  <div className="w-16 h-16 bg-slate-100 dark:bg-gray-800/50 rounded-2xl flex items-center justify-center mb-5 text-slate-900 dark:text-white group-hover:bg-slate-200 dark:group-hover:bg-gray-800">
+                    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                    </svg>
+                  </div>
+                  <h4 className="font-semibold text-slate-900 dark:text-white text-xl mb-2">TikTok</h4>
+                  <p className="text-slate-700 dark:text-gray-300 font-medium mb-1">{contactsData.socialMedia.tiktok.name}</p>
+                  <p className="text-slate-500 dark:text-gray-500 text-sm">Короткие видео</p>
+                </a>
+              )}
+            </div>
+          </div>
+        ) : null}
+      </div>
     </div>
   )
 }
