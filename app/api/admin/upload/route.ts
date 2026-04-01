@@ -29,6 +29,7 @@ export async function POST(request: Request) {
     const token = authHeader.split('Bearer ')[1];
     try {
       await admin.auth().verifyIdToken(token);
+      console.log('1. Auth passed');
     } catch (error) {
       console.error('Token verification failed:', error);
       return NextResponse.json({ error: 'Invalid token' }, { status: 403 });
@@ -43,6 +44,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing file or path' }, { status: 400 });
     }
 
+    console.log('2. FormData parsed');
+
     // 3. Преобразование в Buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -52,6 +55,8 @@ export async function POST(request: Request) {
       .resize({ width: 1920, withoutEnlargement: true })
       .webp({ quality: 80, effort: 4 })
       .toBuffer();
+
+    console.log('3. Sharp optimized');
 
     // Заменяем расширение на .webp в пути
     const webpPath = path.replace(/\.[^/.]+$/, '.webp');
@@ -67,6 +72,8 @@ export async function POST(request: Request) {
     });
 
     await s3Client.send(putObjectCommand);
+
+    console.log('4. Uploaded to R2');
 
     const imageUrl = `${process.env.NEXT_PUBLIC_IMAGE_HOST || 'https://images.belautocenter.by'}/${finalPath}`;
 
@@ -86,8 +93,12 @@ export async function POST(request: Request) {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in upload API:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({
+      error: 'Internal Server Error',
+      details: error.message,
+      stack: error.stack
+    }, { status: 500 });
   }
 }
