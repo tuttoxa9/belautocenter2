@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Upload, X, Loader2, MoveUp, MoveDown, HelpCircle, CheckCircle2, XCircle, Clock } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
+import imageCompression from 'browser-image-compression'
 import { Label } from "@/components/ui/label"
 import {
   Tooltip,
@@ -175,9 +176,18 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
             ));
 
             try {
-              addProcessingLog(file.name, `Начинается загрузка файла (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
+              addProcessingLog(file.name, `Начинается пред-сжатие файла (${(file.size / 1024 / 1024).toFixed(2)} MB) перед отправкой...`)
 
-              const uploadResult = await uploadImage(file, path, autoWebP)
+              const options = {
+                maxSizeMB: 3,
+                maxWidthOrHeight: 2500,
+                useWebWorker: true
+              }
+              const compressedFile = await imageCompression(file, options)
+
+              addProcessingLog(file.name, `Отправка сжатого файла (${(compressedFile.size / 1024 / 1024).toFixed(2)} MB)...`)
+
+              const uploadResult = await uploadImage(compressedFile as File, path, autoWebP)
               const imagePath = uploadResult.path
 
               // Обновляем статус в очереди на 'success'
@@ -278,9 +288,18 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           const file = filesToProcess[0]
 
           setUploading(true)
-          addProcessingLog(file.name, `Начинается загрузка файла (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
+          addProcessingLog(file.name, `Начинается пред-сжатие файла (${(file.size / 1024 / 1024).toFixed(2)} MB) перед отправкой...`)
 
-          const uploadResult = await uploadImage(file, path, autoWebP)
+          const options = {
+            maxSizeMB: 3,
+            maxWidthOrHeight: 2500,
+            useWebWorker: true
+          }
+          const compressedFile = await imageCompression(file, options)
+
+          addProcessingLog(file.name, `Отправка сжатого файла (${(compressedFile.size / 1024 / 1024).toFixed(2)} MB)...`)
+
+          const uploadResult = await uploadImage(compressedFile as File, path, autoWebP)
           const imagePath = uploadResult.path
 
           addLog({

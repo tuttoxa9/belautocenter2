@@ -3,6 +3,9 @@ import admin from '@/lib/firebase-admin';
 import sharp from 'sharp';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
+// Экспорт конфигурации маршрута для увеличения лимита времени выполнения (Vercel)
+export const maxDuration = 60;
+
 // Конфигурация R2
 const R2_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const R2_ACCESS_KEY_ID = process.env.CLOUDFLARE_ACCESS_KEY_ID;
