@@ -181,13 +181,31 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               const options = {
                 maxSizeMB: 3,
                 maxWidthOrHeight: 2500,
-                useWebWorker: true
+                useWebWorker: true,
+                fileType: "image/webp",
+                initialQuality: 0.8
               }
-              const compressedFile = await imageCompression(file, options)
+              const compressedBlob = await imageCompression(file, options)
 
-              addProcessingLog(file.name, `Отправка сжатого файла (${(compressedFile.size / 1024 / 1024).toFixed(2)} MB)...`)
+              // Превращаем Blob в File с правильным именем и расширением .webp
+              const newFileName = file.name.replace(/\.[^/.]+$/, "") + ".webp"
+              const compressedFile = new File([compressedBlob], newFileName, { type: "image/webp" })
 
-              const uploadResult = await uploadImage(compressedFile as File, path, autoWebP)
+              addProcessingLog(file.name, `Отправка WebP файла (${(compressedFile.size / 1024 / 1024).toFixed(2)} MB)...`)
+
+              // Имитируем ответ конвертации, так как теперь Worker только сохраняет
+              const uploadResultRaw = await uploadImage(compressedFile, path, autoWebP)
+
+              // Расширяем результат данными о конвертации для UI (ВАУ-эффект)
+              const uploadResult = {
+                ...uploadResultRaw,
+                conversionResult: {
+                  status: 'SUCCESS' as const,
+                  reason: 'Converted to WebP on Client',
+                  originalSize: file.size,
+                  convertedSize: compressedFile.size
+                }
+              }
               const imagePath = uploadResult.path
 
               // Обновляем статус в очереди на 'success'
@@ -293,13 +311,31 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           const options = {
             maxSizeMB: 3,
             maxWidthOrHeight: 2500,
-            useWebWorker: true
+            useWebWorker: true,
+            fileType: "image/webp",
+            initialQuality: 0.8
           }
-          const compressedFile = await imageCompression(file, options)
+          const compressedBlob = await imageCompression(file, options)
 
-          addProcessingLog(file.name, `Отправка сжатого файла (${(compressedFile.size / 1024 / 1024).toFixed(2)} MB)...`)
+          // Превращаем Blob в File с правильным именем и расширением .webp
+          const newFileName = file.name.replace(/\.[^/.]+$/, "") + ".webp"
+          const compressedFile = new File([compressedBlob], newFileName, { type: "image/webp" })
 
-          const uploadResult = await uploadImage(compressedFile as File, path, autoWebP)
+          addProcessingLog(file.name, `Отправка WebP файла (${(compressedFile.size / 1024 / 1024).toFixed(2)} MB)...`)
+
+          // Имитируем ответ конвертации, так как теперь Worker только сохраняет
+          const uploadResultRaw = await uploadImage(compressedFile, path, autoWebP)
+
+          // Расширяем результат данными о конвертации для UI (ВАУ-эффект)
+          const uploadResult = {
+            ...uploadResultRaw,
+            conversionResult: {
+              status: 'SUCCESS' as const,
+              reason: 'Converted to WebP on Client',
+              originalSize: file.size,
+              convertedSize: compressedFile.size
+            }
+          }
           const imagePath = uploadResult.path
 
           addLog({
