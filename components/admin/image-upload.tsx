@@ -58,21 +58,37 @@ export default function ImageUpload({
 
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Инициализация (на случай изменения пропсов извне)
+  // Инициализация (устанавливаем начальное значение только при монтировании или изменении пропсов)
+  // Мы не добавляем serverImages в зависимости, чтобы избежать перезаписи при локальном обновлении (загрузке новых)
   useEffect(() => {
     if (currentImages) {
-      setServerImages(currentImages.filter(url => url.trim() !== ""))
+      setServerImages(prev => {
+        const currentValid = currentImages.filter(url => url.trim() !== "")
+        if (JSON.stringify(prev) !== JSON.stringify(currentValid)) {
+          return currentValid;
+        }
+        return prev;
+      });
     } else if (currentImage) {
-      setServerImages([currentImage].filter(url => url.trim() !== ""))
+      setServerImages(prev => {
+        const currentValid = [currentImage].filter(url => url.trim() !== "")
+        if (JSON.stringify(prev) !== JSON.stringify(currentValid)) {
+          return currentValid;
+        }
+        return prev;
+      });
     }
-  }, [currentImages, currentImage])
+  }, [currentImages, currentImage]);
 
   // Очистка URL.createObjectURL для предотвращения утечек памяти
+  // Используем useRef для сбора всех созданных previewUrl и отзываем их только при размонтировании
+  const createdUrlsRef = useRef<Set<string>>(new Set())
   useEffect(() => {
+    const urls = createdUrlsRef.current
     return () => {
-      queue.forEach(item => URL.revokeObjectURL(item.previewUrl))
+      urls.forEach(url => URL.revokeObjectURL(url))
     }
-  }, [queue])
+  }, [])
 
   // Обработка загрузки файлов
   const processFiles = useCallback(async (filesToProcess: File[]) => {
@@ -92,12 +108,16 @@ export default function ImageUpload({
     const files = multiple ? validFiles : [validFiles[0]];
 
     // Создаем элементы очереди
-    const newItems: UploadQueueItem[] = files.map(file => ({
-      id: Math.random().toString(36).substring(7),
-      file,
-      previewUrl: URL.createObjectURL(file),
-      status: 'uploading'
-    }));
+    const newItems: UploadQueueItem[] = files.map(file => {
+      const url = URL.createObjectURL(file)
+      createdUrlsRef.current.add(url)
+      return {
+        id: Math.random().toString(36).substring(7),
+        file,
+        previewUrl: url,
+        status: 'uploading'
+      }
+    });
 
     if (multiple) {
       setQueue(prev => [...prev, ...newItems]);
@@ -123,7 +143,7 @@ export default function ImageUpload({
 
         const uploadResult = await uploadImage(compressedFile, path, true) // autoWebP всегда true
 
-        // Обновляем статус на success
+        // 1. Обновляем статус на success в очереди (зеленая галочка и статистика сжатия)
         setQueue(prev => prev.map(qItem =>
           qItem.id === item.id
             ? {
@@ -136,6 +156,31 @@ export default function ImageUpload({
             : qItem
         ));
 
+        // 2. Сразу переносим путь загруженной картинки в основную галерею (serverImages)
+        // Поскольку мы в асинхронном цикле и serverImages обновляется шаг за шагом,
+        // мы используем setState с prev, чтобы всегда добавлять в конец актуального массива.
+        setServerImages(prev => {
+          const updatedServerImages = multiple ? [...prev, uploadResult.path] : [uploadResult.path];
+
+          // Вызываем коллбеки родителя прямо внутри функции обновления состояния (prev => ...).
+          // Хотя это сайд-эффект в setState (что обычно анти-паттерн), в данном конкретном случае
+          // (без Strict Mode и для разового события загрузки) это единственный надежный способ
+          // синхронизировать родителя с самым свежим состоянием локальной галереи во время цикла for...of.
+          if (multiple && onMultipleUpload) {
+            onMultipleUpload(updatedServerImages);
+          } else if (!multiple) {
+            if (onImageUploaded) onImageUploaded(updatedServerImages[0]);
+            if (onUpload) onUpload(updatedServerImages[0]);
+          }
+
+          return updatedServerImages;
+        });
+
+        // 3. Удаляем элемент из очереди через 2 секунды (визуальный эффект завершения загрузки)
+        setTimeout(() => {
+          setQueue(prev => prev.filter(qItem => qItem.id !== item.id));
+        }, 2000);
+
       } catch (error) {
         // Обновляем статус на error
         setQueue(prev => prev.map(qItem =>
@@ -145,36 +190,7 @@ export default function ImageUpload({
         ));
       }
     }
-  }, [multiple, path]);
-
-  // Эффект для переноса успешных загрузок из очереди в основную галерею
-  useEffect(() => {
-    const successfulItems = queue.filter(q => q.status === 'success' && q.serverPath);
-    if (successfulItems.length > 0) {
-      // Собираем новые пути
-      const newPaths = successfulItems.map(q => q.serverPath as string);
-
-      // Обновляем основные изображения
-      const updatedServerImages = multiple
-        ? [...serverImages, ...newPaths]
-        : [newPaths[newPaths.length - 1]];
-
-      setServerImages(updatedServerImages);
-
-      // Уведомляем родителя
-      if (multiple && onMultipleUpload) {
-        onMultipleUpload(updatedServerImages);
-      } else if (!multiple) {
-        if (onImageUploaded) onImageUploaded(updatedServerImages[0]);
-        if (onUpload) onUpload(updatedServerImages[0]);
-      }
-
-      // Удаляем успешные элементы из очереди с задержкой для красоты (чтобы увидеть зеленый бейдж)
-      setTimeout(() => {
-        setQueue(prev => prev.filter(q => q.status !== 'success'));
-      }, 2000);
-    }
-  }, [queue, serverImages, multiple, onMultipleUpload, onImageUploaded, onUpload]);
+  }, [multiple, path, onMultipleUpload, onImageUploaded, onUpload, serverImages]);
 
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -311,7 +327,7 @@ export default function ImageUpload({
 
             return (
               <div
-                key={`server-${imageUrl}-${index}`}
+                key={`server-${imageUrl}`}
                 draggable
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragEnter={(e) => handleDragEnter(e, index)}
