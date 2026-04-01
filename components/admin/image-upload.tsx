@@ -6,7 +6,7 @@ import { uploadImage, UploadResult } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Upload, X, Loader2, MoveUp, MoveDown, HelpCircle } from "lucide-react"
+import { Upload, X, Loader2, MoveUp, MoveDown, HelpCircle, CheckCircle2, XCircle, Clock } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
@@ -43,6 +43,24 @@ interface UploadLog {
   }
 }
 
+interface QueueItem {
+  id: string
+  file: File
+  status: 'idle' | 'uploading' | 'success' | 'error'
+  error?: string
+  originalSize?: number
+  convertedSize?: number
+}
+
+function formatBytes(bytes: number, decimals = 2) {
+  if (!+bytes) return '0 Bytes'
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
 export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUpload, path = 'general', currentImage, currentImages, className, multiple = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [autoWebP, setAutoWebP] = useState(false)
@@ -55,6 +73,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
   const [uploadLogs, setUploadLogs] = useState<UploadLog[]>([])
   const [showLogs, setShowLogs] = useState(false)
   const [activeUploads, setActiveUploads] = useState<Map<string, string>>(new Map())
+  const [uploadQueue, setUploadQueue] = useState<QueueItem[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
   const pasteAreaRef = useRef<HTMLDivElement>(null)
 
@@ -131,6 +150,15 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           const newPreviews = [...previews, ...tempPreviews]
           setPreviews(newPreviews)
 
+          // Формируем новую очередь для загрузки
+          const newQueueItems: QueueItem[] = filesToProcess.map(file => ({
+            id: Math.random().toString(36).substring(7),
+            file,
+            status: 'idle'
+          }))
+
+          setUploadQueue(prev => [...prev, ...newQueueItems])
+
           // Добавляем имена файлов в множество загружающихся
           const newUploadingFiles = new Set(uploadingFiles)
           filesToProcess.forEach(file => newUploadingFiles.add(file.name))
@@ -139,11 +167,28 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           // Загружаем файлы строго последовательно
           for (let index = 0; index < filesToProcess.length; index++) {
             const file = filesToProcess[index];
+            const queueItemId = newQueueItems[index].id;
+
+            // Обновляем статус в очереди на 'uploading'
+            setUploadQueue(prev => prev.map(item =>
+              item.id === queueItemId ? { ...item, status: 'uploading' } : item
+            ));
+
             try {
               addProcessingLog(file.name, `Начинается загрузка файла (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
 
               const uploadResult = await uploadImage(file, path, autoWebP)
               const imagePath = uploadResult.path
+
+              // Обновляем статус в очереди на 'success'
+              setUploadQueue(prev => prev.map(item =>
+                item.id === queueItemId ? {
+                  ...item,
+                  status: 'success',
+                  originalSize: uploadResult.conversionResult?.originalSize || uploadResult.originalSize,
+                  convertedSize: uploadResult.conversionResult?.convertedSize
+                } : item
+              ));
 
               // Добавляем детальный лог об успешной загрузке
               addLog({
@@ -200,8 +245,15 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 }, 100)
               }
             } catch (error) {
+              const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+
+              // Обновляем статус в очереди на 'error'
+              setUploadQueue(prev => prev.map(item =>
+                item.id === queueItemId ? { ...item, status: 'error', error: errorMessage } : item
+              ));
+
               addLog({
-                message: `Ошибка загрузки: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
+                message: `Ошибка загрузки: ${errorMessage}`,
                 fileName: file.name,
                 type: 'error'
               })
@@ -215,6 +267,11 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               })
             }
           }
+
+          // Очистка очереди через 5 секунд после завершения всех загрузок
+          setTimeout(() => {
+            setUploadQueue([]);
+          }, 5000);
 
         } else {
           // Одиночная загрузка
@@ -519,6 +576,48 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
               </div>
             )}
           </Card>
+
+          {/* Список загружаемых файлов (очередь) */}
+          {uploadQueue.length > 0 && (
+            <div className="space-y-2 mt-4">
+              <h4 className="text-sm font-medium mb-3">Очередь загрузки ({uploadQueue.length}):</h4>
+              <div className="max-h-64 overflow-y-auto space-y-2 pr-2">
+                {uploadQueue.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between p-3 bg-muted/30 dark:bg-zinc-900/50 rounded-lg border border-border/50 text-sm">
+                    <div className="flex items-center space-x-3 overflow-hidden">
+                      {item.status === 'idle' && <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0" />}
+                      {item.status === 'uploading' && <Loader2 className="h-5 w-5 animate-spin text-blue-500 flex-shrink-0" />}
+                      {item.status === 'success' && <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />}
+                      {item.status === 'error' && <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />}
+
+                      <div className="flex flex-col overflow-hidden">
+                        <span className="truncate font-medium">{item.file.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {item.status === 'idle' && 'В очереди...'}
+                          {item.status === 'uploading' && 'Сжатие и загрузка...'}
+                          {item.status === 'error' && <span className="text-red-500">{item.error}</span>}
+                          {item.status === 'success' && (
+                            <span className="flex items-center text-green-600 dark:text-green-400">
+                              WebP
+                              {item.originalSize && item.convertedSize && (
+                                <>
+                                  <span className="mx-1">|</span>
+                                  {formatBytes(item.originalSize)} ➔ {formatBytes(item.convertedSize)}
+                                  <span className="ml-1 font-bold">
+                                    (-{((1 - item.convertedSize / item.originalSize) * 100).toFixed(0)}%)
+                                  </span>
+                                </>
+                              )}
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Настройки загрузки */}
           <div className="flex items-center space-x-2 mt-4">
