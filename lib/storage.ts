@@ -54,7 +54,7 @@ export const uploadImage = async (file: File, path: string, autoWebP: boolean = 
     }
 
     // Отправляем POST-запрос на эндпоинт загрузки с заголовком авторизации
-    const response = await fetch('/api/admin/upload', {
+    const response = await fetch(`${IMAGE_HOST}/upload`, {
       method: 'POST',
       headers,
       body: formData,
