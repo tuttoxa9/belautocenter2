@@ -136,8 +136,9 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
           filesToProcess.forEach(file => newUploadingFiles.add(file.name))
           setUploadingFiles(newUploadingFiles)
 
-          // Загружаем файлы параллельно
-          filesToProcess.forEach(async (file, index) => {
+          // Загружаем файлы строго последовательно
+          for (let index = 0; index < filesToProcess.length; index++) {
+            const file = filesToProcess[index];
             try {
               addProcessingLog(file.name, `Начинается загрузка файла (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
 
@@ -213,7 +214,7 @@ export default function ImageUpload({ onImageUploaded, onUpload, onMultipleUploa
                 return updated
               })
             }
-          })
+          }
 
         } else {
           // Одиночная загрузка
