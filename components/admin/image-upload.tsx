@@ -160,20 +160,23 @@ export default function ImageUpload({
         // 2. Сразу переносим путь загруженной картинки в основную галерею (serverImages)
         // Поскольку мы в асинхронном цикле и serverImages обновляется шаг за шагом,
         // мы используем setState с prev, чтобы всегда добавлять в конец актуального массива.
-        let newImagesToExport: string[] = [];
         setServerImages(prev => {
-          newImagesToExport = multiple ? [...prev, uploadResult.path] : [uploadResult.path];
+          const newImagesToExport = multiple ? [...prev, uploadResult.path] : [uploadResult.path];
+
+          // Вызываем коллбеки родителя изнутри сеттера, но через setTimeout(..., 0),
+          // чтобы избежать предупреждений React (bad setState) и гарантированно
+          // передать родителю самый свежий стейт.
+          setTimeout(() => {
+            if (multiple && onMultipleUpload) {
+              onMultipleUpload(newImagesToExport);
+            } else if (!multiple) {
+              if (onImageUploaded) onImageUploaded(newImagesToExport[0]);
+              if (onUpload) onUpload(newImagesToExport[0]);
+            }
+          }, 0);
+
           return newImagesToExport;
         });
-
-        // Теперь вызываем коллбеки родителя снаружи setServerImages, соблюдая чистоту React-функций,
-        // но при этом используя самый свежий массив, извлеченный прямо из апдейтера.
-        if (multiple && onMultipleUpload) {
-          onMultipleUpload(newImagesToExport);
-        } else if (!multiple) {
-          if (onImageUploaded) onImageUploaded(newImagesToExport[0]);
-          if (onUpload) onUpload(newImagesToExport[0]);
-        }
 
         // 3. Удаляем элемент из очереди через 2 секунды (визуальный эффект завершения загрузки)
         setTimeout(() => {
@@ -252,9 +255,8 @@ export default function ImageUpload({
     }
 
     // Используем функциональное обновление стейта, чтобы избежать гонки данных при параллельных удалениях
-    let finalImages: string[] = [];
     setServerImages(prevImages => {
-      finalImages = prevImages.filter(url => url !== imageUrlToRemove);
+      const finalImages = prevImages.filter(url => url !== imageUrlToRemove);
 
       // Убираем URL из списка удаляемых
       setDeletingUrls(prev => {
@@ -263,12 +265,14 @@ export default function ImageUpload({
         return next;
       });
 
-      // Вызываем коллбеки родителя с новым массивом
-      if (multiple && onMultipleUpload) onMultipleUpload(finalImages);
-      if (!multiple) {
-        if (onImageUploaded) onImageUploaded("");
-        if (onUpload) onUpload("");
-      }
+      // Вызываем коллбеки родителя с новым массивом через setTimeout (чтобы не нарушать чистоту функции)
+      setTimeout(() => {
+        if (multiple && onMultipleUpload) onMultipleUpload(finalImages);
+        if (!multiple) {
+          if (onImageUploaded) onImageUploaded("");
+          if (onUpload) onUpload("");
+        }
+      }, 0);
 
       return finalImages;
     });
