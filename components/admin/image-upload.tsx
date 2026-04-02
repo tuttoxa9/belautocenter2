@@ -55,7 +55,7 @@ export default function ImageUpload({
   const [serverImages, setServerImages] = useState<string[]>(currentImages || (currentImage ? [currentImage] : []))
   const [queue, setQueue] = useState<UploadQueueItem[]>([])
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
-  const [deletingIndices, setDeletingIndices] = useState<Set<number>>(new Set())
+  const [deletingUrls, setDeletingUrls] = useState<Set<string>>(new Set())
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -160,22 +160,20 @@ export default function ImageUpload({
         // 2. Сразу переносим путь загруженной картинки в основную галерею (serverImages)
         // Поскольку мы в асинхронном цикле и serverImages обновляется шаг за шагом,
         // мы используем setState с prev, чтобы всегда добавлять в конец актуального массива.
+        let newImagesToExport: string[] = [];
         setServerImages(prev => {
-          const updatedServerImages = multiple ? [...prev, uploadResult.path] : [uploadResult.path];
-
-          // Вызываем коллбеки родителя прямо внутри функции обновления состояния (prev => ...).
-          // Хотя это сайд-эффект в setState (что обычно анти-паттерн), в данном конкретном случае
-          // (без Strict Mode и для разового события загрузки) это единственный надежный способ
-          // синхронизировать родителя с самым свежим состоянием локальной галереи во время цикла for...of.
-          if (multiple && onMultipleUpload) {
-            onMultipleUpload(updatedServerImages);
-          } else if (!multiple) {
-            if (onImageUploaded) onImageUploaded(updatedServerImages[0]);
-            if (onUpload) onUpload(updatedServerImages[0]);
-          }
-
-          return updatedServerImages;
+          newImagesToExport = multiple ? [...prev, uploadResult.path] : [uploadResult.path];
+          return newImagesToExport;
         });
+
+        // Теперь вызываем коллбеки родителя снаружи setServerImages, соблюдая чистоту React-функций,
+        // но при этом используя самый свежий массив, извлеченный прямо из апдейтера.
+        if (multiple && onMultipleUpload) {
+          onMultipleUpload(newImagesToExport);
+        } else if (!multiple) {
+          if (onImageUploaded) onImageUploaded(newImagesToExport[0]);
+          if (onUpload) onUpload(newImagesToExport[0]);
+        }
 
         // 3. Удаляем элемент из очереди через 2 секунды (визуальный эффект завершения загрузки)
         setTimeout(() => {
@@ -239,36 +237,41 @@ export default function ImageUpload({
   }, [processFiles]);
 
   // Управление галереей (Drag & Drop)
-  const removeImage = async (indexToRemove: number) => {
-    const imageToDelete = serverImages[indexToRemove];
+  const removeImage = async (imageUrlToRemove: string) => {
 
-    // Добавляем индекс в список удаляемых для показа лоадера
-    setDeletingIndices(prev => new Set(prev).add(indexToRemove));
+    // Добавляем URL в список удаляемых для показа лоадера
+    setDeletingUrls(prev => new Set(prev).add(imageUrlToRemove));
 
     // Физически удаляем файл из Cloudflare R2
-    if (imageToDelete && !imageToDelete.startsWith('blob:')) {
+    if (imageUrlToRemove && !imageUrlToRemove.startsWith('blob:')) {
       try {
-        await deleteImage(imageToDelete);
+        await deleteImage(imageUrlToRemove);
       } catch (error) {
         console.error("Ошибка при физическом удалении картинки из R2:", error);
       }
     }
 
-    const newImages = serverImages.filter((_, index) => index !== indexToRemove);
-    setServerImages(newImages);
+    // Используем функциональное обновление стейта, чтобы избежать гонки данных при параллельных удалениях
+    let finalImages: string[] = [];
+    setServerImages(prevImages => {
+      finalImages = prevImages.filter(url => url !== imageUrlToRemove);
 
-    // Убираем индекс из списка удаляемых
-    setDeletingIndices(prev => {
-      const next = new Set(prev);
-      next.delete(indexToRemove);
-      return next;
+      // Убираем URL из списка удаляемых
+      setDeletingUrls(prev => {
+        const next = new Set(prev);
+        next.delete(imageUrlToRemove);
+        return next;
+      });
+
+      // Вызываем коллбеки родителя с новым массивом
+      if (multiple && onMultipleUpload) onMultipleUpload(finalImages);
+      if (!multiple) {
+        if (onImageUploaded) onImageUploaded("");
+        if (onUpload) onUpload("");
+      }
+
+      return finalImages;
     });
-
-    if (multiple && onMultipleUpload) onMultipleUpload(newImages);
-    if (!multiple) {
-      if (onImageUploaded) onImageUploaded("");
-      if (onUpload) onUpload("");
-    }
   };
 
   const moveImage = (fromIndex: number, toIndex: number) => {
@@ -348,7 +351,11 @@ export default function ImageUpload({
             const isKing = index === 0 && multiple;
             const isDragged = draggedIndex === index;
 
-            const isDeleting = deletingIndices.has(index);
+            const isDeleting = deletingUrls.has(imageUrl);
+
+            // Если картинка уже добавлена в serverImages, но всё ещё висит в очереди (queue)
+            // со статусом 'success' (показывает бейдж сжатия 2 секунды) — скрываем дубликат в галерее.
+            const isRecentlyUploaded = queue.some(qItem => qItem.serverPath === imageUrl && qItem.status === 'success');
 
             return (
               <div
@@ -363,6 +370,7 @@ export default function ImageUpload({
                   ${isKing ? "ring-2 ring-amber-500/70 shadow-lg shadow-amber-500/10" : "border border-zinc-200 dark:border-zinc-700/50"}
                   ${isDragged ? "opacity-30 scale-95" : "hover:scale-[1.02]"}
                   ${isDeleting ? "opacity-50 grayscale" : ""}
+                  ${isRecentlyUploaded ? "hidden" : "block"}
                 `}
               >
                 <img
@@ -396,7 +404,7 @@ export default function ImageUpload({
                     <button
                       type="button"
                       disabled={isDeleting}
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeImage(index); }}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeImage(imageUrl); }}
                       className={`p-1.5 rounded-lg text-white backdrop-blur-md transition-colors z-30 pointer-events-auto
                         ${isDeleting ? "bg-red-500/80 cursor-not-allowed" : "bg-white/10 hover:bg-red-500/90 hover:text-red-500"}
                       `}
