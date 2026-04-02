@@ -55,6 +55,7 @@ export default function ImageUpload({
   const [serverImages, setServerImages] = useState<string[]>(currentImages || (currentImage ? [currentImage] : []))
   const [queue, setQueue] = useState<UploadQueueItem[]>([])
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [deletingIndices, setDeletingIndices] = useState<Set<number>>(new Set())
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -241,6 +242,9 @@ export default function ImageUpload({
   const removeImage = async (indexToRemove: number) => {
     const imageToDelete = serverImages[indexToRemove];
 
+    // Добавляем индекс в список удаляемых для показа лоадера
+    setDeletingIndices(prev => new Set(prev).add(indexToRemove));
+
     // Физически удаляем файл из Cloudflare R2
     if (imageToDelete && !imageToDelete.startsWith('blob:')) {
       try {
@@ -252,6 +256,13 @@ export default function ImageUpload({
 
     const newImages = serverImages.filter((_, index) => index !== indexToRemove);
     setServerImages(newImages);
+
+    // Убираем индекс из списка удаляемых
+    setDeletingIndices(prev => {
+      const next = new Set(prev);
+      next.delete(indexToRemove);
+      return next;
+    });
 
     if (multiple && onMultipleUpload) onMultipleUpload(newImages);
     if (!multiple) {
@@ -337,10 +348,12 @@ export default function ImageUpload({
             const isKing = index === 0 && multiple;
             const isDragged = draggedIndex === index;
 
+            const isDeleting = deletingIndices.has(index);
+
             return (
               <div
                 key={`server-${imageUrl}`}
-                draggable
+                draggable={!isDeleting}
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragEnter={(e) => handleDragEnter(e, index)}
                 onDragEnd={() => setDraggedIndex(null)}
@@ -349,6 +362,7 @@ export default function ImageUpload({
                   transition-all duration-300 transform-gpu
                   ${isKing ? "ring-2 ring-amber-500/70 shadow-lg shadow-amber-500/10" : "border border-zinc-200 dark:border-zinc-700/50"}
                   ${isDragged ? "opacity-30 scale-95" : "hover:scale-[1.02]"}
+                  ${isDeleting ? "opacity-50 grayscale" : ""}
                 `}
               >
                 <img
@@ -364,8 +378,10 @@ export default function ImageUpload({
                   </Badge>
                 )}
 
-                {/* ИСПОЛЬЗУЙ GLASSMORPHISM НА HOVER */}
-                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2 z-20">
+                {/* ИСПОЛЬЗУЙ GLASSMORPHISM НА HOVER или если удаляется */}
+                <div className={`absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity flex flex-col justify-between p-2 z-20
+                  ${isDeleting ? "opacity-100" : "opacity-0 group-hover:opacity-100"}
+                `}>
 
                   {/* Верхняя панель: Номер и Удаление */}
                   <div className="flex justify-between items-start w-full">
@@ -379,21 +395,30 @@ export default function ImageUpload({
 
                     <button
                       type="button"
+                      disabled={isDeleting}
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeImage(index); }}
-                      className="p-1.5 rounded-lg bg-white/10 hover:bg-red-500/90 hover:text-red-500 text-white backdrop-blur-md transition-colors z-30 pointer-events-auto"
+                      className={`p-1.5 rounded-lg text-white backdrop-blur-md transition-colors z-30 pointer-events-auto
+                        ${isDeleting ? "bg-red-500/80 cursor-not-allowed" : "bg-white/10 hover:bg-red-500/90 hover:text-red-500"}
+                      `}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      {isDeleting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
                     </button>
                   </div>
 
-                  {/* Центр: Иконка Grip */}
-                  {multiple && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="p-2 rounded-full bg-white/10 backdrop-blur-md text-white/80">
+                  {/* Центр: Иконка Grip или Удаления */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="p-2 rounded-full bg-white/10 backdrop-blur-md text-white/80">
+                      {isDeleting ? (
+                         <span className="text-xs font-medium px-2 py-1">Удаление...</span>
+                      ) : multiple ? (
                         <GripHorizontal className="h-6 w-6" />
-                      </div>
+                      ) : null}
                     </div>
-                  )}
+                  </div>
 
                 </div>
               </div>
@@ -442,16 +467,29 @@ export default function ImageUpload({
                   )}
                 </div>
 
-                {/* Плашка сжатия (Внизу слева) */}
+                {/* Тонкий прогресс-бар внизу (Apple/iOS Style) */}
+                {!isError && (
+                  <div className={`absolute bottom-0 left-0 h-1 bg-blue-500 z-30 transition-all duration-300 ease-out
+                    ${item.status === 'uploading' ? 'animate-optimistic-progress opacity-100' : ''}
+                    ${isSuccess ? '!width-full !w-[100%] opacity-0 delay-500' : ''}
+                  `}
+                  style={{
+                    boxShadow: '0 0 10px rgba(59, 130, 246, 0.8)',
+                    width: isSuccess ? '100%' : '0%' // fallback
+                  }}
+                  />
+                )}
+
+                {/* Плашка сжатия (Внизу слева, появляется после завершения прогресс-бара) */}
                 {isSuccess && item.originalSize && item.convertedSize && (
-                  <Badge className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-green-400 border-none text-[10px] px-2 py-0.5 animate-in slide-in-from-bottom-2 duration-500 font-mono tracking-tight">
+                  <Badge className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-green-400 border-none text-[10px] px-2 py-0.5 animate-in slide-in-from-bottom-2 delay-300 duration-500 font-mono tracking-tight z-20">
                     {formatBytes(item.originalSize)} ➔ {formatBytes(item.convertedSize)} (-{((1 - item.convertedSize / item.originalSize) * 100).toFixed(0)}%)
                   </Badge>
                 )}
 
                 {/* Ошибка */}
                 {isError && (
-                  <div className="absolute bottom-0 inset-x-0 p-2 bg-red-500/90 backdrop-blur-sm">
+                  <div className="absolute bottom-0 inset-x-0 p-2 bg-red-500/90 backdrop-blur-sm z-30">
                     <p className="text-[10px] text-white text-center leading-tight truncate">
                       {item.error || 'Ошибка загрузки'}
                     </p>
