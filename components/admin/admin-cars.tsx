@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Car, Code, Search, Eye, Check } from "lucide-react"
 import ImageUpload from "@/components/admin/image-upload"
+import { deleteImage } from "@/lib/storage"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Link from "next/link"
 import { useButtonState } from "@/hooks/use-button-state"
@@ -157,8 +158,20 @@ export default function AdminCars() {
   }
 
   const handleDelete = async (carId) => {
-    if (confirm("Удалить этот автомобиль?")) {
+    if (confirm("Удалить этот автомобиль? Все фотографии будут стерты из хранилища. Это действие необратимо.")) {
       try {
+        const carToDelete = cars.find(c => c.id === carId)
+
+        // 1. Физически удаляем все фотографии из Cloudflare R2
+        if (carToDelete && carToDelete.imageUrls && Array.isArray(carToDelete.imageUrls)) {
+          const deletionPromises = carToDelete.imageUrls
+            .filter(url => url && typeof url === 'string')
+            .map(url => deleteImage(url).catch(err => console.error(`Не удалось удалить фото ${url}:`, err)))
+
+          await Promise.all(deletionPromises)
+        }
+
+        // 2. Удаляем документ из базы
         await firestoreApi.deleteDocument("cars", carId)
         await cacheInvalidator.onDelete(carId)
         // Вызываем On-Demand Revalidation
