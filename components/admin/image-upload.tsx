@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react"
 import { useDropzone } from "react-dropzone"
-import { uploadImage } from "@/lib/storage"
+import { uploadImage, deleteImage } from "@/lib/storage"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { Button } from "@/components/ui/button"
 import { Loader2, ImagePlus, Trash2, GripHorizontal, Check, X } from "lucide-react"
@@ -238,9 +238,21 @@ export default function ImageUpload({
   }, [processFiles]);
 
   // Управление галереей (Drag & Drop)
-  const removeImage = (indexToRemove: number) => {
+  const removeImage = async (indexToRemove: number) => {
+    const imageToDelete = serverImages[indexToRemove];
+
+    // Физически удаляем файл из Cloudflare R2
+    if (imageToDelete && !imageToDelete.startsWith('blob:')) {
+      try {
+        await deleteImage(imageToDelete);
+      } catch (error) {
+        console.error("Ошибка при физическом удалении картинки из R2:", error);
+      }
+    }
+
     const newImages = serverImages.filter((_, index) => index !== indexToRemove);
     setServerImages(newImages);
+
     if (multiple && onMultipleUpload) onMultipleUpload(newImages);
     if (!multiple) {
       if (onImageUploaded) onImageUploaded("");
