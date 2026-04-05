@@ -19,6 +19,9 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
 
   const [state, setState] = useState<ButtonState>('idle')
   const timeoutRefs = useRef<NodeJS.Timeout[]>([])
+  // We use a ref for isExecuting to ensure we have the absolute latest value synchronously
+  // to block rapid sequential calls before React state updates
+  const isExecutingRef = useRef(false)
 
   useEffect(() => {
     return () => {
@@ -28,6 +31,10 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
   }, [])
 
   const execute = useCallback(async (asyncFunction: () => Promise<void>) => {
+    // Prevent multiple executions synchronously using a ref
+    if (isExecutingRef.current) return;
+
+    isExecutingRef.current = true;
     setState('loading')
 
     try {
@@ -47,6 +54,8 @@ export function useButtonState(options: UseButtonStateOptions = {}) {
         setState('idle')
       }, errorDuration)
       timeoutRefs.current.push(timeout)
+    } finally {
+      isExecutingRef.current = false;
     }
   }, [successDuration, errorDuration, onSuccess, onError])
 

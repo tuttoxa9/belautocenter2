@@ -590,6 +590,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (bookingButtonState.state === 'loading') return;
+
     await bookingButtonState.execute(async () => {
       // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
@@ -631,6 +633,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   const handleCallbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (callbackButtonState.state === 'loading') return;
+
     await callbackButtonState.execute(async () => {
       // Сохраняем данные через Firebase клиентский SDK (независимо от результата)
       try {
@@ -670,6 +674,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
   const handleCreditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (creditButtonState.state === 'loading') return;
 
     await creditButtonState.execute(async () => {
       // Сохраняем данные через Firebase клиентский SDK (независимо от результата)

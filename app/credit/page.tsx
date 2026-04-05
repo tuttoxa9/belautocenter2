@@ -246,7 +246,7 @@ export default function CreditPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!isFormValid()) {
+    if (!isFormValid() || submitButtonState.state === 'loading') {
       return
     }
 

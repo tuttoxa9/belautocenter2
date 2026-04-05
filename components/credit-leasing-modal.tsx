@@ -111,7 +111,10 @@ export function CreditLeasingModal() {
     }
   }, [searchQuery, cars])
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (isSubmitting) return;
+
     setIsSubmitting(true)
     try {
       const data = {
