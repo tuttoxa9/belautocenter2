@@ -14,6 +14,7 @@ import DynamicSelection from "@/components/dynamic-selection"
 import DynamicSelectionSkeleton from "@/components/dynamic-selection-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 import SaleModal from "@/app/sale/sale-modal"
 import { SellCarSheet } from "@/components/sell-car-sheet"
 import { CheckCircle, Check } from "lucide-react"
@@ -49,6 +50,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
 
   const contactButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
   const [showSaleModal, setShowSaleModal] = useState(false)
   const [isSellSheetOpen, setIsSellSheetOpen] = useState(false)
 
@@ -177,8 +179,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
       return
     }
 
-    await contactButtonState.execute(async () => {
-      // Сохраняем в Firebase через API
+    await submitForm(async () => {
       try {
         await firestoreApi.addDocument("leads", {
           ...contactForm,
@@ -189,8 +190,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
       } catch (error) {
       }
 
-      // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch("/api/send-telegram", {
+      const response = await fetch("/api/send-telegram", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -200,12 +200,11 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
           type: "car_selection",
         }),
       })
+      if (!response.ok) throw new Error("Telegram failed");
 
       setContactForm({ name: "", phone: "+375" })
-      showSuccess(
-        "Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время."
-      )
-    })
+      showSuccess("Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.")
+    }) // Здесь нет закрывающегося окна, поэтому onCloseCurrentModal не передаем
   }
 
   return (
@@ -425,18 +424,15 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
                   <Check className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-400" />
                 )}
               </div>
-              <StatusButton
+              <Button
                 type="submit"
                 size="sm"
                 className="bg-white/20 hover:bg-white/30 dark:bg-gray-700/50 dark:hover:bg-gray-600/60 text-white border border-white/40 dark:border-gray-600 backdrop-blur-sm px-4 h-10 sm:h-9 text-sm whitespace-nowrap"
-                state={contactButtonState.state}
-                loadingText="Отправляем..."
-                successText="Отправлено!"
-                errorText="Ошибка"
+                disabled={!isPhoneValid(contactForm.phone) || !contactForm.name}
               >
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Отправить
-              </StatusButton>
+              </Button>
             </form>
           </div>
         </div>

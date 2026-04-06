@@ -12,6 +12,7 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { getCachedImageUrl } from "@/lib/image-cache"
+import { useSubmission } from "@/components/providers/submission-provider"
 
 interface Car {
   id: string
@@ -49,6 +50,7 @@ export function CreditLeasingModal() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const { submitForm } = useSubmission()
 
   const isPhoneFieldValid = isPhoneValid(phone)
   const isLeasing = type === "leasing"
@@ -113,10 +115,8 @@ export function CreditLeasingModal() {
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (isSubmitting) return;
 
-    setIsSubmitting(true)
-    try {
+    await submitForm(async () => {
       const data = {
         phone,
         car: selectedCar ? `${selectedCar.make} ${selectedCar.model} (${selectedCar.year})` : "Своя сумма",
@@ -125,21 +125,22 @@ export function CreditLeasingModal() {
         createdAt: new Date()
       }
 
-      await firestoreApi.addDocument("leads", data)
+      try {
+        await firestoreApi.addDocument("leads", data)
+      } catch(error) {
+        // Ignore firestore errors
+      }
 
-      await fetch("/api/send-telegram", {
+      const response = await fetch("/api/send-telegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
 
+      if (!response.ok) throw new Error("Telegram failed");
+
       showSuccess(`Заявка на ${isLeasing ? 'лизинг' : 'кредит'} успешно отправлена!`)
-      closeModal()
-    } catch (error) {
-      console.error("Error submitting:", error)
-    } finally {
-      setIsSubmitting(false)
-    }
+    }, closeModal)
   }
 
   const getMonthlyPayment = (car: Car) => {

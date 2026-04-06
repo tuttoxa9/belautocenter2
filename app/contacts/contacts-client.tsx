@@ -16,6 +16,7 @@ import {
   Instagram
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { StatusButton } from '@/components/ui/status-button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -23,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea'
 import YandexMap from '@/components/yandex-map'
 import { useButtonState } from '@/hooks/use-button-state'
 import { useNotification } from '@/components/providers/notification-provider'
+import { useSubmission } from '@/components/providers/submission-provider'
 import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 interface ContactsData {
@@ -71,6 +73,7 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
   })
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -79,7 +82,7 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
       return
     }
 
-    await submitButtonState.execute(async () => {
+    await submitForm(async () => {
       // Отправка через API
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
@@ -101,7 +104,7 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
       // Очистка формы после успешной отправки
       setContactForm({ name: '', phone: '', message: '' })
       showSuccess("Ваше сообщение успешно отправлено! Мы ответим вам в ближайшее время.")
-    })
+    }) // Здесь нет окна для закрытия
   }
 
   return (
@@ -379,18 +382,15 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
                 </div>
 
                 <div className="pt-2">
-                  <StatusButton
+                  <Button
                     type="submit"
                     size="lg"
-                    state={submitButtonState.state}
+                    disabled={!isPhoneValid(contactForm.phone) || !contactForm.name}
                     className="w-full bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 hover:from-slate-900 hover:to-black dark:hover:from-slate-600 dark:hover:to-slate-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm"
-                    loadingText="Отправляем..."
-                    successText="Отправлено!"
-                    errorText="Ошибка отправки"
                   >
                     <Send className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                     Отправить сообщение
-                  </StatusButton>
+                  </Button>
                 </div>
               </form>
             </CardContent>

@@ -8,6 +8,7 @@ import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import { StatusButton } from "@/components/ui/status-button"
+import { useSubmission } from "@/components/providers/submission-provider"
 import {
   DollarSign,
   Zap,
@@ -48,6 +49,7 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
 
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
 
   useEffect(() => {
     if (open) {
@@ -73,7 +75,7 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
       return
     }
 
-    await submitButtonState.execute(async () => {
+    await submitForm(async () => {
       try {
         await firestoreApi.addDocument("leads", {
           ...formData,
@@ -85,7 +87,7 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
         // Ignore firestore error
       }
 
-      await fetch("/api/send-telegram", {
+      const response = await fetch("/api/send-telegram", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,10 +99,11 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
         }),
       })
 
+      if (!response.ok) throw new Error("Failed to send to telegram");
+
       setFormData({ name: "", phone: "+375" })
       showSuccess("Заявка принята! Мы свяжемся с вами для обсуждения продажи вашего авто.")
-      setTimeout(() => onOpenChange(false), 2000)
-    })
+    }, () => onOpenChange(false))
   }
 
   const advantages = [

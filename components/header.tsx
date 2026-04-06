@@ -17,6 +17,7 @@ import { BlurImage } from "@/components/ui/blur-image"
 import { Menu, Phone, Loader2, Check, ArrowRight, MapPin, Clock, Moon, Sun } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 import { useCreditLeasingModal } from "@/components/providers/credit-leasing-modal-provider"
 
@@ -51,6 +52,7 @@ export default function Header() {
   const [loading, setLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
 
   useEffect(() => {
     loadSettings()
@@ -76,19 +78,19 @@ export default function Header() {
       return
     }
 
-    setIsSubmitting(true)
+    await submitForm(async () => {
+      try {
+        await firestoreApi.addDocument("leads", {
+          ...formData,
+          type: "callback",
+          status: "new",
+          createdAt: new Date(),
+        })
+      } catch (error) {
+        // Ignore firestore errors
+      }
 
-    try {
-      // Сохраняем в Firebase через API
-      await firestoreApi.addDocument("leads", {
-        ...formData,
-        type: "callback",
-        status: "new",
-        createdAt: new Date(),
-      })
-
-      // Отправляем уведомление в Telegram
-      await fetch("/api/send-telegram", {
+      const response = await fetch("/api/send-telegram", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,16 +101,11 @@ export default function Header() {
         }),
       })
 
-      setIsCallbackOpen(false)
+      if (!response.ok) throw new Error("Telegram failed");
+
       setFormData({ name: "", phone: "+375" })
-      showSuccess(
-        "Заявка на обратный звонок отправлена! Мы свяжемся с вами в ближайшее время."
-      )
-    } catch (error) {
-      showSuccess("Произошла ошибка. Попробуйте еще раз.")
-    } finally {
-      setIsSubmitting(false)
-    }
+      showSuccess("Заявка на обратный звонок отправлена! Мы свяжемся с вами в ближайшее время.")
+    }, () => setIsCallbackOpen(false))
   }
 
   return (

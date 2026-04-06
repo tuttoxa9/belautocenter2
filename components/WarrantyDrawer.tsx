@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 
 interface WarrantyDrawerProps {
   open: boolean;
@@ -16,6 +17,7 @@ interface WarrantyDrawerProps {
 
 export function WarrantyDrawer({ open, onOpenChange, programTitle, programPrice }: WarrantyDrawerProps) {
   const { showSuccess } = useNotification();
+  const { submitForm } = useSubmission();
   const [formData, setFormData] = useState({
     name: "",
     phone: "+375",
@@ -38,8 +40,7 @@ export function WarrantyDrawer({ open, onOpenChange, programTitle, programPrice 
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
-    try {
+    await submitForm(async () => {
       const payload = {
         type: "warranty_request",
         program: programTitle,
@@ -53,7 +54,6 @@ export function WarrantyDrawer({ open, onOpenChange, programTitle, programPrice 
         source: "website_warranty"
       };
 
-      // Send to Telegram (fire and forget for UI speed, but good to await for error handling if critical)
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,13 +65,8 @@ export function WarrantyDrawer({ open, onOpenChange, programTitle, programPrice 
       }
 
       showSuccess("Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
-      onOpenChange(false);
       setFormData({ name: "", phone: "+375", car: "", comment: "" });
-    } catch (error) {
-      console.error("Error sending request:", error);
-    } finally {
-      setLoading(false);
-    }
+    }, () => onOpenChange(false));
   };
 
   const footer = (
@@ -79,9 +74,9 @@ export function WarrantyDrawer({ open, onOpenChange, programTitle, programPrice 
       <Button
         onClick={handleSubmit}
         className="w-full h-12 text-base font-semibold rounded-xl"
-        disabled={!isPhoneValid(formData.phone) || !formData.name || loading}
+        disabled={!isPhoneValid(formData.phone) || !formData.name}
       >
-        {loading ? "Отправка..." : "Отправить заявку"}
+        Отправить заявку
       </Button>
       <p className="text-xs text-muted-foreground mt-3 text-center">
         Нажимая кнопку, вы соглашаетесь с <a href="/privacy" className="underline hover:text-primary">политикой обработки персональных данных</a>.

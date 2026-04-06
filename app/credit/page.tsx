@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ChevronRight, Check, DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard, ChevronDown, ChevronUp, Calculator } from "lucide-react"
@@ -48,6 +49,7 @@ export default function CreditPage() {
   const usdBynRate = useUsdBynRate()
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
 
   const [calculator, setCalculator] = useState({
     carPrice: [50000],
@@ -246,11 +248,11 @@ export default function CreditPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!isFormValid() || submitButtonState.state === 'loading') {
+    if (!isFormValid()) {
       return
     }
 
-    await submitButtonState.execute(async () => {
+    await submitForm(async () => {
       try {
         await firestoreApi.addDocument("leads", {
           ...creditForm,
@@ -261,8 +263,7 @@ export default function CreditPage() {
       } catch (error) {
       }
 
-      // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch("/api/send-telegram", {
+      const response = await fetch("/api/send-telegram", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -272,6 +273,7 @@ export default function CreditPage() {
           type: "credit_request",
         }),
       })
+      if (!response.ok) throw new Error("Telegram failed");
 
       setCreditForm({
         name: "",
@@ -283,10 +285,8 @@ export default function CreditPage() {
         bank: "",
         message: "",
       })
-      showSuccess(
-        "Заявка на кредит успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время."
-      )
-    })
+      showSuccess("Заявка на кредит успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.")
+    }) // Здесь нет окна для закрытия
   }
 
   const monthlyPayment = calculateMonthlyPayment()
@@ -749,17 +749,13 @@ export default function CreditPage() {
                     </div>
                   </div>
 
-                  <StatusButton
+                  <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 mt-3 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    state={submitButtonState.state}
-                    loadingText="Отправляем..."
-                    successText="Отправлено!"
-                    errorText="Ошибка"
                     disabled={!isFormValid()}
                   >
                     Отправить заявку на кредит
-                  </StatusButton>
+                  </Button>
 
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-tight text-center">
                     Нажимая кнопку "Отправить заявку на кредит", вы соглашаетесь с{" "}

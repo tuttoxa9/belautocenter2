@@ -8,6 +8,7 @@ import { StatusButton } from "@/components/ui/status-button"
 import { X, ChevronLeft, Car, Phone, MessageCircle, Instagram, DollarSign, RotateCcw, TrendingUp, CheckCircle } from "lucide-react"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { isPhoneValid } from "@/lib/validation"
 
@@ -68,6 +69,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
 
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
 
   // Загружаем настройки воронки из Firebase
   useEffect(() => {
@@ -109,9 +111,7 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
       return
     }
 
-    try {
-      submitButtonState.setLoading(true)
-
+    await submitForm(async () => {
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {
@@ -129,18 +129,12 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
         }),
       })
 
-      if (response.ok) {
-        submitButtonState.setSuccess(true)
-        showSuccess(funnelSettings.successMessage)
-        setTimeout(() => {
-          onClose()
-        }, 2000)
-      } else {
+      if (!response.ok) {
         throw new Error('Ошибка отправки')
       }
-    } catch (error) {
-      submitButtonState.setError(true)
-    }
+
+      showSuccess(funnelSettings.successMessage)
+    }, onClose)
   }
 
   const canProceedStep1 = formData.carMake.trim() && formData.carModel.trim() && formData.estimatedPrice.trim()
@@ -331,14 +325,13 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
               {currentStep === 1 ? 'Продолжить' : 'Подтвердить и отправить'}
             </Button>
           ) : (
-            <StatusButton
-              {...submitButtonState}
+            <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
               className="w-full h-12 text-base rounded-lg bg-yellow-400 text-slate-900 hover:bg-yellow-300 font-semibold"
             >
               Отправить заявку
-            </StatusButton>
+            </Button>
           )}
         </div>
       </div>
