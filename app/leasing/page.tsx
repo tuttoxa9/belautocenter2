@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ChevronRight, Check, DollarSign, Zap, Shield, FileText, Award, Phone, Car, Star, CheckCircle, CreditCard, ChevronDown, ChevronUp, Calculator, Building, TrendingDown, Clock, Users, Target, Briefcase } from "lucide-react"
@@ -49,6 +50,7 @@ export default function LeasingPage() {
   const usdBynRate = useUsdBynRate()
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
 
   const [calculator, setCalculator] = useState({
     carPrice: [50000],
@@ -244,7 +246,7 @@ export default function LeasingPage() {
       return
     }
 
-    await submitButtonState.execute(async () => {
+    await submitForm(async () => {
       try {
         await firestoreApi.addDocument("leads", {
           ...leasingForm,
@@ -260,8 +262,7 @@ export default function LeasingPage() {
           ? leasingForm.fullName
           : leasingForm.contactPerson
 
-      // Отправляем уведомление в Telegram (всегда выполняется)
-      await fetch("/api/send-telegram", {
+      const response = await fetch("/api/send-telegram", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -280,6 +281,7 @@ export default function LeasingPage() {
           type: "leasing_request",
         }),
       })
+      if (!response.ok) throw new Error("Telegram failed");
 
       setLeasingForm({
         clientType: "organization",
@@ -295,10 +297,8 @@ export default function LeasingPage() {
         company: "",
         message: "",
       })
-      showSuccess(
-        "Заявка на лизинг успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время."
-      )
-    })
+      showSuccess("Заявка на лизинг успешно отправлена! Мы рассмотрим ее и свяжемся с вами в ближайшее время.")
+    }) // Здесь нет закрывающегося окна
   }
 
   const monthlyPayment = calculateMonthlyPayment()
@@ -809,17 +809,13 @@ export default function LeasingPage() {
                     </div>
                   </div>
 
-                  <StatusButton
+                  <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 mt-3 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    state={submitButtonState.state}
-                    loadingText="Отправляем..."
-                    successText="Отправлено!"
-                    errorText="Ошибка"
                     disabled={!isFormValid()}
                   >
                     Отправить заявку на лизинг
-                  </StatusButton>
+                  </Button>
 
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-tight text-center">
                     Нажимая кнопку "Отправить заявку на лизинг", вы соглашаетесь с{" "}

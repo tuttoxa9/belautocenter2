@@ -12,6 +12,7 @@ import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { getCachedImageUrl } from "@/lib/image-cache"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 import { parseFirestoreDoc } from "@/lib/firestore-parser"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 
@@ -47,6 +48,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
   const usdBynRate = useUsdBynRate();
   const { showSuccess } = useNotification();
   const creditButtonState = useButtonState();
+  const { submitForm } = useSubmission();
 
   // --- COMPONENT STATE ---
   const [partnerBanks, setPartnerBanks] = useState<PartnerBank[]>([]);
@@ -160,7 +162,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
   const handleCreditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!car) return;
-    await creditButtonState.execute(async () => {
+    await submitForm(async () => {
       const payload = {
         ...creditForm, carId: car.id, carInfo: `${car.make} ${car.model} ${car.year}`,
         type: financeType, status: "new", createdAt: new Date(),
@@ -172,8 +174,14 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
         currency: isBelarusianRubles ? "BYN" : "USD", financeType: financeType,
         creditAmount: creditAmountValue,
       };
-      // Intentionally not awaiting these for faster UI response
-      fetch('/api/send-telegram', {
+
+      try {
+        await firestoreApi.addDocument("leads", payload);
+      } catch(error) {
+        // Ignore firestore errors
+      }
+
+      const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -184,12 +192,11 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
           downPayment: formatPrice(financeType === 'credit' ? downPayment[0] : leasingAdvance[0])
         })
       });
-      firestoreApi.addDocument("leads", payload);
+      if (!response.ok) throw new Error("Telegram failed");
 
-      onOpenChange(false);
       setCreditForm({ name: "", phone: "+375", message: "" });
       showSuccess(`Заявка на ${financeType === 'credit' ? 'кредит' : 'лизинг'} успешно отправлена!`);
-    });
+    }, () => onOpenChange(false));
   };
 
   // --- UI RENDER ---
@@ -359,8 +366,8 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
 
   const renderFooter = () => (
     <>
-      <Button onClick={handleCreditSubmit} className="w-full h-12 text-base" disabled={!isPhoneValid(creditForm.phone) || !creditForm.name || creditButtonState.isLoading}>
-          {creditButtonState.isLoading ? 'Отправка...' : `Отправить заявку на ${financeType === 'credit' ? 'кредит' : 'лизинг'}`}
+      <Button onClick={handleCreditSubmit} className="w-full h-12 text-base" disabled={!isPhoneValid(creditForm.phone) || !creditForm.name}>
+          {`Отправить заявку на ${financeType === 'credit' ? 'кредит' : 'лизинг'}`}
       </Button>
       <p className="text-xs text-slate-500 dark:text-gray-400 mt-3 text-center">Нажимая кнопку, вы соглашаетесь с <a href="/privacy" className="underline hover:text-blue-600 dark:hover:text-blue-400">политикой обработки персональных данных</a>.</p>
     </>

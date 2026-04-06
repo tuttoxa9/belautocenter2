@@ -10,6 +10,7 @@ import { NotificationProvider } from "@/components/providers/notification-provid
 import { ThemeProvider } from "@/components/theme-provider"
 import { CreditLeasingModalProvider } from "@/components/providers/credit-leasing-modal-provider"
 import { CreditLeasingModal } from "@/components/credit-leasing-modal"
+import { SubmissionProvider } from "@/components/providers/submission-provider"
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://belautocenter.by'),
@@ -161,15 +162,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           <UsdBynRateProvider>
             <NotificationProvider>
-              <CreditLeasingModalProvider>
-                <Header />
-                <main className="flex-1 flex flex-col">
-                  {children}
-                </main>
-                <Footer />
-                <MobileDock />
-                <CreditLeasingModal />
-              </CreditLeasingModalProvider>
+              <SubmissionProvider>
+                <CreditLeasingModalProvider>
+                  <Header />
+                  <main className="flex-1 flex flex-col">
+                    {children}
+                  </main>
+                  <Footer />
+                  <MobileDock />
+                  <CreditLeasingModal />
+                </CreditLeasingModalProvider>
+              </SubmissionProvider>
             </NotificationProvider>
           </UsdBynRateProvider>
         </ThemeProvider>

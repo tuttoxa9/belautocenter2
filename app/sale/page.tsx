@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
+import { useSubmission } from "@/components/providers/submission-provider"
 import {
   Car,
   CreditCard,
@@ -202,6 +203,7 @@ export default function SalePage() {
 
   const submitButtonState = useButtonState()
   const { showSuccess } = useNotification()
+  const { submitForm } = useSubmission()
 
   useEffect(() => {
     setIsVisible(true)
@@ -212,9 +214,7 @@ export default function SalePage() {
   }
 
   const handleSubmit = async () => {
-    try {
-      submitButtonState.setLoading(true)
-
+    await submitForm(async () => {
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {
@@ -229,17 +229,14 @@ export default function SalePage() {
         }),
       })
 
-      if (response.ok) {
-        submitButtonState.setSuccess(true)
-        showSuccess('Заявка отправлена! Мы свяжемся с вами в ближайшее время.')
-        setFormData({ name: '', phone: '+375', message: '' })
-        setSelectedService('')
-      } else {
+      if (!response.ok) {
         throw new Error('Ошибка отправки')
       }
-    } catch (error) {
-      submitButtonState.setError(true)
-    }
+
+      showSuccess('Заявка отправлена! Мы свяжемся с вами в ближайшее время.')
+      setFormData({ name: '', phone: '+375', message: '' })
+      setSelectedService('')
+    }) // Здесь нет окна для закрытия
   }
 
   const canSubmit = formData.name.trim() && formData.phone.length >= 13
@@ -612,15 +609,14 @@ export default function SalePage() {
                       rows={4}
                     />
                   </div>
-                  <StatusButton
-                    {...submitButtonState}
+                  <Button
                     onClick={handleSubmit}
                     disabled={!canSubmit}
                     className="w-full h-14 text-lg rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-white hover:from-emerald-600 hover:to-blue-600 font-bold shadow-lg hover:shadow-xl transition-all"
                   >
                     Отправить заявку
                     <ArrowRight className="ml-2 h-6 w-6" />
-                  </StatusButton>
+                  </Button>
                   <p className="text-center text-xs text-gray-500">
                     Нажимая кнопку, вы соглашаетесь с{' '}
                     <a href="/privacy" className="underline hover:text-blue-600">политикой конфиденциальности</a>
