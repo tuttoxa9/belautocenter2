@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-
+import { ShieldCheck } from "lucide-react"
 
 import { useState, useEffect, useMemo } from "react"
 import { getCachedImageUrl } from "@/lib/image-cache"
@@ -96,8 +96,20 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
 
 
 
+            {/* Гарантия */}
+            <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
+              {!dataReady ? (
+                <div className="h-5 w-16 sm:h-6 sm:w-20 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+              ) : (
+                <div className="flex items-center gap-1 bg-green-500/90 backdrop-blur-sm text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md shadow-sm">
+                  <ShieldCheck className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Гарантия</span>
+                </div>
+              )}
+            </div>
+
             {/* Year - скелетон или данные */}
-            <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
               {!dataReady ? (
                 <div className="h-5 w-10 sm:h-6 sm:w-12 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
               ) : (

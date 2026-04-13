@@ -44,7 +44,8 @@ import {
   Calendar,
   Clock,
   AlertCircle,
-  Check
+  Check,
+  ShieldCheck
 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import CarPrice from "@/components/car-price"
@@ -786,7 +787,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                       {car?.make} {car?.model}
                     </h1>
                   )}
-                  <div className="self-start sm:self-auto">
+                  <div className="flex flex-wrap items-center gap-1.5 xs:gap-2 self-start sm:self-auto">
                     {loading ? (
                       <div className="h-5 xs:h-6 sm:h-7 bg-slate-300 dark:bg-gray-700 rounded-full w-12 xs:w-16 animate-pulse"></div>
                     ) : car?.isAvailable ? (
@@ -796,6 +797,14 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                     ) : (
                       <div className="bg-red-500 dark:bg-red-600 text-white px-1.5 xs:px-2 sm:px-3 py-0.5 xs:py-1 rounded-full text-[10px] xs:text-xs sm:text-sm font-bold inline-block">
                         Продан
+                      </div>
+                    )}
+
+                    {/* Бейдж Гарантия */}
+                    {!loading && (
+                      <div className="flex items-center gap-1 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 px-1.5 xs:px-2 sm:px-3 py-0.5 xs:py-1 rounded-full text-[10px] xs:text-xs sm:text-sm font-bold">
+                        <ShieldCheck className="h-3 w-3 xs:h-3.5 xs:w-3.5 sm:h-4 sm:w-4" />
+                        <span>Гарантия</span>
                       </div>
                     )}
                   </div>
