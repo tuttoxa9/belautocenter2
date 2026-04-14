@@ -215,6 +215,33 @@ export default function SalePage() {
 
   const handleSubmit = async () => {
     await submitForm(async () => {
+      try {
+        const now = Date.now();
+        await firestoreApi.addDocument("leads", {
+          name: formData.name || "Без имени",
+          phone: formData.phone || "",
+          car: "",
+          source: "site",
+          status: "new",
+          notes: formData.message || "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: `Заявка с сайта (Услуга: ${selectedService})`
+          }],
+          payload: {
+            ...formData,
+            service: selectedService,
+            type: "service_request"
+          }
+        })
+      } catch (error) {
+        console.error("Firestore error", error)
+      }
+
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {

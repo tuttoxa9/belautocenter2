@@ -25,6 +25,7 @@ import YandexMap from '@/components/yandex-map'
 import { useButtonState } from '@/hooks/use-button-state'
 import { useNotification } from '@/components/providers/notification-provider'
 import { useSubmission } from '@/components/providers/submission-provider'
+import { firestoreApi } from '@/lib/firestore-api'
 import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
 
 interface ContactsData {
@@ -83,6 +84,32 @@ export default function ContactsClient({ contactsData }: ContactsClientProps) {
     }
 
     await submitForm(async () => {
+      try {
+        const now = Date.now();
+        await firestoreApi.addDocument("leads", {
+          name: contactForm.name || "Без имени",
+          phone: contactForm.phone || "",
+          car: "",
+          source: "site",
+          status: "new",
+          notes: contactForm.message || "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: "Заявка с сайта (Контакты)"
+          }],
+          payload: {
+            ...contactForm,
+            type: "contact_form"
+          }
+        })
+      } catch (error) {
+        console.error("Firestore error", error)
+      }
+
       // Отправка через API
       const response = await fetch('/api/send-telegram', {
         method: 'POST',

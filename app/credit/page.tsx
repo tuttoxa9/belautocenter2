@@ -254,11 +254,26 @@ export default function CreditPage() {
 
     await submitForm(async () => {
       try {
+        const now = Date.now();
         await firestoreApi.addDocument("leads", {
-          ...creditForm,
-          type: "credit_request",
+          name: creditForm.name || "Без имени",
+          phone: creditForm.phone || "",
+          car: "",
+          source: "site",
           status: "new",
-          createdAt: new Date(),
+          notes: "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: "Заявка с сайта (Кредит)"
+          }],
+          payload: {
+            ...creditForm,
+            type: "credit_request"
+          }
         })
       } catch (error) {
       }

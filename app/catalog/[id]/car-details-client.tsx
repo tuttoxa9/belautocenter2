@@ -595,13 +595,28 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
     await submitForm(async () => {
       try {
+        const now = Date.now();
+        const carInfoStr = `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`.trim();
         await firestoreApi.addDocument("leads", {
-          ...bookingForm,
-          carId: carId,
-          carInfo: `${car && car.make ? car.make : ''} ${car && car.model ? car.model : ''} ${car && car.year ? car.year : ''}`,
-          type: "booking",
+          name: bookingForm.name || "Без имени",
+          phone: bookingForm.phone || "",
+          car: carInfoStr,
+          source: "site",
           status: "new",
-          createdAt: new Date(),
+          notes: "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: "Заявка с сайта (Осмотр)"
+          }],
+          payload: {
+            ...bookingForm,
+            carId: carId,
+            type: "booking"
+          }
         })
       } catch (error) {
       }
@@ -634,13 +649,28 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
     await submitForm(async () => {
       try {
+        const now = Date.now();
+        const carInfoStr = `${car?.make || ''} ${car?.model || ''} ${car?.year || ''}`.trim();
         await firestoreApi.addDocument("leads", {
-          ...callbackForm,
-          carId: carId,
-          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-          type: "callback",
+          name: callbackForm.name || "Без имени",
+          phone: callbackForm.phone || "",
+          car: carInfoStr,
+          source: "site",
           status: "new",
-          createdAt: new Date(),
+          notes: "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: "Заявка с сайта (Перезвонить)"
+          }],
+          payload: {
+            ...callbackForm,
+            carId: carId,
+            type: "callback"
+          }
         })
       } catch (error) {
       }
@@ -672,20 +702,35 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
 
     await submitForm(async () => {
       try {
+        const now = Date.now();
+        const carInfoStr = `${car?.make || ''} ${car?.model || ''} ${car?.year || ''}`.trim();
         await firestoreApi.addDocument("leads", {
-          ...creditForm,
-          carId: carId,
-          carInfo: `${car?.make} ${car?.model} ${car?.year}`,
-          type: financeType,
+          name: creditForm.name || "Без имени",
+          phone: creditForm.phone || "",
+          car: carInfoStr,
+          source: "site",
           status: "new",
-          createdAt: new Date(),
-          creditAmount: getCurrentCreditAmount(),
-          downPayment: getCurrentDownPayment(),
-          loanTerm: loanTerm[0],
-          selectedBank: selectedBank ? selectedBank.name : "",
-          monthlyPayment: calculateMonthlyPayment(),
-          currency: isBelarusianRubles ? "BYN" : "USD",
-          financeType: financeType
+          notes: "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: `Заявка с сайта (${financeType === "leasing" ? "Лизинг" : "Кредит"})`
+          }],
+          payload: {
+            ...creditForm,
+            carId: carId,
+            type: financeType,
+            creditAmount: getCurrentCreditAmount(),
+            downPayment: getCurrentDownPayment(),
+            loanTerm: loanTerm[0],
+            selectedBank: selectedBank ? selectedBank.name : "",
+            monthlyPayment: calculateMonthlyPayment(),
+            currency: isBelarusianRubles ? "BYN" : "USD",
+            financeType: financeType
+          }
         })
       } catch (error) {
       }

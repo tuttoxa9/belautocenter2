@@ -112,6 +112,32 @@ export default function SaleModal({ isOpen, onClose }: SaleModalProps) {
     }
 
     await submitForm(async () => {
+      try {
+        const now = Date.now();
+        await firestoreApi.addDocument("leads", {
+          name: "Без имени",
+          phone: formData.phone || "",
+          car: `${formData.carMake} ${formData.carModel}`.trim(),
+          source: "site",
+          status: "new",
+          notes: `Оценочная стоимость: ${formData.estimatedPrice}`,
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: "Заявка с сайта (Продажа авто)"
+          }],
+          payload: {
+            ...formData,
+            type: "sale_funnel"
+          }
+        })
+      } catch (error) {
+        console.error("Firestore error", error)
+      }
+
       const response = await fetch('/api/send-telegram', {
         method: 'POST',
         headers: {

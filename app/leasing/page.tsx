@@ -248,11 +248,26 @@ export default function LeasingPage() {
 
     await submitForm(async () => {
       try {
+        const now = Date.now();
         await firestoreApi.addDocument("leads", {
-          ...leasingForm,
-          type: "leasing_request",
+          name: leasingForm.name || "Без имени",
+          phone: leasingForm.phone || "",
+          car: "",
+          source: "site",
           status: "new",
-          createdAt: new Date(),
+          notes: "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: "Заявка с сайта (Лизинг)"
+          }],
+          payload: {
+            ...leasingForm,
+            type: "leasing_request"
+          }
         })
       } catch (error) {
       }

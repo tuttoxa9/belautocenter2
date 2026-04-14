@@ -181,11 +181,26 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
 
     await submitForm(async () => {
       try {
+        const now = Date.now();
         await firestoreApi.addDocument("leads", {
-          ...contactForm,
-          type: "car_selection",
+          name: contactForm.name || "Без имени",
+          phone: contactForm.phone || "",
+          car: "Подбор авто",
+          source: "site",
           status: "new",
-          createdAt: new Date(),
+          notes: "",
+          createdAt: now,
+          updatedAt: now,
+          history: [{
+            status: "new",
+            changedAt: now,
+            changedBy: "system",
+            comment: "Заявка с сайта (Подбор авто)"
+          }],
+          payload: {
+            ...contactForm,
+            type: "car_selection"
+          }
         })
       } catch (error) {
       }
