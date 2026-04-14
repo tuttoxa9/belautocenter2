@@ -25,6 +25,7 @@ import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import { useSubmission } from "@/components/providers/submission-provider"
 import { useSettings } from "@/hooks/use-settings"
+import { firestoreApi } from "@/lib/firestore-api"
 import { FinancialAssistantDrawer } from "@/components/FinancialAssistantDrawer"
 import {
   Gauge,
