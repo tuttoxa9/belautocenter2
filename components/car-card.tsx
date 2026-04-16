@@ -166,7 +166,9 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                   initialPrice={car.price}
                   className="mb-0 sm:mb-1"
                   priceClassName="text-base sm:text-lg"
+                  usdPriceClassName="text-[11px] sm:text-xs"
                   showByn={true}
+                  showCredit={false}
                 />
               </div>
 

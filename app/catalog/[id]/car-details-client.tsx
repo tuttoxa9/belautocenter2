@@ -222,8 +222,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
   const [financeType, setFinanceType] = useState<'credit' | 'leasing'>('credit')
   // Состояние кредитного калькулятора
   const [creditAmount, setCreditAmount] = useState([75000])
-  const [downPayment, setDownPayment] = useState([20000])
-  const [loanTerm, setLoanTerm] = useState([60])
+  const [downPayment, setDownPayment] = useState([0])
+  const [loanTerm, setLoanTerm] = useState([120])
   const [selectedBank, setSelectedBank] = useState<PartnerBank | null>(null)
   // Состояние лизингового калькулятора
   const [leasingAmount, setLeasingAmount] = useState([75000])
@@ -266,17 +266,17 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
     if (isCreditOpen && car && car.price) {
       const price = car.price
       if (isBelarusianRubles && usdBynRate) {
-        setCreditAmount([Math.round(price * 0.8 * usdBynRate)])
-        setDownPayment([Math.round(price * 0.2 * usdBynRate)])
+        setCreditAmount([Math.round(price * usdBynRate)])
+        setDownPayment([0])
         setLeasingAmount([Math.round(price * usdBynRate)])
         setLeasingAdvance([Math.round(price * 0.2 * usdBynRate)])
       } else {
-        setCreditAmount([price * 0.8])
-        setDownPayment([price * 0.2])
+        setCreditAmount([price])
+        setDownPayment([0])
         setLeasingAmount([price])
         setLeasingAdvance([price * 0.2])
       }
-      setLoanTerm([60])
+      setLoanTerm([120])
       setLeasingTerm([36])
     }
   }, [isCreditOpen, car, isBelarusianRubles, usdBynRate])
@@ -1237,7 +1237,25 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                           <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-24 mx-auto animate-pulse"></div>
                         ) : (
                           <div className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
-                            {car?.price && usdBynRate ? formatPrice(Math.round(car.price * 0.8 / 60)) : '0'}/мес
+                            {(() => {
+                              if (!car?.price || !usdBynRate) return '0';
+                              
+                              // Находим минимальную ставку среди всех банков
+                              const minBankRate = partnerBanks.length > 0 
+                                ? Math.min(...partnerBanks.map(b => b.rate || b.minRate || 19))
+                                : 19;
+                              
+                              const principal = car.price * usdBynRate;
+                              const monthlyRate = minBankRate / 12 / 100;
+                              const term = 120; // 120 месяцев по запросу
+                              
+                              if (monthlyRate === 0) return formatPrice(Math.round(principal / term));
+                              
+                              const factor = Math.pow(1 + monthlyRate, term);
+                              const payment = principal * (monthlyRate * factor) / (factor - 1);
+                              
+                              return formatPrice(Math.round(payment));
+                            })()}/мес
                           </div>
                         )}
                       </div>
@@ -1460,7 +1478,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                           value={loanTerm[0]}
                           onChange={(e) => setLoanTerm([Number(e.target.value)])}
                           min={12}
-                          max={96}
+                          max={120}
                           step={6}
                           className="text-xs sm:text-sm h-8 sm:h-10"
                         />
@@ -1682,6 +1700,14 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                           <div className="text-xs text-slate-400 mb-0.5">Срок</div>
                           <div className="font-semibold text-xs sm:text-sm text-white">{loanTerm[0]} мес.</div>
                         </div>
+                        <Slider 
+                          value={loanTerm} 
+                          onValueChange={setLoanTerm} 
+                          max={120} 
+                          min={12} 
+                          step={6} 
+                          className="col-span-2 mt-1 sm:mt-2" 
+                        />
                       </div>
 
                       {/* Партнёр */}

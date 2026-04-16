@@ -57,7 +57,7 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
   const [loadingLeasing, setLoadingLeasing] = useState(true);
   const [financeType, setFinanceType] = useState<'credit' | 'leasing'>('credit');
   const [downPayment, setDownPayment] = useState([0]);
-  const [loanTerm, setLoanTerm] = useState([60]);
+  const [loanTerm, setLoanTerm] = useState([120]);
   const [selectedBank, setSelectedBank] = useState<PartnerBank | null>(null);
   const [leasingAdvance, setLeasingAdvance] = useState([0]);
   const [leasingTerm, setLeasingTerm] = useState([36]);
@@ -75,13 +75,13 @@ export function FinancialAssistantDrawer({ open, onOpenChange, car }: FinancialA
       const price = car.price;
       const rate = usdBynRate || 1;
       if (isBelarusianRubles) {
-        setDownPayment([Math.round(price * 0.2 * rate)]);
+        setDownPayment([0]);
         setLeasingAdvance([Math.round(price * 0.2 * rate)]);
       } else {
-        setDownPayment([Math.round(price * 0.2)]);
+        setDownPayment([0]);
         setLeasingAdvance([Math.round(price * 0.2)]);
       }
-      setLoanTerm([60]);
+      setLoanTerm([120]);
       setLeasingTerm([36]);
     }
   }, [open, car, isBelarusianRubles, usdBynRate]);
