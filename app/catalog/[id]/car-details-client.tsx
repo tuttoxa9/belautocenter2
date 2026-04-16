@@ -882,14 +882,16 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                   </>
                 ) : (
                   <>
-                    <CarPrice
-                      carId={carId}
-                      initialPrice={car?.price || 0}
-                      className="items-end"
-                      priceClassName="text-base xs:text-lg sm:text-2xl lg:text-3xl leading-tight"
-                      showByn={true}
-                      showCredit={false}
-                    />
+                     <CarPrice
+                       carId={carId}
+                       initialPrice={car?.price || 0}
+                       className="items-end"
+                       priceClassName="text-base xs:text-lg sm:text-2xl lg:text-3xl leading-tight"
+                       usdPriceClassName="text-[12px] sm:text-sm lg:text-base mt-1"
+                       showByn={true}
+                       showCredit={false}
+                       showDisclaimer={true}
+                     />
                   </>
                 )}
               </div>
