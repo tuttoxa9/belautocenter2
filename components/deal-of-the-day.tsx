@@ -198,7 +198,7 @@ export default function DealOfTheDay({ cars }: DealOfTheDayProps) {
                     carId={dealCar.id}
                     initialPrice={dealCar.price}
                     priceClassName="text-lg text-blue-600 dark:text-blue-400"
-                    showByn={false}
+                    showByn={true}
                   />
                </div>
             </div>
