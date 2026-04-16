@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn, cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface CarPriceProps {
   carId: string
@@ -50,14 +51,31 @@ export default function CarPrice({
 
   if (!price) return <span className={className}>Цена по запросу</span>
 
+  const isLoading = showByn && !usdBynRate;
+
+  if (isLoading) {
+    return (
+      <div className={cn("flex flex-col gap-1", className)}>
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-4 w-24" />
+      </div>
+    )
+  }
+
   return (
     <div className={cn("flex flex-col", className)}>
-      <div className={cn("font-bold text-slate-900 dark:text-white", priceClassName)}>
-        {formattedPrice}
-      </div>
-      {showByn && usdBynRate && (
-        <div className="text-xs text-slate-500 dark:text-gray-400 font-medium">
-          ≈ {convertUsdToByn(price, usdBynRate)} BYN
+      {showByn && usdBynRate ? (
+        <>
+          <div className={cn("font-bold text-slate-900 dark:text-white", priceClassName)}>
+            {convertUsdToByn(price, usdBynRate)} BYN
+          </div>
+          <div className="text-xs text-slate-500 dark:text-gray-400 font-medium mt-0.5">
+            ≈ {formattedPrice}
+          </div>
+        </>
+      ) : (
+        <div className={cn("font-bold text-slate-900 dark:text-white", priceClassName)}>
+          {formattedPrice}
         </div>
       )}
     </div>
