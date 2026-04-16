@@ -12,6 +12,7 @@ interface CarPriceProps {
   className?: string
   priceClassName?: string
   showByn?: boolean
+  showCredit?: boolean
 }
 
 export default function CarPrice({
@@ -19,7 +20,8 @@ export default function CarPrice({
   initialPrice,
   className,
   priceClassName,
-  showByn = true
+  showByn = true,
+  showCredit = true
 }: CarPriceProps) {
   const [price, setPrice] = useState<number>(initialPrice)
   const usdBynRate = useUsdBynRate()
@@ -71,7 +73,10 @@ export default function CarPrice({
           <div className={cn("font-bold text-slate-900 dark:text-white", priceClassName)}>
             {convertUsdToByn(price, usdBynRate)} BYN
           </div>
-          {creditData && creditData.monthlyPayment > 0 && (
+          <div className="text-[10px] text-slate-500 dark:text-gray-400 font-medium self-start">
+            ≈ {formattedPrice} <span className="opacity-70 font-normal ml-1">(не является средством расчёта)</span>
+          </div>
+          {showCredit && creditData && creditData.monthlyPayment > 0 && (
             <div className="text-xs text-slate-600 dark:text-gray-400 font-semibold mt-1">
               от {creditData.monthlyPayment} BYN/мес
             </div>

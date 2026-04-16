@@ -222,7 +222,7 @@ export function CarsCarousel() {
                         {car.make} {car.model}
                       </h4>
                       <div className="font-bold text-slate-900 dark:text-slate-100 text-base">
-                        {usdBynRate ? `${Math.round(car.price * usdBynRate).toLocaleString("ru-BY")} BYN` : "--- BYN"}
+                        {formatCurrency(car.price)}
                       </div>
                     </div>
 

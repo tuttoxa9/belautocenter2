@@ -888,14 +888,8 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                       className="items-end"
                       priceClassName="text-base xs:text-lg sm:text-2xl lg:text-3xl leading-tight"
                       showByn={true}
+                      showCredit={false}
                     />
-                    <div className="text-[10px] xs:text-xs sm:text-sm text-slate-500 dark:text-gray-500 mt-0.5 xs:mt-1">
-                      от {car?.price ? new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                        minimumFractionDigits: 0,
-                      }).format(Math.round(car.price * 0.8 / 60)) : '0'}/мес
-                    </div>
                   </>
                 )}
               </div>
