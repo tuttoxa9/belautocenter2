@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn, cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useCreditCalculator } from "@/hooks/use-credit-calculator"
 
 interface CarPriceProps {
   carId: string
@@ -22,10 +23,10 @@ export default function CarPrice({
 }: CarPriceProps) {
   const [price, setPrice] = useState<number>(initialPrice)
   const usdBynRate = useUsdBynRate()
+  const creditData = useCreditCalculator(price)
 
   useEffect(() => {
     // Делаем дополнительный запрос для 100% уверенности в актуальности цены
-    // Запрос идет к нашему API, который берет данные из Vercel Cache
     const fetchLatestPrice = async () => {
       try {
         const response = await fetch(`/api/cars/${carId}/price`)
@@ -51,13 +52,14 @@ export default function CarPrice({
 
   if (!price) return <span className={className}>Цена по запросу</span>
 
-  const isLoading = showByn && !usdBynRate;
+  const isLoading = showByn && !usdBynRate
 
   if (isLoading) {
     return (
       <div className={cn("flex flex-col gap-1", className)}>
         <Skeleton className="h-6 w-32" />
         <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-28" />
       </div>
     )
   }
@@ -69,9 +71,14 @@ export default function CarPrice({
           <div className={cn("font-bold text-slate-900 dark:text-white", priceClassName)}>
             {convertUsdToByn(price, usdBynRate)} BYN
           </div>
-          <div className="text-xs text-slate-500 dark:text-gray-400 font-medium mt-0.5">
-            ≈ {formattedPrice}
+          <div className="text-[10px] text-slate-500 dark:text-gray-400 font-medium self-start">
+            ≈ {formattedPrice} <span className="opacity-70 font-normal ml-1">(не является средством расчёта)</span>
           </div>
+          {creditData && creditData.monthlyPayment > 0 && (
+            <div className="text-xs text-slate-600 dark:text-gray-400 font-semibold mt-1">
+              от {creditData.monthlyPayment} BYN/мес
+            </div>
+          )}
         </>
       ) : (
         <div className={cn("font-bold text-slate-900 dark:text-white", priceClassName)}>

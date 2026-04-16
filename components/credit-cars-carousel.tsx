@@ -228,7 +228,9 @@ export function CarsCarousel() {
 
                     {/* Monthly Payment - Simplified */}
                     <div className="bg-green-50 dark:bg-green-900/30 rounded-lg p-2">
-                      <div className="text-xs text-green-700 dark:text-green-400 mb-1">от {formatCurrency(monthlyPayment)}/мес</div>
+                      <div className="text-xs text-green-700 dark:text-green-400 mb-1">
+                        от {usdBynRate ? Math.round(monthlyPayment * usdBynRate) : "---"} BYN/мес
+                      </div>
                     </div>
                   </CardContent>
                 </Link>
