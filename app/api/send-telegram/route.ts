@@ -177,6 +177,41 @@ export async function POST(request: NextRequest) {
         }
     }
 
+    // Отправляем заявку в новую CRM (Webhook)
+    const crmWebhookUrl = process.env.CRM_WEBHOOK_URL
+    if (crmWebhookUrl) {
+      try {
+        const crmSecret = process.env.CRM_WEBHOOK_SECRET
+        
+        // Извлекаем чистый текст для заметки, убирая HTML теги
+        const cleanMessage = message.replace(/<[^>]*>?/gm, '')
+        
+        const carInfo = (carMake || carModel) ? `${carMake || ''} ${carModel || ''}`.trim() : (body.car || '')
+        
+        const crmData = {
+          name: name || 'Не указано',
+          phone: phone,
+          car: carInfo,
+          source: 'site',
+          notes: cleanMessage,
+          // Передаем весь исходный объект body для гибкости на стороне CRM
+          payload: body
+        }
+
+        await fetch(crmWebhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(crmSecret ? { 'Authorization': `Bearer ${crmSecret}` } : {})
+          },
+          body: JSON.stringify(crmData)
+        })
+      } catch (crmError) {
+        console.error('Ошибка при отправке в CRM:', crmError)
+        // Не прерываем выполнение, пусть Telegram уведомление уйдёт в любом случае
+      }
+    }
+
     // Отправляем в Telegram
     const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`
 
