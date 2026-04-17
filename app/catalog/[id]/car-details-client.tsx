@@ -855,21 +855,6 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center justify-end md:justify-start gap-1 xs:gap-1.5 sm:gap-2 text-slate-600 dark:text-gray-400">
-                  {loading ? (
-                    <>
-                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-10 xs:w-12 animate-pulse"></div>
-                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-12 xs:w-16 animate-pulse"></div>
-                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-10 xs:w-14 animate-pulse"></div>
-                    </>
-                  ) : (
-                    <>
-                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.year}</span>
-                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.color}</span>
-                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.bodyType}</span>
-                    </>
-                  )}
-                </div>
               </div>
 
               {/* Цена справа - всегда горизонтально */}
@@ -894,6 +879,21 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                      />
                   </>
                 )}
+                <div className="flex flex-row flex-nowrap whitespace-nowrap items-center justify-end mt-2 gap-1 xs:gap-1.5 sm:gap-2 text-slate-600 dark:text-gray-400">
+                  {loading ? (
+                    <>
+                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-10 xs:w-12 animate-pulse"></div>
+                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-12 xs:w-16 animate-pulse"></div>
+                      <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-10 xs:w-14 animate-pulse"></div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.year}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.color}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-md xs:rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium dark:text-gray-200">{car?.bodyType}</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
