@@ -1232,7 +1232,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                   <div className="rounded-xl p-3 sm:p-4 border border-slate-200/50 dark:border-gray-700/50 bg-[#F7F8FA] dark:bg-gray-800/50">
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div className="text-center">
-                        <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-1">Кредит от</div>
+                        <div className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mb-1">Кредит</div>
                         {loading || (!usdBynRate && car?.price) ? (
                           <div className="h-5 sm:h-6 bg-slate-300 dark:bg-gray-700 rounded w-24 mx-auto animate-pulse"></div>
                         ) : (
