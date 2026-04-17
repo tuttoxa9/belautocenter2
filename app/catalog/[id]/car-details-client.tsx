@@ -855,7 +855,7 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-1 xs:gap-1.5 sm:gap-2 text-slate-600 dark:text-gray-400">
+                <div className="flex flex-wrap items-center justify-end md:justify-start gap-1 xs:gap-1.5 sm:gap-2 text-slate-600 dark:text-gray-400">
                   {loading ? (
                     <>
                       <div className="h-5 xs:h-6 bg-slate-300 dark:bg-gray-700 rounded-lg w-10 xs:w-12 animate-pulse"></div>
