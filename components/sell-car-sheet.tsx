@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
@@ -44,6 +45,7 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
   const [formData, setFormData] = useState({
     name: "",
     phone: "+375",
+    message: "",
   })
   const [settings, setSettings] = useState<Settings | null>(null)
 
@@ -101,7 +103,7 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
 
       if (!response.ok) throw new Error("Failed to send to telegram");
 
-      setFormData({ name: "", phone: "+375" })
+      setFormData({ name: "", phone: "+375", message: "" })
       showSuccess("Заявка принята! Мы свяжемся с вами для обсуждения продажи вашего авто.")
     }, () => onOpenChange(false))
   }
@@ -295,6 +297,16 @@ export function SellCarSheet({ open, onOpenChange }: SellCarSheetProps) {
                       placeholder="+375 (XX) XXX-XX-XX"
                       className="h-12 bg-slate-50/50 dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-xl transition-all"
                       required
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="sell-message" className="text-xs uppercase text-slate-500 font-bold tracking-wider ml-1">Комментарий (необязательно)</Label>
+                    <Textarea
+                      id="sell-message"
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      placeholder="Расскажите об авто или задайте вопрос..."
+                      className="min-h-[100px] bg-slate-50/50 dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-xl transition-all resize-none"
                     />
                   </div>
 

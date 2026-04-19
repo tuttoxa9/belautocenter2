@@ -68,6 +68,14 @@ const nextConfig = {
   headers: async () => {
     return []
   },
+  rewrites: async () => {
+    return [
+      {
+        source: '/sale',
+        destination: '/',
+      },
+    ]
+  },
 }
 
 export default nextConfig

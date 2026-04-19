@@ -15,11 +15,12 @@ import DynamicSelectionSkeleton from "@/components/dynamic-selection-skeleton"
 import { useButtonState } from "@/hooks/use-button-state"
 import { useNotification } from "@/components/providers/notification-provider"
 import { useSubmission } from "@/components/providers/submission-provider"
-import SaleModal from "@/app/sale/sale-modal"
 import { SellCarSheet } from "@/components/sell-car-sheet"
 import { CheckCircle, Check } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { PremiumLoader } from "@/components/ui/premium-loader"
 
 interface HomepageSettings {
   heroTitle: string
@@ -51,8 +52,39 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
   const contactButtonState = useButtonState()
   const { showSuccess } = useNotification()
   const { submitForm } = useSubmission()
-  const [showSaleModal, setShowSaleModal] = useState(false)
   const [isSellSheetOpen, setIsSellSheetOpen] = useState(false)
+  
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [showPremiumLoader, setShowPremiumLoader] = useState(false)
+  const [isInitialMount, setIsInitialMount] = useState(true)
+
+  // Handle /sale route and initial loading
+  useEffect(() => {
+    if (isInitialMount) {
+      if (pathname === '/sale') {
+        setShowPremiumLoader(true)
+        // Delay opening the sheet slightly to allow the home page to "load" behind the loader
+        const timer = setTimeout(() => {
+          setIsSellSheetOpen(true)
+          setShowPremiumLoader(false)
+        }, 1500)
+        return () => clearTimeout(timer)
+      }
+      setIsInitialMount(false)
+    }
+  }, [pathname, isInitialMount])
+
+  // Sync URL with drawer state
+  const handleOpenSellSheetChange = (open: boolean) => {
+    setIsSellSheetOpen(open)
+    if (open) {
+      window.history.pushState(null, '', '/sale')
+    } else {
+      window.history.pushState(null, '', '/')
+    }
+  }
 
   const animatedTexts = [
     "Поможем с приобретением и продажей автомобиля",
@@ -224,6 +256,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
 
   return (
     <div className="min-h-screen bg-white dark:bg-black homepage -mt-14">
+      <PremiumLoader isVisible={showPremiumLoader} text="Подготовка страницы..." />
       {/* Главный баннер */}
       <section className="relative min-h-[85vh] sm:min-h-[80vh] md:min-h-[75vh] lg:min-h-[80vh] xl:min-h-[85vh] flex items-center justify-center pt-14 bg-black dark:bg-black">
 
@@ -333,7 +366,7 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
               size="lg"
               variant="outline"
               className="w-full sm:w-auto bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-sm xs:text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-6 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] sm:hover:scale-105 transition-all duration-300 cursor-pointer"
-              onClick={() => setIsSellSheetOpen(true)}
+              onClick={() => handleOpenSellSheetChange(true)}
             >
               Продать автомобиль
             </Button>
@@ -453,15 +486,11 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
         </div>
       </section>
 
-      {/* Модальное окно продажи автомобиля */}
-      <SaleModal
-        isOpen={showSaleModal}
-        onClose={() => setShowSaleModal(false)}
-      />
+      {/* Sell car sheet */}
 
       <SellCarSheet
         open={isSellSheetOpen}
-        onOpenChange={setIsSellSheetOpen}
+        onOpenChange={handleOpenSellSheetChange}
       />
 
     </div>
