@@ -19,7 +19,7 @@ import { SellCarSheet } from "@/components/sell-car-sheet"
 import { CheckCircle, Check } from "lucide-react"
 import { firestoreApi } from "@/lib/firestore-api"
 import { formatPhoneNumber, isPhoneValid } from "@/lib/validation"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { PremiumLoader } from "@/components/ui/premium-loader"
 
 interface HomepageSettings {
@@ -56,7 +56,6 @@ export default function HomeClient({ initialSettings, featuredCars, allCars }: H
   
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const [showPremiumLoader, setShowPremiumLoader] = useState(false)
   const [isInitialMount, setIsInitialMount] = useState(true)
 
