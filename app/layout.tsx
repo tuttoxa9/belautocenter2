@@ -11,6 +11,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { CreditLeasingModalProvider } from "@/components/providers/credit-leasing-modal-provider"
 import { CreditLeasingModal } from "@/components/credit-leasing-modal"
 import { SubmissionProvider } from "@/components/providers/submission-provider"
+import { GlobalProgressBar } from "@/components/global-progress-bar"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://belautocenter.by'),
@@ -165,6 +167,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <SubmissionProvider>
                 <CreditLeasingModalProvider>
                   <Header />
+                  <Suspense fallback={null}>
+                    <GlobalProgressBar />
+                  </Suspense>
                   <main className="flex-1 flex flex-col">
                     {children}
                   </main>

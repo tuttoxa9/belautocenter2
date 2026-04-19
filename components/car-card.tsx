@@ -83,6 +83,8 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                 alt={`${car.make} ${car.model}`}
                 fill
                 quality={75}
+                showProgress={true}
+                enabled={isIntersecting}
                 containerClassName="h-full w-full"
                 className={cn(
                   "object-cover duration-500",
