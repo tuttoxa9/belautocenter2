@@ -129,9 +129,11 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
             // Скелетон до готовности данных
             <>
               <div className="mb-2">
-                <div className="h-5 bg-slate-200 dark:bg-zinc-800 rounded w-32 animate-pulse mb-1"></div>
-                <div className="h-6 bg-slate-200 dark:bg-zinc-800 rounded w-20 animate-pulse mb-1"></div>
-                <div className="h-4 bg-slate-200 dark:bg-zinc-800 rounded w-24 animate-pulse"></div>
+                <div className="h-[1.2em] bg-slate-200 dark:bg-zinc-800 rounded w-32 animate-pulse mb-1 text-sm sm:text-base"></div>
+                <div className="flex flex-col gap-1 mb-1 sm:mb-2">
+                  <div className="h-[1.25em] bg-slate-200 dark:bg-zinc-800 rounded animate-pulse w-20 text-base sm:text-lg"></div>
+                  <div className="h-[1em] bg-slate-200 dark:bg-zinc-800 rounded animate-pulse w-24 text-[11px] sm:text-xs"></div>
+                </div>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between">

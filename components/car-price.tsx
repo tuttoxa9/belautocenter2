@@ -63,9 +63,8 @@ export default function CarPrice({
   if (isLoading) {
     return (
       <div className={cn("flex flex-col gap-1", className)}>
-        <Skeleton className="h-6 w-32" />
-        <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-4 w-28" />
+        <div className={cn("h-[1.25em] bg-slate-200 dark:bg-zinc-800 rounded animate-pulse w-32", priceClassName)} />
+        <div className={cn("h-[1em] bg-slate-200 dark:bg-zinc-800 rounded animate-pulse w-24", usdPriceClassName)} />
       </div>
     )
   }

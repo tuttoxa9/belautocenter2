@@ -860,11 +860,10 @@ export default function CarDetailsClient({ carId, initialCar }: CarDetailsClient
               {/* Цена справа - всегда горизонтально */}
               <div className="text-right flex-shrink-0">
                 {loading ? (
-                  <>
-                    <div className="h-5 xs:h-6 sm:h-8 lg:h-9 bg-slate-300 dark:bg-gray-700 rounded w-16 xs:w-24 mb-1 animate-pulse ml-auto"></div>
-                    <div className="h-3 xs:h-4 sm:h-5 lg:h-6 bg-slate-300 dark:bg-gray-700 rounded w-14 xs:w-20 animate-pulse ml-auto"></div>
-                    <div className="h-2 xs:h-3 sm:h-4 bg-slate-300 dark:bg-gray-700 rounded w-10 xs:w-16 mt-1 animate-pulse ml-auto"></div>
-                  </>
+                  <div className="flex flex-col gap-1 items-end">
+                    <div className="h-[1.25em] bg-slate-300 dark:bg-gray-700 rounded w-16 xs:w-32 animate-pulse text-base xs:text-lg sm:text-2xl lg:text-3xl"></div>
+                    <div className="h-[1em] bg-slate-300 dark:bg-gray-700 rounded w-14 xs:w-24 animate-pulse text-[12px] sm:text-sm lg:text-base"></div>
+                  </div>
                 ) : (
                   <>
                      <CarPrice

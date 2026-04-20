@@ -40,10 +40,9 @@ export default function CarDetailsSkeleton() {
                   <div className="h-5 bg-gray-200/60 rounded-xl w-16 animate-pulse"></div>
                 </div>
               </div>
-              <div className="text-right flex-shrink-0">
-                <div className="h-5 sm:h-8 lg:h-10 bg-gray-200/60 rounded w-20 sm:w-32 animate-pulse mb-1"></div>
-                <div className="h-3 sm:h-5 lg:h-6 bg-gray-200/60 rounded w-16 sm:w-24 animate-pulse"></div>
-                <div className="h-3 sm:h-4 bg-gray-200/60 rounded w-14 sm:w-20 animate-pulse mt-1"></div>
+              <div className="text-right flex-shrink-0 flex flex-col gap-1 items-end">
+                <div className="h-[1.25em] bg-gray-200/60 rounded w-20 sm:w-40 animate-pulse text-base xs:text-lg sm:text-2xl lg:text-3xl"></div>
+                <div className="h-[1em] bg-gray-200/60 rounded w-16 sm:w-28 animate-pulse text-[12px] sm:text-sm lg:text-base"></div>
               </div>
             </div>
           </div>
