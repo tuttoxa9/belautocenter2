@@ -99,6 +99,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window === 'undefined') return;
+                const noop = () => {};
+                const methods = ['log', 'debug', 'info', 'warn', 'error', 'table', 'clear', 'time', 'timeEnd', 'group', 'groupEnd', 'trace'];
+                methods.forEach(method => {
+                  try {
+                    window.console[method] = noop;
+                  } catch (e) {}
+                });
+                window.onerror = () => true;
+                window.onunhandledrejection = () => true;
+              })();
+            `,
+          }}
+        />
         <meta name="yandex-verification" content="a9085911ec7f5c05" />
         <link
           rel="preload"
