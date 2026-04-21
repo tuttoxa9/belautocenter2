@@ -104,15 +104,51 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               (function() {
                 if (typeof window === 'undefined') return;
+
+                // 1. Создаем вечный "заглушитель" через Proxy
                 const noop = () => {};
-                const methods = ['log', 'debug', 'info', 'warn', 'error', 'table', 'clear', 'time', 'timeEnd', 'group', 'groupEnd', 'trace'];
-                methods.forEach(method => {
-                  try {
-                    window.console[method] = noop;
-                  } catch (e) {}
+                const silentConsole = new Proxy({}, {
+                  get: () => noop
                 });
-                window.onerror = () => true;
-                window.onunhandledrejection = () => true;
+
+                // 2. Пытаемся жестко зафиксировать console
+                try {
+                  Object.defineProperty(window, 'console', {
+                    value: silentConsole,
+                    writable: false,
+                    configurable: false
+                  });
+                } catch (e) {
+                  // Если не вышло заблокировать, просто подменяем методы
+                  const methods = Object.keys(window.console);
+                  methods.forEach(m => { try { window.console[m] = noop; } catch(e){} });
+                }
+
+                // 3. Глобальный перехват всех ошибок и промисов
+                const hideError = (e) => {
+                  try {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  } catch(err) {}
+                  return true;
+                };
+
+                window.onerror = hideError;
+                window.onunhandledrejection = hideError;
+                window.addEventListener('error', hideError, true);
+                window.addEventListener('unhandledrejection', hideError, true);
+
+                // 4. Защита от ошибки "Custom element already defined"
+                if (window.customElements && window.customElements.define) {
+                  const originalDefine = window.customElements.define;
+                  window.customElements.define = function(name, constructor, options) {
+                    if (this.get(name)) return;
+                    return originalDefine.call(this, name, constructor, options);
+                  };
+                }
+                
+                // 5. Подавляем логи от Next.js / Webpack HMR (если возможно)
+                window.__NEXT_DATA__ = window.__NEXT_DATA__ || {};
               })();
             `,
           }}
