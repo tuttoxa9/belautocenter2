@@ -267,9 +267,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     monthlyPayment: "",
   })
   
-  const debouncedSearchQuery = useDebounce(searchQuery, 400);
-  const debouncedMonthlyPayment = useDebounce(filters.monthlyPayment, 400);
-  
+
   const usdBynRate = useUsdBynRate();
   const [bankRate, setBankRate] = useState<number>(14.5);
 
@@ -294,6 +292,9 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
   const [sortBy, setSortBy] = useState("date-desc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  
+  const debouncedSearchQuery = useDebounce(searchQuery, 400);
+  const debouncedMonthlyPayment = useDebounce(filters.monthlyPayment, 400);
 
   useEffect(() => {
     setCars(initialCars)
