@@ -12,6 +12,7 @@ import CarCard from "@/components/car-card"
 import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw, Search, Calculator } from "lucide-react"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
+import { useDebounce } from "@/hooks/use-debounce"
 
 interface Car {
   id: string;
@@ -188,7 +189,7 @@ const DesktopFilters = ({ filters, setFilters, availableMakes, availableModels, 
           <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Коробка</Label>
           <Select value={filters.transmission} onValueChange={(value) => setFilters({ ...filters, transmission: value })}>
             <SelectTrigger className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white h-9 text-sm rounded-lg"><SelectValue placeholder="-" /></SelectTrigger>
-            <SelectContent className="border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
+            <SelectContent className="border border-gray-200 dark:border-gray-700 dark:bg-gray-800 shadow-lg rounded-lg">
               <SelectItem value="any">Любая</SelectItem>
               <SelectItem value="Механика">Механика</SelectItem>
               <SelectItem value="Автомат">Автомат</SelectItem>
@@ -265,6 +266,10 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     fromEuropeOnly: false,
     monthlyPayment: "",
   })
+  
+  const debouncedSearchQuery = useDebounce(searchQuery, 400);
+  const debouncedMonthlyPayment = useDebounce(filters.monthlyPayment, 400);
+  
   const usdBynRate = useUsdBynRate();
   const [bankRate, setBankRate] = useState<number>(14.5);
 
@@ -336,7 +341,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       const yearTo = filters.yearTo ? parseInt(filters.yearTo, 10) || 0 : 0
       const mileageFrom = filters.mileageFrom ? parseInt(filters.mileageFrom, 10) || 0 : 0
       const mileageTo = filters.mileageTo ? parseInt(filters.mileageTo, 10) || 0 : 0
-      const desiredPayment = filters.monthlyPayment ? parseInt(filters.monthlyPayment, 10) || 0 : 0
+      const desiredPayment = debouncedMonthlyPayment ? parseInt(debouncedMonthlyPayment, 10) || 0 : 0
 
       let matchesPayment = true;
       if (desiredPayment > 0) {
@@ -353,9 +358,9 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       }
 
       const matchesSearchQuery =
-        !searchQuery ||
-        (car.make && car.make.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (car.model && car.model.toLowerCase().includes(searchQuery.toLowerCase()))
+        !debouncedSearchQuery ||
+        (car.make && car.make.toLowerCase().includes(debouncedSearchQuery.toLowerCase())) ||
+        (car.model && car.model.toLowerCase().includes(debouncedSearchQuery.toLowerCase()))
 
       return (
         matchesSearchQuery &&
@@ -394,11 +399,17 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     const initialDisplayed = filtered.slice(0, carsPerPage)
     setDisplayedCars(initialDisplayed)
     setHasMore(filtered.length > carsPerPage)
-  }, [cars, filters, sortBy, carsPerPage, searchQuery, usdBynRate, bankRate])
+  }, [
+    cars, sortBy, carsPerPage, usdBynRate, bankRate,
+    debouncedSearchQuery, debouncedMonthlyPayment,
+    filters.priceFrom, filters.priceTo, filters.make, filters.model,
+    filters.yearFrom, filters.yearTo, filters.mileageFrom, filters.mileageTo,
+    filters.transmission, filters.fuelType, filters.driveTrain, filters.fromEuropeOnly
+  ])
 
   useEffect(() => {
     applyFilters()
-  }, [sortBy, applyFilters])
+  }, [applyFilters])
 
   const loadMoreCars = useCallback(() => {
     if (loadingMore || !hasMore) return
@@ -428,11 +439,6 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       monthlyPayment: "",
     })
     setSearchQuery("")
-    applyFilters()
-  }
-
-  const handleSearch = () => {
-    applyFilters()
   }
 
   const hasActiveFilters = () => {
@@ -460,11 +466,9 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
               placeholder="Поиск по маркам и моделям..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-400 h-10 xs:h-12 text-sm xs:text-base pl-10 xs:pl-12 rounded-lg w-full pr-24 xs:pr-28"
+              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-400 h-10 xs:h-12 text-sm xs:text-base pl-10 xs:pl-12 rounded-lg w-full"
             />
             <Search className="absolute left-3 xs:left-4 top-1/2 -translate-y-1/2 h-4 w-4 xs:h-5 xs:w-5 text-gray-400 dark:text-gray-500" />
-            <Button onClick={handleSearch} className="absolute right-1.5 xs:right-2 top-1/2 -translate-y-1/2 h-7 xs:h-9 px-2 xs:px-4 text-xs xs:text-sm bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-md transition-colors">Найти</Button>
           </div>
         </div>
 
@@ -536,11 +540,9 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                     placeholder="Поиск по маркам и моделям..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    className="h-10 sm:h-11 bg-white dark:bg-white/10 border-slate-200 dark:border-white/20 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm px-3 sm:px-4 pl-10 lg:pl-4 rounded-xl focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:border-transparent transition-all shadow-sm dark:shadow-none pr-24"
+                    className="h-10 sm:h-11 bg-white dark:bg-white/10 border-slate-200 dark:border-white/20 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm px-3 sm:px-4 pl-10 lg:pl-4 rounded-xl focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:border-transparent transition-all shadow-sm dark:shadow-none"
                   />
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 lg:hidden" />
-                  <Button onClick={handleSearch} className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 px-4 text-xs font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors">Найти</Button>
                 </div>
               </div>
             </div>
