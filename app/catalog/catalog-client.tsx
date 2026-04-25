@@ -9,8 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import CarCard from "@/components/car-card"
-import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw, Search } from "lucide-react"
+import { Filter, SlidersHorizontal, ArrowRight, X, RotateCcw, Search, Calculator } from "lucide-react"
 import { UniversalDrawer } from "@/components/ui/UniversalDrawer"
+import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 
 interface Car {
   id: string;
@@ -262,7 +263,29 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     fuelType: "any",
     driveTrain: "any",
     fromEuropeOnly: false,
+    monthlyPayment: "",
   })
+  const usdBynRate = useUsdBynRate();
+  const [bankRate, setBankRate] = useState<number>(14.5);
+
+  useEffect(() => {
+    const fetchBankRate = async () => {
+      try {
+        const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'belauto-f2b93';
+        const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages/credit`);
+        const rawData = await res.json();
+        const { parseFirestoreDoc } = await import("@/lib/firestore-parser");
+        const data = parseFirestoreDoc(rawData);
+        if (data && data.partners && data.partners.length > 0) {
+          const firstBank = data.partners[0];
+          setBankRate(firstBank.rate ?? firstBank.minRate ?? 14.5);
+        }
+      } catch (e) {
+        console.error("Error fetching bank rate:", e);
+      }
+    };
+    fetchBankRate();
+  }, []);
   const [sortBy, setSortBy] = useState("date-desc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -313,6 +336,21 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       const yearTo = filters.yearTo ? parseInt(filters.yearTo, 10) || 0 : 0
       const mileageFrom = filters.mileageFrom ? parseInt(filters.mileageFrom, 10) || 0 : 0
       const mileageTo = filters.mileageTo ? parseInt(filters.mileageTo, 10) || 0 : 0
+      const desiredPayment = filters.monthlyPayment ? parseInt(filters.monthlyPayment, 10) || 0 : 0
+
+      let matchesPayment = true;
+      if (desiredPayment > 0) {
+        const carPriceBYN = carPrice * (usdBynRate || 3.2);
+        const rate = bankRate / 100 / 12;
+        const term = 120;
+        let monthlyPayment = 0;
+        if (rate <= 0) {
+           monthlyPayment = carPriceBYN / term;
+        } else {
+           monthlyPayment = carPriceBYN * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+        }
+        matchesPayment = monthlyPayment >= desiredPayment - 100 && monthlyPayment <= desiredPayment + 100;
+      }
 
       const matchesSearchQuery =
         !searchQuery ||
@@ -321,6 +359,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
 
       return (
         matchesSearchQuery &&
+        matchesPayment &&
         (filters.priceFrom === "" || priceFrom === 0 || carPrice >= priceFrom) &&
         (filters.priceTo === "" || priceTo === 0 || carPrice <= priceTo) &&
         (filters.make === "all" || car.make === filters.make) &&
@@ -355,7 +394,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     const initialDisplayed = filtered.slice(0, carsPerPage)
     setDisplayedCars(initialDisplayed)
     setHasMore(filtered.length > carsPerPage)
-  }, [cars, filters, sortBy, carsPerPage, searchQuery])
+  }, [cars, filters, sortBy, carsPerPage, searchQuery, usdBynRate, bankRate])
 
   useEffect(() => {
     applyFilters()
@@ -386,6 +425,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
       yearFrom: "", yearTo: "", mileageFrom: "", mileageTo: "",
       transmission: "any", fuelType: "any", driveTrain: "any",
       fromEuropeOnly: false,
+      monthlyPayment: "",
     })
     setSearchQuery("")
     applyFilters()
@@ -399,7 +439,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
     return filters.priceFrom !== "" || filters.priceTo !== "" || filters.make !== "all" ||
            filters.model !== "all" || filters.yearFrom !== "" || filters.yearTo !== "" ||
            filters.mileageFrom !== "" || filters.mileageTo !== "" || filters.transmission !== "any" ||
-           filters.fuelType !== "any" || filters.driveTrain !== "any" || searchQuery !== "" || filters.fromEuropeOnly
+           filters.fuelType !== "any" || filters.driveTrain !== "any" || searchQuery !== "" || filters.fromEuropeOnly || filters.monthlyPayment !== ""
   }
 
   return (
@@ -441,6 +481,47 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           <div className="lg:w-96 hidden lg:block"><DesktopFilters filters={filters} setFilters={setFilters} availableMakes={availableMakes} availableModels={availableModels} hasActiveFilters={hasActiveFilters} resetFilters={resetFilters} applyFilters={applyFilters} /></div>
 
           <div className="flex-1">
+            {/* Payment Filter Widget */}
+            <div className="mb-6 sm:mb-8 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900/30 dark:to-blue-900/10 rounded-2xl p-5 sm:p-6 shadow-lg border border-slate-700/50 dark:border-blue-500/20 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-32 h-32 sm:w-48 sm:h-48 bg-blue-500/20 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-24 h-24 sm:w-32 sm:h-32 bg-purple-500/20 rounded-full blur-2xl"></div>
+
+              <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
+                <div className="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
+                  <div className="bg-white/10 p-2.5 sm:p-3 rounded-xl backdrop-blur-sm shrink-0">
+                    <Calculator className="h-5 w-5 sm:h-6 sm:w-6 text-blue-300" />
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-semibold text-white">Подбор по платежу</h3>
+                    <p className="text-xs sm:text-sm text-slate-300">Найдем авто под ваш бюджет (без аванса)</p>
+                  </div>
+                </div>
+                
+                <div className="flex-1 w-full md:w-auto flex items-center gap-2 sm:gap-3">
+                  <div className="relative flex-1 max-w-sm">
+                    <Input 
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Желаемый платеж, BYN"
+                      value={filters.monthlyPayment}
+                      onChange={(e) => setFilters({...filters, monthlyPayment: e.target.value.replace(/[^0-9]/g, '')})}
+                      className="h-11 sm:h-12 bg-white/10 border-white/20 text-white placeholder:text-slate-400 text-base sm:text-lg px-3 sm:px-4 rounded-xl backdrop-blur-md focus-visible:ring-blue-400 focus-visible:border-transparent"
+                    />
+                    <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm sm:text-base pointer-events-none">BYN/мес</div>
+                  </div>
+                  {filters.monthlyPayment && (
+                     <Button 
+                       variant="ghost" 
+                       onClick={() => setFilters({...filters, monthlyPayment: ""})}
+                       className="h-11 sm:h-12 px-3 sm:px-4 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl text-sm sm:text-base shrink-0"
+                     >
+                       Сбросить
+                     </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-4">
               <div>
                 <h1 className="text-xl xs:text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">Каталог автомобилей</h1>
