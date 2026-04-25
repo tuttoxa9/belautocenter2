@@ -182,11 +182,11 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                   {!dataReady || creditData.loading ? (
                     <div className="h-10 w-24 sm:h-11 sm:w-28 bg-slate-200 dark:bg-zinc-800 rounded-lg animate-pulse shadow-sm"></div>
                   ) : creditData.monthlyPayment ? (
-                    <div className="flex flex-col rounded-lg overflow-hidden shadow-[0_4px_12px_-2px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.4)] border border-blue-900/10 dark:border-blue-500/20">
-                      <div className="bg-blue-900 dark:bg-blue-900/80 text-white text-[10px] sm:text-xs font-bold px-2 py-1 sm:px-2.5 sm:py-1.5 whitespace-nowrap text-center">
-                        {creditData.monthlyPayment} <span className="text-[9px] sm:text-[10px] text-blue-200 dark:text-blue-200 font-medium ml-0.5">BYN/мес</span>
+                    <div className="flex flex-col rounded-lg overflow-hidden shadow-sm dark:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.4)] border border-transparent dark:border-blue-800/30 ring-1 ring-slate-900/5 dark:ring-0">
+                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-slate-800 dark:to-slate-800 text-white text-[10px] sm:text-xs font-bold px-2 py-1 sm:px-2.5 sm:py-1.5 whitespace-nowrap text-center">
+                        {creditData.monthlyPayment} <span className="text-[9px] sm:text-[10px] text-blue-100 dark:text-slate-300 font-medium ml-0.5">BYN/мес</span>
                       </div>
-                      <div className="bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 text-[8px] sm:text-[9px] font-semibold px-2 py-0.5 whitespace-nowrap text-center">
+                      <div className="bg-blue-50 dark:bg-slate-900/80 text-blue-700 dark:text-slate-300 text-[8px] sm:text-[9px] font-semibold px-2 py-0.5 whitespace-nowrap text-center border-t border-blue-100 dark:border-slate-700/50">
                         Первый платёж 0 BYN
                       </div>
                     </div>
