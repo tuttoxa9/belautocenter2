@@ -12,6 +12,7 @@ import { BlurImage } from "@/components/ui/blur-image"
 import CarPrice from "@/components/car-price"
 import { useUsdBynRate } from "@/components/providers/usd-byn-rate-provider"
 import { convertUsdToByn, cn } from "@/lib/utils"
+import { useCreditCalculator } from "@/hooks/use-credit-calculator"
 
 interface CarCardProps {
   disableImageBlur?: boolean
@@ -35,6 +36,7 @@ interface CarCardProps {
 export default function CarCard({ car, disableImageBlur }: CarCardProps) {
   const usdBynRate = useUsdBynRate()
   const [dataReady, setDataReady] = useState(false)
+  const creditData = useCreditCalculator(car.price)
 
   // Используем оптимизированный хук для IntersectionObserver
   const { ref: cardRef, isIntersecting } = useIntersectionObserverV2({
@@ -110,15 +112,25 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
               )}
             </div>
 
-            {/* Year - скелетон или данные */}
-            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
+            {/* Top Right Badges (Year & Payment) */}
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex flex-col items-end gap-1 sm:gap-1.5">
+              {/* Year */}
               {!dataReady ? (
                 <div className="h-5 w-10 sm:h-6 sm:w-12 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
               ) : (
-                <span className="bg-black/75 dark:bg-gray-700/90 text-white text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 rounded">
+                <span className="bg-black/75 dark:bg-gray-700/90 text-white text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 rounded shadow-sm">
                   {car.year}
                 </span>
               )}
+
+              {/* Payment Badge */}
+              {!dataReady || creditData.loading ? (
+                <div className="h-5 w-20 sm:h-6 sm:w-24 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+              ) : creditData.monthlyPayment ? (
+                <div className="bg-blue-600/90 dark:bg-blue-600/80 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-semibold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded shadow-sm">
+                  от {creditData.monthlyPayment} BYN/мес
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

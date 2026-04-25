@@ -482,38 +482,38 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
 
           <div className="flex-1">
             {/* Payment Filter Widget */}
-            <div className="mb-6 sm:mb-8 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900/30 dark:to-blue-900/10 rounded-2xl p-5 sm:p-6 shadow-lg border border-slate-700/50 dark:border-blue-500/20 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-32 h-32 sm:w-48 sm:h-48 bg-blue-500/20 rounded-full blur-3xl"></div>
+            <div className="mb-6 sm:mb-8 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900/30 dark:to-blue-900/10 rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-700/50 dark:border-blue-500/20 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-32 h-32 sm:w-40 sm:h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-24 h-24 sm:w-32 sm:h-32 bg-purple-500/20 rounded-full blur-2xl"></div>
 
               <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
-                <div className="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
-                  <div className="bg-white/10 p-2.5 sm:p-3 rounded-xl backdrop-blur-sm shrink-0">
-                    <Calculator className="h-5 w-5 sm:h-6 sm:w-6 text-blue-300" />
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <div className="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm shrink-0">
+                    <Calculator className="h-5 w-5 text-blue-300" />
                   </div>
                   <div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white">Подбор по платежу</h3>
-                    <p className="text-xs sm:text-sm text-slate-300">Найдем авто под ваш бюджет (без аванса)</p>
+                    <h3 className="text-base font-semibold text-white leading-tight">Подбор по платежу</h3>
+                    <p className="text-xs text-slate-300 mt-0.5">Найдем авто под ваш бюджет</p>
                   </div>
                 </div>
                 
-                <div className="flex-1 w-full md:w-auto flex items-center gap-2 sm:gap-3">
-                  <div className="relative flex-1 max-w-sm">
+                <div className="flex-1 w-full md:w-auto flex items-center gap-2">
+                  <div className="relative flex-1 md:max-w-[280px]">
                     <Input 
                       type="text"
                       inputMode="numeric"
                       placeholder="Желаемый платеж, BYN"
                       value={filters.monthlyPayment}
                       onChange={(e) => setFilters({...filters, monthlyPayment: e.target.value.replace(/[^0-9]/g, '')})}
-                      className="h-11 sm:h-12 bg-white/10 border-white/20 text-white placeholder:text-slate-400 text-base sm:text-lg px-3 sm:px-4 rounded-xl backdrop-blur-md focus-visible:ring-blue-400 focus-visible:border-transparent"
+                      className="h-10 sm:h-11 bg-white/10 border-white/20 text-white placeholder:text-slate-400 text-sm px-3 sm:px-4 rounded-xl backdrop-blur-md focus-visible:ring-blue-400 focus-visible:border-transparent"
                     />
-                    <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm sm:text-base pointer-events-none">BYN/мес</div>
+                    <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-xs sm:text-sm pointer-events-none">BYN/мес</div>
                   </div>
                   {filters.monthlyPayment && (
                      <Button 
                        variant="ghost" 
                        onClick={() => setFilters({...filters, monthlyPayment: ""})}
-                       className="h-11 sm:h-12 px-3 sm:px-4 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl text-sm sm:text-base shrink-0"
+                       className="h-10 sm:h-11 px-3 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl text-xs sm:text-sm shrink-0"
                      >
                        Сбросить
                      </Button>
