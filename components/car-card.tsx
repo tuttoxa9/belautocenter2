@@ -112,15 +112,15 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
               )}
             </div>
 
-            {/* Top Right Badges (Year & Payment) */}
-            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex flex-col items-end gap-1 sm:gap-1.5">
-              {/* Year */}
+            {/* Year Badge */}
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
               {!dataReady ? (
                 <div className="h-5 w-10 sm:h-6 sm:w-12 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
               ) : (
                 <span className="bg-black/75 dark:bg-gray-700/90 text-white text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 rounded shadow-sm">
                   {car.year}
                 </span>
+              )}
             </div>
           </div>
         </div>
