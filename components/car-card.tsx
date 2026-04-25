@@ -156,10 +156,10 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
             // Реальные данные после готовности
             <>
               {/* Header - более компактный */}
-              <div className="mb-1.5 sm:mb-2 flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
+              <div className="mb-1.5 sm:mb-2 flex flex-col xl:flex-row xl:justify-between items-start gap-2 xl:gap-3">
+                <div className="w-full xl:flex-1 xl:min-w-0">
                   <div className="flex items-start gap-1.5 mb-0.5 sm:mb-1 flex-col sm:flex-row sm:items-center flex-wrap">
-                    <h3 className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base leading-tight group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors truncate w-full sm:w-auto sm:max-w-full">
+                    <h3 className="font-semibold text-slate-900 dark:text-white text-[13px] sm:text-base leading-tight group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors truncate w-full sm:w-auto">
                       {car.make} {car.model}
                     </h3>
                     {car.fromEurope && (
@@ -172,21 +172,21 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                     carId={car.id}
                     initialPrice={car.price}
                     className="mb-0 sm:mb-1"
-                    priceClassName="text-base sm:text-lg"
-                    usdPriceClassName="text-[11px] sm:text-xs"
+                    priceClassName="text-[14px] sm:text-lg"
+                    usdPriceClassName="text-[10px] sm:text-xs"
                     showByn={true}
                     showCredit={false}
                   />
                 </div>
-                <div className="flex flex-col items-end shrink-0 pl-1">
+                <div className="w-full xl:w-auto flex flex-col items-start xl:items-end shrink-0 pt-0.5 xl:pt-0 xl:pl-1">
                   {!dataReady || creditData.loading ? (
-                    <div className="h-10 w-24 sm:h-11 sm:w-28 bg-slate-200 dark:bg-zinc-800 rounded-lg animate-pulse shadow-sm"></div>
+                    <div className="h-10 w-full xl:w-28 sm:h-11 bg-slate-200 dark:bg-zinc-800 rounded-lg animate-pulse shadow-sm"></div>
                   ) : creditData.monthlyPayment ? (
-                    <div className="flex flex-col rounded-lg overflow-hidden shadow-sm dark:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.4)] border border-transparent dark:border-blue-800/30 ring-1 ring-slate-900/5 dark:ring-0">
-                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-slate-800 dark:to-slate-800 text-white text-[10px] sm:text-xs font-bold px-2 py-1 sm:px-2.5 sm:py-1.5 whitespace-nowrap text-center">
+                    <div className="flex flex-col w-full xl:w-auto rounded-lg overflow-hidden shadow-sm dark:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.4)] border border-transparent dark:border-blue-800/30 ring-1 ring-slate-900/5 dark:ring-0">
+                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-slate-800 dark:to-slate-800 text-white text-[10px] sm:text-xs font-bold px-2 py-1.5 sm:py-1.5 whitespace-nowrap text-center">
                         {creditData.monthlyPayment} <span className="text-[9px] sm:text-[10px] text-blue-100 dark:text-slate-300 font-medium ml-0.5">BYN/мес</span>
                       </div>
-                      <div className="bg-blue-50 dark:bg-slate-900/80 text-blue-700 dark:text-slate-300 text-[8px] sm:text-[9px] font-semibold px-2 py-0.5 whitespace-nowrap text-center border-t border-blue-100 dark:border-slate-700/50">
+                      <div className="bg-blue-50 dark:bg-slate-900/80 text-blue-700 dark:text-slate-300 text-[8px] sm:text-[9px] font-semibold px-2 py-1 sm:py-0.5 whitespace-nowrap text-center border-t border-blue-100 dark:border-slate-700/50">
                         Первый платёж 0 BYN
                       </div>
                     </div>
