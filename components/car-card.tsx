@@ -180,10 +180,10 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                 </div>
                 <div className="flex flex-col items-end shrink-0 pl-1">
                   {!dataReady || creditData.loading ? (
-                    <div className="h-6 w-16 sm:h-7 sm:w-20 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+                    <div className="h-7 w-20 sm:h-8 sm:w-24 bg-slate-200 dark:bg-zinc-800 rounded-lg animate-pulse shadow-sm"></div>
                   ) : creditData.monthlyPayment ? (
-                    <div className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[10px] sm:text-xs font-bold px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-md border border-blue-100 dark:border-blue-800/50 shadow-sm whitespace-nowrap">
-                      {creditData.monthlyPayment} BYN/мес
+                    <div className="bg-white dark:bg-zinc-800/95 text-slate-800 dark:text-slate-100 text-[10px] sm:text-xs font-bold px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-200/80 dark:border-zinc-700/50 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] whitespace-nowrap transition-colors">
+                      {creditData.monthlyPayment} <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-medium ml-0.5">BYN/мес</span>
                     </div>
                   ) : null}
                 </div>

@@ -51,7 +51,7 @@ export default function CarCardSkeleton() {
               </div>
             </div>
           </div>
-          <div className="h-6 w-16 sm:h-7 sm:w-20 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative shrink-0">
+          <div className="h-7 w-20 sm:h-8 sm:w-24 bg-gray-200/60 dark:bg-zinc-800/60 rounded-lg overflow-hidden relative shrink-0 shadow-sm">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
                  style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
           </div>
