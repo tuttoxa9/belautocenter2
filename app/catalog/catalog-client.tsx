@@ -482,7 +482,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
 
           <div className="flex-1">
             {/* Payment Filter Widget */}
-            <div className="mb-6 sm:mb-8 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900/30 dark:to-blue-900/10 rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-700/50 dark:border-blue-500/20 text-white relative overflow-hidden">
+            <div className="mb-6 sm:mb-8 w-full xl:max-w-3xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900/30 dark:to-blue-900/10 rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-700/50 dark:border-blue-500/20 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-32 h-32 sm:w-40 sm:h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-24 h-24 sm:w-32 sm:h-32 bg-purple-500/20 rounded-full blur-2xl"></div>
 
@@ -498,16 +498,15 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
                 </div>
                 
                 <div className="flex-1 w-full md:w-auto flex items-center gap-2">
-                  <div className="relative flex-1 md:max-w-[280px]">
+                  <div className="relative flex-1 md:max-w-[220px]">
                     <Input 
                       type="text"
                       inputMode="numeric"
-                      placeholder="Желаемый платеж, BYN"
+                      placeholder="Желаемый платеж"
                       value={filters.monthlyPayment}
                       onChange={(e) => setFilters({...filters, monthlyPayment: e.target.value.replace(/[^0-9]/g, '')})}
                       className="h-10 sm:h-11 bg-white/10 border-white/20 text-white placeholder:text-slate-400 text-sm px-3 sm:px-4 rounded-xl backdrop-blur-md focus-visible:ring-blue-400 focus-visible:border-transparent"
                     />
-                    <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-xs sm:text-sm pointer-events-none">BYN/мес</div>
                   </div>
                   {filters.monthlyPayment && (
                      <Button 

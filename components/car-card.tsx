@@ -121,16 +121,6 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
                 <span className="bg-black/75 dark:bg-gray-700/90 text-white text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 rounded shadow-sm">
                   {car.year}
                 </span>
-              )}
-
-              {/* Payment Badge */}
-              {!dataReady || creditData.loading ? (
-                <div className="h-5 w-20 sm:h-6 sm:w-24 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
-              ) : creditData.monthlyPayment ? (
-                <div className="bg-blue-600/90 dark:bg-blue-600/80 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-semibold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded shadow-sm">
-                  от {creditData.monthlyPayment} BYN/мес
-                </div>
-              ) : null}
             </div>
           </div>
         </div>
@@ -166,26 +156,37 @@ export default function CarCard({ car, disableImageBlur }: CarCardProps) {
             // Реальные данные после готовности
             <>
               {/* Header - более компактный */}
-              <div className="mb-1.5 sm:mb-2">
-                <div className="flex items-start justify-between gap-1 sm:gap-2 flex-col sm:flex-row sm:items-start mb-1 sm:mb-0">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base leading-tight group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2 sm:line-clamp-none w-full">
-                    {car.make} {car.model}
-                  </h3>
-                  {car.fromEurope && (
-                    <span className="sm:mt-0.5 flex-shrink-0 text-[9px] sm:text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-1.5 py-0.5 sm:px-2 rounded-full leading-none">
-                      Без пробега по РБ
-                    </span>
-                  )}
+              <div className="mb-1.5 sm:mb-2 flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start gap-1.5 mb-0.5 sm:mb-1 flex-col sm:flex-row sm:items-center flex-wrap">
+                    <h3 className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base leading-tight group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors truncate w-full sm:w-auto sm:max-w-full">
+                      {car.make} {car.model}
+                    </h3>
+                    {car.fromEurope && (
+                      <span className="flex-shrink-0 text-[9px] sm:text-[10px] font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-1.5 py-0.5 rounded-full leading-none">
+                        Без пробега
+                      </span>
+                    )}
+                  </div>
+                  <CarPrice
+                    carId={car.id}
+                    initialPrice={car.price}
+                    className="mb-0 sm:mb-1"
+                    priceClassName="text-base sm:text-lg"
+                    usdPriceClassName="text-[11px] sm:text-xs"
+                    showByn={true}
+                    showCredit={false}
+                  />
                 </div>
-                <CarPrice
-                  carId={car.id}
-                  initialPrice={car.price}
-                  className="mb-0 sm:mb-1"
-                  priceClassName="text-base sm:text-lg"
-                  usdPriceClassName="text-[11px] sm:text-xs"
-                  showByn={true}
-                  showCredit={false}
-                />
+                <div className="flex flex-col items-end shrink-0 pl-1">
+                  {!dataReady || creditData.loading ? (
+                    <div className="h-6 w-16 sm:h-7 sm:w-20 bg-slate-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+                  ) : creditData.monthlyPayment ? (
+                    <div className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[10px] sm:text-xs font-bold px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-md border border-blue-100 dark:border-blue-800/50 shadow-sm whitespace-nowrap">
+                      {creditData.monthlyPayment} BYN/мес
+                    </div>
+                  ) : null}
+                </div>
               </div>
 
               {/* Specs - более компактные */}

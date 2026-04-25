@@ -20,13 +20,9 @@ export default function CarCardSkeleton() {
             </div>
           </div>
 
-          {/* Top Right Badges */}
-          <div className="absolute top-2 right-2 flex flex-col items-end gap-1.5">
+          {/* Year Badge */}
+          <div className="absolute top-2 right-2">
             <div className="h-5 w-10 sm:h-6 sm:w-12 rounded bg-gray-200/60 dark:bg-zinc-800/60 overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
-                   style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
-            </div>
-            <div className="h-5 w-20 sm:h-6 sm:w-24 rounded bg-gray-200/60 dark:bg-zinc-800/60 overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
                    style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
             </div>
@@ -37,21 +33,27 @@ export default function CarCardSkeleton() {
       {/* Content Section - Компактная */}
       <CardContent className="p-3 space-y-2">
         {/* Title and Price */}
-        <div className="space-y-2">
-          <div className="h-5 w-32 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative">
+        <div className="flex justify-between items-start gap-2">
+          <div className="space-y-2 flex-1">
+            <div className="h-5 w-32 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
+                   style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="h-6 w-20 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
+                     style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
+              </div>
+              <div className="h-4 w-24 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
+                     style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
+              </div>
+            </div>
+          </div>
+          <div className="h-6 w-16 sm:h-7 sm:w-20 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative shrink-0">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
                  style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
-          </div>
-
-          <div className="space-y-1">
-            <div className="h-6 w-20 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
-                   style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
-            </div>
-            <div className="h-4 w-24 bg-gray-200/60 dark:bg-zinc-800/60 rounded overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300/20 dark:via-zinc-700/20 to-transparent animate-shimmer"
-                   style={{ backgroundSize: '200% 100%', animationDuration: '1.5s' }}></div>
-            </div>
           </div>
         </div>
 
