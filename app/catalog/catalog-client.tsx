@@ -453,7 +453,7 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           </ol>
         </nav>
 
-        <div className="mb-6 xs:mb-8">
+        <div className="mb-6 xs:mb-8 md:hidden">
           <div className="relative">
             <Input
               type="text"
@@ -481,42 +481,66 @@ export default function CatalogClient({ initialCars }: CatalogClientProps) {
           <div className="lg:w-96 hidden lg:block"><DesktopFilters filters={filters} setFilters={setFilters} availableMakes={availableMakes} availableModels={availableModels} hasActiveFilters={hasActiveFilters} resetFilters={resetFilters} applyFilters={applyFilters} /></div>
 
           <div className="flex-1">
-            {/* Payment Filter Widget */}
-            <div className="mb-6 sm:mb-8 w-full md:w-max bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-md border border-slate-200 dark:border-slate-700/50 relative overflow-hidden transition-colors">
-              <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-32 h-32 sm:w-40 sm:h-40 bg-blue-50 dark:bg-blue-500/10 rounded-full blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-24 h-24 sm:w-32 sm:h-32 bg-purple-50 dark:bg-purple-500/10 rounded-full blur-2xl"></div>
+            {/* Top Widgets Group */}
+            <div className="flex flex-col xl:flex-row gap-4 sm:gap-6 mb-6 sm:mb-8">
+              {/* Payment Filter Widget */}
+              <div className="w-full xl:w-max bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-md border border-slate-200 dark:border-slate-700/50 relative overflow-hidden transition-colors">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-32 h-32 sm:w-40 sm:h-40 bg-blue-50 dark:bg-blue-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-24 h-24 sm:w-32 sm:h-32 bg-purple-50 dark:bg-purple-500/10 rounded-full blur-2xl"></div>
 
-              <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                  <div className="bg-blue-50 dark:bg-white/10 p-2.5 rounded-xl backdrop-blur-sm shrink-0 border border-blue-100 dark:border-transparent">
-                    <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
+                  <div className="flex items-center gap-3 w-full md:w-auto">
+                    <div className="bg-blue-50 dark:bg-white/10 p-2.5 rounded-xl backdrop-blur-sm shrink-0 border border-blue-100 dark:border-transparent">
+                      <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-semibold text-slate-900 dark:text-white leading-tight">Подбор по платежу</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">Найдем авто под ваш бюджет</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white leading-tight">Подбор по платежу</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">Найдем авто под ваш бюджет</p>
+                  
+                  <div className="flex-1 w-full md:w-auto flex items-center gap-2">
+                    <div className="relative flex-1 md:w-[220px]">
+                      <Input 
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="Желаемый платеж"
+                        value={filters.monthlyPayment}
+                        onChange={(e) => setFilters({...filters, monthlyPayment: e.target.value.replace(/[^0-9]/g, '')})}
+                        className="h-10 sm:h-11 bg-white dark:bg-white/10 border-slate-200 dark:border-white/20 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm px-3 sm:px-4 rounded-xl focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:border-transparent transition-all shadow-sm dark:shadow-none"
+                      />
+                    </div>
+                    {filters.monthlyPayment && (
+                       <Button 
+                         variant="ghost" 
+                         onClick={() => setFilters({...filters, monthlyPayment: ""})}
+                         className="h-10 sm:h-11 px-3 text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl text-xs sm:text-sm shrink-0"
+                       >
+                         Сбросить
+                       </Button>
+                    )}
                   </div>
                 </div>
+              </div>
+
+              {/* Desktop Search Widget */}
+              <div className="hidden md:flex w-full xl:flex-1 bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-md border border-slate-200 dark:border-slate-700/50 relative overflow-hidden transition-colors items-center gap-4">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-32 h-32 bg-blue-50 dark:bg-blue-500/10 rounded-full blur-3xl"></div>
                 
-                <div className="flex-1 w-full md:w-auto flex items-center gap-2">
-                  <div className="relative flex-1 md:w-[220px]">
-                    <Input 
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="Желаемый платеж"
-                      value={filters.monthlyPayment}
-                      onChange={(e) => setFilters({...filters, monthlyPayment: e.target.value.replace(/[^0-9]/g, '')})}
-                      className="h-10 sm:h-11 bg-white dark:bg-white/10 border-slate-200 dark:border-white/20 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm px-3 sm:px-4 rounded-xl focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:border-transparent transition-all shadow-sm dark:shadow-none"
-                    />
-                  </div>
-                  {filters.monthlyPayment && (
-                     <Button 
-                       variant="ghost" 
-                       onClick={() => setFilters({...filters, monthlyPayment: ""})}
-                       className="h-10 sm:h-11 px-3 text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl text-xs sm:text-sm shrink-0"
-                     >
-                       Сбросить
-                     </Button>
-                  )}
+                <div className="bg-blue-50 dark:bg-white/10 p-2.5 rounded-xl backdrop-blur-sm shrink-0 border border-blue-100 dark:border-transparent relative z-10 hidden lg:block">
+                  <Search className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                </div>
+                <div className="relative flex-1 z-10">
+                  <Input
+                    type="text"
+                    placeholder="Поиск по маркам и моделям..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    className="h-10 sm:h-11 bg-white dark:bg-white/10 border-slate-200 dark:border-white/20 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm px-3 sm:px-4 pl-10 lg:pl-4 rounded-xl focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:border-transparent transition-all shadow-sm dark:shadow-none pr-24"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 lg:hidden" />
+                  <Button onClick={handleSearch} className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 px-4 text-xs font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors">Найти</Button>
                 </div>
               </div>
             </div>
